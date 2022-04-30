@@ -1,23 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Customer, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import process, { Implementations } from '../../../utils/api/process';
 
 const prisma = new PrismaClient();
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<Customer[] | null>
-) => {
-  switch (req.method) {
-    case 'GET':
-      const customers = await prisma.customer.findMany({
-        include: { oders: true },
-      });
-      res.status(200).json(customers);
-      break;
-    default:
-      res.status(404).send(null);
-      break;
-  }
+interface CustomersRequest extends NextApiRequest {}
+interface CustomersResponse extends NextApiResponse {}
+
+const get = async (_: CustomersRequest, res: CustomersResponse) => {
+  const customers = await prisma.customer.findMany({
+    include: { oders: true },
+  });
+  res.status(200).json(customers);
+};
+
+const implementations: Implementations<CustomersRequest, CustomersResponse> = {
+  GET: get,
+};
+
+const handler = async (req: CustomersRequest, res: CustomersResponse) => {
+  process<CustomersRequest, CustomersResponse>(
+    req,
+    res,
+    implementations,
+    false
+  );
 };
 
 export default handler;
