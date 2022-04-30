@@ -10,18 +10,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  admin    Boolean @default(false)
+  password String  @db.Text
+  salt     String  @db.Text
+}
+
 model Customer {
   id           Int     @id @default(autoincrement())
   forename     String
   surname      String
-  title        String?
   email        String?
   street       String?
   streetnumber String?
   city         String?
   postalcode   String?
   phone        String?
-  Order        Order[]
+  disabled     Boolean @default(false)
+  oders        Order[]
 }
 
 model Order {
