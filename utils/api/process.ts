@@ -64,8 +64,9 @@ const process = async <T extends NextApiRequest, G extends NextApiResponse>(
   if (implementation)
     try {
       await implementation(req, res);
-    } catch {
+    } catch (ex) {
       res.status(500).send(null);
+      throw ex;
     }
   else res.status(405).send(null);
 };

@@ -20,14 +20,15 @@ model User {
 
 model Customer {
   id           Int     @id @default(autoincrement())
-  forename     String
-  surname      String
+  firstname    String
+  lastname     String
   email        String?
   street       String?
   streetnumber String?
   city         String?
   postalcode   String?
   phone        String?
+  shoesize     Float?
   disabled     Boolean @default(false)
   oders        Order[]
 }
