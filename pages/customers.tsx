@@ -2,6 +2,7 @@ import { Customer, PrismaClient } from '@prisma/client';
 import { NextPage } from 'next';
 import AuthenticationWrapper from '../components/AuthenticationWrapper';
 import CustomersTable from '../components/CustomersTable';
+import LayoutWrapper from '../components/LayoutWrapper';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +13,9 @@ type CustomersProps = {
 const Customers: NextPage<CustomersProps> = ({ customers }) => {
   return (
     <AuthenticationWrapper>
-      <CustomersTable customers={customers} />
+      <LayoutWrapper>
+        <CustomersTable customers={customers} />
+      </LayoutWrapper>
     </AuthenticationWrapper>
   );
 };

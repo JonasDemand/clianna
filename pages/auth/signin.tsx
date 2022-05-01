@@ -24,7 +24,7 @@ const SignIn: NextPage<SignInProps> = ({ csrfToken, error }) => {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'primary.light' }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <LockOutlined />
         </Avatar>
         <Typography component="h1" variant="h5">
