@@ -22,7 +22,7 @@ const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {
   const currentRoute = routes.filter((x) => x.route === router.route)[0];
   return (
     <>
-      <Box sx={{ borderBottom: 1, borderColor: 'devider', mb: 2 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'grey', mb: 2 }}>
         <Tabs value={routes.indexOf(currentRoute)}>
           {routes.map((route, i) => (
             <Tab key={i} label={route.label} href={route.route} />
