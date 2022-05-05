@@ -23,8 +23,8 @@ export default NextAuth({
         const hash = await hashPassword(credentials?.password, user.salt);
         if (hash === user.password)
           return {
-            email: user.email,
             admin: user.admin,
+            email: user.email,
           };
         return null;
       },
@@ -32,11 +32,14 @@ export default NextAuth({
   ],
   callbacks: {
     session: ({ session, user, token }): Session => {
-      return { ...session, user: { ...user, admin: token.admin } };
+      return {
+        ...session,
+        user: { ...user, admin: token.admin, email: token.email },
+      };
     },
     jwt: ({ token, user }): JWT => {
       if (user) {
-        return { ...token, admin: user.admin };
+        return { ...token, admin: user.admin, email: user.email };
       }
       return token;
     },

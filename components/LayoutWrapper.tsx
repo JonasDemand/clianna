@@ -1,10 +1,9 @@
-import { LockOutlined } from '@mui/icons-material';
-import { Box, Tabs, Tab, Avatar } from '@mui/material';
+import { Box, Tabs, Tab } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 
 type LayoutWrapperProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 type Route = {

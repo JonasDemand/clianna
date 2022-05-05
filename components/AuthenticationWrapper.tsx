@@ -1,10 +1,10 @@
 import { Box, CircularProgress } from '@mui/material';
 import { signIn, useSession } from 'next-auth/react';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 
-export interface AuthenticationWrapperProps {
-  children: React.ReactNode;
-}
+export type AuthenticationWrapperProps = {
+  children: ReactNode;
+};
 
 const AuthenticationWrapper: FunctionComponent<AuthenticationWrapperProps> = ({
   children,

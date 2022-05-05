@@ -2,6 +2,8 @@ import { createTheme } from '@mui/material/styles';
 import { deDE as coreDeDE } from '@mui/material/locale';
 import { deDE } from '@mui/x-data-grid';
 
+export const rawTheme = {};
+
 const theme = createTheme(
   {
     palette: {
