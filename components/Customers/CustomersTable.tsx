@@ -1,6 +1,13 @@
-import { TextField } from '@mui/material';
+import { Autocomplete, TextField, UseAutocompleteProps } from '@mui/material';
 import { DataGrid, deDE, GridColDef } from '@mui/x-data-grid';
-import { ChangeEvent, FunctionComponent, useContext } from 'react';
+import {
+  ChangeEvent,
+  FunctionComponent,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { CustomerContextType } from '../../@types/customer';
 import { CustomerContext } from '../../context/customerContext';
 
@@ -18,10 +25,13 @@ const columns: GridColDef[] = [
   { field: 'openOrders', headerName: 'Offene Bestellungen', flex: 1 },
 ];
 
+const defaultColumns = [columns[1].headerName, columns[2].headerName];
+
 const CustomersTable: FunctionComponent = () => {
   const { customers, filteredCustomers, setFilteredCustomers } = useContext(
     CustomerContext
   ) as CustomerContextType;
+  const [activeColumns, setActiveColumns] = useState(defaultColumns);
   const filter = (text: string) => {
     setFilteredCustomers(
       customers.filter((customer) =>
@@ -32,14 +42,26 @@ const CustomersTable: FunctionComponent = () => {
       )
     );
   };
+  const changeActiveColumns = (
+    _: SyntheticEvent<Element, Event>,
+    value: (string | undefined)[]
+  ) => setActiveColumns(value);
   return (
     <>
       <TextField
-        sx={{ pb: 2, width: '100%', flex: '0 1 auto' }}
+        sx={{ pb: 1, width: '100%', flex: '0 1 auto' }}
         label="Suche"
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           filter(e.currentTarget.value.toLowerCase())
         }
+      />
+      <Autocomplete
+        sx={{ pb: 2 }}
+        multiple
+        options={columns.map((column) => column.headerName)}
+        defaultValue={defaultColumns}
+        onChange={changeActiveColumns}
+        renderInput={(params) => <TextField {...params} label="Spalten" />}
       />
       <DataGrid
         sx={{ height: 'unset', flex: '1 1 auto' }}
@@ -47,7 +69,9 @@ const CustomersTable: FunctionComponent = () => {
           ...customer,
           openOrders: customer.oders.filter((order) => order.pending).length,
         }))}
-        columns={columns}
+        columns={columns.filter((column) =>
+          activeColumns.includes(column.headerName)
+        )}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         disableColumnMenu
       />
