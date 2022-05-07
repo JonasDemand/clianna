@@ -6,7 +6,11 @@ export interface ICustomerWithOrders extends Customer {
 
 export type CustomerContextType = {
   customers: ICustomerWithOrders[];
-  selected: ICustomerWithOrders;
+  setCustomers: (customers: ICustomerWithOrders[]) => void;
   filteredCustomers: ICustomerWithOrders[];
+  setFilteredCustomers: (customers: ICustomerWithOrders[]) => void;
+  selected: ICustomerWithOrders | null;
+  setSelected: (customer: ICustomerWithOrders | null) => void;
   searchText: string;
+  setSearchText: (searchText: string) => void;
 };

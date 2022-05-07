@@ -1,9 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { GetStaticProps, NextPage } from 'next';
 import AuthenticationWrapper from '../components/AuthenticationWrapper';
-import CustomersTable from '../components/CustomersTable';
+import CustomersPage from '../components/Customers/CustomersPage';
 import LayoutWrapper from '../components/LayoutWrapper';
-import { ICustomerWithOrders } from '../@types/customer';
+import { CustomerContextType, ICustomerWithOrders } from '../@types/customer';
+import { CustomerContext } from '../context/customerContext';
+import { useContext, useEffect } from 'react';
 
 const prisma = new PrismaClient();
 
@@ -12,10 +14,17 @@ type CustomersProps = {
 };
 
 const Customers: NextPage<CustomersProps> = ({ customers }) => {
+  const { setCustomers, setFilteredCustomers } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
+  useEffect(() => {
+    setCustomers(customers);
+    setFilteredCustomers(customers);
+  }, [customers, setCustomers, setFilteredCustomers]);
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <CustomersTable customers={customers} />
+        <CustomersPage />
       </LayoutWrapper>
     </AuthenticationWrapper>
   );

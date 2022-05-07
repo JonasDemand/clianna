@@ -7,6 +7,7 @@ import { SessionProvider } from 'next-auth/react';
 import Head from 'next/head';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../utils/theme';
+import CustomerProvider from '../context/customerContext';
 
 const MyApp = ({
   Component,
@@ -19,7 +20,9 @@ const MyApp = ({
         <title>aufTritt Kundenverwaltung</title>
       </Head>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <CustomerProvider>
+          <Component {...pageProps} />
+        </CustomerProvider>
       </SessionProvider>
     </ThemeProvider>
   );

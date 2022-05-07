@@ -1,11 +1,8 @@
+import { TextField } from '@mui/material';
 import { DataGrid, deDE, GridColDef } from '@mui/x-data-grid';
-import { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
-import { Box, TextField } from '@mui/material';
-import { ICustomerWithOrders } from '../@types/customer';
-
-type CustomersTableProps = {
-  customers: ICustomerWithOrders[];
-};
+import { ChangeEvent, FunctionComponent, useContext } from 'react';
+import { CustomerContextType } from '../../@types/customer';
+import { CustomerContext } from '../../context/customerContext';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'Kundennummer', flex: 1 },
@@ -21,11 +18,10 @@ const columns: GridColDef[] = [
   { field: 'openOrders', headerName: 'Offene Bestellungen', flex: 1 },
 ];
 
-const CustomersTable: FunctionComponent<CustomersTableProps> = ({
-  customers,
-}) => {
-  useEffect(() => setFilteredCustomers(customers), [customers]);
-  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+const CustomersTable: FunctionComponent = () => {
+  const { customers, filteredCustomers, setFilteredCustomers } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
   const filter = (text: string) => {
     setFilteredCustomers(
       customers.filter((customer) =>
@@ -37,14 +33,7 @@ const CustomersTable: FunctionComponent<CustomersTableProps> = ({
     );
   };
   return (
-    <Box
-      sx={{
-        width: '100%',
-        height: 'calc(100vh - 81px)',
-        display: 'flex',
-        flexFlow: 'column',
-      }}
-    >
+    <>
       <TextField
         sx={{ pb: 2, width: '100%', flex: '0 1 auto' }}
         label="Suche"
@@ -62,7 +51,7 @@ const CustomersTable: FunctionComponent<CustomersTableProps> = ({
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         disableColumnMenu
       />
-    </Box>
+    </>
   );
 };
 

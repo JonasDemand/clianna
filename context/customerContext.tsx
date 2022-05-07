@@ -7,14 +7,31 @@ type CustomerContextProps = {
   children: ReactNode;
 };
 
-const CustomerProvicer: FunctionComponent<CustomerContextProps> = ({
+const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   children,
 }) => {
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
-
+  const [filteredCustomers, setFilteredCustomers] = useState<
+    ICustomerWithOrders[]
+  >([]);
+  const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
+  const [searchText, setSearchText] = useState<string>('');
   return (
-    <CustomerContext.Provider value={null}>{children}</CustomerContext.Provider>
+    <CustomerContext.Provider
+      value={{
+        customers,
+        setCustomers,
+        filteredCustomers,
+        setFilteredCustomers,
+        selected,
+        setSelected,
+        searchText,
+        setSearchText,
+      }}
+    >
+      {children}
+    </CustomerContext.Provider>
   );
 };
 
-export default CustomerProvicer;
+export default CustomerProvider;
