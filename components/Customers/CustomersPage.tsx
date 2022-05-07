@@ -12,10 +12,8 @@ const CustomersPage: FunctionComponent = () => {
   return (
     <Box
       sx={{
-        width: '100%',
+        width: 1,
         height: 'calc(100vh - 81px)',
-        display: 'flex',
-        flexFlow: 'column',
       }}
     >
       <CustomersTable />

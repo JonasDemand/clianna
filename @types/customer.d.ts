@@ -2,6 +2,7 @@ import { Customer, Order } from '@prisma/client';
 
 export interface ICustomerWithOrders extends Customer {
   oders: Order[];
+  openOrders: number;
 }
 
 export type CustomerContextType = {
@@ -11,6 +12,4 @@ export type CustomerContextType = {
   setFilteredCustomers: (customers: ICustomerWithOrders[]) => void;
   selected: ICustomerWithOrders | null;
   setSelected: (customer: ICustomerWithOrders | null) => void;
-  searchText: string;
-  setSearchText: (searchText: string) => void;
 };
