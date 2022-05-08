@@ -11,7 +11,7 @@ const CustomersPage: FunctionComponent = () => {
     <Box
       sx={{
         width: 1,
-        height: 'calc(100vh - 73px)',
+        height: 1,
         display: 'flex',
         flexDirection: 'row',
       }}

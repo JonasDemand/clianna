@@ -31,7 +31,7 @@ const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {
         </Box>
       </nav>
       <main>
-        <Box sx={{ p: 1 }}>{children}</Box>
+        <Box sx={{ p: 2, height: 'calc(100vh - 57px)' }}>{children}</Box>
       </main>
     </Box>
   );
