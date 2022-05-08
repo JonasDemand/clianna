@@ -1,22 +1,29 @@
 import { FunctionComponent, useContext } from 'react';
 import { Box } from '@mui/material';
-import { CustomerContextType } from '../../@types/customer';
-import { CustomerContext } from '../../context/customerContext';
 import CustomersTable from './CustomersTable';
+import CustomerForm from './CustomerForm';
+import { CustomerContext } from '../../context/customerContext';
+import { CustomerContextType } from '../../@types/customer';
 
 const CustomersPage: FunctionComponent = () => {
-  const { customers, filteredCustomers, setFilteredCustomers } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
-
+  const { selected } = useContext(CustomerContext) as CustomerContextType;
   return (
     <Box
       sx={{
         width: 1,
-        height: 'calc(100vh - 81px)',
+        height: 'calc(100vh - 73px)',
+        display: 'flex',
+        flexDirection: 'row',
       }}
     >
-      <CustomersTable />
+      <Box sx={{ width: selected ? 0.5 : 1, height: 1, pr: 1 }}>
+        <CustomersTable />
+      </Box>
+      {selected && (
+        <Box sx={{ width: 0.5, height: 1, pl: 1 }}>
+          <CustomerForm />
+        </Box>
+      )}
     </Box>
   );
 };

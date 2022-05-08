@@ -11,7 +11,13 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { DataGrid, deDE, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  deDE,
+  GridCellParams,
+  GridColDef,
+  GridRowParams,
+} from '@mui/x-data-grid';
 import debounce from 'lodash.debounce';
 import {
   ChangeEvent,
@@ -58,9 +64,8 @@ const columnNames: Record<string, string> = {
 const defaultColumns = [columns[1].headerName, columns[2].headerName];
 
 const CustomersTable: FunctionComponent = () => {
-  const { customers, filteredCustomers, setFilteredCustomers } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
+  const { customers, filteredCustomers, setFilteredCustomers, setSelected } =
+    useContext(CustomerContext) as CustomerContextType;
 
   const [showDisabled, setShowDisabled] = useState(false);
   const [activeColumns, setActiveColumns] = useState(defaultColumns);
@@ -105,7 +110,7 @@ const CustomersTable: FunctionComponent = () => {
       }}
     >
       <TextField fullWidth label="Suche" onChange={changeSearchText} />
-      <Accordion sx={{ mb: 2, mt: 1, borderRadius: '4px', borderTop: 'none' }}>
+      <Accordion sx={{ mb: 2, mt: 1, borderRadius: 1, borderTop: 'none' }}>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Erweiterte Optionen</Typography>
         </AccordionSummary>
@@ -138,14 +143,17 @@ const CustomersTable: FunctionComponent = () => {
           },
         }}
         rows={filteredCustomers.filter((customer) =>
-          showDisabled ? true : customer.disabled
+          showDisabled ? true : !customer.disabled
         )}
         columns={columns.filter((column) =>
           activeColumns.includes(column.headerName)
         )}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
-          params.row.disabled ? 'grid-row' : 'grid-row-disabled'
+          params.row.disabled ? 'grid-row-disabled' : 'grid-row'
+        }
+        onCellClick={(params: GridCellParams<any, ICustomerWithOrders>) =>
+          setSelected(params.row)
         }
         disableColumnMenu
       />

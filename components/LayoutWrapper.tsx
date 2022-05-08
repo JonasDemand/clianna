@@ -20,9 +20,9 @@ const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {
   const router = useRouter();
   const currentRoute = routes.filter((x) => x.route === router.route)[0];
   return (
-    <>
+    <Box sx={{ padding: 0.5 }}>
       <nav>
-        <Box sx={{ borderBottom: 1, borderColor: 'grey', mb: 2 }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'grey' }}>
           <Tabs value={routes.indexOf(currentRoute)}>
             {routes.map((route, i) => (
               <Tab key={i} label={route.label} href={route.route} />
@@ -30,8 +30,10 @@ const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {
           </Tabs>
         </Box>
       </nav>
-      <main>{children}</main>
-    </>
+      <main>
+        <Box sx={{ p: 1 }}>{children}</Box>
+      </main>
+    </Box>
   );
 };
 
