@@ -23,7 +23,7 @@ const CustomerBasedata: FunctionComponent = () => {
           type="text"
           label="Vorname"
           name="firstname"
-          value={selected?.firstname}
+          value={selected?.firstname ?? ''}
           onChange={(e) =>
             setSelected({
               ...(selected as ICustomerWithOrders),
@@ -40,7 +40,7 @@ const CustomerBasedata: FunctionComponent = () => {
           type="text"
           label="Nachname"
           name="lastname"
-          value={selected?.lastname}
+          value={selected?.lastname ?? ''}
           onChange={(e) =>
             setSelected({
               ...(selected as ICustomerWithOrders),
@@ -61,7 +61,7 @@ const CustomerBasedata: FunctionComponent = () => {
           type="email"
           label="E-Mail"
           name="email"
-          value={selected?.email}
+          value={selected?.email ?? ''}
           onClick={() => {
             selectedDisabled &&
               selected?.email &&
@@ -85,7 +85,7 @@ const CustomerBasedata: FunctionComponent = () => {
           type="text"
           label="Telefon"
           name="phone"
-          value={selected?.phone}
+          value={selected?.phone ?? ''}
           onClick={() => {
             selectedDisabled &&
               selected?.phone &&
@@ -107,7 +107,7 @@ const CustomerBasedata: FunctionComponent = () => {
           type="number"
           label="Schuhgröße"
           name="shoesize"
-          value={selected?.shoesize}
+          value={selected?.shoesize ?? ''}
           onChange={(e) =>
             setSelected({
               ...(selected as ICustomerWithOrders),

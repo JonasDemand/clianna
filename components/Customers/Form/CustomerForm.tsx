@@ -1,4 +1,5 @@
 import { Box, Button, FormControl, Typography } from '@mui/material';
+import { Customer } from '@prisma/client';
 import {
   FormEventHandler,
   FunctionComponent,
@@ -11,12 +12,35 @@ import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 
 const CustomerForm: FunctionComponent = () => {
-  const { selected, setSelected, selectedDisabled, setSelectedDisabled } =
-    useContext(CustomerContext) as CustomerContextType;
+  const {
+    customers,
+    setCustomers,
+    selected,
+    setSelected,
+    selectedDisabled,
+    setSelectedDisabled,
+  } = useContext(CustomerContext) as CustomerContextType;
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    if (!selected) return;
+    const { oders: _, openOrders: __, ...body } = selected;
     setSelectedDisabled(true);
+    const res = await fetch(`/api/customers/${selected.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      alert('error!!');
+      return;
+    }
+    const newCust = (await res.json()) as Customer;
+    let newCustomers = [...customers];
+    const index = newCustomers.findIndex(
+      (customer) => customer.id === newCust.id
+    );
+    newCustomers[index] = { ...newCustomers[index], ...newCust };
+    setCustomers(newCustomers);
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();

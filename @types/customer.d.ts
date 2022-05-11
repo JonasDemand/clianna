@@ -14,4 +14,10 @@ export type CustomerContextType = {
   setSelected: (customer: ICustomerWithOrders | null) => void;
   selectedDisabled: boolean;
   setSelectedDisabled: (disabled: boolean) => void;
+  showDisabled: boolean;
+  setShowDisabled: (disabled: boolean) => void;
+  activeColumns: (string | undefined)[];
+  setActiveColumns: (activeColumns: (string | undefined)[]) => void;
+  searchText: string;
+  setSearchText: (activeColumns: string) => void;
 };

@@ -33,14 +33,13 @@ const put = async (req: CustomerRequest, res: CustomerResponse) => {
     res.status(404).send(null);
     return;
   }
-  const body = JSON.parse(req.body) as ICustomerWithOrders;
+  const body = JSON.parse(req.body) as Customer;
   if (!body) {
     res.status(400).send(null);
     return;
   }
   const customer = await prisma.customer.update({
     where: { id: parsedId },
-    include: { oders: true },
     data: body,
   });
   if (customer == null) {
