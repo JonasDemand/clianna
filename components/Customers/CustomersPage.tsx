@@ -16,14 +16,12 @@ const CustomersPage: FunctionComponent = () => {
         flexDirection: 'row',
       }}
     >
-      <Box sx={{ width: selected ? 0.5 : 1, height: 1, pr: 1 }}>
+      <Box sx={{ width: 0.5, height: 1, pr: 1 }}>
         <CustomersTable />
       </Box>
-      {selected && (
-        <Box sx={{ width: 0.5, height: 1, pl: 1 }}>
-          <CustomerForm />
-        </Box>
-      )}
+      <Box sx={{ width: 0.5, height: 1, pl: 1 }}>
+        <CustomerForm />
+      </Box>
     </Box>
   );
 };

@@ -18,7 +18,7 @@ const routes: Route[] = [
 
 const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {
   const router = useRouter();
-  const currentRoute = routes.filter((x) => x.route === router.route)[0];
+  const currentRoute = routes.find((x) => x.route === router.route) as Route;
   return (
     <Box sx={{ padding: 0.5 }}>
       <nav>

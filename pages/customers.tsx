@@ -41,10 +41,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       customers: customers.map<ICustomerWithOrders>((customer) => ({
         ...customer,
-        openOrders:
-          customer.id === 1
-            ? 43905
-            : customer.oders.filter((order) => order.pending).length,
+        openOrders: customer.oders.filter((order) => order.pending).length,
       })),
     },
   };

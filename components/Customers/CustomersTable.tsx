@@ -15,27 +15,29 @@ import {
   DataGrid,
   deDE,
   GridCellParams,
-  GridColDef,
+  GridInputSelectionModel,
   GridRowParams,
 } from '@mui/x-data-grid';
-import debounce from 'lodash.debounce';
 import {
   ChangeEvent,
   FunctionComponent,
   SyntheticEvent,
   useContext,
+  useEffect,
+  useState,
 } from 'react';
 import {
   CustomerContextType,
   ICustomerWithOrders,
 } from '../../@types/customer';
-import { columns, defaultColumns } from '../../consts/customers';
+import { columns } from '../../consts/customers';
 import { CustomerContext } from '../../context/customerContext';
 
 const CustomersTable: FunctionComponent = () => {
   const {
     searchText,
     filteredCustomers,
+    selected,
     setSelected,
     setSearchText,
     setActiveColumns,
@@ -43,6 +45,10 @@ const CustomersTable: FunctionComponent = () => {
     showDisabled,
     activeColumns,
   } = useContext(CustomerContext) as CustomerContextType;
+
+  const [selectionModel, setSelectionModel] = useState<GridInputSelectionModel>(
+    []
+  );
 
   const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchText(e.target.value);
@@ -113,9 +119,20 @@ const CustomersTable: FunctionComponent = () => {
         getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
           params.row.disabled ? 'grid-row-disabled' : 'grid-row'
         }
-        onCellClick={(params: GridCellParams<any, ICustomerWithOrders>) =>
-          setSelected(params.row)
-        }
+        selectionModel={selectionModel}
+        onSelectionModelChange={(model) => {
+          if (selected && model[0] === selected.id) {
+            setSelected(null);
+            setSelectionModel([]);
+          } else {
+            setSelected(
+              filteredCustomers.find(
+                (customer) => customer.id === model[0]
+              ) as ICustomerWithOrders
+            );
+            setSelectionModel(model);
+          }
+        }}
         disableColumnMenu
       />
     </Box>

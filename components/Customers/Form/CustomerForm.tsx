@@ -1,9 +1,12 @@
+import { Badge, Label } from '@mui/icons-material';
 import {
   Alert,
   AlertColor,
   Box,
   Button,
   FormControl,
+  FormLabel,
+  Grid,
   Snackbar,
   Typography,
 } from '@mui/material';
@@ -85,40 +88,60 @@ const CustomerForm: FunctionComponent = () => {
       onSubmit={onSubmit}
     >
       <Box sx={{ flex: '1 1 auto' }}>
-        <Typography>Kunde {selected?.id}</Typography>
-        <CustomerBasedata />
-        <CustomerAdress />
-      </Box>
-      <Box sx={{ display: 'flex' }}>
-        {selectedDisabled ? (
-          <Button
-            sx={{ mt: 2 }}
-            fullWidth
-            color="secondary"
-            variant="contained"
-            onClick={onEnable}
-          >
-            Bearbeiten
-          </Button>
+        {selected ? (
+          <>
+            <Typography>Kunde {selected?.id}</Typography>
+            <CustomerBasedata />
+            <CustomerAdress />{' '}
+          </>
         ) : (
-          <Button
-            sx={{ mt: 2, mr: 1 }}
-            fullWidth
-            type="submit"
-            variant="contained"
-          >
-            Speichern
-          </Button>
+          <Box sx={{ width: 1, height: 1 }} display="flex">
+            <Box m="auto">
+              <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
+              <Badge sx={{ width: 1 }} fontSize="large" color="primary" />
+            </Box>
+          </Box>
         )}
-        <Button
-          sx={{ mt: 2, ml: 1 }}
-          color="error"
-          fullWidth
-          variant="contained"
-          onClick={onClose}
-        >
-          Schließen
-        </Button>
+      </Box>
+      <Box sx={{ display: 'flex', mt: 2 }}>
+        {selectedDisabled ? (
+          <>
+            <Button
+              disabled={!selected}
+              fullWidth
+              color="secondary"
+              variant="contained"
+              onClick={onEnable}
+            >
+              Bearbeiten
+            </Button>
+            <Button
+              sx={{ ml: 1 }}
+              disabled={!selected}
+              color="error"
+              fullWidth
+              variant="contained"
+              onClick={onClose}
+            >
+              Schließen
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button sx={{ mr: 1 }} fullWidth type="submit" variant="contained">
+              Speichern
+            </Button>
+            <Button
+              sx={{ ml: 1 }}
+              fullWidth
+              variant="contained"
+              color="warning"
+              onClick={() => setSelectedDisabled(true)}
+            >
+              Abbrechen
+            </Button>
+          </>
+        )}
       </Box>
       <Snackbar
         open={alertOpen}

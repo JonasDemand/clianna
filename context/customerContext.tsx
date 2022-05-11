@@ -35,9 +35,28 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   useEffect(() => {
     if (!router.isReady) return;
     router.query['searchText'] &&
-      setSearchText(decodeURIComponent(router.query['searchText'].toString()));
+      setSearchText(decodeURIComponent(router.query['searchText'] as string));
     router.query['showDisabled'] &&
-      setShowDisabled(router.query['showDisabled'].toString() === 'true');
+      setShowDisabled(
+        decodeURIComponent(router.query['showDisabled'] as string) === 'true'
+      );
+    router.query['activeColumns'] &&
+      setActiveColumns(
+        JSON.parse(
+          decodeURIComponent(router.query['activeColumns'] as string)
+        ) as (string | undefined)[]
+      );
+    router.query['selectedId'] &&
+      setSelected(
+        filteredCustomers.find(
+          (customer) =>
+            customer.id ===
+            parseInt(
+              decodeURIComponent(router.query['selectedId'] as string),
+              10
+            )
+        ) as ICustomerWithOrders
+      );
     setQueryInitialized(true);
   }, [router.isReady]);
   useEffect(() => {
@@ -46,12 +65,16 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
       '/customers',
       `/customers?searchText=${encodeURIComponent(
         searchText
-      )}&showDisabled=${showDisabled}}`,
+      )}&showDisabled=${encodeURIComponent(
+        showDisabled
+      )}&selectedId=${encodeURIComponent(
+        selected ? selected.id.toString() : ''
+      )}&activeColumns=${encodeURIComponent(JSON.stringify(activeColumns))}`,
       {
         shallow: true,
       }
     );
-  }, [searchText, showDisabled]);
+  }, [queryInitialized, searchText, showDisabled, activeColumns, selected]);
 
   useEffect(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
@@ -67,9 +90,9 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   }, [activeColumns, customers, searchText]);
   useEffect(() => {
     if (!selected) return;
-    const newCust = customers.filter(
+    const newCust = customers.find(
       (customer) => customer.id === selected.id
-    )[0];
+    ) as ICustomerWithOrders;
     setSelected(newCust);
   }, [customers]);
 
