@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
+  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -18,6 +19,7 @@ import {
   GridInputSelectionModel,
   GridRowParams,
 } from '@mui/x-data-grid';
+import { Order } from '@prisma/client';
 import {
   ChangeEvent,
   FunctionComponent,
@@ -37,13 +39,14 @@ const CustomersTable: FunctionComponent = () => {
   const {
     searchText,
     filteredCustomers,
+    showDisabled,
+    activeColumns,
     selected,
     setSelected,
     setSearchText,
     setActiveColumns,
     setShowDisabled,
-    showDisabled,
-    activeColumns,
+    setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
 
   const [selectionModel, setSelectionModel] = useState<GridInputSelectionModel>(
@@ -70,13 +73,42 @@ const CustomersTable: FunctionComponent = () => {
         height: 1,
       }}
     >
-      <TextField
-        fullWidth
-        type="search"
-        label="Suche"
-        value={searchText}
-        onChange={changeSearchText}
-      />
+      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+        <TextField
+          sx={{
+            mr: 1,
+          }}
+          fullWidth
+          type="search"
+          label="Suche"
+          value={searchText}
+          onChange={changeSearchText}
+        />
+        <Button
+          sx={{ ml: 1 }}
+          variant="contained"
+          onClick={() => {
+            setSelected({
+              id: 0,
+              firstname: '',
+              lastname: '',
+              email: null,
+              street: null,
+              streetnumber: null,
+              city: null,
+              postalcode: null,
+              phone: null,
+              shoesize: null,
+              disabled: false,
+              oders: new Array<Order>(),
+              openOrders: 0,
+            });
+            setSelectedDisabled(false);
+          }}
+        >
+          Hinzufügen
+        </Button>
+      </Box>
       <Accordion sx={{ mb: 2, mt: 1, borderRadius: 1, borderTop: 'none' }}>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Erweiterte Optionen</Typography>
@@ -104,9 +136,12 @@ const CustomersTable: FunctionComponent = () => {
       <DataGrid
         sx={{
           flex: '1 1 auto',
-          '.grid-row-disabled': {
+          '.row-disabled': {
             bgcolor: 'action.disabled',
             opacity: 0.5,
+          },
+          '.MuiDataGrid-row': {
+            cursor: 'pointer',
           },
         }}
         rows={filteredCustomers.filter((customer) =>
@@ -117,7 +152,7 @@ const CustomersTable: FunctionComponent = () => {
         )}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
-          params.row.disabled ? 'grid-row-disabled' : 'grid-row'
+          params.row.disabled ? 'row-disabled' : ''
         }
         selectionModel={selectionModel}
         onSelectionModelChange={(model) => {

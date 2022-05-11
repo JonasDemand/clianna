@@ -22,6 +22,7 @@ import { CustomerContextType } from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
+import CustoemrDisabled from './CustomerDisabled';
 
 const CustomerForm: FunctionComponent = () => {
   const {
@@ -40,26 +41,31 @@ const CustomerForm: FunctionComponent = () => {
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!selected) return;
-    const { oders: _, openOrders: __, ...body } = selected;
-    setSelectedDisabled(true);
-    const res = await fetch(`/api/customers/${selected.id}`, {
-      method: 'PUT',
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) {
-      alert('error!!');
-      return;
+    try {
+      const { oders: _, openOrders: __, ...body } = selected;
+      const res = await fetch(`/api/customers/${selected.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      });
+      if (!res.ok) {
+        throw 'Failed to update customer';
+      }
+      setSelectedDisabled(true);
+      const newCust = (await res.json()) as Customer;
+      let newCustomers = [...customers];
+      const index = newCustomers.findIndex(
+        (customer) => customer.id === newCust.id
+      );
+      newCustomers[index] = { ...newCustomers[index], ...newCust };
+      setCustomers(newCustomers);
+      setAlertOpen(true);
+      setAlertMessage(`Erfolgreich Kunde ${selected.id} aktualisiert`);
+      setAlertSeverity('success');
+    } catch {
+      setAlertOpen(true);
+      setAlertMessage(`Aktualisieren von Kunde ${selected.id} fehlgeschlagen`);
+      setAlertSeverity('error');
     }
-    const newCust = (await res.json()) as Customer;
-    let newCustomers = [...customers];
-    const index = newCustomers.findIndex(
-      (customer) => customer.id === newCust.id
-    );
-    newCustomers[index] = { ...newCustomers[index], ...newCust };
-    setCustomers(newCustomers);
-    setAlertOpen(true);
-    setAlertMessage(`Erfolgreich Kunde ${selected.id} aktualisiert`);
-    setAlertSeverity('success');
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -90,15 +96,15 @@ const CustomerForm: FunctionComponent = () => {
       <Box sx={{ flex: '1 1 auto' }}>
         {selected ? (
           <>
-            <Typography>Kunde {selected?.id}</Typography>
+            <CustoemrDisabled />
             <CustomerBasedata />
-            <CustomerAdress />{' '}
+            <CustomerAdress />
           </>
         ) : (
-          <Box sx={{ width: 1, height: 1 }} display="flex">
+          <Box sx={{ width: 1, height: 1, display: 'flex' }}>
             <Box m="auto">
-              <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
               <Badge sx={{ width: 1 }} fontSize="large" color="primary" />
+              <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
             </Box>
           </Box>
         )}
