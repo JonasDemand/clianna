@@ -15,6 +15,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
     ICustomerWithOrders[]
   >([]);
   const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
+  const [selectedDisabled, setSelectedDisabled] = useState(true);
   return (
     <CustomerContext.Provider
       value={{
@@ -24,6 +25,8 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
         setFilteredCustomers,
         selected,
         setSelected,
+        selectedDisabled,
+        setSelectedDisabled,
       }}
     >
       {children}

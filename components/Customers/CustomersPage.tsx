@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext } from 'react';
 import { Box } from '@mui/material';
 import CustomersTable from './CustomersTable';
-import CustomerForm from './CustomerForm';
+import CustomerForm from './Form/CustomerForm';
 import { CustomerContext } from '../../context/customerContext';
 import { CustomerContextType } from '../../@types/customer';
 

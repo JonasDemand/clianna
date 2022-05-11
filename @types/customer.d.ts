@@ -12,4 +12,6 @@ export type CustomerContextType = {
   setFilteredCustomers: (customers: ICustomerWithOrders[]) => void;
   selected: ICustomerWithOrders | null;
   setSelected: (customer: ICustomerWithOrders | null) => void;
+  selectedDisabled: boolean;
+  setSelectedDisabled: (disabled: boolean) => void;
 };
