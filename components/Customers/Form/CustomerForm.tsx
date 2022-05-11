@@ -1,10 +1,19 @@
-import { Box, Button, FormControl, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  FormControl,
+  Snackbar,
+  Typography,
+} from '@mui/material';
 import { Customer } from '@prisma/client';
 import {
   FormEventHandler,
   FunctionComponent,
   MouseEventHandler,
   useContext,
+  useState,
 } from 'react';
 import { CustomerContextType } from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
@@ -20,6 +29,10 @@ const CustomerForm: FunctionComponent = () => {
     selectedDisabled,
     setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState<AlertColor>();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -41,6 +54,9 @@ const CustomerForm: FunctionComponent = () => {
     );
     newCustomers[index] = { ...newCustomers[index], ...newCust };
     setCustomers(newCustomers);
+    setAlertOpen(true);
+    setAlertMessage(`Erfolgreich Kunde ${selected.id} aktualisiert`);
+    setAlertSeverity('success');
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
@@ -50,6 +66,16 @@ const CustomerForm: FunctionComponent = () => {
     e.preventDefault();
     setSelectedDisabled(true);
     setSelected(null);
+  };
+  const handleAlertClose = (
+    e: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') return;
+
+    setAlertOpen(false);
+    setAlertMessage('');
+    setAlertSeverity(undefined);
   };
 
   return (
@@ -94,6 +120,14 @@ const CustomerForm: FunctionComponent = () => {
           Schließen
         </Button>
       </Box>
+      <Snackbar
+        open={alertOpen}
+        onClose={handleAlertClose}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert severity={alertSeverity}>{alertMessage}</Alert>
+      </Snackbar>
     </FormControl>
   );
 };

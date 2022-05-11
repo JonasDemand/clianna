@@ -22,7 +22,6 @@ const CustomerBasedata: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Vorname"
-          name="firstname"
           value={selected?.firstname ?? ''}
           onChange={(e) =>
             setSelected({
@@ -39,7 +38,6 @@ const CustomerBasedata: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Nachname"
-          name="lastname"
           value={selected?.lastname ?? ''}
           onChange={(e) =>
             setSelected({
@@ -60,7 +58,6 @@ const CustomerBasedata: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="email"
           label="E-Mail"
-          name="email"
           value={selected?.email ?? ''}
           onClick={() => {
             selectedDisabled &&
@@ -82,9 +79,8 @@ const CustomerBasedata: FunctionComponent = () => {
           variant="filled"
           fullWidth
           disabled={selectedDisabled}
-          type="text"
+          type="tel"
           label="Telefon"
-          name="phone"
           value={selected?.phone ?? ''}
           onClick={() => {
             selectedDisabled &&
@@ -106,12 +102,14 @@ const CustomerBasedata: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="number"
           label="Schuhgröße"
-          name="shoesize"
           value={selected?.shoesize ?? ''}
+          inputProps={{
+            step: '1',
+          }}
           onChange={(e) =>
             setSelected({
               ...(selected as ICustomerWithOrders),
-              shoesize: parseFloat(e.target.value),
+              shoesize: parseFloat(e.target.value.replace('[^0-9.]', '') ?? ''),
             })
           }
         />

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import {
   createContext,
   FunctionComponent,
@@ -17,6 +18,9 @@ type CustomerContextProps = {
 const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   children,
 }) => {
+  const router = useRouter();
+  const [queryInitialized, setQueryInitialized] = useState(false);
+
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<
     ICustomerWithOrders[]
@@ -29,15 +33,34 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   const [selectedDisabled, setSelectedDisabled] = useState(true);
 
   useEffect(() => {
+    if (!router.isReady) return;
+    router.query['searchText'] &&
+      setSearchText(decodeURIComponent(router.query['searchText'].toString()));
+    router.query['showDisabled'] &&
+      setShowDisabled(router.query['showDisabled'].toString() === 'true');
+    setQueryInitialized(true);
+  }, [router.isReady]);
+  useEffect(() => {
+    if (!queryInitialized) return;
+    router.push(
+      '/customers',
+      `/customers?searchText=${encodeURIComponent(
+        searchText
+      )}&showDisabled=${showDisabled}}`,
+      {
+        shallow: true,
+      }
+    );
+  }, [searchText, showDisabled]);
+
+  useEffect(() => {
+    const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
     setFilteredCustomers(
       customers.filter((customer) =>
         Object.keys(customer).some((key) => {
           if (activeColumns.includes(columnNames[key]))
             //@ts-expect-error
-            return customer[key]
-              ?.toString()
-              .toLowerCase()
-              .match(`.*${searchText.replace(' ', '.*')}.*`);
+            return customer[key]?.toString().toLowerCase().match(cleanedSearch);
         })
       )
     );
@@ -48,7 +71,6 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
       (customer) => customer.id === selected.id
     )[0];
     setSelected(newCust);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customers]);
 
   return (

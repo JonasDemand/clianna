@@ -21,7 +21,6 @@ const CustomerAdress: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Straße"
-          name="street"
           value={selected?.street ?? ''}
           onChange={(e) =>
             setSelected({
@@ -37,7 +36,6 @@ const CustomerAdress: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Hausnummer"
-          name="streetnumber"
           value={selected?.streetnumber ?? ''}
           onChange={(e) =>
             setSelected({
@@ -55,7 +53,6 @@ const CustomerAdress: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Postleitzahl"
-          name="postalcode"
           value={selected?.postalcode ?? ''}
           onChange={(e) =>
             setSelected({
@@ -71,7 +68,6 @@ const CustomerAdress: FunctionComponent = () => {
           disabled={selectedDisabled}
           type="text"
           label="Stadt"
-          name="city"
           value={selected?.city ?? ''}
           onChange={(e) =>
             setSelected({

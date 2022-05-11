@@ -24,8 +24,6 @@ import {
   FunctionComponent,
   SyntheticEvent,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
 import {
   CustomerContextType,
@@ -36,6 +34,7 @@ import { CustomerContext } from '../../context/customerContext';
 
 const CustomersTable: FunctionComponent = () => {
   const {
+    searchText,
     filteredCustomers,
     setSelected,
     setSearchText,
@@ -45,11 +44,8 @@ const CustomersTable: FunctionComponent = () => {
     activeColumns,
   } = useContext(CustomerContext) as CustomerContextType;
 
-  const changeSearchText = debounce(
-    (e: ChangeEvent<HTMLInputElement>) =>
-      setSearchText(e.target.value.toLowerCase()),
-    100
-  );
+  const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchText(e.target.value);
 
   const changeActiveColumns = (
     _: SyntheticEvent<Element, Event>,
@@ -68,7 +64,13 @@ const CustomersTable: FunctionComponent = () => {
         height: 1,
       }}
     >
-      <TextField fullWidth label="Suche" onChange={changeSearchText} />
+      <TextField
+        fullWidth
+        type="search"
+        label="Suche"
+        value={searchText}
+        onChange={changeSearchText}
+      />
       <Accordion sx={{ mb: 2, mt: 1, borderRadius: 1, borderTop: 'none' }}>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Erweiterte Optionen</Typography>
@@ -77,14 +79,14 @@ const CustomersTable: FunctionComponent = () => {
           <FormGroup sx={{ borderTop: 1, borderColor: 'primary.dark' }}>
             <FormControlLabel
               sx={{ pb: 2 }}
-              control={<Checkbox />}
+              control={<Checkbox checked={showDisabled} />}
               label="Deaktivierte anzeigen"
               onChange={changeShowDisabled}
             />
             <Autocomplete
               multiple
               options={columns.map((column) => column.headerName)}
-              defaultValue={defaultColumns}
+              value={activeColumns}
               onChange={changeActiveColumns}
               renderInput={(params) => (
                 <TextField {...params} label="Spalten" />
