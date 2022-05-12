@@ -1,12 +1,10 @@
-import { Badge, Label } from '@mui/icons-material';
+import { Badge } from '@mui/icons-material';
 import {
   Alert,
   AlertColor,
   Box,
   Button,
   FormControl,
-  FormLabel,
-  Grid,
   Snackbar,
   Typography,
 } from '@mui/material';
@@ -43,6 +41,7 @@ const CustomerForm: FunctionComponent = () => {
     if (!selected) return;
     try {
       const { oders: _, openOrders: __, ...body } = selected;
+      setSelectedDisabled(true);
       const res = await fetch(`/api/customers/${selected.id}`, {
         method: 'PUT',
         body: JSON.stringify(body),
@@ -50,7 +49,6 @@ const CustomerForm: FunctionComponent = () => {
       if (!res.ok) {
         throw 'Failed to update customer';
       }
-      setSelectedDisabled(true);
       const newCust = (await res.json()) as Customer;
       let newCustomers = [...customers];
       const index = newCustomers.findIndex(
@@ -73,7 +71,6 @@ const CustomerForm: FunctionComponent = () => {
   };
   const onClose: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
-    setSelectedDisabled(true);
     setSelected(null);
   };
   const handleAlertClose = (

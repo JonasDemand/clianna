@@ -12,21 +12,13 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import {
-  DataGrid,
-  deDE,
-  GridCellParams,
-  GridInputSelectionModel,
-  GridRowParams,
-} from '@mui/x-data-grid';
+import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
 import { Order } from '@prisma/client';
 import {
   ChangeEvent,
   FunctionComponent,
   SyntheticEvent,
   useContext,
-  useEffect,
-  useState,
 } from 'react';
 import {
   CustomerContextType,
@@ -48,10 +40,6 @@ const CustomersTable: FunctionComponent = () => {
     setShowDisabled,
     setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
-
-  const [selectionModel, setSelectionModel] = useState<GridInputSelectionModel>(
-    []
-  );
 
   const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchText(e.target.value);
@@ -154,19 +142,19 @@ const CustomersTable: FunctionComponent = () => {
         getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
           params.row.disabled ? 'row-disabled' : ''
         }
-        selectionModel={selectionModel}
+        selectionModel={selected ? [selected.id] : []}
         onSelectionModelChange={(model) => {
+          if (selected?.id === 0 && !model[0]) return;
+          setSelectedDisabled(true);
           if (selected && model[0] === selected.id) {
             setSelected(null);
-            setSelectionModel([]);
-          } else {
-            setSelected(
-              filteredCustomers.find(
-                (customer) => customer.id === model[0]
-              ) as ICustomerWithOrders
-            );
-            setSelectionModel(model);
+            return;
           }
+          setSelected(
+            filteredCustomers.find(
+              (customer) => customer.id === model[0]
+            ) as ICustomerWithOrders
+          );
         }}
         disableColumnMenu
       />

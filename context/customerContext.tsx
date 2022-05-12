@@ -1,3 +1,4 @@
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import {
   createContext,
@@ -19,6 +20,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   children,
 }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const [queryInitialized, setQueryInitialized] = useState(false);
 
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
@@ -33,7 +35,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   const [selectedDisabled, setSelectedDisabled] = useState(true);
 
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady || !session?.user) return;
     router.query['searchText'] &&
       setSearchText(decodeURIComponent(router.query['searchText'] as string));
     router.query['showDisabled'] &&
@@ -58,7 +60,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
         ) as ICustomerWithOrders
       );
     setQueryInitialized(true);
-  }, [router.isReady]);
+  }, [router.isReady, session?.user]);
   useEffect(() => {
     if (!queryInitialized) return;
     router.push(
