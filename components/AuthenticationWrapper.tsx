@@ -1,4 +1,4 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Backdrop, CircularProgress } from '@mui/material';
 import { signIn, useSession } from 'next-auth/react';
 import { FunctionComponent, ReactNode } from 'react';
 
@@ -10,22 +10,17 @@ const AuthenticationWrapper: FunctionComponent<AuthenticationWrapperProps> = ({
   children,
 }) => {
   const { data: session, status } = useSession();
-  if (session) {
-    return <>{children}</>;
-  }
-  if (status !== 'loading') signIn();
+  if (!session && status !== 'loading') signIn();
   return (
-    <Box
-      sx={{
-        mt: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        position: 'relative',
-      }}
-    >
-      <CircularProgress size={100} />
-    </Box>
+    <>
+      {session && <>{children}</>}
+      <Backdrop
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={!session}
+      >
+        <CircularProgress size={100} />
+      </Backdrop>
+    </>
   );
 };
 

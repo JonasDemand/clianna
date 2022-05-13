@@ -2,8 +2,10 @@ import { Badge } from '@mui/icons-material';
 import {
   Alert,
   AlertColor,
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   FormControl,
   Snackbar,
   Typography,
@@ -42,6 +44,7 @@ const CustomerForm: FunctionComponent = () => {
     message: string;
     severity: AlertColor;
   }>();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -50,6 +53,7 @@ const CustomerForm: FunctionComponent = () => {
     let newCustomers = [...customers];
     let newCust = selected;
     try {
+      setLoading(true);
       setSelectedDisabled(true);
       if (create) {
         newCust = await createCustomer(selected);
@@ -79,6 +83,8 @@ const CustomerForm: FunctionComponent = () => {
         } fehlgeschlagen`,
         severity: 'error',
       });
+    } finally {
+      setLoading(false);
     }
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -91,67 +97,13 @@ const CustomerForm: FunctionComponent = () => {
   };
 
   return (
-    <FormControl
-      sx={{ width: 1, height: 1, display: 'flex' }}
-      component="form"
-      onSubmit={onSubmit}
-    >
-      <Box sx={{ flex: '1 1 auto' }}>
-        {selected ? (
-          <>
-            <CustoemrDisabled />
-            <CustomerBasedata />
-            <CustomerAdress />
-          </>
-        ) : (
-          <Box sx={{ width: 1, height: 1, display: 'flex' }}>
-            <Box m="auto">
-              <Badge sx={{ width: 1 }} fontSize="large" color="primary" />
-              <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
-            </Box>
-          </Box>
-        )}
-      </Box>
-      <Box sx={{ display: 'flex', mt: 2 }}>
-        {selectedDisabled ? (
-          <>
-            <Button
-              disabled={!selected}
-              fullWidth
-              color="secondary"
-              variant="contained"
-              onClick={onEnable}
-            >
-              Bearbeiten
-            </Button>
-            <Button
-              sx={{ ml: 1 }}
-              disabled={!selected}
-              color="error"
-              fullWidth
-              variant="contained"
-              onClick={onClose}
-            >
-              Schließen
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button sx={{ mr: 1 }} fullWidth type="submit" variant="contained">
-              Speichern
-            </Button>
-            <Button
-              sx={{ ml: 1 }}
-              fullWidth
-              variant="contained"
-              color="warning"
-              onClick={() => setSelectedDisabled(true)}
-            >
-              Abbrechen
-            </Button>
-          </>
-        )}
-      </Box>
+    <>
+      <Backdrop
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress size={100} />
+      </Backdrop>
       <Snackbar
         open={!!alert}
         autoHideDuration={3000}
@@ -163,7 +115,74 @@ const CustomerForm: FunctionComponent = () => {
       >
         {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
       </Snackbar>
-    </FormControl>
+      <FormControl
+        sx={{ width: 1, height: 1, display: 'flex' }}
+        component="form"
+        onSubmit={onSubmit}
+      >
+        <Box sx={{ flex: '1 1 auto' }}>
+          {selected ? (
+            <>
+              <CustoemrDisabled />
+              <CustomerBasedata />
+              <CustomerAdress />
+            </>
+          ) : (
+            <Box sx={{ width: 1, height: 1, display: 'flex' }}>
+              <Box m="auto">
+                <Badge sx={{ width: 1 }} fontSize="large" color="primary" />
+                <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
+              </Box>
+            </Box>
+          )}
+        </Box>
+        <Box sx={{ display: 'flex', mt: 2 }}>
+          {selectedDisabled ? (
+            <>
+              <Button
+                disabled={!selected}
+                fullWidth
+                color="secondary"
+                variant="contained"
+                onClick={onEnable}
+              >
+                Bearbeiten
+              </Button>
+              <Button
+                sx={{ ml: 1 }}
+                disabled={!selected}
+                color="error"
+                fullWidth
+                variant="contained"
+                onClick={onClose}
+              >
+                Schließen
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                sx={{ mr: 1 }}
+                fullWidth
+                type="submit"
+                variant="contained"
+              >
+                Speichern
+              </Button>
+              <Button
+                sx={{ ml: 1 }}
+                fullWidth
+                variant="contained"
+                color="warning"
+                onClick={() => setSelectedDisabled(true)}
+              >
+                Abbrechen
+              </Button>
+            </>
+          )}
+        </Box>
+      </FormControl>
+    </>
   );
 };
 

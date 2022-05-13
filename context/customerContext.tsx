@@ -35,7 +35,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
   const [selectedDisabled, setSelectedDisabled] = useState(true);
 
   useEffect(() => {
-    if (!router.isReady || !session?.user) return;
+    if (!router.isReady || !session) return;
     router.query['searchText'] &&
       setSearchText(decodeURIComponent(router.query['searchText'] as string));
     router.query['showDisabled'] &&
