@@ -23,7 +23,7 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
     );
     setCustomers(sortedCustomers);
     setFilteredCustomers(sortedCustomers);
-  }, [customers, setCustomers, setFilteredCustomers]);
+  }, [customers]);
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
