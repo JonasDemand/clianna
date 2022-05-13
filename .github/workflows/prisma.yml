@@ -8,7 +8,7 @@ on:
 
 jobs:
   prod:
-    if: github.branch == 'master'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
         env: 
           DATABASE_URL: ${{ secrets.ProdDb }}
   dev:
-    if: github.repository == 'dev'
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
