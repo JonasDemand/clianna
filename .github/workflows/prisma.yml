@@ -1,10 +1,8 @@
-name: CI
-
+name: Prisma
 on:
   push:
-    branches: [ master, dev ]
-
-  workflow_dispatch:
+    branches: [master, dev]
+    paths: [prisma/migrations/**]
 
 jobs:
   prod:
@@ -20,7 +18,7 @@ jobs:
         run: npm install
       - name: Run prisma
         run: npx prisma migrate deploy
-        env: 
+        env:
           DATABASE_URL: ${{ secrets.ProdDb }}
   dev:
     if: github.ref == 'refs/heads/dev'
@@ -35,5 +33,5 @@ jobs:
         run: npm install
       - name: Run prisma
         run: npx prisma migrate deploy
-        env: 
+        env:
           DATABASE_URL: ${{ secrets.DevDb }}
