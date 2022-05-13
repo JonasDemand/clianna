@@ -8,7 +8,6 @@ import {
   Snackbar,
   Typography,
 } from '@mui/material';
-import { Customer } from '@prisma/client';
 import {
   FormEventHandler,
   FunctionComponent,
@@ -18,6 +17,10 @@ import {
 } from 'react';
 import { CustomerContextType } from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
+import {
+  createCustomer,
+  updateCustomer,
+} from '../../../utils/api/requests/customers';
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustoemrDisabled from './CustomerDisabled';
@@ -40,28 +43,34 @@ const CustomerForm: FunctionComponent = () => {
     e.preventDefault();
     if (!selected) return;
     try {
-      const { oders: _, openOrders: __, ...body } = selected;
-      setSelectedDisabled(true);
-      const res = await fetch(`/api/customers/${selected.id}`, {
-        method: 'PUT',
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        throw 'Failed to update customer';
-      }
-      const newCust = (await res.json()) as Customer;
       let newCustomers = [...customers];
-      const index = newCustomers.findIndex(
-        (customer) => customer.id === newCust.id
-      );
-      newCustomers[index] = { ...newCustomers[index], ...newCust };
+      setSelectedDisabled(true);
+      if (selected.id === 0) {
+        const newCust = await createCustomer(selected);
+        newCustomers.push(newCust);
+        setSelected(newCust);
+      } else {
+        const newCust = await updateCustomer(selected);
+        const index = newCustomers.findIndex(
+          (customer) => customer.id === newCust.id
+        );
+        newCustomers[index] = newCust;
+      }
       setCustomers(newCustomers);
       setAlertOpen(true);
-      setAlertMessage(`Erfolgreich Kunde ${selected.id} aktualisiert`);
+      setAlertMessage(
+        `Erfolgreich Kunde ${selected.id ?? ''} ${
+          selected.id === 0 ? 'erstellt' : 'aktualisiert'
+        }`
+      );
       setAlertSeverity('success');
     } catch {
       setAlertOpen(true);
-      setAlertMessage(`Aktualisieren von Kunde ${selected.id} fehlgeschlagen`);
+      setAlertMessage(
+        `${selected.id === 0 ? 'Erstellen' : 'Aktualisieren'} von Kunde ${
+          selected.id ?? ''
+        } fehlgeschlagen`
+      );
       setAlertSeverity('error');
     }
   };

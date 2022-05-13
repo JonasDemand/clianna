@@ -1,7 +1,7 @@
 import { Customer, Order } from '@prisma/client';
 
 export interface ICustomerWithOrders extends Customer {
-  oders: Order[];
+  orders: Order[];
   openOrders: number;
 }
 

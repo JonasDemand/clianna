@@ -35,13 +35,13 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
 
 export const getStaticProps: GetStaticProps = async () => {
   const customers = await prisma.customer.findMany({
-    include: { oders: true },
+    include: { orders: true },
   });
   return {
     props: {
       customers: customers.map<ICustomerWithOrders>((customer) => ({
         ...customer,
-        openOrders: customer.oders.filter((order) => order.pending).length,
+        openOrders: customer.orders.filter((order) => order.pending).length,
       })),
     },
   };

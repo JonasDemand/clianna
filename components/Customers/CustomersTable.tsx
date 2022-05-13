@@ -88,7 +88,7 @@ const CustomersTable: FunctionComponent = () => {
               phone: null,
               shoesize: null,
               disabled: false,
-              oders: new Array<Order>(),
+              orders: new Array<Order>(),
               openOrders: 0,
             });
             setSelectedDisabled(false);

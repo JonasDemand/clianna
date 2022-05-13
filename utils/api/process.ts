@@ -5,9 +5,9 @@ import { hashPassword } from '../authentication';
 
 const prisma = new PrismaClient();
 
-export type Implementations<T, G> = Record<
+export type Implementations = Record<
   string,
-  (req: T, res: G) => Promise<void>
+  (req: NextApiRequest, res: NextApiResponse) => Promise<void>
 >;
 
 const authorized = async <T extends NextApiRequest, G extends NextApiResponse>(
@@ -53,10 +53,10 @@ const authorized = async <T extends NextApiRequest, G extends NextApiResponse>(
   return true;
 };
 
-const process = async <T extends NextApiRequest, G extends NextApiResponse>(
-  req: T,
-  res: G,
-  implementations: Implementations<T, G>,
+const process = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  implementations: Implementations,
   adminRequired?: boolean
 ) => {
   if (!(await authorized(req, res, adminRequired))) return;

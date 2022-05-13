@@ -30,7 +30,7 @@ model Customer {
   phone        String?
   shoesize     Float?
   disabled     Boolean @default(false)
-  oders        Order[]
+  orders       Order[]
 }
 
 model Order {
