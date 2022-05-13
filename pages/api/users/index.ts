@@ -5,13 +5,7 @@ import process, { Implementations } from '../../../utils/api/process';
 
 const prisma = new PrismaClient();
 
-interface UsersRequest extends NextApiRequest {
-  body: Omit<User, 'id' | 'salt'>;
-}
-interface UsersResponse
-  extends NextApiResponse<Omit<User, 'id' | 'password' | 'salt'> | null> {}
-
-const post = async (req: UsersRequest, res: UsersResponse) => {
+const post = async (req: NextApiRequest, res: NextApiResponse) => {
   if (
     !req.headers['content-type']
       ?.toLocaleLowerCase()
@@ -46,12 +40,12 @@ const post = async (req: UsersRequest, res: UsersResponse) => {
   res.status(200).send({ email: user.email, admin: user.admin });
 };
 
-const implementations: Implementations<UsersRequest, UsersResponse> = {
+const implementations: Implementations = {
   POST: post,
 };
 
-const handler = async (req: UsersRequest, res: UsersResponse) => {
-  process<UsersRequest, UsersResponse>(req, res, implementations, true);
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  process(req, res, implementations, true);
 };
 
 export default handler;
