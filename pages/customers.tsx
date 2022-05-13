@@ -18,11 +18,8 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
     CustomerContext
   ) as CustomerContextType;
   useEffect(() => {
-    const sortedCustomers = customers.sort((a, b) =>
-      a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
-    );
-    setCustomers(sortedCustomers);
-    setFilteredCustomers(sortedCustomers);
+    setCustomers(customers);
+    setFilteredCustomers(customers);
   }, [customers]);
   return (
     <AuthenticationWrapper>
@@ -39,10 +36,14 @@ export const getStaticProps: GetStaticProps = async () => {
   });
   return {
     props: {
-      customers: customers.map<ICustomerWithOrders>((customer) => ({
-        ...customer,
-        openOrders: customer.orders.filter((order) => order.pending).length,
-      })),
+      customers: customers
+        .sort((a, b) =>
+          a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
+        )
+        .map<ICustomerWithOrders>((customer) => ({
+          ...customer,
+          openOrders: customer.orders.filter((order) => order.pending).length,
+        })),
     },
   };
 };

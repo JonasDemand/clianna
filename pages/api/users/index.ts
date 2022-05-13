@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient, User } from '@prisma/client';
 import { createSalt, hashPassword } from '../../../utils/authentication';
-import process, { Implementations } from '../../../utils/api/process';
+import processApi, { Implementations } from '../../../utils/api/processApi';
 
 const prisma = new PrismaClient();
 
@@ -45,7 +45,7 @@ const implementations: Implementations = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  process(req, res, implementations, true);
+  processApi(req, res, implementations, true);
 };
 
 export default handler;

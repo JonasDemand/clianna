@@ -53,7 +53,7 @@ const authorized = async <T extends NextApiRequest, G extends NextApiResponse>(
   return true;
 };
 
-const process = async (
+const processApi = async (
   req: NextApiRequest,
   res: NextApiResponse,
   implementations: Implementations,
@@ -71,4 +71,4 @@ const process = async (
   else res.status(405).send(null);
 };
 
-export default process;
+export default processApi;

@@ -6,7 +6,6 @@ import { CustomerContext } from '../../context/customerContext';
 import { CustomerContextType } from '../../@types/customer';
 
 const CustomersPage: FunctionComponent = () => {
-  const { selected } = useContext(CustomerContext) as CustomerContextType;
   return (
     <Box
       sx={{

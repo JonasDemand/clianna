@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import process, { Implementations } from '../../../utils/api/process';
+import processApi, { Implementations } from '../../../utils/api/processApi';
 import { ICustomerWithOrders } from '../../../@types/customer';
 
 const prisma = new PrismaClient();
@@ -49,7 +49,7 @@ const implementations: Implementations = {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  process(req, res, implementations, false);
+  processApi(req, res, implementations, false);
 };
 
 export default handler;

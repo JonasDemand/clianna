@@ -15,7 +15,10 @@ import {
   useContext,
   useState,
 } from 'react';
-import { CustomerContextType } from '../../../@types/customer';
+import {
+  CustomerContextType,
+  ICustomerWithOrders,
+} from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
 import {
   createCustomer,
@@ -35,43 +38,47 @@ const CustomerForm: FunctionComponent = () => {
     setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
 
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertSeverity, setAlertSeverity] = useState<AlertColor>();
+  const [alert, setAlert] = useState<{
+    message: string;
+    severity: AlertColor;
+  }>();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!selected) return;
+    let create = selected.id === 0;
+    let newCustomers = [...customers];
+    let newCust = selected;
     try {
-      let newCustomers = [...customers];
       setSelectedDisabled(true);
-      if (selected.id === 0) {
-        const newCust = await createCustomer(selected);
+      if (create) {
+        newCust = await createCustomer(selected);
         newCustomers.push(newCust);
-        setSelected(newCust);
+        newCustomers = newCustomers.sort((a, b) =>
+          a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
+        );
       } else {
-        const newCust = await updateCustomer(selected);
+        newCust = await updateCustomer(selected);
         const index = newCustomers.findIndex(
           (customer) => customer.id === newCust.id
         );
         newCustomers[index] = newCust;
       }
+      setSelected(newCust);
       setCustomers(newCustomers);
-      setAlertOpen(true);
-      setAlertMessage(
-        `Erfolgreich Kunde ${selected.id ?? ''} ${
-          selected.id === 0 ? 'erstellt' : 'aktualisiert'
-        }`
-      );
-      setAlertSeverity('success');
+      setAlert({
+        message: `Erfolgreich Kunde ${newCust.id} ${
+          create ? 'erstellt' : 'aktualisiert'
+        }`,
+        severity: 'success',
+      });
     } catch {
-      setAlertOpen(true);
-      setAlertMessage(
-        `${selected.id === 0 ? 'Erstellen' : 'Aktualisieren'} von Kunde ${
-          selected.id ?? ''
-        } fehlgeschlagen`
-      );
-      setAlertSeverity('error');
+      setAlert({
+        message: `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${
+          newCust.id
+        } fehlgeschlagen`,
+        severity: 'error',
+      });
     }
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -81,16 +88,6 @@ const CustomerForm: FunctionComponent = () => {
   const onClose: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
     setSelected(null);
-  };
-  const handleAlertClose = (
-    e: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') return;
-
-    setAlertOpen(false);
-    setAlertMessage('');
-    setAlertSeverity(undefined);
   };
 
   return (
@@ -156,12 +153,15 @@ const CustomerForm: FunctionComponent = () => {
         )}
       </Box>
       <Snackbar
-        open={alertOpen}
-        onClose={handleAlertClose}
-        autoHideDuration={6000}
+        open={!!alert}
+        autoHideDuration={3000}
+        onClose={(e, reason) => {
+          if (reason == 'clickaway') return;
+          setAlert(undefined);
+        }}
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert severity={alertSeverity}>{alertMessage}</Alert>
+        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
       </Snackbar>
     </FormControl>
   );
