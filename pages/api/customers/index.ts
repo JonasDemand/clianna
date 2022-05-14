@@ -32,7 +32,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     data: { ...body },
     include: { orders: true },
   });
-  res.unstable_revalidate('/customers');
+  await res.unstable_revalidate('/customers');
   if (customer == null) {
     res.status(404).send(null);
     return;
