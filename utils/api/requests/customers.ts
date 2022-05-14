@@ -27,12 +27,9 @@ export const createCustomer = async (
 };
 
 export const revalidate = async (): Promise<void> => {
-  const res = await fetch(
-    `/api/customers/revalidate?token=${process.env.REVALIDATION_SECRET}`,
-    {
-      method: 'POST',
-    }
-  );
+  const res = await fetch('/api/customers/revalidate', {
+    method: 'POST',
+  });
   if (!res.ok) {
     throw 'Failed to revalidate';
   }
