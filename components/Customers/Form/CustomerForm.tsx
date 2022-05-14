@@ -7,9 +7,12 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  Slide,
   Snackbar,
+  Stack,
   Typography,
 } from '@mui/material';
+import { useSnackbar } from 'notistack';
 import {
   FormEventHandler,
   FunctionComponent,
@@ -24,6 +27,7 @@ import {
 import { CustomerContext } from '../../../context/customerContext';
 import {
   createCustomer,
+  revalidate,
   updateCustomer,
 } from '../../../utils/api/requests/customers';
 import CustomerAdress from './CustomerAdress';
@@ -39,12 +43,9 @@ const CustomerForm: FunctionComponent = () => {
     selectedDisabled,
     setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
-
-  const [alert, setAlert] = useState<{
-    message: string;
-    severity: AlertColor;
-  }>();
   const [loading, setLoading] = useState(false);
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -70,21 +71,28 @@ const CustomerForm: FunctionComponent = () => {
       }
       setSelected(newCust);
       setCustomers(newCustomers);
-      setAlert({
-        message: `Erfolgreich Kunde ${newCust.id} ${
+      enqueueSnackbar(
+        `Erfolgreich Kunde ${newCust.id} ${
           create ? 'erstellt' : 'aktualisiert'
         }`,
-        severity: 'success',
-      });
+        { variant: 'success' }
+      );
     } catch {
-      setAlert({
-        message: `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${
-          newCust.id
-        } fehlgeschlagen`,
-        severity: 'error',
-      });
-    } finally {
       setLoading(false);
+      enqueueSnackbar(
+        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${newCust.id}{' '}
+          fehlgeschlagen`,
+        { variant: 'error' }
+      );
+      return;
+    }
+    setLoading(false);
+    try {
+      await revalidate();
+    } catch {
+      enqueueSnackbar('Neuladen von Kunden fehlgeschlagen', {
+        variant: 'warning',
+      });
     }
   };
   const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -104,17 +112,6 @@ const CustomerForm: FunctionComponent = () => {
       >
         <CircularProgress size={100} />
       </Backdrop>
-      <Snackbar
-        open={!!alert}
-        autoHideDuration={3000}
-        onClose={(e, reason) => {
-          if (reason == 'clickaway') return;
-          setAlert(undefined);
-        }}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        {alert && <Alert severity={alert.severity}>{alert.message}</Alert>}
-      </Snackbar>
       <FormControl
         sx={{ width: 1, height: 1, display: 'flex' }}
         component="form"

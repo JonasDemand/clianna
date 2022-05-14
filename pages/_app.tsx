@@ -9,6 +9,8 @@ import Head from 'next/head';
 import { ThemeProvider } from '@emotion/react';
 import theme from '../utils/theme';
 import CustomerProvider from '../context/customerContext';
+import { SnackbarProvider } from 'notistack';
+import { Slide } from '@mui/material';
 
 const MyApp = ({
   Component,
@@ -21,9 +23,18 @@ const MyApp = ({
         <title>aufTritt Kundenverwaltung</title>
       </Head>
       <SessionProvider session={session}>
-        <CustomerProvider>
-          <Component {...pageProps} />
-        </CustomerProvider>
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          TransitionComponent={Slide}
+        >
+          <CustomerProvider>
+            <Component {...pageProps} />
+          </CustomerProvider>
+        </SnackbarProvider>
       </SessionProvider>
     </ThemeProvider>
   );
