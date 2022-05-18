@@ -1,17 +1,13 @@
 import { Badge } from '@mui/icons-material';
 import {
-  Alert,
-  AlertColor,
   Backdrop,
   Box,
   Button,
   CircularProgress,
   FormControl,
-  Slide,
-  Snackbar,
-  Stack,
   Typography,
 } from '@mui/material';
+import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import {
   FormEventHandler,
@@ -20,10 +16,7 @@ import {
   useContext,
   useState,
 } from 'react';
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-} from '../../../@types/customer';
+import { CustomerContextType } from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
 import {
   createCustomer,
@@ -45,11 +38,21 @@ const CustomerForm: FunctionComponent = () => {
   } = useContext(CustomerContext) as CustomerContextType;
   const [loading, setLoading] = useState(false);
 
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+  const { enqueueSnackbar } = useSnackbar();
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!selected) return;
+    if (
+      isEqual(
+        selected,
+        customers.find((customer) => customer.id === selected.id)
+      )
+    ) {
+      enqueueSnackbar('Keine Daten zum Speichern', {
+        variant: 'info',
+      });
+      return;
+    }
     let create = selected.id === 0;
     let newCustomers = [...customers];
     let newCust = selected;
@@ -80,13 +83,16 @@ const CustomerForm: FunctionComponent = () => {
     } catch {
       setLoading(false);
       enqueueSnackbar(
-        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${newCust.id}{' '}
+        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${newCust.id}
           fehlgeschlagen`,
         { variant: 'error' }
       );
       return;
     }
     setLoading(false);
+    enqueueSnackbar('Neuladen von Kunden gestartet', {
+      variant: 'info',
+    });
     try {
       await revalidate();
     } catch {
