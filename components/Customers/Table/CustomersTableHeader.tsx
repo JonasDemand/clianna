@@ -12,7 +12,6 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
 import { Order } from '@prisma/client';
 import {
   ChangeEvent,
@@ -20,20 +19,31 @@ import {
   SyntheticEvent,
   useContext,
 } from 'react';
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-} from '../../@types/customer';
-import { columns } from '../../consts/customers';
-import { CustomerContext } from '../../context/customerContext';
+import { CustomerContextType } from '../../../@types/customer';
+import { columns } from '../../../consts/customers';
+import { CustomerContext } from '../../../context/customerContext';
 
-const CustomersTable: FunctionComponent = () => {
+const defaultCustomer = () => ({
+  id: 0,
+  firstname: '',
+  lastname: '',
+  email: null,
+  street: null,
+  streetnumber: null,
+  city: null,
+  postalcode: null,
+  phone: null,
+  shoesize: null,
+  disabled: false,
+  orders: new Array<Order>(),
+  openOrders: 0,
+});
+
+const CustomersTableHeader: FunctionComponent = () => {
   const {
     searchText,
-    filteredCustomers,
     showDisabled,
     activeColumns,
-    selected,
     setSelected,
     setSearchText,
     setActiveColumns,
@@ -54,13 +64,7 @@ const CustomersTable: FunctionComponent = () => {
     value: boolean
   ) => setShowDisabled(value);
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexFlow: 'column',
-        height: 1,
-      }}
-    >
+    <>
       <Box sx={{ display: 'flex', flexDirection: 'row' }}>
         <TextField
           sx={{
@@ -76,21 +80,7 @@ const CustomersTable: FunctionComponent = () => {
           sx={{ ml: 1 }}
           variant="contained"
           onClick={() => {
-            setSelected({
-              id: 0,
-              firstname: '',
-              lastname: '',
-              email: null,
-              street: null,
-              streetnumber: null,
-              city: null,
-              postalcode: null,
-              phone: null,
-              shoesize: null,
-              disabled: false,
-              orders: new Array<Order>(),
-              openOrders: 0,
-            });
+            setSelected(defaultCustomer());
             setSelectedDisabled(false);
           }}
         >
@@ -121,45 +111,8 @@ const CustomersTable: FunctionComponent = () => {
           </FormGroup>
         </AccordionDetails>
       </Accordion>
-      <DataGrid
-        sx={{
-          flex: '1 1 auto',
-          '.row-disabled': {
-            bgcolor: 'action.disabled',
-            opacity: 0.5,
-          },
-          '.MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
-        }}
-        rows={filteredCustomers.filter((customer) =>
-          showDisabled ? true : !customer.disabled
-        )}
-        columns={columns.filter((column) =>
-          activeColumns.includes(column.headerName)
-        )}
-        localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
-        getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
-          params.row.disabled ? 'row-disabled' : ''
-        }
-        selectionModel={selected ? [selected.id] : []}
-        onSelectionModelChange={(model) => {
-          if (selected?.id === 0 && !model[0]) return;
-          setSelectedDisabled(true);
-          if (selected && model[0] === selected.id) {
-            setSelected(null);
-            return;
-          }
-          setSelected(
-            filteredCustomers.find(
-              (customer) => customer.id === model[0]
-            ) as ICustomerWithOrders
-          );
-        }}
-        disableColumnMenu
-      />
-    </Box>
+    </>
   );
 };
 
-export default CustomersTable;
+export default CustomersTableHeader;

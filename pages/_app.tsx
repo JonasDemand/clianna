@@ -31,9 +31,7 @@ const MyApp = ({
           }}
           TransitionComponent={Slide}
         >
-          <CustomerProvider>
-            <Component {...pageProps} />
-          </CustomerProvider>
+          <Component {...pageProps} />
         </SnackbarProvider>
       </SessionProvider>
     </ThemeProvider>

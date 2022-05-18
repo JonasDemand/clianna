@@ -1,11 +1,25 @@
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, useEffect } from 'react';
 import { Box } from '@mui/material';
-import CustomersTable from './CustomersTable';
+import CustomersTable from './Table/CustomersTable';
 import CustomerForm from './Form/CustomerForm';
+import {
+  CustomerContextType,
+  ICustomerWithOrders,
+} from '../../@types/customer';
 import { CustomerContext } from '../../context/customerContext';
-import { CustomerContextType } from '../../@types/customer';
 
-const CustomersPage: FunctionComponent = () => {
+type CustomerPageProps = {
+  customers: ICustomerWithOrders[];
+};
+
+const CustomersPage: FunctionComponent<CustomerPageProps> = ({ customers }) => {
+  const { setCustomers, setFilteredCustomers } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
+  useEffect(() => {
+    setCustomers(customers);
+    setFilteredCustomers(customers);
+  }, [customers]);
   return (
     <Box
       sx={{

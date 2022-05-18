@@ -4,7 +4,7 @@ import AuthenticationWrapper from '../components/AuthenticationWrapper';
 import CustomersPage from '../components/Customers/CustomersPage';
 import LayoutWrapper from '../components/LayoutWrapper';
 import { CustomerContextType, ICustomerWithOrders } from '../@types/customer';
-import { CustomerContext } from '../context/customerContext';
+import CustomerProvider, { CustomerContext } from '../context/customerContext';
 import { useContext, useEffect } from 'react';
 
 const prisma = new PrismaClient();
@@ -14,17 +14,12 @@ type CustomersProps = {
 };
 
 const Customers: NextPage<CustomersProps> = ({ customers }) => {
-  const { setCustomers, setFilteredCustomers } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
-  useEffect(() => {
-    setCustomers(customers);
-    setFilteredCustomers(customers);
-  }, [customers]);
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <CustomersPage />
+        <CustomerProvider>
+          <CustomersPage customers={customers} />
+        </CustomerProvider>
       </LayoutWrapper>
     </AuthenticationWrapper>
   );
