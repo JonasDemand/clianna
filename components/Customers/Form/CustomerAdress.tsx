@@ -1,5 +1,6 @@
-import { FormLabel, Box, TextField, Typography } from '@mui/material';
-import { FunctionComponent, useContext, ChangeEvent } from 'react';
+import { Box, FormLabel, TextField, Typography } from '@mui/material';
+import {FunctionComponent, useContext } from 'react';
+
 import {
   CustomerContextType,
   ICustomerWithOrders,

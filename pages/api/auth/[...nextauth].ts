@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+
 import { hashPassword } from '../../../utils/authentication';
 
 const prisma = new PrismaClient();

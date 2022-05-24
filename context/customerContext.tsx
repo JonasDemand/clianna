@@ -1,5 +1,5 @@
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import {
   createContext,
   FunctionComponent,
@@ -7,8 +7,13 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { CustomerContextType, ICustomerWithOrders } from '../@types/customer';
-import { defaultColumns, columnNames } from '../consts/customers';
+
+import {
+  CustomerContextType,
+  ICustomerWithOrders,
+  ICustomerWithOrdersKeys,
+} from '../@types/customer';
+import { columnNames,defaultColumns } from '../consts/customers';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);
 
@@ -84,8 +89,9 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
       customers.filter((customer) =>
         Object.keys(customer).some((key) => {
           if (activeColumns.includes(columnNames[key]))
-            //@ts-expect-error
-            return customer[key]?.toString().toLowerCase().match(cleanedSearch);
+            return (customer[key as ICustomerWithOrdersKeys]?.toString() ?? '')
+              .toLowerCase()
+              .match(cleanedSearch);
         })
       )
     );

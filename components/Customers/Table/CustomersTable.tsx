@@ -1,18 +1,27 @@
-import { Box } from '@mui/system';
-import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
-import {
-  ChangeEvent,
-  FunctionComponent,
-  SyntheticEvent,
-  useContext,
-} from 'react';
+import {Box} from '@mui/system';
+import {DataGrid, deDE, GridRowParams} from '@mui/x-data-grid';
+import React, {FunctionComponent, useContext} from 'react';
+
 import {
   CustomerContextType,
   ICustomerWithOrders,
+  ICustomerWithOrdersKeys,
 } from '../../../@types/customer';
-import { columns } from '../../../consts/customers';
-import { CustomerContext } from '../../../context/customerContext';
+import {columns} from '../../../consts/customers';
+import {CustomerContext} from '../../../context/customerContext';
 import CustomersTableHeader from './CustomersTableHeader';
+
+const setCustomerPlaceholder = (
+    customer: ICustomerWithOrders,
+): ICustomerWithOrders => {
+  const copy = {...customer};
+  Object.keys(copy).forEach((rawKey) => {
+    const key = rawKey as ICustomerWithOrdersKeys;
+    if (copy[key] !== null && copy[key] !== '') return;
+    copy[key] = '-' as never;
+  });
+  return copy;
+};
 
 const CustomersTable: FunctionComponent = () => {
   const {
@@ -35,8 +44,8 @@ const CustomersTable: FunctionComponent = () => {
       <CustomersTableHeader />
       <DataGrid
         sx={{
-          flex: '1 1 auto',
-          userSelect: 'none',
+          'flex': '1 1 auto',
+          'userSelect': 'none',
           '.row-disabled': {
             bgcolor: 'action.disabled',
             opacity: 0.5,
@@ -48,11 +57,11 @@ const CustomersTable: FunctionComponent = () => {
             outline: 'none !important',
           },
         }}
-        rows={filteredCustomers.filter((customer) =>
-          showDisabled ? true : !customer.disabled
-        )}
+        rows={filteredCustomers
+            .filter((customer) => (showDisabled ? true : !customer.disabled))
+            .map(setCustomerPlaceholder)}
         columns={columns.filter((column) =>
-          activeColumns.includes(column.headerName)
+          activeColumns.includes(column.headerName),
         )}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         getRowClassName={(params: GridRowParams<ICustomerWithOrders>) =>
@@ -68,8 +77,8 @@ const CustomersTable: FunctionComponent = () => {
           }
           setSelected(
             filteredCustomers.find(
-              (customer) => customer.id === model[0]
-            ) as ICustomerWithOrders
+                (customer) => customer.id === model[0],
+            ) as ICustomerWithOrders,
           );
         }}
         disableColumnMenu

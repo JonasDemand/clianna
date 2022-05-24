@@ -1,5 +1,6 @@
-import { FormControlLabel, Checkbox, Typography } from '@mui/material';
+import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { FunctionComponent, useContext } from 'react';
+
 import {
   CustomerContextType,
   ICustomerWithOrders,

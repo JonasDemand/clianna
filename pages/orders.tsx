@@ -1,5 +1,6 @@
 import { LinearProgress } from '@mui/material';
 import { NextPage } from 'next';
+
 import AuthenticationWrapper from '../components/AuthenticationWrapper';
 import LayoutWrapper from '../components/LayoutWrapper';
 

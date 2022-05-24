@@ -3,18 +3,19 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '../styles/global.css';
-import type { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
+
+import {ThemeProvider} from '@emotion/react';
+import {Slide} from '@mui/material';
+import type {AppProps} from 'next/app';
 import Head from 'next/head';
-import { ThemeProvider } from '@emotion/react';
+import {SessionProvider} from 'next-auth/react';
+import {SnackbarProvider} from 'notistack';
+
 import theme from '../utils/theme';
-import CustomerProvider from '../context/customerContext';
-import { SnackbarProvider } from 'notistack';
-import { Slide } from '@mui/material';
 
 const MyApp = ({
   Component,
-  pageProps: { session, ...pageProps },
+  pageProps: {session, ...pageProps},
 }: AppProps) => {
   return (
     <ThemeProvider theme={theme}>

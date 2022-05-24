@@ -1,7 +1,8 @@
+import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient, User } from '@prisma/client';
-import { createSalt, hashPassword } from '../../../utils/authentication';
+
 import processApi, { Implementations } from '../../../utils/api/processApi';
+import { createSalt, hashPassword } from '../../../utils/authentication';
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,4 @@
-import { ExpandMore } from '@mui/icons-material';
+import {ExpandMore} from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
@@ -11,17 +11,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import { Order } from '@prisma/client';
-import {
+import {Box} from '@mui/system';
+import {Order} from '@prisma/client';
+import React, {
   ChangeEvent,
   FunctionComponent,
   SyntheticEvent,
   useContext,
 } from 'react';
-import { CustomerContextType } from '../../../@types/customer';
-import { columns } from '../../../consts/customers';
-import { CustomerContext } from '../../../context/customerContext';
+
+import {CustomerContextType} from '../../../@types/customer';
+import {columns} from '../../../consts/customers';
+import {CustomerContext} from '../../../context/customerContext';
 
 const defaultCustomer = () => ({
   id: 0,
@@ -55,17 +56,17 @@ const CustomersTableHeader: FunctionComponent = () => {
     setSearchText(e.target.value);
 
   const changeActiveColumns = (
-    _: SyntheticEvent<Element, Event>,
-    value: (string | undefined)[]
+      _: SyntheticEvent<Element, Event>,
+      value: (string | undefined)[],
   ) => setActiveColumns(value);
 
   const changeShowDisabled = (
-    _: SyntheticEvent<Element, Event>,
-    value: boolean
+      _: SyntheticEvent<Element, Event>,
+      value: boolean,
   ) => setShowDisabled(value);
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+      <Box sx={{display: 'flex', flexDirection: 'row'}}>
         <TextField
           sx={{
             mr: 1,
@@ -77,7 +78,7 @@ const CustomersTableHeader: FunctionComponent = () => {
           onChange={changeSearchText}
         />
         <Button
-          sx={{ ml: 1 }}
+          sx={{ml: 1}}
           variant="contained"
           onClick={() => {
             setSelected(defaultCustomer());
@@ -87,14 +88,14 @@ const CustomersTableHeader: FunctionComponent = () => {
           Hinzufügen
         </Button>
       </Box>
-      <Accordion sx={{ mb: 2, mt: 1, borderRadius: 1, borderTop: 'none' }}>
+      <Accordion sx={{mb: 2, mt: 1, borderRadius: 1, borderTop: 'none'}}>
         <AccordionSummary expandIcon={<ExpandMore />}>
           <Typography>Erweiterte Optionen</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <FormGroup sx={{ borderTop: 1, borderColor: 'primary.dark' }}>
+          <FormGroup sx={{borderTop: 1, borderColor: 'primary.dark'}}>
             <FormControlLabel
-              sx={{ pb: 2 }}
+              sx={{pb: 2}}
               control={<Checkbox checked={showDisabled} />}
               label="Deaktivierte anzeigen"
               onChange={changeShowDisabled}
@@ -107,6 +108,7 @@ const CustomersTableHeader: FunctionComponent = () => {
               renderInput={(params) => (
                 <TextField {...params} label="Spalten" />
               )}
+              lang=""
             />
           </FormGroup>
         </AccordionDetails>
