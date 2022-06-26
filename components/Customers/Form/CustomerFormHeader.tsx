@@ -1,4 +1,9 @@
-import { Checkbox, FormControlLabel, Typography } from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel,
+  FormLabel,
+  Typography,
+} from '@mui/material';
 import { FunctionComponent, useContext } from 'react';
 
 import {
@@ -13,8 +18,8 @@ const CustomerFormHeader: FunctionComponent = () => {
   ) as CustomerContextType;
 
   return (
-    <>
-      <Typography>
+    <FormLabel>
+      <Typography variant="h6">
         {selected?.id === 0 ? 'Neuer Kunde' : `Kunde ${selected?.id}`}
       </Typography>
       <FormControlLabel
@@ -29,7 +34,7 @@ const CustomerFormHeader: FunctionComponent = () => {
           })
         }
       />
-    </>
+    </FormLabel>
   );
 };
 

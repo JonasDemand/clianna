@@ -26,14 +26,14 @@ const CustomersPage: FunctionComponent<CustomerPageProps> = ({ customers }) => {
       sx={{
         width: 1,
         height: 1,
+        margin: 0,
       }}
       container
-      spacing={2}
     >
-      <Grid item xs={6}>
+      <Grid sx={{ pr: 1 }} item xs={6}>
         <CustomersTable />
       </Grid>
-      <Grid item xs={6}>
+      <Grid sx={{ pl: 1 }} item xs={6}>
         <CustomerForm />
       </Grid>
     </Grid>

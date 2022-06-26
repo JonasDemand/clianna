@@ -143,10 +143,10 @@ const CustomerForm: FunctionComponent = () => {
               <Grid item>
                 <CustomerFormHeader />
               </Grid>
-              <Grid item>
+              <Grid sx={{ mt: 2 }} item>
                 <CustomerBasedata />
               </Grid>
-              <Grid item>
+              <Grid sx={{ mt: 2 }} item>
                 <CustomerAdress />
               </Grid>
             </Grid>
