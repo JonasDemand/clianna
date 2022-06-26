@@ -13,7 +13,7 @@ import {
   ICustomerWithOrders,
   ICustomerWithOrdersKeys,
 } from '../@types/customer';
-import { columnNames,defaultColumns } from '../consts/customers';
+import { columnNames, defaultColumns } from '../consts/customers';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);
 
@@ -81,7 +81,7 @@ const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
         shallow: true,
       }
     );
-  }, [queryInitialized, searchText, showDisabled, activeColumns, selected]);
+  }, [queryInitialized, searchText, showDisabled, activeColumns, selected?.id]);
 
   useEffect(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
