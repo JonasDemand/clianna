@@ -1,4 +1,4 @@
-import { Box, Tab,Tabs } from '@mui/material';
+import { Box, Tab, Tabs } from '@mui/material';
 import { useRouter } from 'next/router';
 import { FunctionComponent, ReactNode } from 'react';
 
@@ -13,7 +13,7 @@ type Route = {
 
 const routes: Route[] = [
   { label: 'Kunden', route: '/customers' },
-  { label: 'Bestellungen', route: '/orders' },
+  { label: 'Aufträge', route: '/orders' },
 ];
 
 const LayoutWrapper: FunctionComponent<LayoutWrapperProps> = ({ children }) => {

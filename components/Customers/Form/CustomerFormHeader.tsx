@@ -7,7 +7,7 @@ import {
 } from '../../../@types/customer';
 import { CustomerContext } from '../../../context/customerContext';
 
-const CustoemrDisabled: FunctionComponent = () => {
+const CustomerFormHeader: FunctionComponent = () => {
   const { selected, setSelected, selectedDisabled } = useContext(
     CustomerContext
   ) as CustomerContextType;
@@ -33,4 +33,4 @@ const CustoemrDisabled: FunctionComponent = () => {
   );
 };
 
-export default CustoemrDisabled;
+export default CustomerFormHeader;

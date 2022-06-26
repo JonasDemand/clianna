@@ -5,6 +5,7 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  Grid,
   Typography,
 } from '@mui/material';
 import { isEqual } from 'lodash';
@@ -26,7 +27,8 @@ import {
 } from '../../../utils/api/requests/customers';
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
-import CustoemrDisabled from './CustomerDisabled';
+import CustomerFormHeader from './CustomerFormHeader';
+import CustomerOrders from './CustomerOrders';
 
 const CustomerForm: FunctionComponent = () => {
   const {
@@ -120,17 +122,45 @@ const CustomerForm: FunctionComponent = () => {
         <CircularProgress size={100} />
       </Backdrop>
       <FormControl
-        sx={{ width: 1, height: 1, display: 'flex' }}
+        sx={{ width: 1, height: 1, display: 'flex', overflow: 'scroll' }}
         component="form"
         onSubmit={onSubmit}
       >
         <Box sx={{ flex: '1 1 auto' }}>
           {selected ? (
-            <>
-              <CustoemrDisabled />
-              <CustomerBasedata />
-              <CustomerAdress />
-            </>
+            <Grid
+              sx={{
+                width: 1,
+                height: 1,
+                margin: 0,
+                '& > .MuiGrid-item': {
+                  pl: 0,
+                },
+                display: 'flex',
+                flexFlow: 'column',
+              }}
+              container
+              spacing={2}
+              direction="column"
+            >
+              <Grid item>
+                <CustomerFormHeader />
+              </Grid>
+              <Grid item>
+                <CustomerBasedata />
+              </Grid>
+              <Grid item>
+                <CustomerAdress />
+              </Grid>
+              <Grid
+                sx={{
+                  flex: '1 1 auto',
+                }}
+                item
+              >
+                <CustomerOrders />
+              </Grid>
+            </Grid>
           ) : (
             <Box sx={{ width: 1, height: 1, display: 'flex' }}>
               <Box m="auto">
