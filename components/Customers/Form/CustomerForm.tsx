@@ -28,7 +28,6 @@ import {
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';
-import CustomerOrders from './CustomerOrders';
 
 const CustomerForm: FunctionComponent = () => {
   const {
@@ -134,10 +133,8 @@ const CustomerForm: FunctionComponent = () => {
                 height: 1,
                 margin: 0,
                 '& > .MuiGrid-item': {
-                  pl: 0,
+                  padding: 0,
                 },
-                display: 'flex',
-                flexFlow: 'column',
               }}
               container
               spacing={2}
@@ -151,14 +148,6 @@ const CustomerForm: FunctionComponent = () => {
               </Grid>
               <Grid item>
                 <CustomerAdress />
-              </Grid>
-              <Grid
-                sx={{
-                  flex: '1 1 auto',
-                }}
-                item
-              >
-                <CustomerOrders />
               </Grid>
             </Grid>
           ) : (
