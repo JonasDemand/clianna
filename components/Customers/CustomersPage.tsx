@@ -4,7 +4,7 @@ import React, { FunctionComponent, useContext, useEffect } from 'react';
 import {
   CustomerContextType,
   ICustomerWithOrders,
-} from '../../@types/customer';
+} from '../../@types/database/customer';
 import { CustomerContext } from '../../context/customerContext';
 import CustomerForm from './Form/CustomerForm';
 import CustomersTable from './Table/CustomersTable';

@@ -1,4 +1,4 @@
-import { ICustomerWithOrders } from '../../../@types/customer';
+import { ICustomerWithOrders } from '../../../@types/database/customer';
 
 export const updateCustomer = async (
   customer: ICustomerWithOrders

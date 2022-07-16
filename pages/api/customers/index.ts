@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { ICustomerWithOrders } from '../../../@types/customer';
+import { ICustomerWithOrders } from '../../../@types/database/customer';
 import processApi, { Implementations } from '../../../utils/api/processApi';
 
 const prisma = new PrismaClient();

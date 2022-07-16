@@ -18,7 +18,7 @@ import {
   useState,
 } from 'react';
 
-import { CustomerContextType } from '../../../@types/customer';
+import { CustomerContextType } from '../../../@types/database/customer/customer';
 import { CustomerContext } from '../../../context/customerContext';
 import {
   createCustomer,

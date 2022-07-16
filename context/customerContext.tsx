@@ -12,7 +12,7 @@ import {
   CustomerContextType,
   ICustomerWithOrders,
   ICustomerWithOrdersKeys,
-} from '../@types/customer';
+} from '../@types/database/customer';
 import { columnNames, defaultColumns } from '../consts/customers';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);

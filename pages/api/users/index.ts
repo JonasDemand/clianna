@@ -1,52 +1,37 @@
 import { PrismaClient } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import processApi, { Implementations } from '../../../utils/api/processApi';
-import { createSalt, hashPassword } from '../../../utils/authentication';
+import { withAuth } from '../../../utils/api/implementation/middleware/withAuth';
+import { withBody } from '../../../utils/api/implementation/middleware/withBody';
+import { withMiddleware } from '../../../utils/api/implementation/middleware/withMiddleware';
+import Db from '../../../utils/database';
 
 const prisma = new PrismaClient();
 
-const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (
-    !req.headers['content-type']
-      ?.toLocaleLowerCase()
-      .includes('application/json')
-  ) {
-    res.status(400).send(null);
-    return;
-  }
-  if (!req.body.email || !req.body.password) {
-    res.status(400).send(null);
-    return;
-  }
-  const existingUsersCount = await prisma.user.count({
-    where: {
-      email: req.body.email,
-    },
-  });
-  if (existingUsersCount) {
-    res.status(400).send(null);
-    return;
-  }
-  const salt = createSalt();
-  const hashedPassword = await hashPassword(req.body.password, salt);
-  const user = await prisma.user.create({
-    data: {
-      email: req.body.email,
-      password: hashedPassword,
-      salt: salt,
-      admin: Boolean(req.body.admin) ?? false,
-    },
-  });
-  res.status(200).send({ email: user.email, admin: user.admin });
-};
+const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
+  const createResponse = await Db.User.Create({ ...req.body });
 
-const implementations: Implementations = {
-  POST: post,
+  if (!createResponse.user) {
+    res.status(400).send(createResponse.error);
+    return;
+  }
+  res
+    .status(200)
+    .send({
+      email: createResponse.user.email,
+      admin: createResponse.user.admin,
+    });
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  processApi(req, res, implementations, true);
+  switch (req.method?.toLocaleUpperCase() ?? 'GET') {
+    case 'POST':
+      withMiddleware(
+        withAuth(true),
+        withBody(['email', 'password']),
+        createUser
+      )(req, res);
+  }
 };
 
 export default handler;
