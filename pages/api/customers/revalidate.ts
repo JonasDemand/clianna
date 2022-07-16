@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import processApi, { Implementations } from '../../../utils/api/processApi';
+import {
+  withAuth,
+  withMethodGuard,
+  withMiddleware,
+} from '../../../utils/api/implementation/middleware';
 
-const post = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await res.unstable_revalidate('/customers');
     return res.status(200).send('Revalidation successful');
@@ -11,12 +15,8 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const implementations: Implementations = {
-  POST: post,
-};
-
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  processApi(req, res, implementations, false);
-};
-
-export default handler;
+export default withMiddleware(
+  withMethodGuard(['POST']),
+  withAuth(false),
+  handler
+);

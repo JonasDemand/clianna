@@ -1,55 +1,43 @@
-import { PrismaClient } from '@prisma/client';
+import { Customer } from '@prisma/client';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-import { ICustomerWithOrders } from '../../../@types/database/customer';
-import processApi, { Implementations } from '../../../utils/api/processApi';
+import {
+  withAuth,
+  withBody,
+  withMethodGuard,
+  withMiddleware,
+} from '../../../utils/api/implementation/middleware';
+import { Db } from '../../../utils/database';
 
-const prisma = new PrismaClient();
-
-const get = async (req: NextApiRequest, res: NextApiResponse) => {
-  const customers = await prisma.customer.findMany({
-    include: { orders: true },
-  });
-  res.status(200).json(
-    customers.map<ICustomerWithOrders>((customer) => ({
-      ...customer,
-      openOrders: customer.orders.filter((order) => order.pending).length,
-    }))
-  );
+const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
+  const customers = await Db.Customer.GetAll();
+  if (!customers) return res.status(500).send('Unable to retrieve customers');
+  res.status(200).send(customers);
 };
 
-const post = async (req: NextApiRequest, res: NextApiResponse) => {
-  const {
-    id: _,
-    openOrders: __,
-    orders: ___,
-    ...body
-  } = JSON.parse(req.body) as ICustomerWithOrders;
-  if (!body) {
-    res.status(400).send(null);
-    return;
-  }
-  const customer = await prisma.customer.create({
-    data: { ...body },
-    include: { orders: true },
-  });
-  if (customer == null) {
-    res.status(404).send(null);
-    return;
-  }
-  res.status(200).json({
-    ...customer,
-    openOrders: customer.orders.filter((order) => order.pending).length,
-  });
-};
+const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id: _, ...body } = req.body as Customer;
 
-const implementations: Implementations = {
-  GET: get,
-  POST: post,
+  const customer = await Db.Customer.Create(body);
+  if (!customer) return res.status(500).send('Unable to create customer');
+
+  res.status(200).send(customer);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  processApi(req, res, implementations, false);
+  switch (req.method?.toUpperCase() ?? 'GET') {
+    case 'GET':
+      await getCustomers(req, res);
+    case 'POST':
+      await withMiddleware(withBody(['firstname', 'lastname']), createCustomer)(
+        req,
+        res
+      );
+  }
 };
 
-export default handler;
+export default withMiddleware(
+  withMethodGuard(['GET', 'POST']),
+  withAuth(false),
+  handler
+);

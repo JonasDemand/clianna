@@ -16,10 +16,9 @@ export const withAuth =
         !req.headers.authorization ||
         !req.headers.authorization?.includes('Basic')
       ) {
-        res
+        return res
           .status(401)
           .send('Unauthorized: Use session or authorization header');
-        return;
       }
       const base64Credentials = req.headers.authorization.split(' ')[1];
       const credentials = Buffer.from(base64Credentials, 'base64').toString(
@@ -30,20 +29,17 @@ export const withAuth =
         where: { email },
       });
       if (user === null) {
-        res.status(401).send('Incorrect user or password');
-        return;
+        return res.status(401).send('Incorrect user or password');
       }
       const hash = await hashPassword(password, user.salt);
       if (hash !== user.password) {
-        res.status(401).end('Incorrect user or password');
-        return;
+        return res.status(401).end('Incorrect user or password');
       }
       isAdmin = user.admin;
     } else {
       isAdmin = session.user.admin;
     }
     if (adminRequired && !isAdmin) {
-      res.status(403).end('Admin rights required');
-      return;
+      return res.status(403).end('Admin rights required');
     }
   };

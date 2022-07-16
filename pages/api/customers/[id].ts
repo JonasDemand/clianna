@@ -1,71 +1,51 @@
-import { PrismaClient } from '@prisma/client';
+import { Customer } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { ICustomerWithOrders } from '../../../@types/database/customer';
-import processApi, { Implementations } from '../../../utils/api/processApi';
+import {
+  withAuth,
+  withBody,
+  withMethodGuard,
+  withMiddleware,
+} from '../../../utils/api/implementation/middleware';
+import { withQueryParameter } from '../../../utils/api/implementation/middleware/withQueryParameter';
+import { Db } from '../../../utils/database';
 
-const prisma = new PrismaClient();
-
-const get = async (req: NextApiRequest, res: NextApiResponse) => {
+const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
-  if (isNaN(parsedId)) {
-    res.status(404).send(null);
-    return;
-  }
-  const customer = await prisma.customer.findUnique({
-    where: { id: parsedId },
-    include: { orders: true },
-  });
-  if (customer == null) {
-    res.status(404).send(null);
-    return;
-  }
-  res.status(200).json({
-    ...customer,
-    openOrders: customer.orders.filter((order) => order.pending).length,
-  });
+
+  const customer = await Db.Customer.GetSingle(parsedId);
+  if (!customer) return res.status(404).send('Unable to retrieve customer');
+
+  res.status(200).send(customer);
 };
 
-const put = async (req: NextApiRequest, res: NextApiResponse) => {
+const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
-  if (isNaN(parsedId)) {
-    res.status(404).send(null);
-    return;
-  }
-  const {
-    id: _,
-    openOrders: __,
-    orders: ___,
-    ...body
-  } = JSON.parse(req.body) as ICustomerWithOrders;
-  if (!body) {
-    res.status(400).send(null);
-    return;
-  }
-  const customer = await prisma.customer.update({
-    where: { id: parsedId },
-    include: { orders: true },
-    data: { ...body },
-  });
-  if (customer == null) {
-    res.status(404).send(null);
-    return;
-  }
-  res.status(200).json({
-    ...customer,
-    openOrders: customer.orders.filter((order) => order.pending).length,
-  });
-};
+  const { id: _, ...body } = req.body as Customer;
 
-const implementations: Implementations = {
-  GET: get,
-  PUT: put,
+  const customer = await Db.Customer.Update(parsedId, body);
+  if (!customer) return res.status(500).send('Unable to update customer');
+
+  res.status(200).send(customer);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  processApi(req, res, implementations, false);
+  switch (req.method?.toUpperCase()) {
+    case 'GET':
+      await getCustomer(req, res);
+    case 'PUT':
+      await withMiddleware(withBody(['firstname', 'lastname']), updateCustomer)(
+        req,
+        res
+      );
+  }
 };
 
-export default handler;
+export default withMiddleware(
+  withAuth(false),
+  withMethodGuard(['GET', 'PUT']),
+  withQueryParameter('id'),
+  handler
+);

@@ -1,7 +1,4 @@
-import { PrismaClient } from '@prisma/client';
 import { NextApiRequest, NextApiResponse } from 'next';
-
-const prisma = new PrismaClient();
 
 export const withBody =
   (requiredAttributes: string[]) =>
@@ -11,17 +8,16 @@ export const withBody =
         ?.toLocaleLowerCase()
         .includes('application/json')
     ) {
-      res.status(400).send('Expected content-type application/json');
-      return;
+      return res.status(400).send('Expected content-type application/json');
     }
     if (!req.body) {
-      res.status(400).end();
-      return;
+      return res.status(400).end();
     }
     requiredAttributes.forEach((attribute) => {
       if (!req.body[attribute]) {
-        res.status(400).send(`Expected body json attribute '${attribute}'`);
-        return;
+        return res
+          .status(400)
+          .send(`Expected body json attribute '${attribute}'`);
       }
     });
   };
