@@ -6,8 +6,8 @@ import {
   withBody,
   withMethodGuard,
   withMiddleware,
+  withQueryParameter,
 } from '../../../utils/api/implementation/middleware';
-import { withQueryParameter } from '../../../utils/api/implementation/middleware/withQueryParameter';
 import { Db } from '../../../utils/database';
 
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {

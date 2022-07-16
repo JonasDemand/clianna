@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { GetStaticProps, NextPage } from 'next';
 
-import { ICustomerWithOrders } from '../@types/database/customer/customer';
+import { ICustomerWithOrders } from '../@types/database/customer';
 import AuthenticationWrapper from '../components/AuthenticationWrapper';
 import CustomersPage from '../components/Customers/CustomersPage';
 import LayoutWrapper from '../components/LayoutWrapper';

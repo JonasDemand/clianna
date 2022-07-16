@@ -1,11 +1,15 @@
+import { Customer } from '@prisma/client';
+
 import { ICustomerWithOrders } from '../../../@types/database/customer';
 
 export const updateCustomer = async (
-  customer: ICustomerWithOrders
+  id: number,
+  customer: Omit<Customer, 'id'>
 ): Promise<ICustomerWithOrders> => {
-  const res = await fetch(`/api/customers/${customer.id}`, {
+  const res = await fetch(`/api/customers/${id}`, {
     method: 'PUT',
     body: JSON.stringify(customer),
+    headers: { 'content-type': 'application/json' },
   });
   if (!res.ok) {
     throw 'Failed to update customer';
@@ -14,11 +18,12 @@ export const updateCustomer = async (
 };
 
 export const createCustomer = async (
-  customer: ICustomerWithOrders
+  customer: Omit<Customer, 'id'>
 ): Promise<ICustomerWithOrders> => {
   const res = await fetch('/api/customers', {
     method: 'POST',
     body: JSON.stringify(customer),
+    headers: { 'content-type': 'application/json' },
   });
   if (!res.ok) {
     throw 'Failed to create customer';

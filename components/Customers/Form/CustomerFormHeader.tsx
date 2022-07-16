@@ -9,7 +9,7 @@ import { FunctionComponent, useContext } from 'react';
 import {
   CustomerContextType,
   ICustomerWithOrders,
-} from '../../../@types/database/customer/customer';
+} from '../../../@types/database/customer';
 import { CustomerContext } from '../../../context/customerContext';
 
 const CustomerFormHeader: FunctionComponent = () => {

@@ -18,8 +18,9 @@ import {
   useState,
 } from 'react';
 
-import { CustomerContextType } from '../../../@types/database/customer/customer';
+import { CustomerContextType } from '../../../@types/database/customer';
 import { CustomerContext } from '../../../context/customerContext';
+import { concertToCustomer } from '../../../utils/api/customers';
 import {
   createCustomer,
   revalidate,
@@ -62,13 +63,16 @@ const CustomerForm: FunctionComponent = () => {
       setLoading(true);
       setSelectedDisabled(true);
       if (create) {
-        newCust = await createCustomer(selected);
+        newCust = await createCustomer(concertToCustomer(selected));
         newCustomers.push(newCust);
         newCustomers = newCustomers.sort((a, b) =>
           a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
         );
       } else {
-        newCust = await updateCustomer(selected);
+        newCust = await updateCustomer(
+          selected.id,
+          concertToCustomer(selected)
+        );
         const index = newCustomers.findIndex(
           (customer) => customer.id === newCust.id
         );
@@ -83,7 +87,6 @@ const CustomerForm: FunctionComponent = () => {
         { variant: 'success' }
       );
     } catch {
-      setLoading(false);
       enqueueSnackbar(
         `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${newCust.id}
           fehlgeschlagen`,
@@ -92,6 +95,7 @@ const CustomerForm: FunctionComponent = () => {
       return;
     }
     setLoading(false);
+
     enqueueSnackbar('Neuladen von Kunden gestartet', {
       variant: 'info',
     });

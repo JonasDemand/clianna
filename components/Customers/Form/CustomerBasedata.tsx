@@ -55,7 +55,7 @@ const CustomerBasedata: FunctionComponent = () => {
             sx={{
               input: {
                 cursor:
-                  selectedDisabled && selected?.email ? 'pointer' : 'default',
+                  selectedDisabled && selected?.email ? 'pointer' : 'unset',
               },
             }}
             variant="filled"
@@ -82,7 +82,7 @@ const CustomerBasedata: FunctionComponent = () => {
             sx={{
               input: {
                 cursor:
-                  selectedDisabled && selected?.phone ? 'pointer' : 'default',
+                  selectedDisabled && selected?.phone ? 'pointer' : 'unset',
               },
             }}
             variant="filled"

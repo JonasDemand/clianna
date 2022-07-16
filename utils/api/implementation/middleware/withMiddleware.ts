@@ -41,10 +41,9 @@ export const withMiddleware = (...middlewares: Middleware[]) => {
             }
           }
         }
-      } catch {
-        return res
-          .status(500)
-          .send('Internal server error, something went wrong');
+      } catch (err) {
+        res.status(500).send('Internal server error, something went wrong');
+        throw err;
       }
     }
 

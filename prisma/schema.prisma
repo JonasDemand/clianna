@@ -34,12 +34,21 @@ model Customer {
 }
 
 model Order {
-  id         Int       @id @default(autoincrement())
-  customerId Int?
-  date       DateTime
-  pending    Boolean
-  shop       String
-  brand      String
-  model      String
-  customer   Customer? @relation(fields: [customerId], references: [id])
+  id           Int       @id @default(autoincrement())
+  customerId   Int
+  creationDate DateTime
+  pending      Boolean   @default(true)
+  shippingType Int
+  comment      String?
+  price        Float
+  taxes        Int
+  dueDate      DateTime?
+  type         Int?
+  detailType   Int?
+  brand        String?
+  article      String?
+  color        String?
+  dealer       String?
+  size         Float?
+  customer     Customer? @relation(fields: [customerId], references: [id])
 }
