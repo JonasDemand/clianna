@@ -1,6 +1,6 @@
 import { Box } from '@mui/system';
 import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
-import React, { FunctionComponent, useContext } from 'react';
+import React, { FC, useContext } from 'react';
 
 import {
   CustomerContextType,
@@ -23,7 +23,7 @@ const setCustomerPlaceholder = (
   return copy;
 };
 
-const CustomersTable: FunctionComponent = () => {
+const CustomersTable: FC = () => {
   const {
     filteredCustomers,
     showDisabled,
@@ -39,6 +39,7 @@ const CustomersTable: FunctionComponent = () => {
         display: 'flex',
         flexFlow: 'column',
         height: 1,
+        width: 1,
       }}
     >
       <CustomersTableHeader />

@@ -1,12 +1,6 @@
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import {
-  createContext,
-  FunctionComponent,
-  ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
 import {
   CustomerContextType,
@@ -21,9 +15,7 @@ type CustomerContextProps = {
   children: ReactNode;
 };
 
-const CustomerProvider: FunctionComponent<CustomerContextProps> = ({
-  children,
-}) => {
+const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [queryInitialized, setQueryInitialized] = useState(false);

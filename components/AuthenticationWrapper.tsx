@@ -1,12 +1,12 @@
 import { Backdrop, CircularProgress } from '@mui/material';
 import { signIn, useSession } from 'next-auth/react';
-import { FunctionComponent, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 
 export type AuthenticationWrapperProps = {
   children: ReactNode;
 };
 
-const AuthenticationWrapper: FunctionComponent<AuthenticationWrapperProps> = ({
+const AuthenticationWrapper: FC<AuthenticationWrapperProps> = ({
   children,
 }) => {
   const { data: session, status } = useSession();

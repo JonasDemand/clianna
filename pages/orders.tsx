@@ -2,7 +2,7 @@ import { LinearProgress } from '@mui/material';
 import { NextPage } from 'next';
 
 import AuthenticationWrapper from '../components/AuthenticationWrapper';
-import LayoutWrapper from '../components/LayoutWrapper';
+import LayoutWrapper from '../components/Layout/LayoutWrapper';
 
 const Orders: NextPage = () => {
   return (

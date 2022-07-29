@@ -4,7 +4,7 @@ import {
   FormLabel,
   Typography,
 } from '@mui/material';
-import { FunctionComponent, useContext } from 'react';
+import { FC, useContext } from 'react';
 
 import {
   CustomerContextType,
@@ -12,7 +12,7 @@ import {
 } from '../../../@types/database/customer';
 import { CustomerContext } from '../../../context/customerContext';
 
-const CustomerFormHeader: FunctionComponent = () => {
+const CustomerFormHeader: FC = () => {
   const { selected, setSelected, selectedDisabled } = useContext(
     CustomerContext
   ) as CustomerContextType;

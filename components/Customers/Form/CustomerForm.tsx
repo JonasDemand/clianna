@@ -12,7 +12,7 @@ import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import {
   FormEventHandler,
-  FunctionComponent,
+  FC,
   MouseEventHandler,
   useContext,
   useState,
@@ -30,7 +30,7 @@ import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';
 
-const CustomerForm: FunctionComponent = () => {
+const CustomerForm: FC = () => {
   const {
     customers,
     setCustomers,
@@ -125,7 +125,7 @@ const CustomerForm: FunctionComponent = () => {
         <CircularProgress size={100} />
       </Backdrop>
       <FormControl
-        sx={{ width: 1, height: 1, display: 'flex', overflow: 'scroll' }}
+        sx={{ width: 1, height: 1, p: 1, display: 'flex', overflow: 'scroll' }}
         component="form"
         onSubmit={onSubmit}
       >

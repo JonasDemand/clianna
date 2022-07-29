@@ -1,5 +1,5 @@
-import { Grid } from '@mui/material';
-import React, { FunctionComponent, useContext, useEffect } from 'react';
+import { Drawer, Grid } from '@mui/material';
+import React, { FC, useContext, useEffect } from 'react';
 
 import {
   CustomerContextType,
@@ -13,14 +13,14 @@ type CustomerPageProps = {
   customers: ICustomerWithOrders[];
 };
 
-const CustomersPage: FunctionComponent<CustomerPageProps> = ({ customers }) => {
-  const { setCustomers, setFilteredCustomers } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
+const CustomersPage: FC<CustomerPageProps> = ({ customers }) => {
+  const { setCustomers, setFilteredCustomers, selected, setSelected } =
+    useContext(CustomerContext) as CustomerContextType;
   useEffect(() => {
     setCustomers(customers);
     setFilteredCustomers(customers);
   }, [customers]);
+
   return (
     <Grid
       sx={{
@@ -30,12 +30,14 @@ const CustomersPage: FunctionComponent<CustomerPageProps> = ({ customers }) => {
       }}
       container
     >
-      <Grid sx={{ pr: 1 }} item xs={6}>
-        <CustomersTable />
-      </Grid>
-      <Grid sx={{ pl: 1 }} item xs={6}>
+      <CustomersTable />
+      <Drawer
+        open={!!selected}
+        anchor="right"
+        onClose={() => setSelected(null)}
+      >
         <CustomerForm />
-      </Grid>
+      </Drawer>
     </Grid>
   );
 };
