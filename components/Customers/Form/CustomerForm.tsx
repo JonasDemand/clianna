@@ -11,8 +11,8 @@ import {
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import {
-  FormEventHandler,
   FC,
+  FormEventHandler,
   MouseEventHandler,
   useContext,
   useState,
