@@ -1,4 +1,6 @@
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { GridColDef } from '@mui/x-data-grid';
+import { Order } from '@prisma/client';
 
 export const columns: GridColDef[] = [
   { field: 'id', headerName: 'Kundennummer', flex: 1 },
@@ -29,3 +31,19 @@ export const columnNames: Record<string, string> = {
 };
 
 export const defaultColumns = [columns[1].headerName, columns[2].headerName];
+
+export const defaultCustomer = (): ICustomerWithOrders => ({
+  id: -1,
+  firstname: '',
+  lastname: '',
+  email: null,
+  street: null,
+  streetnumber: null,
+  city: null,
+  postalcode: null,
+  phone: null,
+  shoesize: null,
+  disabled: false,
+  orders: new Array<Order>(),
+  openOrders: 0,
+});

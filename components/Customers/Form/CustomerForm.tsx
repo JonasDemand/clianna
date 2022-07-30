@@ -56,7 +56,7 @@ const CustomerForm: FC = () => {
       });
       return;
     }
-    let create = selected.id === 0;
+    let create = selected.id === -1;
     let newCustomers = [...customers];
     let newCust = selected;
     try {

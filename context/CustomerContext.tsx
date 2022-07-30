@@ -1,4 +1,8 @@
-import { columnNames, defaultColumns } from '@consts/customers';
+import {
+  columnNames,
+  defaultColumns,
+  defaultCustomer,
+} from '@consts/customers';
 import {
   ICustomerWithOrders,
   ICustomerWithOrdersKeys,
@@ -31,6 +35,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
   const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
   const [selectedDisabled, setSelectedDisabled] = useState(true);
 
+  //Read from query
   useEffect(() => {
     if (!router.isReady || !session) return;
     router.query['searchText'] &&
@@ -47,17 +52,19 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
       );
     router.query['selectedId'] &&
       setSelected(
-        filteredCustomers.find(
+        (filteredCustomers.find(
           (customer) =>
             customer.id ===
             parseInt(
               decodeURIComponent(router.query['selectedId'] as string),
               10
             )
-        ) as ICustomerWithOrders
+        ) as ICustomerWithOrders) ?? defaultCustomer()
       );
     setQueryInitialized(true);
-  }, [router.isReady, session?.user]);
+  }, [router.isReady, session?.user, selected?.id]);
+
+  //Write to query
   useEffect(() => {
     if (!queryInitialized) return;
     router.push(
@@ -73,13 +80,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
         shallow: true,
       }
     );
-  }, [
-    queryInitialized,
-    searchText,
-    showCustomers,
-    activeColumns,
-    selected?.id,
-  ]);
+  }, [queryInitialized, searchText, showCustomers, activeColumns]);
 
   useEffect(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;

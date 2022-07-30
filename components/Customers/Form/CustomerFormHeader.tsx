@@ -19,7 +19,7 @@ const CustomerFormHeader: FC = () => {
   return (
     <FormLabel>
       <Typography variant="h6">
-        {selected?.id === 0 ? 'Neuer Kunde' : `Kunde ${selected?.id}`}
+        {selected?.id === -1 ? 'Neuer Kunde' : `Kunde ${selected?.id}`}
       </Typography>
       <FormControlLabel
         control={

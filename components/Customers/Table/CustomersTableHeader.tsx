@@ -1,8 +1,7 @@
-import { columns } from '@consts/customers';
+import { columns, defaultCustomer } from '@consts/customers';
 import { CustomerContext } from '@context/CustomerContext';
 import {
   CustomerContextType,
-  ICustomerWithOrders,
   ShowCustomers,
 } from '@customTypes/database/customer';
 import {
@@ -14,24 +13,7 @@ import {
   TextField,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { Order } from '@prisma/client';
 import React, { ChangeEvent, FC, SyntheticEvent, useContext } from 'react';
-
-const defaultCustomer = (): ICustomerWithOrders => ({
-  id: 0,
-  firstname: '',
-  lastname: '',
-  email: null,
-  street: null,
-  streetnumber: null,
-  city: null,
-  postalcode: null,
-  phone: null,
-  shoesize: null,
-  disabled: false,
-  orders: new Array<Order>(),
-  openOrders: 0,
-});
 
 const CustomersTableHeader: FC = () => {
   const {
