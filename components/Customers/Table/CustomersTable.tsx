@@ -8,7 +8,7 @@ import {
 } from '@customTypes/database/customer';
 import { Box } from '@mui/system';
 import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 
 import CustomersTableHeader from './CustomersTableHeader';
 
@@ -33,6 +33,14 @@ const CustomersTable: FC = () => {
     setSelected,
     setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
+
+  const visibleCustomers = useMemo(() => {
+    if (showCustomers === ShowCustomers.All) return filteredCustomers;
+    const disabledValue = showCustomers === ShowCustomers.Disabled;
+    return filteredCustomers.filter(
+      (customer) => customer.disabled === disabledValue
+    );
+  }, [filteredCustomers, showCustomers]);
 
   return (
     <Box
@@ -59,11 +67,7 @@ const CustomersTable: FC = () => {
             outline: 'none !important',
           },
         }}
-        rows={filteredCustomers
-          .filter((customer) =>
-            showCustomers === ShowCustomers.All ? true : !customer.disabled
-          )
-          .map(setCustomerPlaceholder)}
+        rows={visibleCustomers.map(setCustomerPlaceholder)}
         columns={columns.filter((column) =>
           activeColumns.includes(column.headerName)
         )}

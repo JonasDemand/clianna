@@ -40,9 +40,12 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
     if (!router.isReady || !session) return;
     router.query['searchText'] &&
       setSearchText(decodeURIComponent(router.query['searchText'] as string));
-    router.query['showDisabled'] &&
+    router.query['showCustomers'] &&
       setShowCustomers(
-        parseInt(decodeURIComponent(router.query['showDisabled'] as string), 10)
+        parseInt(
+          decodeURIComponent(router.query['showCustomers'] as string),
+          10
+        )
       );
     router.query['activeColumns'] &&
       setActiveColumns(

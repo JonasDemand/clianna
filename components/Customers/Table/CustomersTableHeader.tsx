@@ -75,7 +75,7 @@ const CustomersTableHeader: FC = () => {
             label="Anzeige"
           >
             <MenuItem value={ShowCustomers.All}>Alle</MenuItem>
-            <MenuItem value={ShowCustomers.Active}>Aktiviert</MenuItem>
+            <MenuItem value={ShowCustomers.Active}>Aktivierte</MenuItem>
             <MenuItem value={ShowCustomers.Disabled}>Deaktivierte</MenuItem>
           </TextField>
         </Grid>
