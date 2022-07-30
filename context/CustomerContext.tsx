@@ -65,13 +65,13 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
         ) as ICustomerWithOrders) ?? defaultCustomer()
       );
     setQueryInitialized(true);
-  }, [router.isReady, session?.user, selected?.id]);
+  }, [router.isReady, session?.user]);
 
   //Write to query
   useEffect(() => {
     if (!queryInitialized) return;
+    console.log('here');
     router.push(
-      '/customers',
       `/customers?searchText=${encodeURIComponent(
         searchText
       )}&showCustomers=${encodeURIComponent(
@@ -79,11 +79,18 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
       )}&selectedId=${encodeURIComponent(
         selected ? selected.id.toString() : ''
       )}&activeColumns=${encodeURIComponent(JSON.stringify(activeColumns))}`,
+      undefined,
       {
         shallow: true,
       }
     );
-  }, [queryInitialized, searchText, showCustomers, activeColumns]);
+  }, [
+    queryInitialized,
+    searchText,
+    showCustomers,
+    activeColumns,
+    selected?.id,
+  ]);
 
   useEffect(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
@@ -99,7 +106,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
     );
   }, [activeColumns, customers, searchText]);
   useEffect(() => {
-    if (!selected) return;
+    if (!selected || selected.id === -1) return;
     const newCust = customers.find(
       (customer) => customer.id === selected.id
     ) as ICustomerWithOrders;

@@ -1,6 +1,7 @@
 import { columns, defaultCustomer } from '@consts/customers';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
+import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
   Button,
@@ -41,6 +42,9 @@ const CustomersTableHeader: FC = () => {
             label="Suche"
             value={searchText}
             onChange={changeSearchText}
+            InputProps={{
+              endAdornment: <Search />,
+            }}
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -65,11 +69,11 @@ const CustomersTableHeader: FC = () => {
           <TextField
             fullWidth
             value={showCustomers}
+            select
+            label="Anzeige"
             onChange={(e) =>
               setShowCustomers(parseInt(e.target.value, 10) as ShowCustomers)
             }
-            select
-            label="Anzeige"
           >
             <MenuItem value={ShowCustomers.All}>Alle</MenuItem>
             <MenuItem value={ShowCustomers.Active}>Aktivierte</MenuItem>
@@ -80,6 +84,7 @@ const CustomersTableHeader: FC = () => {
           <Button
             variant="contained"
             fullWidth
+            startIcon={<Add />}
             onClick={() => {
               setSelected(defaultCustomer());
               setSelectedDisabled(false);
