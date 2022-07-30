@@ -30,15 +30,24 @@ CREATE TABLE `Customer` (
 -- CreateTable
 CREATE TABLE `Order` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `customerId` INTEGER NULL,
-    `date` DATETIME(3) NOT NULL,
-    `pending` BOOLEAN NOT NULL,
-    `shop` VARCHAR(191) NOT NULL,
-    `brand` VARCHAR(191) NOT NULL,
-    `model` VARCHAR(191) NOT NULL,
+    `customerId` INTEGER NOT NULL,
+    `creationDate` DATETIME(3) NOT NULL,
+    `pending` BOOLEAN NOT NULL DEFAULT true,
+    `shippingType` INTEGER NOT NULL,
+    `comment` VARCHAR(191) NULL,
+    `price` DOUBLE NOT NULL,
+    `taxes` INTEGER NOT NULL,
+    `dueDate` DATETIME(3) NULL,
+    `type` INTEGER NULL,
+    `specification` INTEGER NULL,
+    `brand` VARCHAR(191) NULL,
+    `article` VARCHAR(191) NULL,
+    `color` VARCHAR(191) NULL,
+    `dealer` VARCHAR(191) NULL,
+    `size` DOUBLE NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Order` ADD CONSTRAINT `Order_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Order` ADD CONSTRAINT `Order_customerId_fkey` FOREIGN KEY (`customerId`) REFERENCES `Customer`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
