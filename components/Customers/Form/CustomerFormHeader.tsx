@@ -1,8 +1,6 @@
 import { CustomerContext } from '@context/CustomerContext';
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-} from '@customTypes/database/customer';
+import { CustomerContextType } from '@customTypes/customer';
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import {
   Checkbox,
   FormControlLabel,

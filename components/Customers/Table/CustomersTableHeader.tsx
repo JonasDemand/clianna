@@ -1,9 +1,6 @@
 import { columns, defaultCustomer } from '@consts/customers';
 import { CustomerContext } from '@context/CustomerContext';
-import {
-  CustomerContextType,
-  ShowCustomers,
-} from '@customTypes/database/customer';
+import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
 import {
   Autocomplete,
   Button,

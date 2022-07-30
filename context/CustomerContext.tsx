@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
-import { CustomerContextType, ShowCustomers } from '../types/database/customer';
+import { CustomerContextType, ShowCustomers } from '../types/customer';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);
 

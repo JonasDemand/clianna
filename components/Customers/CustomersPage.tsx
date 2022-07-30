@@ -1,7 +1,5 @@
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-} from '@customTypes/database/customer';
+import { CustomerContextType } from '@customTypes/customer';
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Drawer, Grid } from '@mui/material';
 import React, { FC, useContext, useEffect } from 'react';
 

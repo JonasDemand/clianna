@@ -1,5 +1,5 @@
 import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType } from '@customTypes/database/customer';
+import { CustomerContextType } from '@customTypes/customer';
 import { Badge } from '@mui/icons-material';
 import {
   Backdrop,

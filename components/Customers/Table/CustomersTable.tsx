@@ -1,10 +1,9 @@
 import { columns } from '@consts/customers';
 import { CustomerContext } from '@context/CustomerContext';
+import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
 import {
-  CustomerContextType,
   ICustomerWithOrders,
   ICustomerWithOrdersKeys,
-  ShowCustomers,
 } from '@customTypes/database/customer';
 import { Box } from '@mui/system';
 import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
