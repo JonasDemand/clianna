@@ -1,7 +1,6 @@
+import { ICreateUserProps } from '@customTypes/database/user';
 import { PrismaClient } from '@prisma/client';
-
-import { ICreateUserProps } from '../../@types/database/user';
-import { createSalt, hashPassword } from '../authentication';
+import { createSalt, hashPassword } from '@utils/authentication';
 
 const prisma = new PrismaClient();
 

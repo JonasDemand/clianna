@@ -10,7 +10,7 @@ const SignIn: NextPage<SignInProps> = ({ csrfToken, error }) => {
   return (
     <Box
       sx={{
-        mt: 8,
+        m: 2,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

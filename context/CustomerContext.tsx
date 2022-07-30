@@ -1,13 +1,13 @@
+import { columnNames, defaultColumns } from '@consts/customers';
+import {
+  ICustomerWithOrders,
+  ICustomerWithOrdersKeys,
+} from '@customTypes/database/customer';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-  ICustomerWithOrdersKeys,
-} from '../@types/database/customer';
-import { columnNames, defaultColumns } from '../consts/customers';
+import { CustomerContextType, ShowCustomers } from '../types/database/customer';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);
 
@@ -24,7 +24,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
   const [filteredCustomers, setFilteredCustomers] = useState<
     ICustomerWithOrders[]
   >([]);
-  const [showDisabled, setShowDisabled] = useState(false);
+  const [showCustomers, setShowCustomers] = useState(ShowCustomers.Active);
   const [activeColumns, setActiveColumns] = useState(defaultColumns);
   const [searchText, setSearchText] = useState('');
 
@@ -36,8 +36,8 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
     router.query['searchText'] &&
       setSearchText(decodeURIComponent(router.query['searchText'] as string));
     router.query['showDisabled'] &&
-      setShowDisabled(
-        decodeURIComponent(router.query['showDisabled'] as string) === 'true'
+      setShowCustomers(
+        parseInt(decodeURIComponent(router.query['showDisabled'] as string), 10)
       );
     router.query['activeColumns'] &&
       setActiveColumns(
@@ -64,8 +64,8 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
       '/customers',
       `/customers?searchText=${encodeURIComponent(
         searchText
-      )}&showDisabled=${encodeURIComponent(
-        showDisabled
+      )}&showCustomers=${encodeURIComponent(
+        showCustomers
       )}&selectedId=${encodeURIComponent(
         selected ? selected.id.toString() : ''
       )}&activeColumns=${encodeURIComponent(JSON.stringify(activeColumns))}`,
@@ -73,7 +73,13 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
         shallow: true,
       }
     );
-  }, [queryInitialized, searchText, showDisabled, activeColumns, selected?.id]);
+  }, [
+    queryInitialized,
+    searchText,
+    showCustomers,
+    activeColumns,
+    selected?.id,
+  ]);
 
   useEffect(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
@@ -107,8 +113,8 @@ const CustomerProvider: FC<CustomerContextProps> = ({ children }) => {
         setSelected,
         selectedDisabled,
         setSelectedDisabled,
-        showDisabled,
-        setShowDisabled,
+        showCustomers,
+        setShowCustomers,
         activeColumns,
         setActiveColumns,
         searchText,

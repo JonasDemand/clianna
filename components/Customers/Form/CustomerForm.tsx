@@ -1,3 +1,5 @@
+import { CustomerContext } from '@context/CustomerContext';
+import { CustomerContextType } from '@customTypes/database/customer';
 import { Badge } from '@mui/icons-material';
 import {
   Backdrop,
@@ -8,6 +10,12 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
+import { concertToCustomer } from '@utils/api/customers';
+import {
+  createCustomer,
+  revalidate,
+  updateCustomer,
+} from '@utils/api/requests/customers';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import {
@@ -18,14 +26,6 @@ import {
   useState,
 } from 'react';
 
-import { CustomerContextType } from '../../../@types/database/customer';
-import { CustomerContext } from '../../../context/customerContext';
-import { concertToCustomer } from '../../../utils/api/customers';
-import {
-  createCustomer,
-  revalidate,
-  updateCustomer,
-} from '../../../utils/api/requests/customers';
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';

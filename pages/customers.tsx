@@ -1,11 +1,10 @@
+import AuthenticationWrapper from '@components/AuthenticationWrapper';
+import CustomersPage from '@components/Customers/CustomersPage';
+import LayoutWrapper from '@components/Layout/LayoutWrapper';
+import CustomerProvider from '@context/CustomerContext';
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { PrismaClient } from '@prisma/client';
 import { GetStaticProps, NextPage } from 'next';
-
-import { ICustomerWithOrders } from '../@types/database/customer';
-import AuthenticationWrapper from '../components/AuthenticationWrapper';
-import CustomersPage from '../components/Customers/CustomersPage';
-import LayoutWrapper from '../components/Layout/LayoutWrapper';
-import CustomerProvider from '../context/customerContext';
 
 const prisma = new PrismaClient();
 

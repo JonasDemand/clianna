@@ -1,6 +1,5 @@
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Customer } from '@prisma/client';
-
-import { ICustomerWithOrders } from '../../../@types/database/customer';
 
 export const updateCustomer = async (
   id: number,

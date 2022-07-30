@@ -6,12 +6,11 @@ import '../styles/global.css';
 
 import { ThemeProvider } from '@emotion/react';
 import { Slide } from '@mui/material';
+import theme from '@utils/theme';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { SessionProvider } from 'next-auth/react';
 import { SnackbarProvider } from 'notistack';
-
-import theme from '../utils/theme';
 
 const MyApp = ({
   Component,

@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@utils/authentication';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
-
-import { hashPassword } from '../../../authentication';
 
 const prisma = new PrismaClient();
 

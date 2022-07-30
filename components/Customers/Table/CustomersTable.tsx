@@ -1,14 +1,15 @@
-import { Box } from '@mui/system';
-import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
-import React, { FC, useContext } from 'react';
-
+import { columns } from '@consts/customers';
+import { CustomerContext } from '@context/CustomerContext';
 import {
   CustomerContextType,
   ICustomerWithOrders,
   ICustomerWithOrdersKeys,
-} from '../../../@types/database/customer';
-import { columns } from '../../../consts/customers';
-import { CustomerContext } from '../../../context/customerContext';
+  ShowCustomers,
+} from '@customTypes/database/customer';
+import { Box } from '@mui/system';
+import { DataGrid, deDE, GridRowParams } from '@mui/x-data-grid';
+import React, { FC, useContext } from 'react';
+
 import CustomersTableHeader from './CustomersTableHeader';
 
 const setCustomerPlaceholder = (
@@ -26,7 +27,7 @@ const setCustomerPlaceholder = (
 const CustomersTable: FC = () => {
   const {
     filteredCustomers,
-    showDisabled,
+    showCustomers,
     activeColumns,
     selected,
     setSelected,
@@ -59,7 +60,9 @@ const CustomersTable: FC = () => {
           },
         }}
         rows={filteredCustomers
-          .filter((customer) => (showDisabled ? true : !customer.disabled))
+          .filter((customer) =>
+            showCustomers === ShowCustomers.All ? true : !customer.disabled
+          )
           .map(setCustomerPlaceholder)}
         columns={columns.filter((column) =>
           activeColumns.includes(column.headerName)

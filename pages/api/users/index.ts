@@ -1,11 +1,10 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 import {
   withAuth,
   withBody,
   withMiddleware,
-} from '../../../utils/api/implementation/middleware';
-import { Db } from '../../../utils/database';
+} from '@utils/api/implementation/middleware';
+import { Db } from '@utils/database';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const createResponse = await Db.User.Create({ ...req.body });

@@ -1,4 +1,4 @@
-import {Customer, Order} from '@prisma/client';
+import { Customer, Order } from '@prisma/client';
 
 export interface ICustomerWithOrders extends Customer {
   orders: Order[];
@@ -16,10 +16,16 @@ export type CustomerContextType = {
   setSelected: (customer: ICustomerWithOrders | null) => void;
   selectedDisabled: boolean;
   setSelectedDisabled: (disabled: boolean) => void;
-  showDisabled: boolean;
-  setShowDisabled: (disabled: boolean) => void;
+  showCustomers: ShowCustomers;
+  setShowCustomers: (state: ShowCustomers) => void;
   activeColumns: (string | undefined)[];
   setActiveColumns: (activeColumns: (string | undefined)[]) => void;
   searchText: string;
   setSearchText: (activeColumns: string) => void;
 };
+
+export enum ShowCustomers {
+  All,
+  Active,
+  Disabled,
+}

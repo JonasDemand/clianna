@@ -1,14 +1,13 @@
 import { Customer } from '@prisma/client';
-import { NextApiRequest, NextApiResponse } from 'next';
-
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
   withQueryParameter,
-} from '../../../utils/api/implementation/middleware';
-import { Db } from '../../../utils/database';
+} from '@utils/api/implementation/middleware';
+import { Db } from '@utils/database';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;

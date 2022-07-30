@@ -1,10 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 import {
   withAuth,
   withMethodGuard,
   withMiddleware,
-} from '../../../utils/api/implementation/middleware';
+} from '@utils/api/implementation/middleware';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

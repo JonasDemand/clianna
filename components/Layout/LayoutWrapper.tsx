@@ -25,7 +25,7 @@ const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
           </Toolbar>
         </Container>
       </AppBar>
-      <Box sx={{ p: 1, flex: '1 1 auto' }}>{children}</Box>
+      <Box sx={{ p: 2, flex: '1 1 auto' }}>{children}</Box>
     </Box>
   );
 };

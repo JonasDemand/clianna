@@ -1,3 +1,8 @@
+import { CustomerContext } from '@context/CustomerContext';
+import {
+  CustomerContextType,
+  ICustomerWithOrders,
+} from '@customTypes/database/customer';
 import {
   Checkbox,
   FormControlLabel,
@@ -5,12 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 import { FC, useContext } from 'react';
-
-import {
-  CustomerContextType,
-  ICustomerWithOrders,
-} from '../../../@types/database/customer';
-import { CustomerContext } from '../../../context/customerContext';
 
 const CustomerFormHeader: FC = () => {
   const { selected, setSelected, selectedDisabled } = useContext(

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {
   const router = useRouter();
@@ -18,25 +18,27 @@ const Userprofile: FC = () => {
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorElUser(event.currentTarget);
-
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
-  const actions = [
-    {
-      label: 'Profil',
-      icon: <ManageAccounts />,
-      onClick: () => {
-        router.push('/profile');
+  const actions = useMemo(
+    () => [
+      {
+        label: 'Profil',
+        icon: <ManageAccounts />,
+        onClick: () => {
+          router.push('/profile');
+        },
       },
-    },
-    {
-      label: 'Logout',
-      icon: <Logout />,
-      onClick: () => {
-        signOut();
+      {
+        label: 'Logout',
+        icon: <Logout />,
+        onClick: () => {
+          signOut();
+        },
       },
-    },
-  ];
+    ],
+    []
+  );
 
   return (
     <Box sx={{ flexGrow: 0 }}>
@@ -62,6 +64,9 @@ const Userprofile: FC = () => {
       >
         {actions.map((action, i) => (
           <MenuItem
+            disabled={
+              action.label === 'Profil' /*TODO: Implement profile page*/
+            }
             key={i}
             onClick={() => {
               handleCloseUserMenu();

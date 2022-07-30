@@ -1,13 +1,12 @@
 import { Customer } from '@prisma/client';
-import type { NextApiRequest, NextApiResponse } from 'next';
-
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
-} from '../../../utils/api/implementation/middleware';
-import { Db } from '../../../utils/database';
+} from '@utils/api/implementation/middleware';
+import { Db } from '@utils/database';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
   const customers = await Db.Customer.GetAll();

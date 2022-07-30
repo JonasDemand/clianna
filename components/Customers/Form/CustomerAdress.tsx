@@ -1,11 +1,10 @@
-import { FormLabel, Grid, TextField, Typography } from '@mui/material';
-import { FC, useContext } from 'react';
-
+import { CustomerContext } from '@context/CustomerContext';
 import {
   CustomerContextType,
   ICustomerWithOrders,
-} from '../../../@types/database/customer';
-import { CustomerContext } from '../../../context/customerContext';
+} from '@customTypes/database/customer';
+import { FormLabel, Grid, TextField, Typography } from '@mui/material';
+import { FC, useContext } from 'react';
 
 const CustomerAdress: FC = () => {
   const { selected, setSelected, selectedDisabled } = useContext(

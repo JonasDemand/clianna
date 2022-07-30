@@ -1,6 +1,5 @@
+import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Customer as PrismaCustomer, PrismaClient } from '@prisma/client';
-
-import { ICustomerWithOrders } from '../../@types/database/customer';
 
 const prisma = new PrismaClient();
 

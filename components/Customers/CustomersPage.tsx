@@ -1,11 +1,11 @@
-import { Drawer, Grid } from '@mui/material';
-import React, { FC, useContext, useEffect } from 'react';
-
 import {
   CustomerContextType,
   ICustomerWithOrders,
-} from '../../@types/database/customer';
-import { CustomerContext } from '../../context/customerContext';
+} from '@customTypes/database/customer';
+import { Drawer, Grid } from '@mui/material';
+import React, { FC, useContext, useEffect } from 'react';
+
+import { CustomerContext } from '../../context/CustomerContext';
 import CustomerForm from './Form/CustomerForm';
 import CustomersTable from './Table/CustomersTable';
 
