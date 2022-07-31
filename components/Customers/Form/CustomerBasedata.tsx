@@ -1,11 +1,18 @@
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { FormLabel, Grid, TextField, Typography } from '@mui/material';
+import { Email, Phone } from '@mui/icons-material';
+import {
+  FormLabel,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { FC, useContext } from 'react';
 
 const CustomerBasedata: FC = () => {
-  const { selected, setSelected, selectedDisabled } = useContext(
+  const { selected, setSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
   return (
@@ -17,7 +24,6 @@ const CustomerBasedata: FC = () => {
             variant="filled"
             fullWidth
             required
-            disabled={selectedDisabled}
             type="text"
             label="Vorname"
             value={selected?.firstname ?? ''}
@@ -34,7 +40,6 @@ const CustomerBasedata: FC = () => {
             variant="filled"
             fullWidth
             required
-            disabled={selectedDisabled}
             type="text"
             label="Nachname"
             value={selected?.lastname ?? ''}
@@ -49,63 +54,66 @@ const CustomerBasedata: FC = () => {
 
         <Grid item xs={6}>
           <TextField
-            sx={{
-              input: {
-                cursor:
-                  selectedDisabled && selected?.email ? 'pointer' : 'unset',
-              },
-            }}
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="email"
             label="E-Mail"
             value={selected?.email ?? ''}
-            onClick={() => {
-              selectedDisabled &&
-                selected?.email &&
-                (window.location.href = `mailto: ${selected?.email}`);
-            }}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
                 email: e.target.value,
               })
             }
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  disabled={!selected?.email}
+                  onClick={() => {
+                    selected?.email &&
+                      (window.location.href = `mailto: ${selected?.email}`);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <Email />
+                </IconButton>
+              ),
+            }}
           />
         </Grid>
         <Grid item xs={6}>
           <TextField
-            sx={{
-              input: {
-                cursor:
-                  selectedDisabled && selected?.phone ? 'pointer' : 'unset',
-              },
-            }}
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="tel"
             label="Telefon"
             value={selected?.phone ?? ''}
-            onClick={() => {
-              selectedDisabled &&
-                selected?.phone &&
-                (window.location.href = `tel: ${selected?.phone}`);
-            }}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
                 phone: e.target.value,
               })
             }
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  disabled={!selected?.phone}
+                  onClick={() => {
+                    selected?.phone &&
+                      (window.location.href = `tel: ${selected?.phone}`);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <Phone />
+                </IconButton>
+              ),
+            }}
           />
         </Grid>
         <Grid item xs={6}>
           <TextField
             sx={{ width: 1 }}
             variant="filled"
-            disabled={selectedDisabled}
             type="number"
             label="Schuhgröße"
             value={selected?.shoesize ?? ''}

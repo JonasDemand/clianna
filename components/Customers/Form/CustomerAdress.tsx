@@ -5,7 +5,7 @@ import { FormLabel, Grid, TextField, Typography } from '@mui/material';
 import { FC, useContext } from 'react';
 
 const CustomerAdress: FC = () => {
-  const { selected, setSelected, selectedDisabled } = useContext(
+  const { selected, setSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
   return (
@@ -16,7 +16,6 @@ const CustomerAdress: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="text"
             label="Straße"
             value={selected?.street ?? ''}
@@ -32,7 +31,6 @@ const CustomerAdress: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="text"
             label="Hausnummer"
             value={selected?.streetnumber ?? ''}
@@ -48,7 +46,6 @@ const CustomerAdress: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="text"
             label="Postleitzahl"
             value={selected?.postalcode ?? ''}
@@ -64,7 +61,6 @@ const CustomerAdress: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            disabled={selectedDisabled}
             type="text"
             label="Stadt"
             value={selected?.city ?? ''}

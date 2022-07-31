@@ -30,7 +30,6 @@ const CustomersTable: FC = () => {
     activeColumns,
     selected,
     setSelected,
-    setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
 
   const visibleCustomers = useMemo(() => {
@@ -77,7 +76,6 @@ const CustomersTable: FC = () => {
         selectionModel={selected ? [selected.id] : []}
         onSelectionModelChange={(model) => {
           if (selected?.id === -1 && !model[0]) return;
-          setSelectedDisabled(true);
           if (selected && model[0] === selected.id) {
             setSelected(null);
             return;

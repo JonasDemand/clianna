@@ -22,7 +22,6 @@ const CustomersTableHeader: FC = () => {
     setSearchText,
     setActiveColumns,
     setShowCustomers,
-    setSelectedDisabled,
   } = useContext(CustomerContext) as CustomerContextType;
 
   const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
@@ -53,7 +52,7 @@ const CustomersTableHeader: FC = () => {
             options={columns.map((column) => column.headerName)}
             value={activeColumns}
             onChange={changeActiveColumns}
-            limitTags={1}
+            limitTags={2}
             renderInput={(params) => <TextField {...params} label="Spalten" />}
           />
         </Grid>
@@ -87,7 +86,6 @@ const CustomersTableHeader: FC = () => {
             startIcon={<Add />}
             onClick={() => {
               setSelected(defaultCustomer());
-              setSelectedDisabled(false);
             }}
           >
             Hinzufügen

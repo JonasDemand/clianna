@@ -1,15 +1,7 @@
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
-import { Badge } from '@mui/icons-material';
-import {
-  Backdrop,
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  Grid,
-  Typography,
-} from '@mui/material';
+import { Backdrop, Button, CircularProgress, Grid } from '@mui/material';
+import { Box } from '@mui/system';
 import { concertToCustomer } from '@utils/api/customers';
 import {
   createCustomer,
@@ -18,32 +10,20 @@ import {
 } from '@utils/api/requests/customers';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import {
-  FC,
-  FormEventHandler,
-  MouseEventHandler,
-  useContext,
-  useState,
-} from 'react';
+import { FC, useContext, useState } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';
 
 const CustomerForm: FC = () => {
-  const {
-    customers,
-    setCustomers,
-    selected,
-    setSelected,
-    selectedDisabled,
-    setSelectedDisabled,
-  } = useContext(CustomerContext) as CustomerContextType;
+  const { customers, setCustomers, selected, setSelected } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
   const [loading, setLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
-  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
+  const saveCustomer = async () => {
     if (!selected) return;
     if (
       isEqual(
@@ -51,7 +31,7 @@ const CustomerForm: FC = () => {
         customers.find((customer) => customer.id === selected.id)
       )
     ) {
-      enqueueSnackbar('Keine Daten zum Speichern', {
+      enqueueSnackbar('Keine Daten zum Speichern vorhanden', {
         variant: 'info',
       });
       return;
@@ -61,7 +41,6 @@ const CustomerForm: FC = () => {
     let newCust = selected;
     try {
       setLoading(true);
-      setSelectedDisabled(true);
       if (create) {
         newCust = await createCustomer(concertToCustomer(selected));
         newCustomers.push(newCust);
@@ -78,7 +57,7 @@ const CustomerForm: FC = () => {
         );
         newCustomers[index] = newCust;
       }
-      setSelected(newCust);
+      setSelected(null);
       setCustomers(newCustomers);
       enqueueSnackbar(
         `Erfolgreich Kunde ${newCust.id} ${
@@ -107,14 +86,6 @@ const CustomerForm: FC = () => {
       });
     }
   };
-  const onEnable: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    setSelectedDisabled(false);
-  };
-  const onClose: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.preventDefault();
-    setSelected(null);
-  };
 
   return (
     <>
@@ -124,91 +95,36 @@ const CustomerForm: FC = () => {
       >
         <CircularProgress size={100} />
       </Backdrop>
-      <FormControl
-        sx={{ width: 1, height: 1, p: 1, display: 'flex', overflow: 'scroll' }}
-        component="form"
-        onSubmit={onSubmit}
-      >
-        <Box sx={{ flex: '1 1 auto' }}>
-          {selected ? (
-            <Grid
-              sx={{
-                width: 1,
-                height: 1,
-                margin: 0,
-                '& > .MuiGrid-item': {
-                  padding: 0,
-                },
-              }}
-              container
-              spacing={2}
-              direction="column"
+      <Box sx={{ width: { xs: 1, md: 'calc(100vw/2)' }, p: 1 }}>
+        <Grid container direction="column" spacing={2}>
+          <Grid item>
+            <CustomerFormHeader />
+          </Grid>
+          <Grid item>
+            <CustomerBasedata />
+          </Grid>
+          <Grid item>
+            <CustomerAdress />
+          </Grid>
+        </Grid>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            <Button fullWidth variant="contained" onClick={saveCustomer}>
+              Speichern
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
+              fullWidth
+              variant="contained"
+              color="warning"
+              onClick={() => setSelected(null)}
             >
-              <Grid item>
-                <CustomerFormHeader />
-              </Grid>
-              <Grid sx={{ mt: 2 }} item>
-                <CustomerBasedata />
-              </Grid>
-              <Grid sx={{ mt: 2 }} item>
-                <CustomerAdress />
-              </Grid>
-            </Grid>
-          ) : (
-            <Box sx={{ width: 1, height: 1, display: 'flex' }}>
-              <Box m="auto">
-                <Badge sx={{ width: 1 }} fontSize="large" color="primary" />
-                <Typography fontSize="large">Kein Kunde ausgewählt</Typography>
-              </Box>
-            </Box>
-          )}
-        </Box>
-        <Box sx={{ display: 'flex', mt: 2 }}>
-          {selectedDisabled ? (
-            <>
-              <Button
-                disabled={!selected}
-                fullWidth
-                color="secondary"
-                variant="contained"
-                onClick={onEnable}
-              >
-                Bearbeiten
-              </Button>
-              <Button
-                sx={{ ml: 1 }}
-                disabled={!selected}
-                color="error"
-                fullWidth
-                variant="contained"
-                onClick={onClose}
-              >
-                Schließen
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                sx={{ mr: 1 }}
-                fullWidth
-                type="submit"
-                variant="contained"
-              >
-                Speichern
-              </Button>
-              <Button
-                sx={{ ml: 1 }}
-                fullWidth
-                variant="contained"
-                color="warning"
-                onClick={() => setSelectedDisabled(true)}
-              >
-                Abbrechen
-              </Button>
-            </>
-          )}
-        </Box>
-      </FormControl>
+              Abbrechen
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </>
   );
 };

@@ -12,12 +12,12 @@ type CustomerPageProps = {
 };
 
 const CustomersPage: FC<CustomerPageProps> = ({ customers }) => {
-  const { setCustomers, setFilteredCustomers, selected, setSelected } =
-    useContext(CustomerContext) as CustomerContextType;
+  const { setCustomers, selected, setSelected } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
   useEffect(() => {
     setCustomers(customers);
-    setFilteredCustomers(customers);
-  }, [customers]);
+  }, []);
 
   return (
     <Grid
