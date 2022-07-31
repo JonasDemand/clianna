@@ -9,12 +9,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { FC, useContext } from 'react';
+import { FC, useContext, useState } from 'react';
 
 const CustomerBasedata: FC = () => {
   const { selected, setSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
+  const [emailFocused, setEmailFocused] = useState(false);
+  const [telFocused, setTelFocused] = useState(false);
+
   return (
     <FormLabel>
       <Typography sx={{ mb: 1 }}>Stammdaten</Typography>
@@ -59,6 +62,8 @@ const CustomerBasedata: FC = () => {
             type="email"
             label="E-Mail"
             value={selected?.email ?? ''}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
@@ -68,7 +73,7 @@ const CustomerBasedata: FC = () => {
             InputProps={{
               endAdornment: (
                 <IconButton
-                  disabled={!selected?.email}
+                  disabled={!selected?.email || emailFocused}
                   onClick={() => {
                     selected?.email &&
                       (window.location.href = `mailto: ${selected?.email}`);
@@ -88,6 +93,8 @@ const CustomerBasedata: FC = () => {
             type="tel"
             label="Telefon"
             value={selected?.phone ?? ''}
+            onFocus={() => setTelFocused(true)}
+            onBlur={() => setTelFocused(false)}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
@@ -97,7 +104,7 @@ const CustomerBasedata: FC = () => {
             InputProps={{
               endAdornment: (
                 <IconButton
-                  disabled={!selected?.phone}
+                  disabled={!selected?.phone || telFocused}
                   onClick={() => {
                     selected?.phone &&
                       (window.location.href = `tel: ${selected?.phone}`);

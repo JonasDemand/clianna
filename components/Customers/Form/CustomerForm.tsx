@@ -1,5 +1,6 @@
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
+import { Delete, Save } from '@mui/icons-material';
 import { Backdrop, Button, CircularProgress, Grid } from '@mui/material';
 import { Box } from '@mui/system';
 import { concertToCustomer } from '@utils/api/customers';
@@ -95,8 +96,23 @@ const CustomerForm: FC = () => {
       >
         <CircularProgress size={100} />
       </Backdrop>
-      <Box sx={{ width: { xs: 1, md: 'calc(100vw/2)' }, p: 1 }}>
-        <Grid container direction="column" spacing={2}>
+      <Box
+        sx={{
+          width: { xs: 1, md: 'calc(100vw/2)' },
+          p: 1,
+          display: 'flex',
+          flexFlow: 'column',
+          height: 1,
+        }}
+      >
+        <Grid
+          container
+          direction="column"
+          spacing={2}
+          sx={{
+            flex: '1 1 auto',
+          }}
+        >
           <Grid item>
             <CustomerFormHeader />
           </Grid>
@@ -109,18 +125,25 @@ const CustomerForm: FC = () => {
         </Grid>
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            <Button fullWidth variant="contained" onClick={saveCustomer}>
-              Speichern
+            <Button
+              fullWidth
+              variant="contained"
+              color="error"
+              startIcon={<Delete />}
+              onClick={() => setSelected(null)}
+            >
+              Abbrechen
             </Button>
           </Grid>
           <Grid item xs={6}>
             <Button
               fullWidth
               variant="contained"
-              color="warning"
-              onClick={() => setSelected(null)}
+              color="success"
+              startIcon={<Save />}
+              onClick={saveCustomer}
             >
-              Abbrechen
+              Speichern
             </Button>
           </Grid>
         </Grid>
