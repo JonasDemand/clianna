@@ -82,6 +82,7 @@ const CustomersTableHeader: FC = () => {
         <Grid item xs={12} md={2}>
           <Button
             variant="contained"
+            color="success"
             fullWidth
             startIcon={<Add />}
             onClick={() => {
