@@ -30,7 +30,7 @@ export const columnNames: Record<string, string> = {
   openOrders: 'Offene Bestellungen',
 };
 
-export const defaultColumns = [columns[1].headerName, columns[2].headerName];
+export const defaultColumns = columns.slice(0, 3).map((x) => x.headerName);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
   id: -1,

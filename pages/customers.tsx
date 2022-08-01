@@ -1,4 +1,4 @@
-import AuthenticationWrapper from '@components/AuthenticationWrapper';
+import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import CustomersPage from '@components/Customers/CustomersPage';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import CustomerProvider from '@context/CustomerContext';

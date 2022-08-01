@@ -10,7 +10,6 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import { Box } from '@mui/system';
 import React, { ChangeEvent, FC, SyntheticEvent, useContext } from 'react';
 
 const CustomersTableHeader: FC = () => {
@@ -32,7 +31,7 @@ const CustomersTableHeader: FC = () => {
     value: (string | undefined)[]
   ) => setActiveColumns(value);
   return (
-    <Box sx={{ mb: 2 }}>
+    <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
           <TextField
@@ -93,7 +92,7 @@ const CustomersTableHeader: FC = () => {
           </Button>
         </Grid>
       </Grid>
-    </Box>
+    </>
   );
 };
 

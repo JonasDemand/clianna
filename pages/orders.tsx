@@ -1,4 +1,4 @@
-import AuthenticationWrapper from '@components/AuthenticationWrapper';
+import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import { LinearProgress } from '@mui/material';
 import { NextPage } from 'next';
