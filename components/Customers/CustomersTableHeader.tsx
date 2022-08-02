@@ -10,7 +10,13 @@ import {
   MenuItem,
   TextField,
 } from '@mui/material';
-import React, { ChangeEvent, FC, SyntheticEvent, useContext } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  memo,
+  SyntheticEvent,
+  useContext,
+} from 'react';
 
 const CustomersTableHeader: FC = () => {
   const {
@@ -96,4 +102,4 @@ const CustomersTableHeader: FC = () => {
   );
 };
 
-export default CustomersTableHeader;
+export default memo(CustomersTableHeader);
