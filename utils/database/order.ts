@@ -1,3 +1,7 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 export class Order {
   public async Create() {
     throw new Error('not Implemented');
@@ -9,7 +13,9 @@ export class Order {
     throw new Error('not Implemented');
   }
   public async GetAll() {
-    throw new Error('not Implemented');
+    return await prisma.order.findMany({
+      include: { customer: true },
+    });
   }
   public async GetSingle() {
     throw new Error('not Implemented');

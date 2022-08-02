@@ -32,7 +32,9 @@ export class Customer {
         .length,
     };
   }
-  public async Delete() {}
+  public async Delete() {
+    throw new Error('not Implemented');
+  }
   public async GetAll(): Promise<ICustomerWithOrders[]> {
     const customers = await prisma.customer.findMany({
       include: { orders: true },

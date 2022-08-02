@@ -3,10 +3,8 @@ import CustomersPage from '@components/Customers/CustomersPage';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { PrismaClient } from '@prisma/client';
+import { Db } from '@utils/database';
 import { GetStaticProps, NextPage } from 'next';
-
-const prisma = new PrismaClient();
 
 type CustomersProps = {
   customers: ICustomerWithOrders[];
@@ -24,23 +22,10 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
-  const customers = await prisma.customer.findMany({
-    include: { orders: true },
-    where: {},
-  });
-  return {
-    props: {
-      customers: customers
-        .sort((a, b) =>
-          a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
-        )
-        .map<ICustomerWithOrders>((customer) => ({
-          ...customer,
-          openOrders: customer.orders.filter((order) => order.pending).length,
-        })),
-    },
-  };
-};
+export const getStaticProps: GetStaticProps<CustomersProps> = async () => ({
+  props: {
+    customers: await Db.Customer.GetAll(),
+  },
+});
 
 export default Customers;

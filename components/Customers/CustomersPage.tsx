@@ -19,11 +19,11 @@ import { CustomerContext } from '../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
-type CustomerPageProps = {
+type CustomersPageProps = {
   customers: ICustomerWithOrders[];
 };
 
-const CustomersPage: FC<CustomerPageProps> = ({ customers }) => {
+const CustomersPage: FC<CustomersPageProps> = ({ customers }) => {
   const {
     setCustomers,
     selected,
@@ -71,9 +71,6 @@ const CustomersPage: FC<CustomerPageProps> = ({ customers }) => {
       if (create) {
         newCust = await createCustomer(concertToCustomer(selected));
         newCustomers.push(newCust);
-        newCustomers = newCustomers.sort((a, b) =>
-          a.lastname.toLowerCase().localeCompare(b.lastname.toLowerCase())
-        );
       } else {
         newCust = await updateCustomer(
           selected.id,
