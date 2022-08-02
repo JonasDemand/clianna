@@ -44,7 +44,7 @@ const CustomersPage: FC<CustomerPageProps> = ({ customers }) => {
       }}
       container
     >
-      <TablePage
+      <TablePage<ICustomerWithOrders>
         header={<CustomersTableHeader />}
         rows={visibleCustomers}
         columns={columns.filter((column) =>

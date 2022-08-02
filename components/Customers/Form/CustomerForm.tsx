@@ -1,7 +1,9 @@
+import { BackdropContext } from '@context/BackdropContext';
 import { CustomerContext } from '@context/CustomerContext';
+import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { Delete, Save } from '@mui/icons-material';
-import { Backdrop, Button, CircularProgress, Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import { Box } from '@mui/system';
 import { concertToCustomer } from '@utils/api/customers';
 import {
@@ -11,17 +13,19 @@ import {
 } from '@utils/api/requests/customers';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import { FC, useContext, useState } from 'react';
+import { FC, useContext } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';
 
 const CustomerForm: FC = () => {
+  const { setShowBackdrop } = useContext(
+    BackdropContext
+  ) as BackdropContextType;
   const { customers, setCustomers, selected, setSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
-  const [loading, setLoading] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const saveCustomer = async () => {
@@ -41,7 +45,7 @@ const CustomerForm: FC = () => {
     let newCustomers = [...customers];
     let newCust = selected;
     try {
-      setLoading(true);
+      setShowBackdrop(true);
       if (create) {
         newCust = await createCustomer(concertToCustomer(selected));
         newCustomers.push(newCust);
@@ -74,7 +78,7 @@ const CustomerForm: FC = () => {
       );
       return;
     }
-    setLoading(false);
+    setShowBackdrop(false);
 
     enqueueSnackbar('Neuladen von Kunden gestartet', {
       variant: 'info',
@@ -90,12 +94,6 @@ const CustomerForm: FC = () => {
 
   return (
     <>
-      <Backdrop
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}
-      >
-        <CircularProgress size={100} />
-      </Backdrop>
       <Box
         sx={{
           width: { xs: 1, md: 'calc(100vw/2)' },

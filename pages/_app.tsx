@@ -4,6 +4,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '../styles/global.css';
 
+import BackdropProvider from '@context/BackdropContext';
 import { ThemeProvider } from '@emotion/react';
 import { Slide } from '@mui/material';
 import theme from '@utils/theme';
@@ -31,7 +32,9 @@ const MyApp = ({
           }}
           TransitionComponent={Slide}
         >
-          <Component {...pageProps} />
+          <BackdropProvider>
+            <Component {...pageProps} />
+          </BackdropProvider>
         </SnackbarProvider>
       </SessionProvider>
     </ThemeProvider>
