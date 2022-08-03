@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma-dev": "dotenv -e .env.local -- prisma migrate dev",
+    "prisma-deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@emotion/react": "^11.9.0",
@@ -38,6 +40,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "prisma": "^3.13.0",
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "dotenv": "^16.0.1"
   }
 }

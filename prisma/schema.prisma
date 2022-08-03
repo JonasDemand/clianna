@@ -20,8 +20,8 @@ model User {
 
 model Customer {
   id           Int     @id @default(autoincrement())
-  firstname    String
-  lastname     String
+  firstname    String?
+  lastname     String?
   email        String?
   street       String?
   streetnumber String?
@@ -35,13 +35,13 @@ model Customer {
 
 model Order {
   id            Int       @id @default(autoincrement())
-  customerId    Int
-  creationDate  DateTime
+  customerId    Int?
+  creationDate  DateTime?
   pending       Boolean   @default(true)
-  shippingType  Int
+  shippingType  Int?
   comment       String?
-  price         Float
-  taxes         Int
+  price         Float?
+  taxes         Int?
   dueDate       DateTime?
   type          Int?
   specification Int?
