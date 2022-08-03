@@ -81,10 +81,6 @@ const CustomersPage: FC = () => {
   const onSelectionModelChange = useCallback(
     (model: GridSelectionModel) => {
       if (selected?.id === -1 && !model[0]) return;
-      if (selected && model[0] === selected.id) {
-        setSelected(null);
-        return;
-      }
       setSelected(
         filteredCustomers.find(
           (customer) => customer.id === model[0]

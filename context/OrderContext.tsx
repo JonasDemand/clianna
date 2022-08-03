@@ -42,27 +42,25 @@ const OrderProvider: FC<OrderContextProps> = ({
     [activeColumns]
   );
   const filteredOrders = useMemo(() => {
-    const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
+    const searchTerms = searchText
+      .split(' ')
+      .map((txt) => `.*${txt.toLowerCase()}.*`);
     const pendingValue = showOrders === ShowOrders.Pending;
     const ordersToSearch =
       showOrders === ShowOrders.All
         ? orders
-        : orders.filter((customer) => customer.pending === pendingValue);
+        : orders.filter((order) => order.pending === pendingValue);
 
-    return ordersToSearch.filter((order) =>
-      Object.keys(order).some((key) => {
-        if (searchKeys.includes(key))
-          return (order[key as keyof IOrderWithCustomer]?.toString() ?? '')
-            .toLowerCase()
-            .match(cleanedSearch);
-      })
-    );
-  }, [activeColumns, orders, searchText]);
+    return ordersToSearch.filter((order) => {
+      const searchText = JSON.stringify(order).toLowerCase();
+      return searchTerms.every((term) => searchText.match(term));
+    });
+  }, [orders, searchText, showOrders]);
 
   useEffect(() => {
     setCustomers(initialCustomers);
     setOrders(initialOrders);
-  }, [initialCustomers, initialOrders]);
+  }, []);
 
   //Read from query
   useEffect(() => {

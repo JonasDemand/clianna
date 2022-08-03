@@ -39,24 +39,22 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     [activeColumns]
   );
   const filteredCustomers = useMemo(() => {
-    const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
-    const disabledValue = showCustomers === ShowCustomers.Disabled;
-    const costumersToSearch =
+    const searchTerms = searchText
+      .split(' ')
+      .map((txt) => `.*${txt.toLowerCase()}.*`);
+    const pendingValue = showCustomers === ShowCustomers.Disabled;
+    const customersToSearch =
       showCustomers === ShowCustomers.All
         ? customers
-        : customers.filter((customer) => customer.disabled === disabledValue);
+        : customers.filter((customer) => customer.disabled === pendingValue);
 
-    return costumersToSearch.filter((customer) =>
-      Object.keys(customer).some((key) => {
-        if (searchKeys.includes(key))
-          return (customer[key as keyof ICustomerWithOrders]?.toString() ?? '')
-            .toLowerCase()
-            .match(cleanedSearch);
-      })
-    );
-  }, [searchText, showCustomers, customers, searchKeys]);
+    return customersToSearch.filter((customer) => {
+      const searchText = JSON.stringify(customer).toLowerCase();
+      return searchTerms.every((term) => searchText.match(term));
+    });
+  }, [searchText, showCustomers, customers]);
 
-  useEffect(() => setCustomers(initialCustomers), [initialCustomers]);
+  useEffect(() => setCustomers(initialCustomers), []);
 
   //Read from query
   useEffect(() => {
