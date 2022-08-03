@@ -14,8 +14,8 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <CustomerProvider>
-          <CustomersPage customers={customers} />
+        <CustomerProvider initialCustomers={customers}>
+          <CustomersPage />
         </CustomerProvider>
       </LayoutWrapper>
     </AuthenticationWrapper>

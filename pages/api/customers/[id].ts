@@ -35,10 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     case 'GET':
       await getCustomer(req, res);
     case 'PUT':
-      await withMiddleware(withBody(['firstname', 'lastname']), updateCustomer)(
-        req,
-        res
-      );
+      await withMiddleware(withBody(), updateCustomer)(req, res);
   }
 };
 

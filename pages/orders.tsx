@@ -1,6 +1,7 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import OrdersPage from '@components/Orders/OrdersPage';
+import OrderProvider from '@context/OrderContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Order } from '@prisma/client';
 import { Db } from '@utils/database';
@@ -15,7 +16,9 @@ const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <OrdersPage orders={orders} customers={customers} />
+        <OrderProvider initialCustomers={customers} initialOrders={orders}>
+          <OrdersPage />
+        </OrderProvider>
       </LayoutWrapper>
     </AuthenticationWrapper>
   );

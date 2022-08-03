@@ -1,3 +1,5 @@
+import { GridColDef } from '@mui/x-data-grid';
+
 import { ICustomerWithOrders } from './database/customer';
 
 export type CustomerContextType = {
@@ -8,10 +10,10 @@ export type CustomerContextType = {
   setSelected: (customer: ICustomerWithOrders | null) => void;
   showCustomers: ShowCustomers;
   setShowCustomers: (state: ShowCustomers) => void;
-  activeColumns: (string | undefined)[];
-  setActiveColumns: (activeColumns: (string | undefined)[]) => void;
+  activeColumns: GridColDef<ICustomerWithOrders>[];
+  setActiveColumns: (activeColumns: GridColDef<ICustomerWithOrders>[]) => void;
   searchText: string;
-  setSearchText: (activeColumns: string) => void;
+  setSearchText: (text: string) => void;
 };
 
 export enum ShowCustomers {

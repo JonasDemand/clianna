@@ -1,8 +1,15 @@
 import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Order } from '@prisma/client';
 
-export const columns: GridColDef[] = [
+export const columns: GridColDef<ICustomerWithOrders>[] = [
+  {
+    field: 'disabled',
+    headerName: 'Aktiv',
+    width: 60,
+    renderCell: ({ row }) => (row.disabled ? <Close /> : <Check />),
+  },
   { field: 'id', headerName: 'Kundennummer', flex: 1 },
   { field: 'firstname', headerName: 'Vorname', flex: 1 },
   { field: 'lastname', headerName: 'Nachname', flex: 1 },
@@ -13,24 +20,15 @@ export const columns: GridColDef[] = [
   { field: 'postalcode', headerName: 'Postleitzahl', flex: 1 },
   { field: 'phone', headerName: 'Telefon', flex: 1 },
   { field: 'shoesize', headerName: 'Schuhgröße', flex: 1 },
-  { field: 'openOrders', headerName: 'Offene Bestellungen', flex: 1 },
+  {
+    field: 'orders',
+    headerName: 'Offene Bestellungen',
+    flex: 1,
+    valueGetter: ({ row }) => row.orders.length,
+  },
 ];
 
-export const columnNames: Record<string, string> = {
-  id: 'Kundennummer',
-  firstname: 'Vorname',
-  lastname: 'Nachname',
-  email: 'E-Mail',
-  street: 'Straße',
-  streetnumber: 'Hausnummer',
-  city: 'Stadt',
-  postalcode: 'Postleitzahl',
-  phone: 'Telefon',
-  shoesize: 'Schuhgröße',
-  openOrders: 'Offene Bestellungen',
-};
-
-export const defaultColumns = columns.slice(0, 3).map((x) => x.headerName);
+export const defaultColumns = columns.slice(0, 4);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
   id: -1,
@@ -45,5 +43,4 @@ export const defaultCustomer = (): ICustomerWithOrders => ({
   shoesize: null,
   disabled: false,
   orders: new Array<Order>(),
-  openOrders: 0,
 });

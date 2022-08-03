@@ -1,6 +1,7 @@
 import { BackdropContextType } from '@customTypes/backdrop';
 import { Backdrop, CircularProgress } from '@mui/material';
-import { createContext, FC, ReactNode, useState } from 'react';
+import { useRouter } from 'next/router';
+import { createContext, FC, ReactNode, useEffect, useState } from 'react';
 
 export const BackdropContext = createContext<BackdropContextType | null>(null);
 
@@ -9,7 +10,19 @@ type BackdropContextProps = {
 };
 
 const BackdropProvider: FC<BackdropContextProps> = ({ children }) => {
+  const router = useRouter();
   const [showBackdrop, setShowBackdrop] = useState(false);
+
+  useEffect(() => {
+    router.events.on(
+      'routeChangeStart',
+      (_, { shallow }) => !shallow && setShowBackdrop(true)
+    );
+    router.events.on(
+      'routeChangeComplete',
+      (_, { shallow }) => !shallow && setShowBackdrop(false)
+    );
+  }, []);
 
   return (
     <BackdropContext.Provider

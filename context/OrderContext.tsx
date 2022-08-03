@@ -1,5 +1,7 @@
-import { columns, defaultColumns, defaultCustomer } from '@consts/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { columns, defaultColumns, defaultOrder } from '@consts/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
+import { OrderContextType, ShowOrders } from '@customTypes/order';
+import { Customer } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import {
@@ -11,64 +13,65 @@ import {
   useState,
 } from 'react';
 
-import { CustomerContextType, ShowCustomers } from '../types/customer';
+export const OrderContext = createContext<OrderContextType | null>(null);
 
-export const CustomerContext = createContext<CustomerContextType | null>(null);
-
-type CustomerContextProps = {
+type OrderContextProps = {
   children: ReactNode;
-  initialCustomers: ICustomerWithOrders[];
+  initialCustomers: Customer[];
+  initialOrders: IOrderWithCustomer[];
 };
 
-const CustomerProvider: FC<CustomerContextProps> = ({
+const OrderProvider: FC<OrderContextProps> = ({
   children,
   initialCustomers,
+  initialOrders,
 }) => {
   const router = useRouter();
   const { data: session } = useSession();
   const [queryInitialized, setQueryInitialized] = useState(false);
 
-  const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
-  const [showCustomers, setShowCustomers] = useState(ShowCustomers.Active);
+  const [orders, setOrders] = useState<IOrderWithCustomer[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [showOrders, setShowOrders] = useState(ShowOrders.Pending);
   const [activeColumns, setActiveColumns] = useState(defaultColumns);
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
+  const [selected, setSelected] = useState<IOrderWithCustomer | null>(null);
 
   const searchKeys = useMemo(
     () => activeColumns.map((x) => x.field),
     [activeColumns]
   );
-  const filteredCustomers = useMemo(() => {
+  const filteredOrders = useMemo(() => {
     const cleanedSearch = `.*${searchText.toLowerCase().replace(' ', '.*')}.*`;
-    const disabledValue = showCustomers === ShowCustomers.Disabled;
-    const costumersToSearch =
-      showCustomers === ShowCustomers.All
-        ? customers
-        : customers.filter((customer) => customer.disabled === disabledValue);
+    const pendingValue = showOrders === ShowOrders.Pending;
+    const ordersToSearch =
+      showOrders === ShowOrders.All
+        ? orders
+        : orders.filter((customer) => customer.pending === pendingValue);
 
-    return costumersToSearch.filter((customer) =>
-      Object.keys(customer).some((key) => {
+    return ordersToSearch.filter((order) =>
+      Object.keys(order).some((key) => {
         if (searchKeys.includes(key))
-          return (customer[key as keyof ICustomerWithOrders]?.toString() ?? '')
+          return (order[key as keyof IOrderWithCustomer]?.toString() ?? '')
             .toLowerCase()
             .match(cleanedSearch);
       })
     );
-  }, [searchText, showCustomers, customers, searchKeys]);
+  }, [activeColumns, orders, searchText]);
 
-  useEffect(() => setCustomers(initialCustomers), [initialCustomers]);
+  useEffect(() => {
+    setCustomers(initialCustomers);
+    setOrders(initialOrders);
+  }, [initialCustomers, initialOrders]);
 
   //Read from query
   useEffect(() => {
     if (!router.isReady || !session) return;
     router.query['searchText'] &&
       setSearchText(decodeURIComponent(router.query['searchText'] as string));
-    router.query['showCustomers'] &&
-      setShowCustomers(
-        parseInt(
-          decodeURIComponent(router.query['showCustomers'] as string),
-          10
-        )
+    router.query['showOrders'] &&
+      setShowOrders(
+        parseInt(decodeURIComponent(router.query['showOrders'] as string), 10)
       );
     router.query['activeColumns'] &&
       setActiveColumns(
@@ -78,30 +81,29 @@ const CustomerProvider: FC<CustomerContextProps> = ({
           ) as string[]
         ).map((key) => columns.find((column) => column.field === key)!)
       );
-
     router.query['selectedId'] &&
       !selected &&
       setSelected(
-        (filteredCustomers.find(
+        (filteredOrders.find(
           (customer) =>
             customer.id ===
             parseInt(
               decodeURIComponent(router.query['selectedId'] as string),
               10
             )
-        ) as ICustomerWithOrders) ?? defaultCustomer()
+        ) as IOrderWithCustomer) ?? defaultOrder()
       );
     setQueryInitialized(true);
-  }, [router.isReady, session?.user]);
+  }, [router.isReady, session]);
 
   //Write to query
   useEffect(() => {
     if (!queryInitialized) return;
     router.push(
-      `/customers?searchText=${encodeURIComponent(
+      `/orders?searchText=${encodeURIComponent(
         searchText
-      )}&showCustomers=${encodeURIComponent(
-        showCustomers
+      )}&shhowOrders=${encodeURIComponent(
+        showOrders
       )}&selectedId=${encodeURIComponent(
         selected?.id.toString() ?? ''
       )}&activeColumns=${encodeURIComponent(JSON.stringify(searchKeys))}`,
@@ -110,24 +112,20 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         shallow: true,
       }
     );
-  }, [
-    queryInitialized,
-    searchText,
-    showCustomers,
-    activeColumns,
-    selected?.id,
-  ]);
+  }, [queryInitialized, searchText, showOrders, activeColumns, selected?.id]);
 
   return (
-    <CustomerContext.Provider
+    <OrderContext.Provider
       value={{
         customers,
         setCustomers,
-        filteredCustomers,
+        orders,
+        setOrders,
+        filteredOrders,
         selected,
         setSelected,
-        showCustomers,
-        setShowCustomers,
+        showOrders,
+        setShowOrders,
         activeColumns,
         setActiveColumns,
         searchText,
@@ -135,8 +133,8 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       }}
     >
       {children}
-    </CustomerContext.Provider>
+    </OrderContext.Provider>
   );
 };
 
-export default CustomerProvider;
+export default OrderProvider;

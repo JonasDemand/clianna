@@ -1,10 +1,9 @@
 import SideOverlay from '@components/SideOverlay/SideOverlay';
 import TablePage from '@components/Table/TablePage';
-import { columns } from '@consts/customers';
-import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
+import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Grid } from '@mui/material';
-import { GridRowParams, GridSelectionModel } from '@mui/x-data-grid';
+import { Box } from '@mui/material';
+import { GridSelectionModel } from '@mui/x-data-grid';
 import { concertToCustomer } from '@utils/api/customers';
 import {
   createCustomer,
@@ -13,42 +12,23 @@ import {
 } from '@utils/api/requests/customers';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 
 import { CustomerContext } from '../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
-type CustomersPageProps = {
-  customers: ICustomerWithOrders[];
-};
-
-const CustomersPage: FC<CustomersPageProps> = ({ customers }) => {
+const CustomersPage: FC = () => {
   const {
+    customers,
     setCustomers,
     selected,
     setSelected,
-    showCustomers,
     filteredCustomers,
     activeColumns,
   } = useContext(CustomerContext) as CustomerContextType;
 
   const { enqueueSnackbar } = useSnackbar();
-  useEffect(() => {
-    setCustomers(customers);
-  }, []);
-
-  const visibleCustomers = useMemo(() => {
-    if (showCustomers === ShowCustomers.All) return filteredCustomers;
-    const disabledValue = showCustomers === ShowCustomers.Disabled;
-    return filteredCustomers.filter(
-      (customer) => customer.disabled === disabledValue
-    );
-  }, [filteredCustomers, showCustomers]);
-  const currentColumns = useMemo(
-    () => columns.filter((column) => activeColumns.includes(column.headerName)),
-    [activeColumns]
-  );
 
   const onClose = useCallback(() => setSelected(null), []);
   const onSave = useCallback(async () => {
@@ -84,14 +64,12 @@ const CustomersPage: FC<CustomersPageProps> = ({ customers }) => {
       setSelected(null);
       setCustomers(newCustomers);
       enqueueSnackbar(
-        `Erfolgreich Kunde ${newCust.id} ${
-          create ? 'erstellt' : 'aktualisiert'
-        }`,
+        `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
       );
     } catch {
       enqueueSnackbar(
-        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde ${newCust.id}
+        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde
           fehlgeschlagen`,
         { variant: 'error' }
       );
@@ -100,11 +78,6 @@ const CustomersPage: FC<CustomersPageProps> = ({ customers }) => {
 
     revalidate();
   }, [customers, selected]);
-  const getRowClassName = useCallback(
-    (params: GridRowParams<ICustomerWithOrders>) =>
-      params.row.disabled ? 'row-disabled' : '',
-    []
-  );
   const onSelectionModelChange = useCallback(
     (model: GridSelectionModel) => {
       if (selected?.id === -1 && !model[0]) return;
@@ -122,26 +95,22 @@ const CustomersPage: FC<CustomersPageProps> = ({ customers }) => {
   );
 
   return (
-    <Grid
+    <Box
       sx={{
-        width: 1,
         height: 1,
-        margin: 0,
       }}
-      container
     >
       <TablePage<ICustomerWithOrders>
         header={<CustomersTableHeader />}
-        rows={visibleCustomers}
-        columns={currentColumns}
-        getRowClassName={getRowClassName}
+        rows={filteredCustomers}
+        columns={activeColumns}
         selectionModel={selected ? [selected.id] : []}
         onSelectionModelChange={onSelectionModelChange}
       />
       <SideOverlay open={!!selected} onClose={onClose} onSave={onSave}>
         <CustomerForm />
       </SideOverlay>
-    </Grid>
+    </Box>
   );
 };
 

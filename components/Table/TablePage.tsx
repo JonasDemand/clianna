@@ -6,24 +6,12 @@ type TablePageProps<T> = {
   header: ReactNode;
   rows: T[];
   columns: DataGridProps['columns'];
-  selectionModel: DataGridProps['selectionModel'];
-  onSelectionModelChange: DataGridProps['onSelectionModelChange'];
-  getRowClassName: DataGridProps['getRowClassName'];
-};
-
-const setPlaceholder = <T extends {}>(obj: T): T => {
-  const copy = { ...obj };
-  Object.keys(copy).forEach((rawKey) => {
-    const key = rawKey as keyof T;
-    if (copy[key] !== null && copy[key] !== '') return;
-    copy[key] = '-' as any;
-  });
-  return copy;
+  selectionModel?: DataGridProps['selectionModel'];
+  onSelectionModelChange?: DataGridProps['onSelectionModelChange'];
 };
 
 const TablePage = <T extends {}>({
   header,
-  rows,
   ...gridProps
 }: TablePageProps<T>) => {
   return (
@@ -36,7 +24,7 @@ const TablePage = <T extends {}>({
       }}
     >
       <Box sx={{ mb: 2 }}>{header}</Box>
-      <DataGrid
+      <DataGrid<T>
         sx={{
           flex: '1 1 auto',
           userSelect: 'none',
@@ -52,7 +40,6 @@ const TablePage = <T extends {}>({
           },
         }}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
-        rows={rows.map((x) => setPlaceholder<T>(x))}
         disableColumnMenu
         {...gridProps}
       />

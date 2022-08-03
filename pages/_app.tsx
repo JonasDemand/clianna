@@ -21,7 +21,7 @@ const MyApp = ({
     <ThemeProvider theme={theme}>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <title>aufTritt Verwaltung</title>
+        <title>aufTritt Kundenverwaltung</title>
       </Head>
       <SessionProvider session={session}>
         <SnackbarProvider

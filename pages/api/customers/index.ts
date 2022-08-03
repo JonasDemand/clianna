@@ -28,10 +28,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     case 'GET':
       await getCustomers(req, res);
     case 'POST':
-      await withMiddleware(withBody(['firstname', 'lastname']), createCustomer)(
-        req,
-        res
-      );
+      await withMiddleware(withBody(), createCustomer)(req, res);
   }
 };
 

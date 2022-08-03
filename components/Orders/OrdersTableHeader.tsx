@@ -1,7 +1,7 @@
-import { columns, defaultCustomer } from '@consts/customer';
-import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { columns, defaultOrder } from '@consts/order';
+import { OrderContext } from '@context/OrderContext';
+import { IOrderWithCustomer } from '@customTypes/database/order';
+import { OrderContextType, ShowOrders } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -20,23 +20,23 @@ import React, {
   useContext,
 } from 'react';
 
-const CustomersTableHeader: FC = () => {
+const OrdersTableHeader: FC = () => {
   const {
     searchText,
-    showCustomers,
+    showOrders,
     activeColumns,
     setSelected,
     setSearchText,
     setActiveColumns,
-    setShowCustomers,
-  } = useContext(CustomerContext) as CustomerContextType;
+    setShowOrders,
+  } = useContext(OrderContext) as OrderContextType;
 
   const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
     setSearchText(e.target.value);
 
   const changeActiveColumns = (
     _: SyntheticEvent<Element, Event>,
-    value: GridColDef<ICustomerWithOrders>[]
+    value: GridColDef<IOrderWithCustomer>[]
   ) => setActiveColumns(value);
   return (
     <>
@@ -54,7 +54,7 @@ const CustomersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<ICustomerWithOrders>, true>
+          <Autocomplete<GridColDef<IOrderWithCustomer>, true>
             multiple
             options={columns}
             value={activeColumns}
@@ -75,16 +75,16 @@ const CustomersTableHeader: FC = () => {
         <Grid item xs={12} md={2}>
           <TextField
             fullWidth
-            value={showCustomers}
+            value={showOrders}
             select
             label="Status"
             onChange={(e) =>
-              setShowCustomers(parseInt(e.target.value, 10) as ShowCustomers)
+              setShowOrders(parseInt(e.target.value, 10) as ShowOrders)
             }
           >
-            <MenuItem value={ShowCustomers.All}>Alle</MenuItem>
-            <MenuItem value={ShowCustomers.Active}>Aktive</MenuItem>
-            <MenuItem value={ShowCustomers.Disabled}>Deaktivierte</MenuItem>
+            <MenuItem value={ShowOrders.All}>Alle</MenuItem>
+            <MenuItem value={ShowOrders.Pending}>Ausstehend</MenuItem>
+            <MenuItem value={ShowOrders.Done}>Erledigt</MenuItem>
           </TextField>
         </Grid>
         <Grid item xs={12} md={2}>
@@ -94,7 +94,7 @@ const CustomersTableHeader: FC = () => {
             fullWidth
             startIcon={<Add />}
             onClick={() => {
-              setSelected(defaultCustomer());
+              setSelected(defaultOrder());
             }}
           >
             Hinzufügen
@@ -105,4 +105,4 @@ const CustomersTableHeader: FC = () => {
   );
 };
 
-export default memo(CustomersTableHeader);
+export default memo(OrdersTableHeader);

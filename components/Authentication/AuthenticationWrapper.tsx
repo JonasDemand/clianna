@@ -10,10 +10,10 @@ export type AuthenticationWrapperProps = {
 const AuthenticationWrapper: FC<AuthenticationWrapperProps> = ({
   children,
 }) => {
-  const { data: session, status } = useSession();
   const { setShowBackdrop } = useContext(
     BackdropContext
   ) as BackdropContextType;
+  const { data: session, status } = useSession();
   useEffect(() => {
     if (!session && status !== 'loading') signIn();
   }, [session, status]);

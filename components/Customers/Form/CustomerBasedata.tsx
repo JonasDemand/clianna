@@ -26,7 +26,6 @@ const CustomerBasedata: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            required
             type="text"
             label="Vorname"
             value={selected?.firstname ?? ''}
@@ -42,7 +41,6 @@ const CustomerBasedata: FC = () => {
           <TextField
             variant="filled"
             fullWidth
-            required
             type="text"
             label="Nachname"
             value={selected?.lastname ?? ''}
