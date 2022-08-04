@@ -1,14 +1,9 @@
+import FormInput from '@components/Inputs/FormInput';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Email, Phone } from '@mui/icons-material';
-import {
-  FormLabel,
-  Grid,
-  IconButton,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Email, Phone, Smartphone } from '@mui/icons-material';
+import { FormLabel, Grid, IconButton, Typography } from '@mui/material';
 import { FC, useContext, useState } from 'react';
 
 const CustomerBasedata: FC = () => {
@@ -17,18 +12,16 @@ const CustomerBasedata: FC = () => {
   ) as CustomerContextType;
   const [emailFocused, setEmailFocused] = useState(false);
   const [telFocused, setTelFocused] = useState(false);
+  const [mobileFocused, setMobileFocused] = useState(false);
 
   return (
     <FormLabel>
       <Typography sx={{ mb: 1 }}>Stammdaten</Typography>
-      <Grid container spacing={1}>
+      <Grid container spacing={2}>
         <Grid item xs={6}>
-          <TextField
-            variant="filled"
-            fullWidth
-            type="text"
+          <FormInput
             label="Vorname"
-            value={selected?.firstname ?? ''}
+            value={selected?.firstname}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
@@ -38,12 +31,9 @@ const CustomerBasedata: FC = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            variant="filled"
-            fullWidth
-            type="text"
+          <FormInput
             label="Nachname"
-            value={selected?.lastname ?? ''}
+            value={selected?.lastname}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
@@ -52,45 +42,11 @@ const CustomerBasedata: FC = () => {
             }
           />
         </Grid>
-
         <Grid item xs={6}>
-          <TextField
-            variant="filled"
-            fullWidth
-            type="email"
-            label="E-Mail"
-            value={selected?.email ?? ''}
-            onFocus={() => setEmailFocused(true)}
-            onBlur={() => setEmailFocused(false)}
-            onChange={(e) =>
-              setSelected({
-                ...(selected as ICustomerWithOrders),
-                email: e.target.value,
-              })
-            }
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  disabled={!selected?.email || emailFocused}
-                  onClick={() => {
-                    selected?.email &&
-                      (window.location.href = `mailto: ${selected?.email}`);
-                  }}
-                  sx={{ cursor: 'pointer' }}
-                >
-                  <Email />
-                </IconButton>
-              ),
-            }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            variant="filled"
-            fullWidth
+          <FormInput
             type="tel"
-            label="Telefon"
-            value={selected?.phone ?? ''}
+            label="Festnetztelefon"
+            value={selected?.phone}
             onFocus={() => setTelFocused(true)}
             onBlur={() => setTelFocused(false)}
             onChange={(e) =>
@@ -116,12 +72,68 @@ const CustomerBasedata: FC = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            sx={{ width: 1 }}
-            variant="filled"
+          <FormInput
+            type="tel"
+            label="Mobiltelefon"
+            value={selected?.mobile}
+            onFocus={() => setMobileFocused(true)}
+            onBlur={() => setMobileFocused(false)}
+            onChange={(e) =>
+              setSelected({
+                ...(selected as ICustomerWithOrders),
+                mobile: e.target.value,
+              })
+            }
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  disabled={!selected?.mobile || mobileFocused}
+                  onClick={() => {
+                    selected?.mobile &&
+                      (window.location.href = `tel: ${selected?.mobile}`);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <Smartphone />
+                </IconButton>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormInput
+            type="email"
+            label="E-Mail"
+            value={selected?.email}
+            onFocus={() => setEmailFocused(true)}
+            onBlur={() => setEmailFocused(false)}
+            onChange={(e) =>
+              setSelected({
+                ...(selected as ICustomerWithOrders),
+                email: e.target.value,
+              })
+            }
+            InputProps={{
+              endAdornment: (
+                <IconButton
+                  disabled={!selected?.email || emailFocused}
+                  onClick={() => {
+                    selected?.email &&
+                      (window.location.href = `mailto: ${selected?.email}`);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  <Email />
+                </IconButton>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormInput
             type="number"
             label="Schuhgröße"
-            value={selected?.shoesize ?? ''}
+            value={selected?.shoesize}
             inputProps={{
               step: '1',
             }}

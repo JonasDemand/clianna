@@ -8,6 +8,7 @@ import { GridSelectionModel } from '@mui/x-data-grid';
 import { Order } from '@prisma/client';
 import { FC, useCallback, useContext } from 'react';
 
+import OrderFrom from './Form';
 import OrdersTableHeader from './OrdersTableHeader';
 
 const OrdersPage: FC = () => {
@@ -45,12 +46,12 @@ const OrdersPage: FC = () => {
         onSelectionModelChange={onSelectionModelChange}
       />
       <SideOverlay
-        heading={'W Heading'}
+        heading={'Auftragsbearbeitung'}
         open={!!selected}
         onClose={onClose}
         onSave={onSave}
       >
-        Hello World
+        <OrderFrom />
       </SideOverlay>
     </Box>
   );

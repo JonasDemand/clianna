@@ -18,8 +18,15 @@ export const columns: GridColDef<ICustomerWithOrders>[] = [
   { field: 'streetnumber', headerName: 'Hausnummer', flex: 1 },
   { field: 'city', headerName: 'Stadt', flex: 1 },
   { field: 'postalcode', headerName: 'Postleitzahl', flex: 1 },
-  { field: 'phone', headerName: 'Telefon', flex: 1 },
+  { field: 'phone', headerName: 'Festnetztelefon', flex: 1 },
+  { field: 'mobile', headerName: 'Mobiltelefon', flex: 1 },
   { field: 'shoesize', headerName: 'Schuhgröße', flex: 1 },
+  {
+    field: 'whatsapp',
+    headerName: 'WhatsApp',
+    flex: 1,
+    renderCell: ({ row }) => (row.whatsapp ? <Check /> : <Close />),
+  },
   {
     field: 'orders',
     headerName: 'Offene Bestellungen',
@@ -41,6 +48,8 @@ export const defaultCustomer = (): ICustomerWithOrders => ({
   postalcode: null,
   phone: null,
   shoesize: null,
+  mobile: null,
+  whatsapp: false,
   disabled: false,
   orders: new Array<Order>(),
 });

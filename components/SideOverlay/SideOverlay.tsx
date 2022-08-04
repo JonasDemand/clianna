@@ -3,7 +3,13 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { Delete, Save } from '@mui/icons-material';
 import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { FC, ReactNode, useCallback, useContext } from 'react';
+import {
+  FC,
+  FormEventHandler,
+  ReactNode,
+  useCallback,
+  useContext,
+} from 'react';
 
 export type SideOverlayProps = {
   children: ReactNode;
@@ -24,25 +30,32 @@ const SideOverlay: FC<SideOverlayProps> = ({
     BackdropContext
   ) as BackdropContextType;
 
-  const _onSave = useCallback(async () => {
-    setShowBackdrop(true);
-    await onSave();
-    setShowBackdrop(false);
-  }, [onSave]);
+  const _onSave: FormEventHandler<HTMLFormElement> = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setShowBackdrop(true);
+      await onSave();
+      setShowBackdrop(false);
+    },
+    [onSave]
+  );
 
   return (
     <Drawer open={open} anchor="right" onClose={onClose}>
       <Box
+        component="form"
+        onSubmit={_onSave}
         sx={{
           width: { xs: 1, md: 'calc(100vw/2)' },
           p: 1,
           display: 'flex',
           flexFlow: 'column',
           height: 1,
+          '.Mui-focused': { color: 'GrayText' },
         }}
       >
         <Typography variant="h6">{heading}</Typography>
-        <Divider />
+        <Divider sx={{ mb: 2 }} />
         <Box
           sx={{
             flex: '1 1 auto',
@@ -50,7 +63,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
         >
           {children}
         </Box>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={6}>
             <Button
               fullWidth
@@ -68,7 +81,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
               variant="contained"
               color="success"
               startIcon={<Save />}
-              onClick={_onSave}
+              type="submit"
             >
               Speichern
             </Button>

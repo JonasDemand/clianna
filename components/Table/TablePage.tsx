@@ -1,16 +1,17 @@
 import { Box } from '@mui/system';
-import { DataGrid, DataGridProps, deDE } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  DataGridProps,
+  deDE,
+  GridValidRowModel,
+} from '@mui/x-data-grid';
 import React, { ReactNode } from 'react';
 
-type TablePageProps<T> = {
+type TablePageProps<T extends GridValidRowModel> = DataGridProps<T> & {
   header: ReactNode;
-  rows: T[];
-  columns: DataGridProps['columns'];
-  selectionModel?: DataGridProps['selectionModel'];
-  onSelectionModelChange?: DataGridProps['onSelectionModelChange'];
 };
 
-const TablePage = <T extends {}>({
+const TablePage = <T extends GridValidRowModel>({
   header,
   ...gridProps
 }: TablePageProps<T>) => {

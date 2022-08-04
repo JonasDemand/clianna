@@ -3,12 +3,12 @@ import { FC } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
-import CustomerFormHeader from './CustomerFormHeader';
+import CustomerGeneral from './CustomerGeneral';
 
 const CustomerForm: FC = () => (
-  <Grid container direction="column" spacing={1}>
+  <Grid container direction="column" spacing={2}>
     <Grid item>
-      <CustomerFormHeader />
+      <CustomerGeneral />
     </Grid>
     <Grid item>
       <CustomerBasedata />

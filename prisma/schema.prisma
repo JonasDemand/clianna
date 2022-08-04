@@ -28,6 +28,8 @@ model Customer {
   city         String?
   postalcode   String?
   phone        String?
+  mobile       String?
+  whatsapp     Boolean?
   shoesize     Float?
   disabled     Boolean?
   orders       Order[]

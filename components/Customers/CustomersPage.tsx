@@ -104,7 +104,7 @@ const CustomersPage: FC = () => {
         onSelectionModelChange={onSelectionModelChange}
       />
       <SideOverlay
-        heading={selected?.id === -1 ? 'Neuer Kunde' : `Kunde ${selected?.id}`}
+        heading="Kundenbearbeitung"
         open={!!selected}
         onClose={onClose}
         onSave={onSave}
