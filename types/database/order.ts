@@ -10,10 +10,10 @@ export enum ShippingType {
   Visit,
 }
 
-export const ShippingTypeLabel = new Map<ShippingType, string>([
+export const ShippingTypeLabels = new Map<ShippingType, string>([
   [ShippingType.Send, 'Versand'],
   [ShippingType.Collect, 'Abholung'],
-  [ShippingType.Visit, 'hausbesuch'],
+  [ShippingType.Visit, 'Hausbesuch'],
 ]);
 
 export enum OrderType {
@@ -27,7 +27,7 @@ export enum OrderType {
   Miscellaneous,
 }
 
-export const OrderTypeLabel = new Map<OrderType, string>([
+export const OrderTypeLabels = new Map<OrderType, string>([
   [OrderType.Einlagen, 'Einlagen'],
   [OrderType.Einlagenarbeiten, 'Einlagenarbeiten'],
   [OrderType.Abrolloptimierung, 'Abrolloptimierung'],
@@ -48,7 +48,7 @@ export enum OrderSpecification {
   Nachlieferung,
 }
 
-export const OrderSpecificationLabel = new Map<OrderSpecification, string>([
+export const OrderSpecificationLabels = new Map<OrderSpecification, string>([
   [OrderSpecification.Sport, 'Sport'],
   [OrderSpecification.Business, 'Business'],
   [OrderSpecification.Casual, 'Casual'],
@@ -56,6 +56,16 @@ export const OrderSpecificationLabel = new Map<OrderSpecification, string>([
   [OrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
   [OrderSpecification.Erstlieferung, 'Erstlieferung'],
   [OrderSpecification.Nachlieferung, 'Nachlieferung'],
+]);
+
+export enum Tax {
+  Nineteen,
+  Seven,
+}
+
+export const TaxLabels = new Map<Tax, string>([
+  [Tax.Nineteen, '19'],
+  [Tax.Seven, '7'],
 ]);
 
 export enum Brand {
