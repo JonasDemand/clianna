@@ -27,7 +27,12 @@ export class Customer {
   }
   public async GetAll(): Promise<ICustomerWithOrders[]> {
     return await prisma.customer.findMany({
-      include: { orders: true },
+      include: { orders: { where: { pending: true } } },
+    });
+  }
+  public async GetActive(): Promise<PrismaCustomer[]> {
+    return await prisma.customer.findMany({
+      where: { disabled: false },
     });
   }
   public async GetSingle(id: number): Promise<ICustomerWithOrders | null> {

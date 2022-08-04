@@ -6,7 +6,7 @@ import CustomerBasedata from './CustomerBasedata';
 import CustomerFormHeader from './CustomerFormHeader';
 
 const CustomerForm: FC = () => (
-  <Grid container direction="column" spacing={2}>
+  <Grid container direction="column" spacing={1}>
     <Grid item>
       <CustomerFormHeader />
     </Grid>

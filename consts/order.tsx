@@ -1,4 +1,4 @@
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithCustomer, OrderType } from '@customTypes/database/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
@@ -14,10 +14,18 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     field: 'customerId',
     headerName: 'Kunde',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.customer
-        ? `${row.customer.id} - ${row.customer.firstname} ${row.customer.lastname}`
+    valueGetter: ({ row: { customer } }) =>
+      customer
+        ? `${customer.id} ${
+            customer.firstname || customer.lastname ? '-' : ''
+          } ${customer.firstname} ${customer.lastname}`
         : '',
+  },
+  {
+    field: 'type',
+    headerName: 'Typ',
+    flex: 1,
+    valueGetter: ({ row: { type } }) => OrderType[type as OrderType],
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
   { field: 'price', headerName: 'Preis', flex: 1 },

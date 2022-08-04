@@ -2,14 +2,14 @@ import AuthenticationWrapper from '@components/Authentication/AuthenticationWrap
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import OrdersPage from '@components/Orders/OrdersPage';
 import OrderProvider from '@context/OrderContext';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Order } from '@prisma/client';
+import { IOrderWithCustomer } from '@customTypes/database/order';
+import { Customer } from '@prisma/client';
 import { Db } from '@utils/database';
 import { GetStaticProps, NextPage } from 'next';
 
 type OrdersProps = {
-  customers: ICustomerWithOrders[];
-  orders: Order[];
+  customers: Customer[];
+  orders: IOrderWithCustomer[];
 };
 
 const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {
@@ -27,7 +27,7 @@ const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {
 export const getStaticProps: GetStaticProps<OrdersProps> = async () => ({
   props: {
     orders: await Db.Order.GetAll(),
-    customers: await Db.Customer.GetAll(),
+    customers: await Db.Customer.GetActive(),
   },
 });
 

@@ -44,7 +44,12 @@ const OrdersPage: FC = () => {
         selectionModel={selected ? [selected.id] : []}
         onSelectionModelChange={onSelectionModelChange}
       />
-      <SideOverlay open={!!selected} onClose={onClose} onSave={onSave}>
+      <SideOverlay
+        heading={'W Heading'}
+        open={!!selected}
+        onClose={onClose}
+        onSave={onSave}
+      >
         Hello World
       </SideOverlay>
     </Box>

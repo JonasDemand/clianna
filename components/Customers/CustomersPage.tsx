@@ -103,7 +103,12 @@ const CustomersPage: FC = () => {
         selectionModel={selected ? [selected.id] : []}
         onSelectionModelChange={onSelectionModelChange}
       />
-      <SideOverlay open={!!selected} onClose={onClose} onSave={onSave}>
+      <SideOverlay
+        heading={selected?.id === -1 ? 'Neuer Kunde' : `Kunde ${selected?.id}`}
+        open={!!selected}
+        onClose={onClose}
+        onSave={onSave}
+      >
         <CustomerForm />
       </SideOverlay>
     </Box>

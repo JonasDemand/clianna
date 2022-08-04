@@ -32,8 +32,8 @@ export const defaultColumns = columns.slice(0, 4);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
   id: -1,
-  firstname: '',
-  lastname: '',
+  firstname: null,
+  lastname: null,
   email: null,
   street: null,
   streetnumber: null,

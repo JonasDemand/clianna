@@ -1,16 +1,13 @@
 import { columns, defaultCustomer } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType, ShowCustomers } from '@customTypes/customer';
+import {
+  CustomerContextType,
+  ShowCustomer,
+  ShowCustomerLabel,
+} from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
-import {
-  Autocomplete,
-  Button,
-  Divider,
-  Grid,
-  MenuItem,
-  TextField,
-} from '@mui/material';
+import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import React, {
   ChangeEvent,
@@ -19,6 +16,8 @@ import React, {
   SyntheticEvent,
   useContext,
 } from 'react';
+
+import EnumSelect from '../Inputs/EnumSelect';
 
 const CustomersTableHeader: FC = () => {
   const {
@@ -73,19 +72,13 @@ const CustomersTableHeader: FC = () => {
         justifyContent="space-between"
       >
         <Grid item xs={12} md={2}>
-          <TextField
-            fullWidth
-            value={showCustomers}
-            select
+          <EnumSelect
             label="Status"
-            onChange={(e) =>
-              setShowCustomers(parseInt(e.target.value, 10) as ShowCustomers)
-            }
-          >
-            <MenuItem value={ShowCustomers.All}>Alle</MenuItem>
-            <MenuItem value={ShowCustomers.Active}>Aktive</MenuItem>
-            <MenuItem value={ShowCustomers.Disabled}>Deaktivierte</MenuItem>
-          </TextField>
+            value={showCustomers}
+            enumToUse={ShowCustomer}
+            enumLabel={ShowCustomerLabel}
+            onChange={setShowCustomers}
+          />
         </Grid>
         <Grid item xs={12} md={2}>
           <Button

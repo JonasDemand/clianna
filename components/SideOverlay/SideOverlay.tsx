@@ -1,13 +1,14 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { Delete, Save } from '@mui/icons-material';
-import { Button, Drawer, Grid } from '@mui/material';
+import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { FC, ReactNode, useCallback, useContext } from 'react';
 
 export type SideOverlayProps = {
   children: ReactNode;
   open: boolean;
+  heading: string;
   onSave: () => void | Promise<void>;
   onClose: () => void;
 };
@@ -15,6 +16,7 @@ export type SideOverlayProps = {
 const SideOverlay: FC<SideOverlayProps> = ({
   children,
   open,
+  heading,
   onSave,
   onClose,
 }) => {
@@ -39,6 +41,8 @@ const SideOverlay: FC<SideOverlayProps> = ({
           height: 1,
         }}
       >
+        <Typography variant="h6">{heading}</Typography>
+        <Divider />
         <Box
           sx={{
             flex: '1 1 auto',

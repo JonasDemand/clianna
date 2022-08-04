@@ -15,6 +15,7 @@ export class Order {
   public async GetAll() {
     return await prisma.order.findMany({
       include: { customer: true },
+      where: { customer: { disabled: false } },
     });
   }
   public async GetSingle() {

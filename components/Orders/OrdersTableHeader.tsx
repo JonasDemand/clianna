@@ -1,16 +1,14 @@
+import EnumSelect from '@components/Inputs/EnumSelect';
 import { columns, defaultOrder } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
-import { OrderContextType, ShowOrders } from '@customTypes/order';
-import { Add, Search } from '@mui/icons-material';
 import {
-  Autocomplete,
-  Button,
-  Divider,
-  Grid,
-  MenuItem,
-  TextField,
-} from '@mui/material';
+  OrderContextType,
+  ShowOrder,
+  ShowOrderLabel,
+} from '@customTypes/order';
+import { Add, Search } from '@mui/icons-material';
+import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import React, {
   ChangeEvent,
@@ -73,19 +71,13 @@ const OrdersTableHeader: FC = () => {
         justifyContent="space-between"
       >
         <Grid item xs={12} md={2}>
-          <TextField
-            fullWidth
-            value={showOrders}
-            select
+          <EnumSelect
             label="Status"
-            onChange={(e) =>
-              setShowOrders(parseInt(e.target.value, 10) as ShowOrders)
-            }
-          >
-            <MenuItem value={ShowOrders.All}>Alle</MenuItem>
-            <MenuItem value={ShowOrders.Pending}>Ausstehend</MenuItem>
-            <MenuItem value={ShowOrders.Done}>Erledigt</MenuItem>
-          </TextField>
+            value={showOrders}
+            enumToUse={ShowOrder}
+            enumLabel={ShowOrderLabel}
+            onChange={setShowOrders}
+          />
         </Grid>
         <Grid item xs={12} md={2}>
           <Button

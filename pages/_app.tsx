@@ -10,6 +10,7 @@ import { Slide } from '@mui/material';
 import theme from '@utils/theme';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { SessionProvider } from 'next-auth/react';
 import { SnackbarProvider } from 'notistack';
 
@@ -17,6 +18,8 @@ const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) => {
+  const router = useRouter();
+
   return (
     <ThemeProvider theme={theme}>
       <Head>
