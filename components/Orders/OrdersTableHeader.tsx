@@ -1,12 +1,8 @@
 import EnumSelect from '@components/Inputs/EnumSelect';
-import { columns, defaultOrder } from '@consts/order';
+import { columns, defaultOrder, ShowOrderLabel } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
-import {
-  OrderContextType,
-  ShowOrder,
-  ShowOrderLabel,
-} from '@customTypes/order';
+import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -74,7 +70,7 @@ const OrdersTableHeader: FC = () => {
           <EnumSelect
             label="Status"
             value={showOrders}
-            enumToUse={ShowOrder}
+            enumToUse={EShowOrder}
             enumLabel={ShowOrderLabel}
             onChange={setShowOrders}
           />

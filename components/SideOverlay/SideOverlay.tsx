@@ -1,6 +1,6 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
-import { Delete, Save } from '@mui/icons-material';
+import { Close, Save } from '@mui/icons-material';
 import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import {
@@ -51,7 +51,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
           display: 'flex',
           flexFlow: 'column',
           height: 1,
-          '.Mui-focused': { color: 'GrayText' },
+          '& .Mui-focused': { color: 'GrayText' },
         }}
       >
         <Typography variant="h6">{heading}</Typography>
@@ -59,17 +59,21 @@ const SideOverlay: FC<SideOverlayProps> = ({
         <Box
           sx={{
             flex: '1 1 auto',
+            overflow: 'auto',
           }}
         >
           {children}
         </Box>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Divider sx={{ mt: 2 }} />
+          </Grid>
           <Grid item xs={6}>
             <Button
               fullWidth
               variant="contained"
               color="error"
-              startIcon={<Delete />}
+              startIcon={<Close />}
               onClick={onClose}
             >
               Abbrechen

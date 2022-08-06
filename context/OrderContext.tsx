@@ -1,6 +1,6 @@
 import { defaultColumns } from '@consts/order';
 import { IOrderWithCustomer } from '@customTypes/database/order';
-import { OrderContextType, ShowOrder } from '@customTypes/order';
+import { OrderContextType, EShowOrder } from '@customTypes/order';
 import { Customer } from '@prisma/client';
 import {
   createContext,
@@ -26,7 +26,7 @@ const OrderProvider: FC<OrderContextProps> = ({
 }) => {
   const [orders, setOrders] = useState<IOrderWithCustomer[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
-  const [showOrders, setShowOrders] = useState(ShowOrder.Pending);
+  const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeColumns, setActiveColumns] = useState(defaultColumns);
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<IOrderWithCustomer | null>(null);
@@ -40,9 +40,9 @@ const OrderProvider: FC<OrderContextProps> = ({
     const searchTerms = searchText
       .split(' ')
       .map((txt) => `.*${txt.toLowerCase()}.*`);
-    const pendingValue = showOrders === ShowOrder.Pending;
+    const pendingValue = showOrders === EShowOrder.Pending;
     const ordersToSearch =
-      showOrders === ShowOrder.All
+      showOrders === EShowOrder.All
         ? orders
         : orders.filter((order) => order.pending === pendingValue);
 

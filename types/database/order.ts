@@ -4,19 +4,13 @@ export interface IOrderWithCustomer extends Order {
   customer?: Customer | null;
 }
 
-export enum ShippingType {
+export enum EShippingType {
   Send,
   Collect,
   Visit,
 }
 
-export const ShippingTypeLabels = new Map<ShippingType, string>([
-  [ShippingType.Send, 'Versand'],
-  [ShippingType.Collect, 'Abholung'],
-  [ShippingType.Visit, 'Hausbesuch'],
-]);
-
-export enum OrderType {
+export enum EOrderType {
   Einlagen,
   Einlagenarbeiten,
   Abrolloptimierung,
@@ -27,18 +21,7 @@ export enum OrderType {
   Miscellaneous,
 }
 
-export const OrderTypeLabels = new Map<OrderType, string>([
-  [OrderType.Einlagen, 'Einlagen'],
-  [OrderType.Einlagenarbeiten, 'Einlagenarbeiten'],
-  [OrderType.Abrolloptimierung, 'Abrolloptimierung'],
-  [OrderType.Schuharbeiten, 'Schuharbeiten'],
-  [OrderType.Massschuhleisten, 'Massschuhleisten'],
-  [OrderType.Massschuhe, 'Massschuhe'],
-  [OrderType.Schuhbestellung, 'Schuhbestellung'],
-  [OrderType.Miscellaneous, 'Sonstiges'],
-]);
-
-export enum OrderSpecification {
+export enum EOrderSpecification {
   Sport,
   Business,
   Casual,
@@ -48,27 +31,12 @@ export enum OrderSpecification {
   Nachlieferung,
 }
 
-export const OrderSpecificationLabels = new Map<OrderSpecification, string>([
-  [OrderSpecification.Sport, 'Sport'],
-  [OrderSpecification.Business, 'Business'],
-  [OrderSpecification.Casual, 'Casual'],
-  [OrderSpecification.Workwear, 'Workwear'],
-  [OrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
-  [OrderSpecification.Erstlieferung, 'Erstlieferung'],
-  [OrderSpecification.Nachlieferung, 'Nachlieferung'],
-]);
-
-export enum Tax {
+export enum ETax {
   Nineteen,
   Seven,
 }
 
-export const TaxLabels = new Map<Tax, string>([
-  [Tax.Nineteen, '19'],
-  [Tax.Seven, '7'],
-]);
-
-export enum Brand {
+export enum EBrand {
   Asics = 'Asics',
   Brooks = 'Brooks',
   Baer = 'Bär',

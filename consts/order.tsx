@@ -1,4 +1,11 @@
-import { IOrderWithCustomer, OrderType } from '@customTypes/database/order';
+import {
+  EOrderSpecification,
+  EOrderType,
+  EShippingType,
+  ETax,
+  IOrderWithCustomer,
+} from '@customTypes/database/order';
+import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
@@ -25,7 +32,7 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     field: 'type',
     headerName: 'Typ',
     flex: 1,
-    valueGetter: ({ row: { type } }) => OrderType[type as OrderType],
+    valueGetter: ({ row: { type } }) => EOrderType[type as EOrderType],
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
   { field: 'price', headerName: 'Preis', flex: 1 },
@@ -57,3 +64,41 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   taxes: null,
   type: null,
 });
+
+export const ShowOrderLabel = new Map<EShowOrder, string>([
+  [EShowOrder.All, 'Alle'],
+  [EShowOrder.Pending, 'Ausstehend'],
+  [EShowOrder.Done, 'Erledigt'],
+]);
+
+export const TaxLabels = new Map<ETax, string>([
+  [ETax.Nineteen, '19%'],
+  [ETax.Seven, '7%'],
+]);
+
+export const OrderSpecificationLabels = new Map<EOrderSpecification, string>([
+  [EOrderSpecification.Sport, 'Sport'],
+  [EOrderSpecification.Business, 'Business'],
+  [EOrderSpecification.Casual, 'Casual'],
+  [EOrderSpecification.Workwear, 'Workwear'],
+  [EOrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
+  [EOrderSpecification.Erstlieferung, 'Erstlieferung'],
+  [EOrderSpecification.Nachlieferung, 'Nachlieferung'],
+]);
+
+export const OrderTypeLabels = new Map<EOrderType, string>([
+  [EOrderType.Einlagen, 'Einlagen'],
+  [EOrderType.Einlagenarbeiten, 'Einlagenarbeiten'],
+  [EOrderType.Abrolloptimierung, 'Abrolloptimierung'],
+  [EOrderType.Schuharbeiten, 'Schuharbeiten'],
+  [EOrderType.Massschuhleisten, 'Massschuhleisten'],
+  [EOrderType.Massschuhe, 'Massschuhe'],
+  [EOrderType.Schuhbestellung, 'Schuhbestellung'],
+  [EOrderType.Miscellaneous, 'Sonstiges'],
+]);
+
+export const ShippingTypeLabels = new Map<EShippingType, string>([
+  [EShippingType.Send, 'Versand'],
+  [EShippingType.Collect, 'Abholung'],
+  [EShippingType.Visit, 'Hausbesuch'],
+]);

@@ -1,10 +1,6 @@
-import { columns, defaultCustomer } from '@consts/customer';
+import { columns, defaultCustomer, ShowCustomerLabel } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
-import {
-  CustomerContextType,
-  ShowCustomer,
-  ShowCustomerLabel,
-} from '@customTypes/customer';
+import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
 import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
@@ -75,7 +71,7 @@ const CustomersTableHeader: FC = () => {
           <EnumSelect
             label="Status"
             value={showCustomers}
-            enumToUse={ShowCustomer}
+            enumToUse={EShowCustomer}
             enumLabel={ShowCustomerLabel}
             onChange={setShowCustomers}
           />

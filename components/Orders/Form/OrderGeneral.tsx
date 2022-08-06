@@ -1,17 +1,16 @@
+import EnumRadioList from '@components/Inputs/EnumRadioList';
 import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
+import { OrderTypeLabels, ShippingTypeLabels, TaxLabels } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import {
+  EOrderType,
+  EShippingType,
+  ETax,
   IOrderWithCustomer,
-  OrderType,
-  OrderTypeLabels,
-  ShippingType,
-  ShippingTypeLabels,
-  Tax,
-  TaxLabels,
 } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
-import { FormControl, FormLabel, Grid } from '@mui/material';
+import { FormControl, FormLabel, Grid, InputAdornment } from '@mui/material';
 import { FC, useContext } from 'react';
 
 const OrderGeneral: FC = () => {
@@ -25,12 +24,13 @@ const OrderGeneral: FC = () => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <EnumSelect
-            variant="filled"
-            autocomplete
             label="Typ"
-            enumToUse={OrderType}
+            enumToUse={EOrderType}
             enumLabel={OrderTypeLabels}
-            value={selected?.type}
+            value={selected?.type ?? ''}
+            aditionalTextFieldProps={{
+              variant: 'filled',
+            }}
             onChange={(value) =>
               setSelected({
                 ...(selected as IOrderWithCustomer),
@@ -40,13 +40,43 @@ const OrderGeneral: FC = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <EnumSelect
+          <FormInput
+            label="Preis"
+            type="number"
+            value={selected?.price ?? ''}
+            onChange={(e) =>
+              setSelected({
+                ...(selected as IOrderWithCustomer),
+                price: parseFloat(e.target.value),
+              })
+            }
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">€</InputAdornment>
+              ),
+            }}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormInput
+            multiline
             variant="filled"
-            autocomplete
+            label="Kommentar"
+            value={selected?.comment ?? ''}
+            onChange={(e) =>
+              setSelected({
+                ...(selected as IOrderWithCustomer),
+                comment: e.target.value,
+              })
+            }
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <EnumRadioList
             label="Versand"
-            enumToUse={ShippingType}
+            enumToUse={EShippingType}
             enumLabel={ShippingTypeLabels}
-            value={selected?.shippingType}
+            value={selected?.shippingType ?? ''}
             onChange={(value) =>
               setSelected({
                 ...(selected as IOrderWithCustomer),
@@ -56,25 +86,11 @@ const OrderGeneral: FC = () => {
           />
         </Grid>
         <Grid item xs={6}>
-          <FormInput
-            label="Preis"
-            value={selected?.price ?? ''}
-            onChange={(e) =>
-              setSelected({
-                ...(selected as IOrderWithCustomer),
-                price: parseFloat(e.target.value),
-              })
-            }
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <EnumSelect
-            variant="filled"
-            autocomplete
+          <EnumRadioList
             label="Steuer"
-            enumToUse={Tax}
+            enumToUse={ETax}
             enumLabel={TaxLabels}
-            value={selected?.taxes}
+            value={selected?.taxes ?? ''}
             onChange={(value) =>
               setSelected({
                 ...(selected as IOrderWithCustomer),

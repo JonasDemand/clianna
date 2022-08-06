@@ -11,22 +11,16 @@ export type OrderContextType = {
   filteredOrders: IOrderWithCustomer[];
   selected: IOrderWithCustomer | null;
   setSelected: (order: IOrderWithCustomer | null) => void;
-  showOrders: ShowOrder;
-  setShowOrders: (state: ShowOrder) => void;
+  showOrders: EShowOrder;
+  setShowOrders: (state: EShowOrder) => void;
   activeColumns: GridColDef<IOrderWithCustomer>[];
   setActiveColumns: (activeColumns: GridColDef<IOrderWithCustomer>[]) => void;
   searchText: string;
   setSearchText: (text: string) => void;
 };
 
-export enum ShowOrder {
+export enum EShowOrder {
   All,
   Pending,
   Done,
 }
-
-export const ShowOrderLabel = new Map<ShowOrder, string>([
-  [ShowOrder.All, 'Alle'],
-  [ShowOrder.Pending, 'Ausstehend'],
-  [ShowOrder.Done, 'Erledigt'],
-]);

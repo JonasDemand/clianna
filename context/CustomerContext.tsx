@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react';
 
-import { CustomerContextType, ShowCustomer } from '../types/customer';
+import { CustomerContextType, EShowCustomer } from '../types/customer';
 
 export const CustomerContext = createContext<CustomerContextType | null>(null);
 
@@ -23,7 +23,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   initialCustomers,
 }) => {
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
-  const [showCustomers, setShowCustomers] = useState(ShowCustomer.Active);
+  const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeColumns, setActiveColumns] = useState(defaultColumns);
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
@@ -37,9 +37,9 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     const searchTerms = searchText
       .split(' ')
       .map((txt) => `.*${txt.toLowerCase()}.*`);
-    const pendingValue = showCustomers === ShowCustomer.Disabled;
+    const pendingValue = showCustomers === EShowCustomer.Disabled;
     const customersToSearch =
-      showCustomers === ShowCustomer.All
+      showCustomers === EShowCustomer.All
         ? customers
         : customers.filter((customer) => customer.disabled === pendingValue);
 

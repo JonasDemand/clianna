@@ -8,22 +8,16 @@ export type CustomerContextType = {
   filteredCustomers: ICustomerWithOrders[];
   selected: ICustomerWithOrders | null;
   setSelected: (customer: ICustomerWithOrders | null) => void;
-  showCustomers: ShowCustomer;
-  setShowCustomers: (state: ShowCustomer) => void;
+  showCustomers: EShowCustomer;
+  setShowCustomers: (state: EShowCustomer) => void;
   activeColumns: GridColDef<ICustomerWithOrders>[];
   setActiveColumns: (activeColumns: GridColDef<ICustomerWithOrders>[]) => void;
   searchText: string;
   setSearchText: (text: string) => void;
 };
 
-export enum ShowCustomer {
+export enum EShowCustomer {
   All,
   Active,
   Disabled,
 }
-
-export const ShowCustomerLabel = new Map<ShowCustomer, string>([
-  [ShowCustomer.All, 'Alle'],
-  [ShowCustomer.Active, 'Aktiv'],
-  [ShowCustomer.Disabled, 'Deaktiviert'],
-]);

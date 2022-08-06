@@ -1,3 +1,4 @@
+import { EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -53,3 +54,9 @@ export const defaultCustomer = (): ICustomerWithOrders => ({
   disabled: false,
   orders: new Array<Order>(),
 });
+
+export const ShowCustomerLabel = new Map<EShowCustomer, string>([
+  [EShowCustomer.All, 'Alle'],
+  [EShowCustomer.Active, 'Aktiv'],
+  [EShowCustomer.Disabled, 'Deaktiviert'],
+]);

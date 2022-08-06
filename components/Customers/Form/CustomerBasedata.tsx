@@ -135,14 +135,12 @@ const CustomerBasedata: FC = () => {
             label="Schuhgröße"
             value={selected?.shoesize}
             inputProps={{
-              step: '1',
+              step: '.5',
             }}
             onChange={(e) =>
               setSelected({
                 ...(selected as ICustomerWithOrders),
-                shoesize: parseFloat(
-                  e.target.value.replace('[^0-9.]', '') ?? ''
-                ),
+                shoesize: parseFloat(e.target.value),
               })
             }
           />
