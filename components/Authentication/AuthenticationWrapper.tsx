@@ -17,7 +17,7 @@ const AuthenticationWrapper: FC<AuthenticationWrapperProps> = ({
   useEffect(() => {
     if (!session && status !== 'loading') signIn();
   }, [session, status]);
-  useEffect(() => setShowBackdrop(!session), [session]);
+  useEffect(() => setShowBackdrop(!session), [session, setShowBackdrop]);
   return <>{session && <>{children}</>}</>;
 };
 

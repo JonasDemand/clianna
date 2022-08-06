@@ -30,7 +30,7 @@ const CustomersPage: FC = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const onClose = useCallback(() => setSelected(null), []);
+  const onClose = useCallback(() => setSelected(null), [setSelected]);
   const onSave = useCallback(async () => {
     if (!selected) return;
     if (
@@ -77,7 +77,7 @@ const CustomersPage: FC = () => {
     }
 
     revalidate();
-  }, [customers, selected]);
+  }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
   const onSelectionModelChange = useCallback(
     (model: GridSelectionModel) => {
       if (selected?.id === -1 && !model[0]) return;
@@ -87,7 +87,7 @@ const CustomersPage: FC = () => {
         ) as ICustomerWithOrders
       );
     },
-    [filteredCustomers, selected]
+    [filteredCustomers, selected?.id, setSelected]
   );
 
   return (

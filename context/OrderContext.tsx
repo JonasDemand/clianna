@@ -1,6 +1,6 @@
 import { defaultColumns } from '@consts/order';
 import { IOrderWithCustomer } from '@customTypes/database/order';
-import { OrderContextType, EShowOrder } from '@customTypes/order';
+import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Customer } from '@prisma/client';
 import {
   createContext,
@@ -55,6 +55,7 @@ const OrderProvider: FC<OrderContextProps> = ({
   useEffect(() => {
     setCustomers(initialCustomers);
     setOrders(initialOrders);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

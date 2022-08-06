@@ -37,7 +37,7 @@ const Userprofile: FC = () => {
         },
       },
     ],
-    []
+    [router]
   );
 
   return (

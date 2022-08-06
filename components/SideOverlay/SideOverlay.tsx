@@ -37,7 +37,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
       await onSave();
       setShowBackdrop(false);
     },
-    [onSave]
+    [onSave, setShowBackdrop]
   );
 
   return (

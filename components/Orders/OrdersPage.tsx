@@ -16,7 +16,7 @@ const OrdersPage: FC = () => {
     OrderContext
   ) as OrderContextType;
 
-  const onClose = useCallback(() => setSelected(null), []);
+  const onClose = useCallback(() => setSelected(null), [setSelected]);
   const onSave = useCallback(async () => {
     alert('SAVE!!!!');
   }, []);
@@ -29,7 +29,7 @@ const OrdersPage: FC = () => {
         ) as IOrderWithCustomer
       );
     },
-    [filteredOrders, selected]
+    [filteredOrders, selected?.id, setSelected]
   );
 
   return (

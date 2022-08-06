@@ -49,6 +49,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     });
   }, [searchText, showCustomers, customers]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setCustomers(initialCustomers), []);
 
   return (
