@@ -9,7 +9,7 @@ import { Db } from '@utils/database';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
-  const customers = await Db.Customer.GetAll();
+  const customers = await Db.Customer.GetAll(true);
   if (!customers) return res.status(500).send('Unable to retrieve customers');
   res.status(200).send(customers);
 };
@@ -17,7 +17,7 @@ const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id: _, ...body } = req.body as Customer;
 
-  const customer = await Db.Customer.Create(body);
+  const customer = await Db.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');
 
   res.status(200).send(customer);

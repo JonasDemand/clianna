@@ -1,7 +1,7 @@
 import { Customer, Order } from '@prisma/client';
 
 export interface IOrderWithCustomer extends Order {
-  customer?: Customer | null;
+  customer: Customer | null;
 }
 
 export enum EShippingType {

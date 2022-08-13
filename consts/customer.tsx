@@ -55,7 +55,7 @@ export const defaultCustomer = (): ICustomerWithOrders => ({
   orders: new Array<Order>(),
 });
 
-export const ShowCustomerLabel = new Map<EShowCustomer, string>([
+export const ShowCustomerLabels = new Map<EShowCustomer, string>([
   [EShowCustomer.All, 'Alle'],
   [EShowCustomer.Active, 'Aktiv'],
   [EShowCustomer.Disabled, 'Deaktiviert'],

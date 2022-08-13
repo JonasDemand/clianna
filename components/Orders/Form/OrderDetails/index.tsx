@@ -1,7 +1,7 @@
 import { OrderContext } from '@context/OrderContext';
 import { EOrderType } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
-import { FormControl, FormLabel, Typography } from '@mui/material';
+import { FormControl, FormLabel, Grid, Typography } from '@mui/material';
 import { FC, useContext } from 'react';
 
 import Abrolloptimierung from './Abrolloptimierung';
@@ -33,7 +33,7 @@ const OrderTypeFrom: FC = () => {
     case EOrderType.Schuhbestellung:
       return <Schuhbestellung />;
     default:
-      return <Typography>Wähle Typ aus, um Details zu wählen</Typography>;
+      return <Typography>Wähle Typ aus, um Details zu sehen</Typography>;
   }
 };
 
@@ -41,7 +41,9 @@ const OrderDetails: FC = () => {
   return (
     <FormControl fullWidth>
       <FormLabel sx={{ mb: 1 }}>Details</FormLabel>
-      <OrderTypeFrom />
+      <Grid container spacing={2}>
+        <OrderTypeFrom />
+      </Grid>
     </FormControl>
   );
 };

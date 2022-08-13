@@ -13,7 +13,7 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
 
-  const customer = await Db.Customer.GetSingle(parsedId);
+  const customer = await Db.Customer.GetSingle(parsedId, true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
   res.status(200).send(customer);
@@ -24,7 +24,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const parsedId = parseInt(id.toString(), 10);
   const { id: _, ...body } = req.body as Customer;
 
-  const customer = await Db.Customer.Update(parsedId, body);
+  const customer = await Db.Customer.Update(parsedId, body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
   res.status(200).send(customer);

@@ -8,6 +8,7 @@ import {
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
+import { getCustomerDisplay } from '@utils/customer';
 
 export const columns: GridColDef<IOrderWithCustomer>[] = [
   {
@@ -21,26 +22,29 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     field: 'customerId',
     headerName: 'Kunde',
     flex: 1,
-    valueGetter: ({ row: { customer } }) =>
-      customer
-        ? `${customer.id} ${
-            customer.firstname || customer.lastname ? '-' : ''
-          } ${customer.firstname} ${customer.lastname}`
-        : '',
+    valueGetter: ({ row }) => getCustomerDisplay(row.customer),
   },
   {
     field: 'type',
     headerName: 'Typ',
     flex: 1,
-    valueGetter: ({ row: { type } }) => EOrderType[type as EOrderType],
+    valueGetter: ({ row }) => EOrderType[row.type as EOrderType],
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
   { field: 'price', headerName: 'Preis', flex: 1 },
   {
+    field: 'shippingType',
+    headerName: 'Versandtyp',
+    flex: 1,
+    valueGetter: ({ row }) =>
+      row.shippingType !== null ? ShippingTypeLabels.get(row.shippingType) : '',
+  },
+  {
     field: 'taxes',
     headerName: 'MvSt.',
     flex: 1,
-    valueGetter: ({ row }) => (row.taxes ? `${row.taxes}%` : ''),
+    valueGetter: ({ row }) =>
+      row.taxes !== null ? TaxLabels.get(row.taxes) : '',
   },
 ];
 export const defaultColumns = columns.slice(0, 4);
@@ -65,7 +69,7 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   type: null,
 });
 
-export const ShowOrderLabel = new Map<EShowOrder, string>([
+export const ShowOrderLabels = new Map<EShowOrder, string>([
   [EShowOrder.All, 'Alle'],
   [EShowOrder.Pending, 'Ausstehend'],
   [EShowOrder.Done, 'Erledigt'],

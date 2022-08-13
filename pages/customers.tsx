@@ -24,7 +24,7 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
 
 export const getStaticProps: GetStaticProps<CustomersProps> = async () => ({
   props: {
-    customers: await Db.Customer.GetAll(),
+    customers: await Db.Customer.GetAll(true),
   },
 });
 

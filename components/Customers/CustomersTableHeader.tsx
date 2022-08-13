@@ -1,4 +1,4 @@
-import { columns, defaultCustomer, ShowCustomerLabel } from '@consts/customer';
+import { columns, defaultCustomer, ShowCustomerLabels } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
@@ -72,7 +72,7 @@ const CustomersTableHeader: FC = () => {
             label="Status"
             value={showCustomers}
             enumToUse={EShowCustomer}
-            enumLabel={ShowCustomerLabel}
+            enumLabel={ShowCustomerLabels}
             onChange={setShowCustomers}
           />
         </Grid>

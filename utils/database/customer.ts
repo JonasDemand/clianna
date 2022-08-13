@@ -4,41 +4,51 @@ import { Customer as PrismaCustomer, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export class Customer {
-  public async Create(
-    customer: Omit<PrismaCustomer, 'id'>
-  ): Promise<ICustomerWithOrders> {
+  public async Create<IO extends boolean>(
+    customer: Omit<PrismaCustomer, 'id'>,
+    includeOrders: IO
+  ): Promise<IO extends true ? ICustomerWithOrders : PrismaCustomer> {
     return await prisma.customer.create({
       data: customer,
-      include: { orders: true },
+      include: { orders: !!includeOrders },
     });
   }
-  public async Update(
+  public async GetAll<IO extends boolean>(
+    includeOrders: IO
+  ): Promise<IO extends true ? ICustomerWithOrders[] : PrismaCustomer[]> {
+    return await prisma.customer.findMany({
+      include: { orders: includeOrders ? { where: { pending: true } } : false },
+    });
+  }
+  public async GetActive<IO extends boolean>(
+    includeOrders: IO
+  ): Promise<IO extends true ? ICustomerWithOrders[] : PrismaCustomer[]> {
+    return await prisma.customer.findMany({
+      where: { disabled: false },
+      include: { orders: !!includeOrders },
+    });
+  }
+  public async GetSingle<IO extends boolean>(
     id: number,
-    customer: Omit<PrismaCustomer, 'id'>
-  ): Promise<ICustomerWithOrders> {
+    includeOrders: IO
+  ): Promise<(IO extends true ? ICustomerWithOrders : PrismaCustomer) | null> {
+    return await prisma.customer.findUnique({
+      where: { id },
+      include: { orders: !!includeOrders },
+    });
+  }
+  public async Update<IO extends boolean>(
+    id: number,
+    customer: Omit<PrismaCustomer, 'id'>,
+    includeOrders: IO
+  ): Promise<IO extends true ? ICustomerWithOrders : PrismaCustomer> {
     return await prisma.customer.update({
       where: { id },
-      include: { orders: true },
+      include: { orders: !!includeOrders },
       data: customer,
     });
   }
   public async Delete() {
     throw new Error('not Implemented');
-  }
-  public async GetAll(): Promise<ICustomerWithOrders[]> {
-    return await prisma.customer.findMany({
-      include: { orders: { where: { pending: true } } },
-    });
-  }
-  public async GetActive(): Promise<PrismaCustomer[]> {
-    return await prisma.customer.findMany({
-      where: { disabled: false },
-    });
-  }
-  public async GetSingle(id: number): Promise<ICustomerWithOrders | null> {
-    return await prisma.customer.findUnique({
-      where: { id },
-      include: { orders: true },
-    });
   }
 }

@@ -5,7 +5,6 @@ import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box } from '@mui/material';
 import { GridSelectionModel } from '@mui/x-data-grid';
-import { Order } from '@prisma/client';
 import { FC, useCallback, useContext } from 'react';
 
 import OrderFrom from './Form';
@@ -38,7 +37,7 @@ const OrdersPage: FC = () => {
         height: 1,
       }}
     >
-      <TablePage<Order>
+      <TablePage<IOrderWithCustomer>
         header={<OrdersTableHeader />}
         rows={filteredOrders}
         columns={activeColumns}

@@ -1,13 +1,8 @@
+import FormSection from '@components/SideOverlay/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import {
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-} from '@mui/material';
+import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { FC, useContext } from 'react';
 
 const CustomerGeneral: FC = () => {
@@ -16,35 +11,36 @@ const CustomerGeneral: FC = () => {
   ) as CustomerContextType;
 
   return (
-    <FormControl fullWidth>
-      <FormLabel sx={{ mb: 1 }}>Allgemein</FormLabel>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <FormControlLabel
-            control={<Checkbox checked={selected?.disabled ?? false} />}
-            label="Deaktiviert"
-            onChange={(_, checked) =>
-              setSelected({
-                ...(selected as ICustomerWithOrders),
-                disabled: checked,
-              })
-            }
-          />
+    <FormSection label="Allgemein">
+      {selected && (
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={<Checkbox checked={selected.disabled ?? false} />}
+              label="Deaktiviert"
+              onChange={(_, checked) =>
+                setSelected({
+                  ...(selected as ICustomerWithOrders),
+                  disabled: checked,
+                })
+              }
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={<Checkbox checked={selected.whatsapp ?? false} />}
+              label="WhatsApp"
+              onChange={(_, checked) =>
+                setSelected({
+                  ...(selected as ICustomerWithOrders),
+                  whatsapp: checked,
+                })
+              }
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel
-            control={<Checkbox checked={selected?.whatsapp ?? false} />}
-            label="WhatsApp"
-            onChange={(_, checked) =>
-              setSelected({
-                ...(selected as ICustomerWithOrders),
-                whatsapp: checked,
-              })
-            }
-          />
-        </Grid>
-      </Grid>
-    </FormControl>
+      )}
+    </FormSection>
   );
 };
 

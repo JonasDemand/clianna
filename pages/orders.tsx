@@ -26,8 +26,8 @@ const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {
 
 export const getStaticProps: GetStaticProps<OrdersProps> = async () => ({
   props: {
-    orders: await Db.Order.GetAll(),
-    customers: await Db.Customer.GetActive(),
+    orders: await Db.Order.GetAll(true),
+    customers: await Db.Customer.GetActive(false),
   },
 });
 

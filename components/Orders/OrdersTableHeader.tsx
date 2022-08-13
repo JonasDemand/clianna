@@ -1,5 +1,5 @@
 import EnumSelect from '@components/Inputs/EnumSelect';
-import { columns, defaultOrder, ShowOrderLabel } from '@consts/order';
+import { columns, defaultOrder, ShowOrderLabels } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
@@ -71,7 +71,7 @@ const OrdersTableHeader: FC = () => {
             label="Status"
             value={showOrders}
             enumToUse={EShowOrder}
-            enumLabel={ShowOrderLabel}
+            enumLabel={ShowOrderLabels}
             onChange={setShowOrders}
           />
         </Grid>

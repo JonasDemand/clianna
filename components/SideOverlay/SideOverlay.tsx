@@ -51,7 +51,6 @@ const SideOverlay: FC<SideOverlayProps> = ({
           display: 'flex',
           flexFlow: 'column',
           height: 1,
-          '& .Mui-focused': { color: 'GrayText' },
         }}
       >
         <Typography variant="h6">{heading}</Typography>
