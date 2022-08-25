@@ -1,7 +1,16 @@
+import { Grid } from '@mui/material';
 import { FC } from 'react';
 
+import { DuedatePicker } from './CommonInputs';
+
 const Massschuhleisten: FC = () => {
-  return <>Maßschuhleisten</>;
+  return (
+    <>
+      <Grid item xs={6}>
+        <DuedatePicker />
+      </Grid>
+    </>
+  );
 };
 
 export default Massschuhleisten;

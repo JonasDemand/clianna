@@ -1,8 +1,8 @@
 import {
+  EOrderShippingType,
   EOrderSpecification,
+  EOrderTax,
   EOrderType,
-  EShippingType,
-  ETax,
   IOrderWithCustomer,
 } from '@customTypes/database/order';
 import { EShowOrder } from '@customTypes/order';
@@ -37,14 +37,16 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     headerName: 'Versandtyp',
     flex: 1,
     valueGetter: ({ row }) =>
-      row.shippingType !== null ? ShippingTypeLabels.get(row.shippingType) : '',
+      row.shippingType !== null
+        ? OrderShippingTypeLabels.get(row.shippingType)
+        : '',
   },
   {
     field: 'taxes',
     headerName: 'MvSt.',
     flex: 1,
     valueGetter: ({ row }) =>
-      row.taxes !== null ? TaxLabels.get(row.taxes) : '',
+      row.taxes !== null ? OrderTaxLabels.get(row.taxes) : '',
   },
 ];
 export const defaultColumns = columns.slice(0, 4);
@@ -67,6 +69,7 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   specification: null,
   taxes: 0,
   type: null,
+  name: null,
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([
@@ -75,9 +78,9 @@ export const ShowOrderLabels = new Map<EShowOrder, string>([
   [EShowOrder.Done, 'Erledigt'],
 ]);
 
-export const TaxLabels = new Map<ETax, string>([
-  [ETax.Nineteen, '19%'],
-  [ETax.Seven, '7%'],
+export const OrderTaxLabels = new Map<EOrderTax, string>([
+  [EOrderTax.Nineteen, '19%'],
+  [EOrderTax.Seven, '7%'],
 ]);
 
 export const OrderSpecificationLabels = new Map<EOrderSpecification, string>([
@@ -102,8 +105,8 @@ export const OrderTypeLabels = new Map<EOrderType, string>([
   [EOrderType.Miscellaneous, 'Sonstiges'],
 ]);
 
-export const ShippingTypeLabels = new Map<EShippingType, string>([
-  [EShippingType.Send, 'Versand'],
-  [EShippingType.Collect, 'Abholung'],
-  [EShippingType.Visit, 'Hausbesuch'],
+export const OrderShippingTypeLabels = new Map<EOrderShippingType, string>([
+  [EOrderShippingType.Send, 'Versand'],
+  [EOrderShippingType.Collect, 'Abholung'],
+  [EOrderShippingType.Visit, 'Hausbesuch'],
 ]);

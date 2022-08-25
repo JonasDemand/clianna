@@ -2,12 +2,16 @@ import EnumRadioList from '@components/Inputs/EnumRadioList';
 import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
 import FormSection from '@components/SideOverlay/FormSection';
-import { OrderTypeLabels, ShippingTypeLabels, TaxLabels } from '@consts/order';
+import {
+  OrderShippingTypeLabels,
+  OrderTaxLabels,
+  OrderTypeLabels,
+} from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import {
+  EOrderShippingType,
+  EOrderTax,
   EOrderType,
-  EShippingType,
-  ETax,
   IOrderWithCustomer,
 } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
@@ -94,8 +98,8 @@ const OrderGeneral: FC = () => {
           <Grid item xs={6}>
             <EnumRadioList
               label="Versandtyp"
-              enumToUse={EShippingType}
-              enumLabel={ShippingTypeLabels}
+              enumToUse={EOrderShippingType}
+              enumLabel={OrderShippingTypeLabels}
               value={selected.shippingType ?? ''}
               onChange={(value) =>
                 setSelected({
@@ -108,8 +112,8 @@ const OrderGeneral: FC = () => {
           <Grid item xs={6}>
             <EnumRadioList
               label="Steuer"
-              enumToUse={ETax}
-              enumLabel={TaxLabels}
+              enumToUse={EOrderTax}
+              enumLabel={OrderTaxLabels}
               value={selected.taxes ?? ''}
               onChange={(value) =>
                 setSelected({

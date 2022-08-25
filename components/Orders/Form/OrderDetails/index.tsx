@@ -4,34 +4,26 @@ import { OrderContextType } from '@customTypes/order';
 import { FormControl, FormLabel, Grid, Typography } from '@mui/material';
 import { FC, useContext } from 'react';
 
-import Abrolloptimierung from './Abrolloptimierung';
-import Einlagen from './Einlagen';
-import Einlagenarbeiten from './Einlagenarbeiten';
-import Massschuhe from './Masschuhe';
+import General from './General';
 import Massschuhleisten from './Massschuhleisten';
 import Miscellaneous from './Miscellaneous';
-import Schuharbeiten from './Schuharbeiten';
 import Schuhbestellung from './Schuhbestellung';
 
 const OrderTypeFrom: FC = () => {
   const { selected } = useContext(OrderContext) as OrderContextType;
   switch (selected?.type) {
     case EOrderType.Abrolloptimierung:
-      return <Abrolloptimierung />;
     case EOrderType.Einlagen:
-      return <Einlagen />;
     case EOrderType.Einlagenarbeiten:
-      return <Einlagenarbeiten />;
+    case EOrderType.Schuharbeiten:
     case EOrderType.Massschuhe:
-      return <Massschuhe />;
+      return <General />;
     case EOrderType.Massschuhleisten:
       return <Massschuhleisten />;
-    case EOrderType.Miscellaneous:
-      return <Miscellaneous />;
-    case EOrderType.Schuharbeiten:
-      return <Schuharbeiten />;
     case EOrderType.Schuhbestellung:
       return <Schuhbestellung />;
+    case EOrderType.Miscellaneous:
+      return <Miscellaneous />;
     default:
       return (
         <Grid item xs={12}>

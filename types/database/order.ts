@@ -4,7 +4,7 @@ export interface IOrderWithCustomer extends Order {
   customer: Customer | null;
 }
 
-export enum EShippingType {
+export enum EOrderShippingType {
   Send,
   Collect,
   Visit,
@@ -32,12 +32,12 @@ export enum EOrderSpecification {
   Nachlieferung,
 }
 
-export enum ETax {
+export enum EOrderTax {
   Nineteen,
   Seven,
 }
 
-export enum EBrand {
+export enum EOrderBrand {
   Asics = 'Asics',
   Brooks = 'Brooks',
   Baer = 'Bär',

@@ -3,7 +3,7 @@ import { FC } from 'react';
 
 import { DuedatePicker, SpecificationSelect } from './CommonInputs';
 
-const Einlagen: FC = () => (
+const General: FC = () => (
   <>
     <Grid item xs={6}>
       <DuedatePicker />
@@ -14,4 +14,4 @@ const Einlagen: FC = () => (
   </>
 );
 
-export default Einlagen;
+export default General;

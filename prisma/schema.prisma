@@ -52,5 +52,6 @@ model Order {
   color         String?
   dealer        String?
   size          Float?
+  name          String?
   customer      Customer? @relation(fields: [customerId], references: [id])
 }
