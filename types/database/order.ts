@@ -26,6 +26,7 @@ export enum EOrderSpecification {
   Business,
   Casual,
   Workwear,
+  Massschuhe,
   SchuhleistenEinleisten,
   Erstlieferung,
   Nachlieferung,

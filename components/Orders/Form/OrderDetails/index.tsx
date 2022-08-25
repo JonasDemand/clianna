@@ -33,7 +33,11 @@ const OrderTypeFrom: FC = () => {
     case EOrderType.Schuhbestellung:
       return <Schuhbestellung />;
     default:
-      return <Typography>Wähle Typ aus, um Details zu sehen</Typography>;
+      return (
+        <Grid item xs={12}>
+          <Typography>Wähle Typ aus, um Details zu sehen</Typography>
+        </Grid>
+      );
   }
 };
 

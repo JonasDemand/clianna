@@ -62,10 +62,10 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   dueDate: null,
   pending: null,
   price: null,
-  shippingType: null,
+  shippingType: 0,
   size: null,
   specification: null,
-  taxes: null,
+  taxes: 0,
   type: null,
 });
 
@@ -85,6 +85,7 @@ export const OrderSpecificationLabels = new Map<EOrderSpecification, string>([
   [EOrderSpecification.Business, 'Business'],
   [EOrderSpecification.Casual, 'Casual'],
   [EOrderSpecification.Workwear, 'Workwear'],
+  [EOrderSpecification.Massschuhe, 'Maßschuhe'],
   [EOrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
   [EOrderSpecification.Erstlieferung, 'Erstlieferung'],
   [EOrderSpecification.Nachlieferung, 'Nachlieferung'],

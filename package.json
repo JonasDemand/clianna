@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^5.10.0",
     "@prisma/client": "^4.1.1",
     "babel-plugin-superjson-next": "^0.4.3",
+    "dayjs": "^1.11.5",
     "lodash": "^4.17.21",
     "next": "12.1.5",
     "next-auth": "^4.3.4",
