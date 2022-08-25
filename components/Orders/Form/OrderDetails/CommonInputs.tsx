@@ -46,14 +46,16 @@ export const SpecificationSelect: FC = () => {
     <>
       {selected && (
         <EnumSelect
+          autocomplete
+          freeSolo
           label="Spezifikation"
           enumToUse={EOrderSpecification}
           enumLabel={OrderSpecificationLabels}
-          value={selected.specification ?? ''}
+          inputValue={selected.specification}
           aditionalTextFieldProps={{
             variant: 'filled',
           }}
-          onChange={(value) =>
+          onInputChange={(value) =>
             setSelected({
               ...(selected as IOrderWithCustomer),
               specification: value,

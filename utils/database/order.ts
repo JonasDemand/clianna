@@ -5,11 +5,11 @@ const prisma = new PrismaClient();
 
 export class Order {
   public async Create<IC extends boolean>(
-    customer: Omit<PrismaOrder, 'id'>,
+    order: Omit<PrismaOrder, 'id'>,
     includeCustomer: IC
   ): Promise<IC extends true ? IOrderWithCustomer : PrismaOrder> {
     return await prisma.order.create({
-      data: customer,
+      data: order,
       include: { customer: !!includeCustomer },
     });
   }
@@ -21,18 +21,24 @@ export class Order {
       where: { customer: { disabled: false } },
     });
   }
-  public async GetSingle() {
-    throw new Error('not Implemented');
+  public async GetSingle<IC extends boolean>(
+    id: number,
+    includeCustomer: IC
+  ): Promise<(IC extends true ? IOrderWithCustomer : PrismaOrder) | null> {
+    return await prisma.order.findUnique({
+      where: { id },
+      include: { customer: !!includeCustomer },
+    });
   }
   public async Update<IC extends boolean>(
     id: number,
-    customer: Omit<PrismaOrder, 'id'>,
+    order: Omit<PrismaOrder, 'id'>,
     includeCustomer: IC
   ): Promise<IC extends true ? IOrderWithCustomer : PrismaOrder> {
     return await prisma.order.update({
       where: { id },
       include: { customer: !!includeCustomer },
-      data: customer,
+      data: order,
     });
   }
   public async Delete() {

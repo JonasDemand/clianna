@@ -65,6 +65,7 @@ const OrderGeneral: FC = () => {
           </Grid>
           <Grid item xs={12}>
             <Autocomplete
+              openOnFocus
               options={customers}
               value={selected.customer}
               onChange={(_, value) =>

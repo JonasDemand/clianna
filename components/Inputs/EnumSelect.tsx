@@ -4,34 +4,54 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material';
-import React, { FC } from 'react';
+import React from 'react';
 import { $enum } from 'ts-enum-util';
 
-export type EnumSelectProps = {
+export type EnumSelectProps<T> = {
   autocomplete?: boolean;
-  value: number | '';
+  freeSolo?: boolean;
+  value?: T | '';
+  inputValue?: T | '';
   label: string;
   enumToUse: any; //TODO: Replace with some kind of enum generic
-  enumLabel: Map<number, string>;
-  onChange: (value: number) => void;
+  enumLabel?: Map<T, string>;
+  onChange?: (value: T) => void;
+  onInputChange?: (value: T) => void;
   aditionalTextFieldProps?: Partial<TextFieldProps>;
 };
 
-const EnumSelect: FC<EnumSelectProps> = ({
+const EnumSelect = <T = string | number,>({
   autocomplete = false,
+  freeSolo = false,
   value,
+  inputValue,
   label,
   enumToUse,
   enumLabel,
   onChange,
+  onInputChange,
   aditionalTextFieldProps,
-}) => {
+}: EnumSelectProps<T>) => {
   return autocomplete ? (
     <Autocomplete
+      openOnFocus
+      freeSolo={freeSolo}
       options={$enum(enumToUse).getValues()}
-      value={value}
-      onChange={(_, value) => onChange(value)}
-      getOptionLabel={(option) => enumLabel.get(option) ?? ''}
+      value={value as string}
+      inputValue={(inputValue as string) ?? ''}
+      onChange={(_, newValue) =>
+        onChange &&
+        onChange(
+          (typeof value === 'number' ? parseInt(newValue, 10) : newValue) as T
+        )
+      }
+      onInputChange={(_, newValue) =>
+        onInputChange &&
+        onInputChange(
+          (typeof value === 'number' ? parseInt(newValue, 10) : newValue) as T
+        )
+      }
+      getOptionLabel={(value) => enumLabel?.get(value) ?? value}
       renderInput={(params) => (
         <TextField {...params} label={label} {...aditionalTextFieldProps} />
       )}
@@ -42,12 +62,19 @@ const EnumSelect: FC<EnumSelectProps> = ({
       select
       value={value}
       label={label}
-      onChange={(e) => onChange(parseInt(e.target.value, 10))}
+      onChange={(e) =>
+        onChange &&
+        onChange(
+          (typeof value === 'number'
+            ? parseInt(e.target.value, 10)
+            : e.target.value) as T
+        )
+      }
       {...aditionalTextFieldProps}
     >
-      {$enum(enumToUse).map((value, i) => (
-        <MenuItem value={value} key={i}>
-          {enumLabel.get(value)}
+      {$enum(enumToUse).map((itemValue, i) => (
+        <MenuItem value={itemValue} key={i}>
+          {enumLabel?.get(itemValue) ?? itemValue}
         </MenuItem>
       ))}
     </TextField>

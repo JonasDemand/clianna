@@ -7,7 +7,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    await res.unstable_revalidate('/customers');
+    await res.unstable_revalidate('/orders');
     return res.status(200).send('Revalidation successful');
   } catch {
     return res.status(500).send('Error revalidating');

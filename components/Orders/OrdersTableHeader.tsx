@@ -49,6 +49,7 @@ const OrdersTableHeader: FC = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Autocomplete<GridColDef<IOrderWithCustomer>, true>
+            openOnFocus
             multiple
             options={columns}
             value={activeColumns}

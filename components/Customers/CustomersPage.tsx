@@ -4,7 +4,7 @@ import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box } from '@mui/material';
 import { GridSelectionModel } from '@mui/x-data-grid';
-import { concertToCustomer } from '@utils/api/customers';
+import { convertToCustomer } from '@utils/api/customers';
 import {
   createCustomer,
   revalidate,
@@ -49,12 +49,12 @@ const CustomersPage: FC = () => {
     let newCust = selected;
     try {
       if (create) {
-        newCust = await createCustomer(concertToCustomer(selected));
+        newCust = await createCustomer(convertToCustomer(selected));
         newCustomers.push(newCust);
       } else {
         newCust = await updateCustomer(
           selected.id,
-          concertToCustomer(selected)
+          convertToCustomer(selected)
         );
         const index = newCustomers.findIndex(
           (customer) => customer.id === newCust.id
