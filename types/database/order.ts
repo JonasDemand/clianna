@@ -4,39 +4,6 @@ export interface IOrderWithCustomer extends Order {
   customer: Customer | null;
 }
 
-export enum EOrderShippingType {
-  Send,
-  Collect,
-  Visit,
-}
-
-export enum EOrderType {
-  Einlagen,
-  Einlagenarbeiten,
-  Abrolloptimierung,
-  Schuharbeiten,
-  Massschuhleisten,
-  Massschuhe,
-  Schuhbestellung,
-  Miscellaneous,
-}
-
-export enum EOrderSpecification {
-  Sport,
-  Business,
-  Casual,
-  Workwear,
-  Massschuhe,
-  SchuhleistenEinleisten,
-  Erstlieferung,
-  Nachlieferung,
-}
-
-export enum EOrderTax {
-  Nineteen,
-  Seven,
-}
-
 export enum EOrderBrand {
   Asics = 'Asics',
   Brooks = 'Brooks',

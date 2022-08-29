@@ -2,11 +2,9 @@ import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
 import { OrderSpecificationLabels } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import {
-  EOrderSpecification,
-  IOrderWithCustomer,
-} from '@customTypes/database/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
+import { EOrderSpecification } from '@prisma/client';
 import dayjs from 'dayjs';
 import { FC, useContext } from 'react';
 
@@ -46,16 +44,14 @@ export const SpecificationSelect: FC = () => {
     <>
       {selected && (
         <EnumSelect
-          autocomplete
-          freeSolo
           label="Spezifikation"
           enumToUse={EOrderSpecification}
           enumLabel={OrderSpecificationLabels}
-          inputValue={selected.specification}
+          value={selected.specification ?? ''}
           aditionalTextFieldProps={{
             variant: 'filled',
           }}
-          onInputChange={(value) =>
+          onChange={(value) =>
             setSelected({
               ...(selected as IOrderWithCustomer),
               specification: value,

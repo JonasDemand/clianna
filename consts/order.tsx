@@ -1,13 +1,13 @@
+import { IOrderWithCustomer } from '@customTypes/database/order';
+import { EShowOrder } from '@customTypes/order';
+import { Check, Close } from '@mui/icons-material';
+import { GridColDef } from '@mui/x-data-grid';
 import {
   EOrderShippingType,
   EOrderSpecification,
   EOrderTax,
   EOrderType,
-  IOrderWithCustomer,
-} from '@customTypes/database/order';
-import { EShowOrder } from '@customTypes/order';
-import { Check, Close } from '@mui/icons-material';
-import { GridColDef } from '@mui/x-data-grid';
+} from '@prisma/client';
 import { getCustomerDisplay } from '@utils/customer';
 
 export const columns: GridColDef<IOrderWithCustomer>[] = [
@@ -58,18 +58,18 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   brand: null,
   color: null,
   comment: null,
-  creationDate: null,
   customer: null,
   dealer: null,
   dueDate: null,
-  pending: null,
+  pending: true,
   price: null,
-  shippingType: 0,
+  shippingType: EOrderShippingType.Send,
   size: null,
   specification: null,
-  taxes: 0,
+  taxes: EOrderTax.Nineteen,
   type: null,
   name: null,
+  creationDate: null,
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([

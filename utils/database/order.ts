@@ -18,7 +18,7 @@ export class Order {
   ): Promise<IC extends true ? IOrderWithCustomer[] : PrismaOrder[]> {
     return await prisma.order.findMany({
       include: { customer: !!includeCustomer },
-      where: { customer: { disabled: false } },
+      where: { OR: [{ customer: null }, { customer: { disabled: false } }] },
     });
   }
   public async GetSingle<IC extends boolean>(

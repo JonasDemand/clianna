@@ -5,30 +5,36 @@ import {
   Radio,
   RadioGroup,
 } from '@mui/material';
-import React, { FC } from 'react';
+import React from 'react';
 import { $enum } from 'ts-enum-util';
 
-export type EnumEnumRadioListProps = {
-  value: number | '';
+export type EnumRadioListProps<T> = {
+  value: T | '';
   label: string;
   enumToUse: any; //TODO: Replace with some kind of enum generic
-  enumLabel: Map<number, string>;
-  onChange: (value: number) => void;
+  enumLabel: Map<any, string>;
+  onChange: (value: T) => void;
 };
 
-const EnumRadioList: FC<EnumEnumRadioListProps> = ({
+const EnumRadioList = <T = string | number,>({
   value,
   label,
   enumToUse,
   enumLabel,
   onChange,
-}) => {
+}: EnumRadioListProps<T>) => {
   return (
     <FormControl>
       <FormLabel>{label}</FormLabel>
       <RadioGroup
         value={value}
-        onChange={(_, value) => onChange(parseInt(value, 10))}
+        onChange={(_, newValue) =>
+          onChange(
+            (typeof value === 'number'
+              ? parseInt(newValue, 10)
+              : newValue) as unknown as T
+          )
+        }
       >
         {$enum(enumToUse).map((value, i) => (
           <FormControlLabel

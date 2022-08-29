@@ -8,14 +8,17 @@ import {
   OrderTypeLabels,
 } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import {
-  EOrderShippingType,
-  EOrderTax,
-  EOrderType,
-  IOrderWithCustomer,
-} from '@customTypes/database/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
-import { Autocomplete, Grid, InputAdornment, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  TextField,
+} from '@mui/material';
+import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerDisplay } from '@utils/customer';
 import { FC, useContext } from 'react';
 
@@ -28,6 +31,18 @@ const OrderGeneral: FC = () => {
     <FormSection label="Allgemein">
       {selected && (
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={<Checkbox checked={selected.pending ?? false} />}
+              label="Ausstehend"
+              onChange={(_, checked) =>
+                setSelected({
+                  ...(selected as IOrderWithCustomer),
+                  pending: checked,
+                })
+              }
+            />
+          </Grid>
           <Grid item xs={6}>
             <EnumSelect
               label="Typ"
@@ -115,7 +130,7 @@ const OrderGeneral: FC = () => {
               label="Steuer"
               enumToUse={EOrderTax}
               enumLabel={OrderTaxLabels}
-              value={selected.taxes ?? ''}
+              value={selected.taxes}
               onChange={(value) =>
                 setSelected({
                   ...(selected as IOrderWithCustomer),

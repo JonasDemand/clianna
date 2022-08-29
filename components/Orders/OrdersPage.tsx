@@ -59,12 +59,12 @@ const OrdersPage: FC = () => {
       setSelected(null);
       setOrders(newOrders);
       enqueueSnackbar(
-        `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
+        `Erfolgreich Bestellung ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
       );
     } catch {
       enqueueSnackbar(
-        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde
+        `${create ? 'Erstellen' : 'Aktualisieren'} von Bestellung
           fehlgeschlagen`,
         { variant: 'error' }
       );

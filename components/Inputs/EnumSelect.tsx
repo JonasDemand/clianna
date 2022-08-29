@@ -42,13 +42,17 @@ const EnumSelect = <T = string | number,>({
       onChange={(_, newValue) =>
         onChange &&
         onChange(
-          (typeof value === 'number' ? parseInt(newValue, 10) : newValue) as T
+          (typeof value === 'number'
+            ? parseInt(newValue, 10)
+            : newValue) as unknown as T
         )
       }
       onInputChange={(_, newValue) =>
         onInputChange &&
         onInputChange(
-          (typeof value === 'number' ? parseInt(newValue, 10) : newValue) as T
+          (typeof value === 'number'
+            ? parseInt(newValue, 10)
+            : newValue) as unknown as T
         )
       }
       getOptionLabel={(value) => enumLabel?.get(value) ?? value}
@@ -67,7 +71,7 @@ const EnumSelect = <T = string | number,>({
         onChange(
           (typeof value === 'number'
             ? parseInt(e.target.value, 10)
-            : e.target.value) as T
+            : e.target.value) as unknown as T
         )
       }
       {...aditionalTextFieldProps}

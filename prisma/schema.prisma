@@ -36,22 +36,55 @@ model Customer {
 }
 
 model Order {
-  id            Int       @id @default(autoincrement())
+  id            Int                  @id @default(autoincrement())
   customerId    Int?
-  creationDate  DateTime?
-  pending       Boolean?
-  shippingType  Int?
+  creationDate  DateTime?            @default(now())
+  pending       Boolean
+  shippingType  EOrderShippingType?
   comment       String?
   price         Float?
-  taxes         Int?
+  taxes         EOrderTax?
   dueDate       DateTime?
-  type          Int?
-  specification Int?
+  type          EOrderType?
+  specification EOrderSpecification?
   brand         String?
   article       String?
   color         String?
   dealer        String?
   size          Float?
   name          String?
-  customer      Customer? @relation(fields: [customerId], references: [id])
+  customer      Customer?            @relation(fields: [customerId], references: [id])
+}
+
+enum EOrderShippingType {
+  Send
+  Collect
+  Visit
+}
+
+enum EOrderType {
+  Einlagen
+  Einlagenarbeiten
+  Abrolloptimierung
+  Schuharbeiten
+  Massschuhleisten
+  Massschuhe
+  Schuhbestellung
+  Miscellaneous
+}
+
+enum EOrderSpecification {
+  Sport
+  Business
+  Casual
+  Workwear
+  Massschuhe
+  SchuhleistenEinleisten
+  Erstlieferung
+  Nachlieferung
+}
+
+enum EOrderTax {
+  Nineteen
+  Seven
 }

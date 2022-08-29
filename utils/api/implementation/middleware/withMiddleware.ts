@@ -42,8 +42,9 @@ export const withMiddleware = (...middlewares: Middleware[]) => {
           }
         }
       } catch (err) {
+        console.log('here12');
         res.status(500).send('Internal server error, something went wrong');
-        throw err;
+        console.error(err);
       }
     }
 
