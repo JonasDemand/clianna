@@ -1,5 +1,5 @@
 import EnumSelect from '@components/Inputs/EnumSelect';
-import { columns, defaultOrder, ShowOrderLabels } from '@consts/order';
+import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
@@ -18,10 +18,10 @@ const OrdersTableHeader: FC = () => {
   const {
     searchText,
     showOrders,
-    activeColumns,
+    activeVariableColumns,
     setSelected,
     setSearchText,
-    setActiveColumns,
+    setActiveVariableColumns,
     setShowOrders,
   } = useContext(OrderContext) as OrderContextType;
 
@@ -31,7 +31,7 @@ const OrdersTableHeader: FC = () => {
   const changeActiveColumns = (
     _: SyntheticEvent<Element, Event>,
     value: GridColDef<IOrderWithCustomer>[]
-  ) => setActiveColumns(value);
+  ) => setActiveVariableColumns(value);
   return (
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
@@ -51,8 +51,8 @@ const OrdersTableHeader: FC = () => {
           <Autocomplete<GridColDef<IOrderWithCustomer>, true>
             openOnFocus
             multiple
-            options={columns}
-            value={activeColumns}
+            options={variableColumns}
+            value={activeVariableColumns}
             onChange={changeActiveColumns}
             limitTags={2}
             getOptionLabel={(option) => option.headerName ?? ''}

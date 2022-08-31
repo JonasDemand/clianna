@@ -87,7 +87,8 @@ const CustomersPage: FC = () => {
     }
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
   const onCopy = useCallback(
-    (customer: ICustomerWithOrders) => setSelected({ ...customer, id: -1 }),
+    (customer: ICustomerWithOrders) =>
+      setSelected({ ...customer, id: -1, orders: [] }),
     [setSelected]
   );
   const deleteSelectedCustomer = useCallback(async () => {

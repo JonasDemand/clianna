@@ -29,7 +29,7 @@ export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
     valueGetter: ({ row }) => row.orders.length,
   },
 ];
-export const beforeColumns: GridColDef<ICustomerWithOrders>[] = [
+export const columns: GridColDef<ICustomerWithOrders>[] = [
   {
     field: 'disabled',
     headerName: 'Aktiv',
@@ -38,7 +38,7 @@ export const beforeColumns: GridColDef<ICustomerWithOrders>[] = [
   },
 ];
 
-export const defaultColumns = variableColumns.slice(0, 4);
+export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
   id: -1,

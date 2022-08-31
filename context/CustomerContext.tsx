@@ -1,4 +1,4 @@
-import { beforeColumns, defaultColumns } from '@consts/customer';
+import { columns, defaultVariableColumns } from '@consts/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import {
   createContext,
@@ -24,13 +24,14 @@ const CustomerProvider: FC<CustomerContextProps> = ({
 }) => {
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
-  const [activeVariableColumns, setActiveVariableColumns] =
-    useState(defaultColumns);
+  const [activeVariableColumns, setActiveVariableColumns] = useState(
+    defaultVariableColumns
+  );
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
 
   const activeColumns = useMemo(
-    () => beforeColumns.concat(activeVariableColumns),
+    () => columns.concat(activeVariableColumns),
     [activeVariableColumns]
   );
 

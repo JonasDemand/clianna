@@ -41,7 +41,9 @@ export class Order {
       data: order,
     });
   }
-  public async Delete() {
-    throw new Error('not Implemented');
+  public async Delete(id: number): Promise<void> {
+    await prisma.order.delete({
+      where: { id },
+    });
   }
 }

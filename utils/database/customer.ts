@@ -48,7 +48,7 @@ export class Customer {
       data: customer,
     });
   }
-  public async Delete(id: number) {
+  public async Delete(id: number): Promise<void> {
     await prisma.customer.delete({
       where: { id },
     });

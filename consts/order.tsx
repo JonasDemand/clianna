@@ -10,13 +10,7 @@ import {
 } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
 
-export const columns: GridColDef<IOrderWithCustomer>[] = [
-  {
-    field: 'pending',
-    headerName: 'Ausstehend',
-    width: 100,
-    renderCell: ({ row }) => (row.pending ? <Check /> : <Close />),
-  },
+export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
   { field: 'id', headerName: 'Auftragsnummer', flex: 1 },
   {
     field: 'customerId',
@@ -28,10 +22,16 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     field: 'type',
     headerName: 'Typ',
     flex: 1,
-    valueGetter: ({ row }) => EOrderType[row.type as EOrderType],
+    valueGetter: ({ row }) => (row.type ? EOrderType[row.type] : ''),
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
-  { field: 'price', headerName: 'Preis', flex: 1 },
+  {
+    field: 'price',
+    headerName: 'Preis',
+    flex: 1,
+    valueGetter: ({ row }) =>
+      row.price !== null ? `${row.price.toFixed(2)} €` : '',
+  },
   {
     field: 'shippingType',
     headerName: 'Versandtyp',
@@ -49,7 +49,15 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
       row.taxes !== null ? OrderTaxLabels.get(row.taxes) : '',
   },
 ];
-export const defaultColumns = columns.slice(0, 4);
+export const columns: GridColDef<IOrderWithCustomer>[] = [
+  {
+    field: 'pending',
+    headerName: 'Ausstehend',
+    width: 100,
+    renderCell: ({ row }) => (row.pending ? <Check /> : <Close />),
+  },
+];
+export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultOrder = (): IOrderWithCustomer => ({
   id: -1,

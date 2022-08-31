@@ -14,7 +14,10 @@ export type OrderContextType = {
   showOrders: EShowOrder;
   setShowOrders: (state: EShowOrder) => void;
   activeColumns: GridColDef<IOrderWithCustomer>[];
-  setActiveColumns: (activeColumns: GridColDef<IOrderWithCustomer>[]) => void;
+  activeVariableColumns: GridColDef<IOrderWithCustomer>[];
+  setActiveVariableColumns: (
+    activeColumns: GridColDef<IOrderWithCustomer>[]
+  ) => void;
   searchText: string;
   setSearchText: (text: string) => void;
 };

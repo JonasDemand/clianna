@@ -1,4 +1,4 @@
-import { defaultColumns } from '@consts/order';
+import { columns, defaultVariableColumns } from '@consts/order';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Customer } from '@prisma/client';
@@ -27,10 +27,16 @@ const OrderProvider: FC<OrderContextProps> = ({
   const [orders, setOrders] = useState<IOrderWithCustomer[]>([]);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
-  const [activeColumns, setActiveColumns] = useState(defaultColumns);
+  const [activeVariableColumns, setActiveVariableColumns] = useState(
+    defaultVariableColumns
+  );
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<IOrderWithCustomer | null>(null);
 
+  const activeColumns = useMemo(
+    () => columns.concat(activeVariableColumns),
+    [activeVariableColumns]
+  );
   /*TODO: Improve search to only search in keys
   const searchKeys = useMemo(
     () => activeColumns.map((x) => x.field),
@@ -71,7 +77,8 @@ const OrderProvider: FC<OrderContextProps> = ({
         showOrders,
         setShowOrders,
         activeColumns,
-        setActiveColumns,
+        activeVariableColumns,
+        setActiveVariableColumns,
         searchText,
         setSearchText,
       }}

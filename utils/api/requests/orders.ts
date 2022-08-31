@@ -29,3 +29,12 @@ export const createOrder = async (
   }
   return (await res.json()) as IOrderWithCustomer;
 };
+
+export const deleteOrder = async (id: number): Promise<void> => {
+  const res = await fetch(`/api/orders/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) {
+    throw 'Failed to delete order';
+  }
+};
