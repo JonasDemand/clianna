@@ -92,8 +92,8 @@ const OrdersPage: FC = () => {
       setShowBackdrop(true);
       await deleteOrder(orderToDelete.id);
       setOrders(orders.filter((order) => order.id !== orderToDelete.id));
+      await revalidate(['/customers', '/orders']);
       enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
-      revalidate(['/customers', '/orders']);
     } catch {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',

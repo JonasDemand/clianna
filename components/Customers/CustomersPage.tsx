@@ -100,8 +100,8 @@ const CustomersPage: FC = () => {
       setCustomers(
         customers.filter((customer) => customer.id !== customerToDelete.id)
       );
+      await revalidate(['/customers', '/orders']);
       enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
-      revalidate(['/customers', '/orders']);
     } catch {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
     } finally {
