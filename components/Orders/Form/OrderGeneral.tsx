@@ -19,7 +19,7 @@ import {
   TextField,
 } from '@mui/material';
 import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
-import { getCustomerDisplay } from '@utils/customer';
+import { getCustomerLabel } from '@utils/customer';
 import { FC, useContext } from 'react';
 
 const OrderGeneral: FC = () => {
@@ -90,7 +90,7 @@ const OrderGeneral: FC = () => {
                   customerId: value?.id ?? null,
                 })
               }
-              getOptionLabel={getCustomerDisplay}
+              getOptionLabel={getCustomerLabel}
               renderInput={(params) => (
                 <TextField {...params} variant="filled" label="Kunde" />
               )}

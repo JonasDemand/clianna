@@ -1,6 +1,5 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
-import { Close, Save } from '@mui/icons-material';
 import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import {
@@ -33,9 +32,12 @@ const SideOverlay: FC<SideOverlayProps> = ({
   const _onSave: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
-      setShowBackdrop(true);
-      await onSave();
-      setShowBackdrop(false);
+      try {
+        setShowBackdrop(true);
+        await onSave();
+      } finally {
+        setShowBackdrop(false);
+      }
     },
     [onSave, setShowBackdrop]
   );
@@ -72,20 +74,13 @@ const SideOverlay: FC<SideOverlayProps> = ({
               fullWidth
               variant="contained"
               color="error"
-              startIcon={<Close />}
               onClick={onClose}
             >
               Abbrechen
             </Button>
           </Grid>
           <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="success"
-              startIcon={<Save />}
-              type="submit"
-            >
+            <Button fullWidth variant="contained" color="success" type="submit">
               Speichern
             </Button>
           </Grid>

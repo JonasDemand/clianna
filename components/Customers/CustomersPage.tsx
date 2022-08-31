@@ -1,24 +1,31 @@
+import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
 import TablePage from '@components/Table/TablePage';
+import { BackdropContext } from '@context/BackdropContext';
+import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { convertToCustomer } from '@utils/api/customers';
 import {
   createCustomer,
-  revalidate as revalidateCustomers,
+  deleteCustomer,
   updateCustomer,
 } from '@utils/api/requests/customers';
-import { revalidate as revalidateOrders } from '@utils/api/requests/orders';
+import { revalidate } from '@utils/api/requests/revalidate';
+import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext, useState } from 'react';
 
 import { CustomerContext } from '../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
 const CustomersPage: FC = () => {
+  const { setShowBackdrop } = useContext(
+    BackdropContext
+  ) as BackdropContextType;
   const {
     customers,
     setCustomers,
@@ -27,6 +34,9 @@ const CustomersPage: FC = () => {
     filteredCustomers,
     activeColumns,
   } = useContext(CustomerContext) as CustomerContextType;
+
+  const [customerToDelete, setCustomerToDelete] =
+    useState<ICustomerWithOrders | null>(null);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -67,27 +77,42 @@ const CustomersPage: FC = () => {
         `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
       );
+      revalidate(['/customers', '/orders']);
     } catch {
       enqueueSnackbar(
         `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde
           fehlgeschlagen`,
         { variant: 'error' }
       );
-      return;
     }
-
-    revalidateCustomers();
-    revalidateOrders();
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
-  const onDelete = useCallback(
-    (customer: ICustomerWithOrders) =>
-      alert(`Delete ${customer.firstname}?!?!?!?!?!?`),
-    []
-  );
   const onCopy = useCallback(
     (customer: ICustomerWithOrders) => setSelected({ ...customer, id: -1 }),
     [setSelected]
   );
+  const deleteSelectedCustomer = useCallback(async () => {
+    if (!customerToDelete) return;
+    try {
+      setCustomerToDelete(null);
+      setShowBackdrop(true);
+      await deleteCustomer(customerToDelete.id);
+      setCustomers(
+        customers.filter((customer) => customer.id !== customerToDelete.id)
+      );
+      enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
+      revalidate(['/customers', '/orders']);
+    } catch {
+      enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
+    } finally {
+      setShowBackdrop(false);
+    }
+  }, [
+    customerToDelete,
+    customers,
+    enqueueSnackbar,
+    setCustomers,
+    setShowBackdrop,
+  ]);
 
   return (
     <Box
@@ -101,7 +126,7 @@ const CustomersPage: FC = () => {
         columns={activeColumns}
         onEdit={setSelected}
         onCopy={onCopy}
-        onDelete={onDelete}
+        onDelete={setCustomerToDelete}
       />
       <SideOverlay
         heading="Kundenbearbeitung"
@@ -111,6 +136,22 @@ const CustomersPage: FC = () => {
       >
         <CustomerForm />
       </SideOverlay>
+      <ConfirmDialog
+        open={!!customerToDelete}
+        title="Kunde löschen"
+        onClose={() => setCustomerToDelete(null)}
+        onConfirm={() => deleteSelectedCustomer()}
+      >
+        <Typography>
+          Bist du dir sicher, dass Du diesen Kunden löschen willst?
+        </Typography>
+        <Typography marginBottom={2}>
+          Alle Zuordnungen des Kundens gehen verloren.
+        </Typography>
+        <Typography fontWeight="bold">
+          {getCustomerLabel(customerToDelete)}
+        </Typography>
+      </ConfirmDialog>
     </Box>
   );
 };

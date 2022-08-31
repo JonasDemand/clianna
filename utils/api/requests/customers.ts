@@ -30,11 +30,11 @@ export const createCustomer = async (
   return (await res.json()) as ICustomerWithOrders;
 };
 
-export const revalidate = async (): Promise<void> => {
-  const res = await fetch('/api/customers/revalidate', {
-    method: 'POST',
+export const deleteCustomer = async (id: number): Promise<void> => {
+  const res = await fetch(`/api/customers/${id}`, {
+    method: 'DELETE',
   });
   if (!res.ok) {
-    throw 'Failed to revalidate';
+    throw 'Failed to delete customer';
   }
 };

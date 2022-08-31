@@ -48,7 +48,9 @@ export class Customer {
       data: customer,
     });
   }
-  public async Delete() {
-    throw new Error('not Implemented');
+  public async Delete(id: number) {
+    await prisma.customer.delete({
+      where: { id },
+    });
   }
 }

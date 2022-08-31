@@ -30,18 +30,28 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).send(customer);
 };
 
+const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id } = req.query;
+  const parsedId = parseInt(id.toString(), 10);
+
+  await Db.Customer.Delete(parsedId);
+  return res.status(200).send('Deletion of customer successful');
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toUpperCase()) {
     case 'GET':
       await getCustomer(req, res);
     case 'PUT':
       await withMiddleware(withBody(), updateCustomer)(req, res);
+    case 'DELETE':
+      await deleteCustomer(req, res);
   }
 };
 
 export default withMiddleware(
   withAuth(false),
-  withMethodGuard(['GET', 'PUT']),
+  withMethodGuard(['GET', 'PUT', 'DELETE']),
   withQueryParameter('id'),
   handler
 );

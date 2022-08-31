@@ -22,12 +22,11 @@ const BackdropProvider: FC<BackdropContextProps> = ({ children }) => {
       'routeChangeComplete',
       (_, { shallow }) => !shallow && setShowBackdrop(false)
     );
-  }, []);
+  }, [router.events]);
 
   return (
     <BackdropContext.Provider
       value={{
-        showBackdrop,
         setShowBackdrop,
       }}
     >

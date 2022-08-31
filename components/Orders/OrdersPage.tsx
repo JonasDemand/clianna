@@ -6,11 +6,8 @@ import { OrderContextType } from '@customTypes/order';
 import { Box } from '@mui/material';
 import { GridSelectionModel } from '@mui/x-data-grid';
 import { convertToOrder } from '@utils/api/orders';
-import {
-  createOrder,
-  revalidate,
-  updateOrder,
-} from '@utils/api/requests/orders';
+import { createOrder, updateOrder } from '@utils/api/requests/orders';
+import { revalidate } from '@utils/api/requests/revalidate';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import { FC, useCallback, useContext } from 'react';
@@ -70,8 +67,7 @@ const OrdersPage: FC = () => {
       );
       return;
     }
-
-    revalidate();
+    revalidate(['/customers', '/orders']);
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
   const onSelectionModelChange = useCallback(
     (model: GridSelectionModel) => {

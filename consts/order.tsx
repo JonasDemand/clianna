@@ -8,7 +8,7 @@ import {
   EOrderTax,
   EOrderType,
 } from '@prisma/client';
-import { getCustomerDisplay } from '@utils/customer';
+import { getCustomerLabel } from '@utils/customer';
 
 export const columns: GridColDef<IOrderWithCustomer>[] = [
   {
@@ -22,7 +22,7 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
     field: 'customerId',
     headerName: 'Kunde',
     flex: 1,
-    valueGetter: ({ row }) => getCustomerDisplay(row.customer),
+    valueGetter: ({ row }) => getCustomerLabel(row.customer),
   },
   {
     field: 'type',

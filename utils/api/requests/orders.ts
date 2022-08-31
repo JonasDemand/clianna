@@ -29,12 +29,3 @@ export const createOrder = async (
   }
   return (await res.json()) as IOrderWithCustomer;
 };
-
-export const revalidate = async (): Promise<void> => {
-  const res = await fetch('/api/orders/revalidate', {
-    method: 'POST',
-  });
-  if (!res.ok) {
-    throw 'Failed to revalidate';
-  }
-};
