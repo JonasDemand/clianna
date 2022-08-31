@@ -73,11 +73,11 @@ const CustomersPage: FC = () => {
       }
       setSelected(null);
       setCustomers(newCustomers);
+      await revalidate(['/customers', '/orders']);
       enqueueSnackbar(
         `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
       );
-      revalidate(['/customers', '/orders']);
     } catch {
       enqueueSnackbar(
         `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde

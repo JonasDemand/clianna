@@ -68,6 +68,7 @@ const OrdersPage: FC = () => {
       }
       setSelected(null);
       setOrders(newOrders);
+      await revalidate(['/customers', '/orders']);
       enqueueSnackbar(
         `Erfolgreich Auftrag ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
@@ -78,9 +79,7 @@ const OrdersPage: FC = () => {
           fehlgeschlagen`,
         { variant: 'error' }
       );
-      return;
     }
-    revalidate(['/customers', '/orders']);
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
   const onCopy = useCallback(
     (order: IOrderWithCustomer) => setSelected({ ...order, id: -1 }),
