@@ -43,6 +43,7 @@ const OrdersPage: FC = () => {
   const onClose = useCallback(() => setSelected(null), [setSelected]);
   const onSave = useCallback(async () => {
     if (!selected) return;
+    setSelected(null);
     if (
       isEqual(
         selected,
@@ -66,7 +67,6 @@ const OrdersPage: FC = () => {
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }
-      setSelected(null);
       setOrders(newOrders);
       await revalidate(['/customers', '/orders']);
       enqueueSnackbar(
