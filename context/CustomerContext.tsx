@@ -1,4 +1,4 @@
-import { defaultColumns } from '@consts/customer';
+import { beforeColumns, defaultColumns } from '@consts/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import {
   createContext,
@@ -24,9 +24,15 @@ const CustomerProvider: FC<CustomerContextProps> = ({
 }) => {
   const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
-  const [activeColumns, setActiveColumns] = useState(defaultColumns);
+  const [activeVariableColumns, setActiveVariableColumns] =
+    useState(defaultColumns);
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
+
+  const activeColumns = useMemo(
+    () => beforeColumns.concat(activeVariableColumns),
+    [activeVariableColumns]
+  );
 
   /*TODO: Improve search to only search in keys
   const searchKeys = useMemo(
@@ -63,7 +69,8 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         showCustomers,
         setShowCustomers,
         activeColumns,
-        setActiveColumns,
+        activeVariableColumns,
+        setActiveVariableColumns,
         searchText,
         setSearchText,
       }}

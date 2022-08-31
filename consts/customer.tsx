@@ -4,13 +4,7 @@ import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Order } from '@prisma/client';
 
-export const columns: GridColDef<ICustomerWithOrders>[] = [
-  {
-    field: 'disabled',
-    headerName: 'Aktiv',
-    width: 60,
-    renderCell: ({ row }) => (row.disabled ? <Close /> : <Check />),
-  },
+export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
   { field: 'id', headerName: 'Kundennummer', flex: 1 },
   { field: 'firstname', headerName: 'Vorname', flex: 1 },
   { field: 'lastname', headerName: 'Nachname', flex: 1 },
@@ -35,8 +29,16 @@ export const columns: GridColDef<ICustomerWithOrders>[] = [
     valueGetter: ({ row }) => row.orders.length,
   },
 ];
+export const beforeColumns: GridColDef<ICustomerWithOrders>[] = [
+  {
+    field: 'disabled',
+    headerName: 'Aktiv',
+    width: 60,
+    renderCell: ({ row }) => (row.disabled ? <Close /> : <Check />),
+  },
+];
 
-export const defaultColumns = columns.slice(0, 4);
+export const defaultColumns = variableColumns.slice(0, 4);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
   id: -1,

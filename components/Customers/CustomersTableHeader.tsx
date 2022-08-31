@@ -1,4 +1,8 @@
-import { columns, defaultCustomer, ShowCustomerLabels } from '@consts/customer';
+import {
+  defaultCustomer,
+  ShowCustomerLabels,
+  variableColumns,
+} from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
@@ -19,10 +23,10 @@ const CustomersTableHeader: FC = () => {
   const {
     searchText,
     showCustomers,
-    activeColumns,
+    activeVariableColumns,
     setSelected,
     setSearchText,
-    setActiveColumns,
+    setActiveVariableColumns,
     setShowCustomers,
   } = useContext(CustomerContext) as CustomerContextType;
 
@@ -32,7 +36,7 @@ const CustomersTableHeader: FC = () => {
   const changeActiveColumns = (
     _: SyntheticEvent<Element, Event>,
     value: GridColDef<ICustomerWithOrders>[]
-  ) => setActiveColumns(value);
+  ) => setActiveVariableColumns(value);
   return (
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
@@ -52,8 +56,8 @@ const CustomersTableHeader: FC = () => {
           <Autocomplete<GridColDef<ICustomerWithOrders>, true>
             openOnFocus
             multiple
-            options={columns}
-            value={activeColumns}
+            options={variableColumns}
+            value={activeVariableColumns}
             onChange={changeActiveColumns}
             limitTags={2}
             getOptionLabel={(option) => option.headerName ?? ''}

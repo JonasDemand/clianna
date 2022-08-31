@@ -3,13 +3,13 @@ import TablePage from '@components/Table/TablePage';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box } from '@mui/material';
-import { GridSelectionModel } from '@mui/x-data-grid';
 import { convertToCustomer } from '@utils/api/customers';
 import {
   createCustomer,
-  revalidate,
+  revalidate as revalidateCustomers,
   updateCustomer,
 } from '@utils/api/requests/customers';
+import { revalidate as revalidateOrders } from '@utils/api/requests/orders';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useContext } from 'react';
@@ -76,18 +76,17 @@ const CustomersPage: FC = () => {
       return;
     }
 
-    revalidate();
+    revalidateCustomers();
+    revalidateOrders();
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
-  const onSelectionModelChange = useCallback(
-    (model: GridSelectionModel) => {
-      if (selected?.id === -1 && !model[0]) return;
-      setSelected(
-        filteredCustomers.find(
-          (customer) => customer.id === model[0]
-        ) as ICustomerWithOrders
-      );
-    },
-    [filteredCustomers, selected?.id, setSelected]
+  const onDelete = useCallback(
+    (customer: ICustomerWithOrders) =>
+      alert(`Delete ${customer.firstname}?!?!?!?!?!?`),
+    []
+  );
+  const onCopy = useCallback(
+    (customer: ICustomerWithOrders) => setSelected({ ...customer, id: -1 }),
+    [setSelected]
   );
 
   return (
@@ -100,8 +99,9 @@ const CustomersPage: FC = () => {
         header={<CustomersTableHeader />}
         rows={filteredCustomers}
         columns={activeColumns}
-        selectionModel={selected ? [selected.id] : []}
-        onSelectionModelChange={onSelectionModelChange}
+        onEdit={setSelected}
+        onCopy={onCopy}
+        onDelete={onDelete}
       />
       <SideOverlay
         heading="Kundenbearbeitung"

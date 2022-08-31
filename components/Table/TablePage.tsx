@@ -1,3 +1,4 @@
+import { getActionColumn, GetActiveColumnProps } from '@consts/table';
 import { Box } from '@mui/system';
 import {
   DataGrid,
@@ -5,16 +6,25 @@ import {
   deDE,
   GridValidRowModel,
 } from '@mui/x-data-grid';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
-type TablePageProps<T extends GridValidRowModel> = DataGridProps<T> & {
-  header: ReactNode;
-};
+type TablePageProps<T extends GridValidRowModel> = DataGridProps<T> &
+  GetActiveColumnProps<T> & {
+    header: ReactNode;
+  };
 
 const TablePage = <T extends GridValidRowModel>({
   header,
+  onCopy,
+  onDelete,
+  onEdit,
   ...gridProps
 }: TablePageProps<T>) => {
+  const actionColumn = useMemo(
+    () => getActionColumn({ onCopy, onDelete, onEdit }),
+    [onCopy, onDelete, onEdit]
+  );
+
   return (
     <Box
       sx={{
@@ -33,16 +43,15 @@ const TablePage = <T extends GridValidRowModel>({
             bgcolor: 'action.disabled',
             opacity: 0.5,
           },
-          '.MuiDataGrid-row': {
-            cursor: 'pointer',
-          },
           '.MuiDataGrid-cell': {
             outline: 'none !important',
           },
         }}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         disableColumnMenu
+        disableSelectionOnClick
         {...gridProps}
+        columns={gridProps.columns.concat(actionColumn)}
       />
     </Box>
   );
