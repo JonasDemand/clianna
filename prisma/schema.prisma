@@ -19,7 +19,7 @@ model User {
 }
 
 model Customer {
-  id           Int      @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   firstname    String?
   lastname     String?
   email        String?
@@ -33,6 +33,7 @@ model Customer {
   shoesize     Float?
   disabled     Boolean?
   orders       Order[]
+  Document     Document[]
 }
 
 model Order {
@@ -54,6 +55,18 @@ model Order {
   size          Float?
   name          String?
   customer      Customer?            @relation(fields: [customerId], references: [id])
+  Document      Document[]
+}
+
+model Document {
+  id         Int       @id @default(autoincrement())
+  customerId Int?
+  orderId    Int?
+  googleId   String
+  name       String?
+  template   Boolean
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  order      Order?    @relation(fields: [orderId], references: [id])
 }
 
 enum EOrderShippingType {
