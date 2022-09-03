@@ -3,7 +3,7 @@ import CustomersPage from '@components/Customers/CustomersPage';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Db } from '@utils/database';
+import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
 
 type CustomersProps = {
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<
   CustomersProps
 > = async () => ({
   props: {
-    customers: await Db.Customer.GetAll(true),
+    customers: await DbRepo.Current.Customer.GetAll(true),
   },
 });
 

@@ -6,14 +6,14 @@ import {
   withMiddleware,
   withQueryParameter,
 } from '@utils/api/implementation/middleware';
-import { Db } from '@utils/database';
+import { DbRepo } from '@utils/DbRepo';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
 
-  const order = await Db.Order.GetSingle(parsedId, true);
+  const order = await DbRepo.Current.Order.GetSingle(parsedId, true);
   if (!order) return res.status(404).send('Unable to retrieve order');
 
   res.status(200).send(order);
@@ -24,7 +24,7 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const parsedId = parseInt(id.toString(), 10);
   const { id: _, ...body } = req.body as Order;
 
-  const customer = await Db.Order.Update(parsedId, body, true);
+  const customer = await DbRepo.Current.Order.Update(parsedId, body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
   res.status(200).send(customer);
@@ -34,7 +34,7 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
 
-  await Db.Order.Delete(parsedId);
+  await DbRepo.Current.Order.Delete(parsedId);
   return res.status(200).send('Deletion of order successful');
 };
 

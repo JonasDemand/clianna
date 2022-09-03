@@ -1,5 +1,5 @@
 import { ICreateUserProps } from '@customTypes/database/user';
-import { PrismaClient, User as PrismaUser } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
 
 const prisma = new PrismaClient();
@@ -30,8 +30,8 @@ export class User {
       admin: createdUser.admin,
     };
   }
-  public async GetAll(): Promise<PrismaUser[]> {
-    return await prisma.user.findMany();
+  public async GetAll() {
+    throw new Error('not Implemented');
   }
   public async GetSingle() {
     throw new Error('not Implemented');

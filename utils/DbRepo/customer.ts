@@ -4,6 +4,11 @@ import { Customer as PrismaCustomer, PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export class Customer {
+  private UserId: number;
+  public constructor(userId: number) {
+    this.UserId = userId;
+  }
+
   public async Create<IO extends boolean>(
     customer: Omit<PrismaCustomer, 'id'>,
     includeOrders: IO

@@ -3,11 +3,11 @@ import {
   withBody,
   withMiddleware,
 } from '@utils/api/implementation/middleware';
-import { Db } from '@utils/database';
+import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const createResponse = await Db.User.Create({ ...req.body });
+  const createResponse = await DbRepo.Current.User.Create({ ...req.body });
 
   if (!createResponse) return res.status(500).send('Unable to create user');
 

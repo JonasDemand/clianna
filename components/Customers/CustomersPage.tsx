@@ -72,7 +72,6 @@ const CustomersPage: FC = () => {
         newCustomers[index] = newCust;
       }
       setCustomers(newCustomers);
-      //await revalidate(['/customers', '/orders']);
       enqueueSnackbar(
         `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }
@@ -99,7 +98,6 @@ const CustomersPage: FC = () => {
       setCustomers(
         customers.filter((customer) => customer.id !== customerToDelete.id)
       );
-      //await revalidate(['/customers', '/orders']);
       enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
     } catch {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
