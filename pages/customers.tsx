@@ -4,7 +4,7 @@ import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Db } from '@utils/database';
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
 type CustomersProps = {
   customers: ICustomerWithOrders[];
@@ -22,7 +22,9 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<CustomersProps> = async () => ({
+export const getServerSideProps: GetServerSideProps<
+  CustomersProps
+> = async () => ({
   props: {
     customers: await Db.Customer.GetAll(true),
   },

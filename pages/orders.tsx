@@ -5,7 +5,7 @@ import OrderProvider from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { Customer } from '@prisma/client';
 import { Db } from '@utils/database';
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
 type OrdersProps = {
   customers: Customer[];
@@ -24,7 +24,9 @@ const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<OrdersProps> = async () => ({
+export const getServerSideProps: GetServerSideProps<
+  OrdersProps
+> = async () => ({
   props: {
     orders: await Db.Order.GetAll(true),
     customers: await Db.Customer.GetActive(false),
