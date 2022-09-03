@@ -77,7 +77,6 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   taxes: EOrderTax.Nineteen,
   type: null,
   name: null,
-  creationDate: null,
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([
