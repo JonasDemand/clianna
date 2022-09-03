@@ -1,8 +1,4 @@
-import {
-  withAuth,
-  withBody,
-  withMiddleware,
-} from '@utils/api/implementation/middleware';
+import { withBody, withMiddleware } from '@utils/api/implementation/middleware';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -18,10 +14,11 @@ const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  switch (req.method?.toLocaleUpperCase() ?? 'GET') {
+  switch (req.method?.toLocaleUpperCase()) {
     case 'POST':
       withMiddleware(withBody(['email', 'password']), createUser)(req, res);
+      break;
   }
 };
 
-export default withMiddleware(withAuth(true), handler);
+export default handler;

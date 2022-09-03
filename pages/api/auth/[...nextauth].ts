@@ -25,6 +25,7 @@ export default NextAuth({
           return {
             admin: user.admin,
             email: user.email,
+            id: user.id,
           };
         return null;
       },
@@ -34,18 +35,23 @@ export default NextAuth({
     session: ({ session, user, token }): Session => {
       return {
         ...session,
-        user: { ...user, admin: token.admin, email: token.email },
+        user: {
+          ...user,
+          ...token,
+          email: token.email!,
+        },
       };
     },
     jwt: ({ token, user }): JWT => {
       if (user) {
-        return { ...token, admin: user.admin, email: user.email };
+        return { ...token, ...user };
       }
       return token;
     },
   },
-  pages: {
+  /*pages: {
     signIn: '/auth/signin',
-  },
+    newUser: '/auth/signup',
+  },*/
   secret: process.env.SECRET,
 });

@@ -1,9 +1,8 @@
-import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Customer } from '@prisma/client';
+import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
 
 export const updateCustomer = async (
   id: number,
-  customer: Omit<Customer, 'id'>
+  customer: Omit<ICustomer, 'id'>
 ): Promise<ICustomerWithOrders> => {
   const res = await fetch(`/api/customers/${id}`, {
     method: 'PUT',
@@ -17,7 +16,7 @@ export const updateCustomer = async (
 };
 
 export const createCustomer = async (
-  customer: Omit<Customer, 'id'>
+  customer: Omit<ICustomer, 'id'>
 ): Promise<ICustomerWithOrders> => {
   const res = await fetch('/api/customers', {
     method: 'POST',

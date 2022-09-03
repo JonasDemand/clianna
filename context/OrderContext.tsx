@@ -1,7 +1,7 @@
 import { columns, defaultVariableColumns } from '@consts/order';
+import { ICustomer } from '@customTypes/database/customer';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
-import { Customer } from '@prisma/client';
 import {
   createContext,
   FC,
@@ -15,7 +15,7 @@ export const OrderContext = createContext<OrderContextType | null>(null);
 
 type OrderContextProps = {
   children: ReactNode;
-  initialCustomers: Customer[];
+  initialCustomers: ICustomer[];
   initialOrders: IOrderWithCustomer[];
 };
 
@@ -25,7 +25,7 @@ const OrderProvider: FC<OrderContextProps> = ({
   initialOrders,
 }) => {
   const [orders, setOrders] = useState<IOrderWithCustomer[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns

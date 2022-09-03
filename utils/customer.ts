@@ -1,6 +1,8 @@
-import { Customer } from '@prisma/client';
+import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
 
-export const getCustomerLabel = (customer: Customer | null | undefined) =>
+export const getCustomerLabel = (
+  customer: ICustomerWithOrders | ICustomer | null | undefined
+) =>
   customer
     ? `${customer.id}${customer.firstname || customer.lastname ? ' -' : ''}${
         customer.firstname ? ` ${customer.firstname}` : ''

@@ -11,6 +11,6 @@ export class DbRepo {
   public Order: Order;
   public Customer: Customer;
   public static Current: DbRepo;
-  public static InitDbRepo = (userId: number) =>
+  public static Init = (userId: number) =>
     (DbRepo.Current = new DbRepo(userId));
 }

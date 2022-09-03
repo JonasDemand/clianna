@@ -1,8 +1,8 @@
 import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
 import { OrderContext } from '@context/OrderContext';
-import { EOrderBrand, IOrderWithCustomer } from '@customTypes/database/order';
-import { OrderContextType } from '@customTypes/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
+import { EOrderBrand, OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
 import { FC, useContext } from 'react';
 

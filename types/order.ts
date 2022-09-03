@@ -1,11 +1,11 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Customer } from '@prisma/client';
 
+import { ICustomer } from './database/customer';
 import { IOrderWithCustomer } from './database/order';
 
 export type OrderContextType = {
-  customers: Customer[];
-  setCustomers: (customers: Customer[]) => void;
+  customers: ICustomer[];
+  setCustomers: (customers: ICustomer[]) => void;
   orders: IOrderWithCustomer[];
   setOrders: (orders: IOrderWithCustomer[]) => void;
   filteredOrders: IOrderWithCustomer[];
@@ -26,4 +26,24 @@ export enum EShowOrder {
   All,
   Pending,
   Done,
+}
+
+export enum EOrderBrand {
+  Asics = 'Asics',
+  Brooks = 'Brooks',
+  Baer = 'Bär',
+  Clarks = 'Clarks',
+  Ecco = 'Ecco',
+  FinnComfort = 'Finn Comfort',
+  Gabor = 'Gabor',
+  Ganter = 'Ganter',
+  Hartjes = 'Hartjes',
+  Lowa = 'Lowa',
+  Meindl = 'Meindl',
+  NewBalance = 'New Balance',
+  Nike = 'Nike',
+  Puma = 'Puma',
+  Solidus = 'Solidus',
+  Wolky = 'Wolky',
+  Hoka = 'Hoka',
 }

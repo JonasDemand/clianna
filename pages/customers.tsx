@@ -5,6 +5,7 @@ import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
+import { getSession } from 'next-auth/react';
 
 type CustomersProps = {
   customers: ICustomerWithOrders[];
@@ -22,12 +23,17 @@ const Customers: NextPage<CustomersProps> = ({ customers }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<
-  CustomersProps
-> = async () => ({
-  props: {
-    customers: await DbRepo.Current.Customer.GetAll(true),
-  },
-});
+export const getServerSideProps: GetServerSideProps<CustomersProps> = async (
+  context
+) => {
+  const session = await getSession(context);
+  if (!session) return { props: { customers: [] } };
+  DbRepo.Init(session.user.id);
+  return {
+    props: {
+      customers: await DbRepo.Current.Customer.GetAll(true),
+    },
+  };
+};
 
 export default Customers;

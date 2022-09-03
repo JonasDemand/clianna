@@ -1,7 +1,6 @@
-import { ICustomerWithOrders } from '@customTypes/database/customer';
-import { Customer } from '@prisma/client';
+import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
 
-export const convertToCustomer = (customer: ICustomerWithOrders) => {
+export const convertToICustomer = (customer: ICustomerWithOrders) => {
   const { id: _id, orders: _orders, ...newCust } = customer;
-  return newCust as Customer;
+  return newCust as ICustomer;
 };

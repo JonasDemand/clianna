@@ -7,7 +7,7 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import { convertToOrder } from '@utils/api/orders';
+import { convertToIOrder } from '@utils/api/orders';
 import {
   createOrder,
   deleteOrder,
@@ -42,7 +42,6 @@ const OrdersPage: FC = () => {
   const onClose = useCallback(() => setSelected(null), [setSelected]);
   const onSave = useCallback(async () => {
     if (!selected) return;
-    setSelected(null);
     if (
       isEqual(
         selected,
@@ -54,15 +53,16 @@ const OrdersPage: FC = () => {
       });
       return;
     }
+    setSelected(null);
     let create = selected.id === -1;
     let newOrders = [...orders];
     let newOrder = selected;
     try {
       if (create) {
-        newOrder = await createOrder(convertToOrder(selected));
+        newOrder = await createOrder(convertToIOrder(selected));
         newOrders.push(newOrder);
       } else {
-        newOrder = await updateOrder(selected.id, convertToOrder(selected));
+        newOrder = await updateOrder(selected.id, convertToIOrder(selected));
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }

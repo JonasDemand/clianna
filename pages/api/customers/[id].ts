@@ -1,4 +1,4 @@
-import { Customer } from '@prisma/client';
+import { ICustomer } from '@customTypes/database/customer';
 import {
   withAuth,
   withBody,
@@ -22,7 +22,7 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const parsedId = parseInt(id.toString(), 10);
-  const { id: _, ...body } = req.body as Customer;
+  const { id: _, ...body } = req.body as ICustomer;
 
   const customer = await DbRepo.Current.Customer.Update(parsedId, body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
@@ -42,10 +42,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toUpperCase()) {
     case 'GET':
       await getCustomer(req, res);
+      break;
     case 'PUT':
       await withMiddleware(withBody(), updateCustomer)(req, res);
+      break;
     case 'DELETE':
       await deleteCustomer(req, res);
+      break;
   }
 };
 

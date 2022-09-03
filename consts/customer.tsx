@@ -1,8 +1,8 @@
 import { EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { IOrder } from '@customTypes/database/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Order } from '@prisma/client';
 
 export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
   { field: 'id', headerName: 'Kundennummer', flex: 1 },
@@ -54,7 +54,7 @@ export const defaultCustomer = (): ICustomerWithOrders => ({
   mobile: null,
   whatsapp: false,
   disabled: false,
-  orders: new Array<Order>(),
+  orders: new Array<IOrder>(),
 });
 
 export const ShowCustomerLabels = new Map<EShowCustomer, string>([

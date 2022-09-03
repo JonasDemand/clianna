@@ -22,29 +22,23 @@ export const withMiddleware = (...middlewares: Middleware[]) => {
         return;
       }
 
-      try {
-        if (typeof middleware === 'function') {
-          const handler = await middleware(req, res);
+      if (typeof middleware === 'function') {
+        const handler = await middleware(req, res);
 
-          if (typeof handler === 'function') {
-            if (innerMiddleware) {
-              await handler(innerMiddleware);
+        if (typeof handler === 'function') {
+          if (innerMiddleware) {
+            await handler(innerMiddleware);
 
-              const index = middlewares.indexOf(innerMiddleware);
+            const index = middlewares.indexOf(innerMiddleware);
 
-              // remove inner middleware
-              if (index >= 0) {
-                middlewares.splice(index, 1);
-              }
-            } else {
-              await handler();
+            // remove inner middleware
+            if (index >= 0) {
+              middlewares.splice(index, 1);
             }
+          } else {
+            await handler();
           }
         }
-      } catch (err) {
-        console.log('here12');
-        res.status(500).send('Internal server error, something went wrong');
-        console.error(err);
       }
     }
 

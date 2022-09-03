@@ -1,4 +1,4 @@
-import { Customer } from '@prisma/client';
+import { ICustomer } from '@customTypes/database/customer';
 import {
   withAuth,
   withBody,
@@ -15,7 +15,7 @@ const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id: _, ...body } = req.body as Customer;
+  const { id: _, ...body } = req.body as ICustomer;
 
   const customer = await DbRepo.Current.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');

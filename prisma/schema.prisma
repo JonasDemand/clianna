@@ -11,15 +11,19 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  admin    Boolean @default(false)
-  password String  @db.Text
-  salt     String  @db.Text
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  admin    Boolean    @default(false)
+  password String     @db.Text
+  salt     String     @db.Text
+  Customer Customer[]
+  Order    Order[]
+  Document Document[]
 }
 
 model Customer {
   id           Int        @id @default(autoincrement())
+  userId       Int
   firstname    String?
   lastname     String?
   email        String?
@@ -33,13 +37,15 @@ model Customer {
   shoesize     Float?
   disabled     Boolean?
   orders       Order[]
-  Document     Document[]
+  document     Document[]
+  user         User       @relation(fields: [userId], references: [id])
 }
 
 model Order {
   id            Int                  @id @default(autoincrement())
+  userId        Int
   customerId    Int?
-  creationDate  DateTime?            @default(now())
+  creationDate  DateTime             @default(now())
   pending       Boolean
   shippingType  EOrderShippingType?
   comment       String?
@@ -56,10 +62,12 @@ model Order {
   name          String?
   customer      Customer?            @relation(fields: [customerId], references: [id])
   Document      Document[]
+  user          User                 @relation(fields: [userId], references: [id])
 }
 
 model Document {
   id         Int       @id @default(autoincrement())
+  userId     Int
   customerId Int?
   orderId    Int?
   googleId   String
@@ -67,6 +75,7 @@ model Document {
   template   Boolean
   customer   Customer? @relation(fields: [customerId], references: [id])
   order      Order?    @relation(fields: [orderId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 }
 
 enum EOrderShippingType {

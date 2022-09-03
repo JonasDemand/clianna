@@ -1,5 +1,9 @@
-import { Customer, Order } from '@prisma/client';
+import { Customer } from '@prisma/client';
 
-export interface ICustomerWithOrders extends Customer {
-  orders: Order[];
+import { IOrder } from './order';
+
+export interface ICustomer extends Omit<Customer, 'userId'> {}
+
+export interface ICustomerWithOrders extends ICustomer {
+  orders: IOrder[];
 }

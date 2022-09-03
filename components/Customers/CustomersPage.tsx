@@ -6,7 +6,7 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
-import { convertToCustomer } from '@utils/api/customers';
+import { convertToICustomer } from '@utils/api/customers';
 import {
   createCustomer,
   deleteCustomer,
@@ -42,7 +42,6 @@ const CustomersPage: FC = () => {
   const onClose = useCallback(() => setSelected(null), [setSelected]);
   const onSave = useCallback(async () => {
     if (!selected) return;
-    setSelected(null);
     if (
       isEqual(
         selected,
@@ -54,17 +53,18 @@ const CustomersPage: FC = () => {
       });
       return;
     }
+    setSelected(null);
     let create = selected.id === -1;
     let newCustomers = [...customers];
     let newCust = selected;
     try {
       if (create) {
-        newCust = await createCustomer(convertToCustomer(selected));
+        newCust = await createCustomer(convertToICustomer(selected));
         newCustomers.push(newCust);
       } else {
         newCust = await updateCustomer(
           selected.id,
-          convertToCustomer(selected)
+          convertToICustomer(selected)
         );
         const index = newCustomers.findIndex(
           (customer) => customer.id === newCust.id

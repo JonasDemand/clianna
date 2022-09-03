@@ -1,4 +1,4 @@
-import { Order } from '@prisma/client';
+import { IOrder } from '@customTypes/database/order';
 import {
   withAuth,
   withBody,
@@ -15,7 +15,7 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id: _, ...body } = req.body as Order;
+  const { id: _, ...body } = req.body as IOrder;
 
   const order = await DbRepo.Current.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
@@ -27,8 +27,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toUpperCase() ?? 'GET') {
     case 'GET':
       await getOrders(req, res);
+      break;
     case 'POST':
       await withMiddleware(withBody(), createOrder)(req, res);
+      break;
   }
 };
 
