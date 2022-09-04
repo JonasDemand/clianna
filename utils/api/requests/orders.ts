@@ -1,8 +1,8 @@
-import { IOrder, IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
 
 export const updateOrder = async (
   id: number,
-  order: Omit<IOrder, 'id'>
+  order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
 ): Promise<IOrderWithCustomer> => {
   const res = await fetch(`/api/orders/${id}`, {
     method: 'PUT',
@@ -16,7 +16,7 @@ export const updateOrder = async (
 };
 
 export const createOrder = async (
-  order: Omit<IOrder, 'id'>
+  order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
 ): Promise<IOrderWithCustomer> => {
   const res = await fetch('/api/orders', {
     method: 'POST',

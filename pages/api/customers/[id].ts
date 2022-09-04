@@ -53,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 export default withMiddleware(
-  withAuth(false),
+  withAuth,
   withMethodGuard(['GET', 'PUT', 'DELETE']),
   withQueryParameter('id'),
   handler

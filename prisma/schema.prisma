@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  admin    Boolean    @default(false)
-  password String     @db.Text
-  salt     String     @db.Text
-  Customer Customer[]
-  Order    Order[]
-  Document Document[]
+  id          Int        @id @default(autoincrement())
+  cuid        String     @unique @default(cuid())
+  googleToken String     @db.Text
+  email       String     @unique
+  name        String
+  picture     String
+  Customer    Customer[]
+  Order       Order[]
+  Document    Document[]
 }
 
 model Customer {

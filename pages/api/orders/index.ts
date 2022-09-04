@@ -1,4 +1,4 @@
-import { IOrder } from '@customTypes/database/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
 import {
   withAuth,
   withBody,
@@ -15,7 +15,7 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id: _, ...body } = req.body as IOrder;
+  const { id: _, ...body } = req.body as IOrderWithCustomer;
 
   const order = await DbRepo.Current.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
@@ -36,6 +36,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 export default withMiddleware(
   withMethodGuard(['GET', 'POST']),
-  withAuth(false),
+  withAuth,
   handler
 );

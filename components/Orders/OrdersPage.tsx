@@ -7,7 +7,6 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import { convertToIOrder } from '@utils/api/orders';
 import {
   createOrder,
   deleteOrder,
@@ -53,20 +52,20 @@ const OrdersPage: FC = () => {
       });
       return;
     }
-    setSelected(null);
     let create = selected.id === -1;
     let newOrders = [...orders];
     let newOrder = selected;
     try {
       if (create) {
-        newOrder = await createOrder(convertToIOrder(selected));
+        newOrder = await createOrder(selected);
         newOrders.push(newOrder);
       } else {
-        newOrder = await updateOrder(selected.id, convertToIOrder(selected));
+        newOrder = await updateOrder(selected.id, selected);
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }
       setOrders(newOrders);
+      setSelected(null);
       enqueueSnackbar(
         `Erfolgreich Auftrag ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }

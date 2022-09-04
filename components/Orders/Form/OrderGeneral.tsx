@@ -87,7 +87,6 @@ const OrderGeneral: FC = () => {
                 setSelected({
                   ...(selected as IOrderWithCustomer),
                   customer: value,
-                  customerId: value?.id ?? null,
                 })
               }
               getOptionLabel={getCustomerLabel}

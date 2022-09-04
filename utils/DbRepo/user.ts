@@ -1,12 +1,12 @@
 import { ICreateUserProps } from '@customTypes/database/user';
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
-import { createSalt, hashPassword } from '@utils/authentication';
 
 const prisma = new PrismaClient();
 
 export class User {
   public async Create(user: ICreateUserProps): Promise<ICreateUserProps> {
-    const existingUsersCount = await prisma.user.count({
+    throw new Error('not Implemented');
+    /*const existingUsersCount = await prisma.user.count({
       where: {
         email: user.email,
       },
@@ -28,7 +28,7 @@ export class User {
       email: createdUser.email,
       password: createdUser.password,
       admin: createdUser.admin,
-    };
+    };*/
   }
   public async GetAll(): Promise<PrismaUser[]> {
     return await prisma.user.findMany();

@@ -2,15 +2,15 @@ import { Customer } from './customer';
 import { Order } from './order';
 import { User } from './user';
 export class DbRepo {
-  private constructor(userId: number) {
+  private constructor(userCuid: string) {
     this.User = new User();
-    this.Order = new Order(userId);
-    this.Customer = new Customer(userId);
+    this.Order = new Order(userCuid);
+    this.Customer = new Customer(userCuid);
   }
   public User: User;
   public Order: Order;
   public Customer: Customer;
   public static Current: DbRepo;
-  public static Init = (userId: number) =>
-    (DbRepo.Current = new DbRepo(userId));
+  public static Init = (userCuid: string) =>
+    (DbRepo.Current = new DbRepo(userCuid));
 }

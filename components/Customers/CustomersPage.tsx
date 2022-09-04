@@ -53,7 +53,6 @@ const CustomersPage: FC = () => {
       });
       return;
     }
-    setSelected(null);
     let create = selected.id === -1;
     let newCustomers = [...customers];
     let newCust = selected;
@@ -72,6 +71,7 @@ const CustomersPage: FC = () => {
         newCustomers[index] = newCust;
       }
       setCustomers(newCustomers);
+      setSelected(null);
       enqueueSnackbar(
         `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
         { variant: 'success' }

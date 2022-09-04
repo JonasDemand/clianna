@@ -13,7 +13,7 @@ import { getCustomerLabel } from '@utils/customer';
 export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
   { field: 'id', headerName: 'Auftragsnummer', flex: 1 },
   {
-    field: 'customerId',
+    field: 'customer',
     headerName: 'Kunde',
     flex: 1,
     valueGetter: ({ row }) => getCustomerLabel(row.customer),
@@ -61,12 +61,10 @@ export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultOrder = (): IOrderWithCustomer => ({
   id: -1,
-  customerId: null,
   article: null,
   brand: null,
   color: null,
   comment: null,
-  customer: null,
   dealer: null,
   dueDate: null,
   pending: true,
@@ -77,6 +75,8 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   taxes: EOrderTax.Nineteen,
   type: null,
   name: null,
+  creationDate: null,
+  customer: null,
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([

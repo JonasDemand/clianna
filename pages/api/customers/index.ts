@@ -34,6 +34,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 export default withMiddleware(
   withMethodGuard(['GET', 'POST']),
-  withAuth(false),
+  withAuth,
   handler
 );

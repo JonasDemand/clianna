@@ -1,33 +1,59 @@
 import { PrismaClient } from '@prisma/client';
-import { hashPassword } from '@utils/authentication';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 
 const prisma = new PrismaClient();
 
+type GoogleProfile = {
+  iss: string;
+  azp: string;
+  aud: string;
+  sub: string;
+  email: string;
+  email_verified: string;
+  at_hash: string;
+  name: string;
+  picture: string;
+  given_name: string;
+  family_name: string;
+  locale: string;
+  iat: number;
+  exp: number;
+};
+
 export default NextAuth({
   providers: [
-    CredentialsProvider({
-      name: 'Credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null;
-        const user = await prisma.user.findUnique({
-          where: { email: credentials?.email },
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID ?? '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      profile: async (profile, tokens) => {
+        if (!tokens.access_token || !tokens.id_token)
+          throw 'Invalid token response';
+        const googleProfile = profile as GoogleProfile;
+        const user = await prisma.user.upsert({
+          where: {
+            email: profile.email,
+          },
+          update: {
+            name: googleProfile.given_name,
+            picture: googleProfile.picture,
+            googleToken: tokens.access_token,
+          },
+          create: {
+            email: googleProfile.email,
+            name: googleProfile.given_name,
+            picture: googleProfile.picture,
+            googleToken: tokens.access_token,
+          },
         });
-        if (user === null) return null;
-        const hash = await hashPassword(credentials?.password, user.salt);
-        if (hash === user.password)
-          return {
-            admin: user.admin,
-            email: user.email,
-            id: user.id,
-          };
-        return null;
+        return {
+          id: tokens.id_token,
+          cuid: user.cuid,
+          email: user.email,
+          image: user.picture,
+          name: user.name,
+        };
       },
     }),
   ],
@@ -37,8 +63,10 @@ export default NextAuth({
         ...session,
         user: {
           ...user,
-          ...token,
+          cuid: token.cuid,
           email: token.email!,
+          image: token.image,
+          name: token.name!,
         },
       };
     },
@@ -49,8 +77,6 @@ export default NextAuth({
       return token;
     },
   },
-  pages: {
-    signIn: '/auth/signin',
-  },
+  pages: { signIn: '/auth/signin' },
   secret: process.env.SECRET,
 });
