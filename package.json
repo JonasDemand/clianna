@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "prisma-dev": "dotenv -e .env.local -- prisma migrate dev",
-    "prisma-deploy": "dotenv -e .env.local -- prisma migrate deploy",
+    "prisma-deploy": "prisma migrate deploy",
     "prisma-generate": "prisma generate"
   },
   "dependencies": {
