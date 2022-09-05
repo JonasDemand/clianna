@@ -49,7 +49,14 @@ const CredentialsForm: FC = () => {
         callbackUrl: (router.query.callbackUrl as string) ?? '/',
       });
     },
-    [email, newAccount, password, repeatPassword, showPassword]
+    [
+      email,
+      newAccount,
+      password,
+      repeatPassword,
+      router.query.callbackUrl,
+      showPassword,
+    ]
   );
 
   return (
