@@ -13,10 +13,12 @@ datasource db {
 model User {
   id          Int        @id @default(autoincrement())
   cuid        String     @unique @default(cuid())
-  googleToken String     @db.Text
-  email       String     @unique
+  email       String?    @unique
   name        String
-  picture     String
+  password    String?    @db.Text
+  salt        String?    @db.Text
+  googleId    String?    @unique
+  googleToken String?    @db.Text
   Customer    Customer[]
   Order       Order[]
   Document    Document[]

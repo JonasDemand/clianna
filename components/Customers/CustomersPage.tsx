@@ -6,13 +6,12 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
-import { convertToICustomer } from '@utils/api/customers';
 import {
   createCustomer,
   deleteCustomer,
   updateCustomer,
 } from '@utils/api/requests/customers';
-import { getCustomerLabel } from '@utils/customer';
+import { convertToICustomer, getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useContext, useState } from 'react';

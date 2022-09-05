@@ -1,4 +1,4 @@
-import { IOrder } from '@customTypes/database/order';
+import { IOrderWithCustomer } from '@customTypes/database/order';
 import {
   withAuth,
   withBody,
@@ -11,7 +11,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
+  const parsedId = parseInt(id!.toString(), 10);
 
   const order = await DbRepo.Current.Order.GetSingle(parsedId, true);
   if (!order) return res.status(404).send('Unable to retrieve order');
@@ -21,8 +21,8 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
-  const { id: _, ...body } = req.body as IOrder;
+  const parsedId = parseInt(id!.toString(), 10);
+  const { id: _, ...body } = req.body as IOrderWithCustomer;
 
   const customer = await DbRepo.Current.Order.Update(parsedId, body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
@@ -31,7 +31,7 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
+  const parsedId = parseInt(id!.toString(), 10);
 
   await DbRepo.Current.Order.Delete(parsedId);
   return res.status(200).send('Deletion of order successful');

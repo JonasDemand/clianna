@@ -28,7 +28,7 @@ export class Customer {
   }
 
   public async Create<IO extends boolean>(
-    customer: Omit<ICustomerWithOrders, 'id'>,
+    customer: Omit<ICustomer, 'id'>,
     includeOrders: IO
   ): Promise<IO extends true ? ICustomerWithOrders : ICustomer> {
     return await prisma.customer.create({

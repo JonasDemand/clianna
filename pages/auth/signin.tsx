@@ -1,5 +1,6 @@
 import { LockOutlined } from '@mui/icons-material';
 import { Avatar, Box, Typography } from '@mui/material';
+import { getScope } from '@utils/oauth';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
@@ -40,9 +41,15 @@ const SignIn: NextPage = () => {
         <GoogleButton
           label="Mit Google anmelden"
           onClick={() =>
-            signIn('google', {
-              callbackUrl: (router.query.callbackUrl as string) ?? '/',
-            })
+            signIn(
+              'google',
+              {
+                callbackUrl: (router.query.callbackUrl as string) ?? '/',
+              },
+              new URLSearchParams({
+                scope: getScope(),
+              })
+            )
           }
         />
       </Box>

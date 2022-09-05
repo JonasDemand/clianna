@@ -11,7 +11,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
+  const parsedId = parseInt(id!.toString(), 10);
 
   const customer = await DbRepo.Current.Customer.GetSingle(parsedId, true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
@@ -21,7 +21,7 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
+  const parsedId = parseInt(id!.toString(), 10);
   const { id: _, ...body } = req.body as ICustomer;
 
   const customer = await DbRepo.Current.Customer.Update(parsedId, body, true);
@@ -32,7 +32,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const parsedId = parseInt(id.toString(), 10);
+  const parsedId = parseInt(id!.toString(), 10);
 
   await DbRepo.Current.Customer.Delete(parsedId);
   return res.status(200).send('Deletion of customer successful');
