@@ -64,9 +64,6 @@ const Userprofile: FC = () => {
       >
         {actions.map((action, i) => (
           <MenuItem
-            disabled={
-              action.label === 'Profil' /*TODO: Implement profile page*/
-            }
             key={i}
             onClick={() => {
               handleCloseUserMenu();

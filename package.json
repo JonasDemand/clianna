@@ -17,6 +17,7 @@
     "@fontsource/roboto": "^4.5.8",
     "@google-cloud/local-auth": "^2.1.0",
     "@mui/icons-material": "^5.10.3",
+    "@mui/lab": "^5.0.0-alpha.97",
     "@mui/material": "^5.10.3",
     "@mui/x-data-grid": "^5.17.0",
     "@prisma/client": "^4.3.1",

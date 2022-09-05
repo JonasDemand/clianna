@@ -1,14 +1,7 @@
-import { BackdropContext } from '@context/BackdropContext';
-import { BackdropContextType } from '@customTypes/backdrop';
+import { LoadingButton } from '@mui/lab';
 import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import {
-  FC,
-  FormEventHandler,
-  ReactNode,
-  useCallback,
-  useContext,
-} from 'react';
+import { FC, FormEventHandler, ReactNode, useCallback, useState } from 'react';
 
 export type SideOverlayProps = {
   children: ReactNode;
@@ -25,25 +18,27 @@ const SideOverlay: FC<SideOverlayProps> = ({
   onSave,
   onClose,
 }) => {
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const [loading, setLoading] = useState(false);
 
   const _onSave: FormEventHandler<HTMLFormElement> = useCallback(
     async (e) => {
       e.preventDefault();
       try {
-        setShowBackdrop(true);
+        setLoading(true);
         await onSave();
       } finally {
-        setShowBackdrop(false);
+        setLoading(false);
       }
     },
-    [onSave, setShowBackdrop]
+    [onSave]
   );
 
+  const _onClose = useCallback(() => {
+    if (!loading) onClose();
+  }, [loading, onClose]);
+
   return (
-    <Drawer open={open} anchor="right" onClose={onClose}>
+    <Drawer open={open} anchor="right" onClose={_onClose}>
       <Box
         component="form"
         onSubmit={_onSave}
@@ -75,14 +70,22 @@ const SideOverlay: FC<SideOverlayProps> = ({
               variant="contained"
               color="error"
               onClick={onClose}
+              disabled={loading}
             >
               Abbrechen
             </Button>
           </Grid>
           <Grid item xs={6}>
-            <Button fullWidth variant="contained" color="success" type="submit">
+            <LoadingButton
+              fullWidth
+              variant="contained"
+              color="success"
+              type="submit"
+              loading={loading}
+              loadingPosition="start"
+            >
               Speichern
-            </Button>
+            </LoadingButton>
           </Grid>
         </Grid>
       </Box>
