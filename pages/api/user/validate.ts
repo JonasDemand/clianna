@@ -10,7 +10,9 @@ const validateEmail = async (req: NextApiRequest, res: NextApiResponse) => {
   const { email } = req.query;
 
   const users = await DbRepo.Instance.User.GetAll();
-  const emails = users.map((user) => user.email);
+  const emails = users
+    .filter((user) => user.password && user.salt)
+    .map((user) => user.email);
 
   return res
     .status(200)

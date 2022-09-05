@@ -1,10 +1,10 @@
+import CredentialsForm from '@components/Authentication/CredentailsForm';
 import { LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Button, TextField, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Divider, Typography } from '@mui/material';
 import { getScope } from '@utils/oauth';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 export type SignInProps = {
@@ -13,7 +13,6 @@ export type SignInProps = {
 
 const SignIn: NextPage = () => {
   const router = useRouter();
-  const [email, setEmail] = useState('');
   return (
     <Box
       sx={{
@@ -43,28 +42,10 @@ const SignIn: NextPage = () => {
           Anmeldung
         </Typography>
       </Box>
-      <Box
-        component="form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.log("we're here!");
-        }}
-      >
-        <TextField
-          type="email"
-          label="E-Mail"
-          margin="normal"
-          autoComplete="email"
-          fullWidth
-          required
-          autoFocus
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Button fullWidth variant="contained">
-          Weiter mit E-Mail
-        </Button>
-        <Box sx={{ mt: 2, '.GoogleButton': { width: '100% !important' } }}>
+      <Box sx={{ width: { xs: 1, sm: '500px' }, my: 1 }}>
+        <Divider />
+        <CredentialsForm />
+        <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
           <GoogleButton
             className="GoogleButton"
             label="Mit Google anmelden"
@@ -81,6 +62,11 @@ const SignIn: NextPage = () => {
             }
           />
         </Box>
+        {router.query.error && (
+          <Alert variant="filled" severity="error">
+            Login fehlgeschlagen
+          </Alert>
+        )}
       </Box>
     </Box>
   );

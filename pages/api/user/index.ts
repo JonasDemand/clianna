@@ -1,3 +1,4 @@
+import { ICreateUserRequest } from '@customTypes/user';
 import {
   withBody,
   withMethodGuard,
@@ -7,14 +8,10 @@ import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const createResponse = await DbRepo.Instance.User.Create({ ...req.body });
+  const body = req.body as ICreateUserRequest;
 
-  if (!createResponse) return res.status(500).send('Unable to create user');
-
-  return res.status(200).send({
-    email: createResponse.email,
-    admin: createResponse.admin,
-  });
+  await DbRepo.Instance.User.Upsert(body);
+  return res.status(200).send('Succesfully created credentials');
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

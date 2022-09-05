@@ -1,34 +1,26 @@
-import { ICreateUserProps } from '@customTypes/database/user';
+import { ICreateUserRequest } from '@customTypes/user';
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
+import { createSalt, hashPassword } from '@utils/authentication';
 
 const prisma = new PrismaClient();
 
 export class User {
-  public async Create(user: ICreateUserProps): Promise<ICreateUserProps> {
-    throw new Error('not Implemented');
-    /*const existingUsersCount = await prisma.user.count({
-      where: {
-        email: user.email,
-      },
-    });
-    if (existingUsersCount)
-      throw new Error('User with that email already exists');
-
+  public async Upsert(user: ICreateUserRequest): Promise<void> {
     const salt = createSalt();
     const hashedPassword = await hashPassword(user.password, salt);
-    const createdUser = await prisma.user.create({
-      data: {
+    await prisma.user.upsert({
+      where: { email: user.email },
+      update: {
+        password: hashedPassword,
+        salt: salt,
+      },
+      create: {
         email: user.email,
         password: hashedPassword,
         salt: salt,
-        admin: Boolean(user.admin) ?? false,
       },
+      select: null,
     });
-    return {
-      email: createdUser.email,
-      password: createdUser.password,
-      admin: createdUser.admin,
-    };*/
   }
   public async GetAll(): Promise<PrismaUser[]> {
     return await prisma.user.findMany();

@@ -4,7 +4,7 @@ export class Order {
   public async Create(
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
   ): Promise<IOrderWithCustomer> {
-    const res = await fetch('/api/orders', {
+    const res = await fetch('/api/order', {
       method: 'POST',
       body: JSON.stringify(order),
       headers: { 'content-type': 'application/json' },
@@ -19,7 +19,7 @@ export class Order {
     id: number,
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
   ): Promise<IOrderWithCustomer> {
-    const res = await fetch(`/api/orders/${id}`, {
+    const res = await fetch(`/api/order/${id}`, {
       method: 'PUT',
       body: JSON.stringify(order),
       headers: { 'content-type': 'application/json' },
@@ -31,7 +31,7 @@ export class Order {
   }
 
   public async Delete(id: number): Promise<void> {
-    const res = await fetch(`/api/orders/${id}`, {
+    const res = await fetch(`/api/order/${id}`, {
       method: 'DELETE',
     });
     if (!res.ok) {

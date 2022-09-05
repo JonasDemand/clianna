@@ -14,11 +14,11 @@ model User {
   id          Int        @id @default(autoincrement())
   cuid        String     @unique @default(cuid())
   email       String     @unique
-  name        String
   password    String?    @db.Text
   salt        String?    @db.Text
   googleId    String?    @unique
   googleToken String?    @db.Text
+  googleScope String?
   Customer    Customer[]
   Order       Order[]
   Document    Document[]

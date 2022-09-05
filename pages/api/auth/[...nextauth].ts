@@ -1,7 +1,9 @@
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@utils/authentication';
 import { google } from 'googleapis';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 
 const GOOGLE_AUTHORIZATION_URL = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams(
@@ -43,11 +45,7 @@ export default NextAuth({
         if (!tokens.refresh_token || !tokens.id_token)
           throw 'Invalid token response';
         const googleProfile = profile as GoogleProfile;
-        const name =
-          googleProfile.given_name ??
-          googleProfile.name ??
-          googleProfile.family_name;
-        if (!googleProfile.sub || !googleProfile.email || !name)
+        if (!googleProfile.sub || !googleProfile.email)
           throw 'Invalid google profile';
         const tokenInfo = await oauth2.tokeninfo({
           access_token: tokens.access_token,
@@ -58,23 +56,44 @@ export default NextAuth({
             googleId: googleProfile.sub,
           },
           update: {
-            name,
             email: googleProfile.email,
             googleToken: tokens.refresh_token,
+            googleScope: tokenInfo.data.scope,
           },
           create: {
-            name,
             email: googleProfile.email,
             googleId: googleProfile.sub,
             googleToken: tokens.refresh_token,
+            googleScope: tokenInfo.data.scope,
           },
         });
         return {
           id: googleProfile.sub,
           cuid: user.cuid,
           scope: tokenInfo.data.scope,
-          name,
         };
+      },
+    }),
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'E-mail', type: 'email' },
+        password: { label: 'Passwort', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials.password) return null;
+        const user = await prisma.user.findUniqueOrThrow({
+          where: { email: credentials.email },
+        });
+        if (!user.password || !user.salt) throw 'Invalid db user';
+        const hash = await hashPassword(credentials?.password, user.salt);
+        if (hash === user.password)
+          return {
+            email: user.email,
+            cuid: user.cuid,
+            scope: user.googleScope,
+          };
+        return null;
       },
     }),
   ],
@@ -85,7 +104,6 @@ export default NextAuth({
         user: {
           ...user,
           cuid: token.cuid,
-          name: token.name!,
           scope: token.scope,
         },
       };

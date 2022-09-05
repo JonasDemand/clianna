@@ -1,7 +1,6 @@
-export interface ICreateUserProps {
+export interface ICreateUserRequest {
   email: string;
   password: string;
-  admin: boolean;
 }
 
 export interface IValidateUserResponse {

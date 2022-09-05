@@ -20,7 +20,6 @@ const drive = google.drive({
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
-  console.log(session);
   if (!session) return res.status(401).send('Unauthorized');
   const user = await prisma.user.findUniqueOrThrow({
     where: { cuid: session.user.cuid },
