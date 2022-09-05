@@ -3,3 +3,7 @@ export interface ICreateUserProps {
   password: string;
   admin: boolean;
 }
+
+export interface IValidateUserResponse {
+  valid: boolean;
+}

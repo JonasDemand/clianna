@@ -33,8 +33,8 @@ export const getServerSideProps: GetServerSideProps<OrdersProps> = async (
   DbRepo.Init(session.user.id);
   return {
     props: {
-      orders: await DbRepo.Current.Order.GetAll(true),
-      customers: await DbRepo.Current.Customer.GetActive(false),
+      orders: await DbRepo.Instance.Order.GetAll(true),
+      customers: await DbRepo.Instance.Customer.GetActive(false),
     },
   };
 };

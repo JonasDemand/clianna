@@ -31,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<CustomersProps> = async (
   DbRepo.Init(session.user.id);
   return {
     props: {
-      customers: await DbRepo.Current.Customer.GetAll(true),
+      customers: await DbRepo.Instance.Customer.GetAll(true),
     },
   };
 };

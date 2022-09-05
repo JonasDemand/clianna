@@ -6,11 +6,7 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
-import {
-  createCustomer,
-  deleteCustomer,
-  updateCustomer,
-} from '@utils/api/requests/customers';
+import { ApiClient } from '@utils/api/client';
 import { convertToICustomer, getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -57,10 +53,12 @@ const CustomersPage: FC = () => {
     let newCust = selected;
     try {
       if (create) {
-        newCust = await createCustomer(convertToICustomer(selected));
+        newCust = await ApiClient.Instance.Customer.Create(
+          convertToICustomer(selected)
+        );
         newCustomers.push(newCust);
       } else {
-        newCust = await updateCustomer(
+        newCust = await ApiClient.Instance.Customer.Update(
           selected.id,
           convertToICustomer(selected)
         );
@@ -93,7 +91,7 @@ const CustomersPage: FC = () => {
     try {
       setCustomerToDelete(null);
       setShowBackdrop(true);
-      await deleteCustomer(customerToDelete.id);
+      await ApiClient.Instance.Customer.Delete(customerToDelete.id);
       setCustomers(
         customers.filter((customer) => customer.id !== customerToDelete.id)
       );

@@ -4,6 +4,7 @@ declare module 'next-auth' {
   interface User {
     cuid: string;
     name: string;
+    scope: string;
   }
   interface Session {
     user: User;

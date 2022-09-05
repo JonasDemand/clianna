@@ -7,11 +7,7 @@ import { BackdropContextType } from '@customTypes/backdrop';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import {
-  createOrder,
-  deleteOrder,
-  updateOrder,
-} from '@utils/api/requests/orders';
+import { ApiClient } from '@utils/api/client';
 import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -57,10 +53,10 @@ const OrdersPage: FC = () => {
     let newOrder = selected;
     try {
       if (create) {
-        newOrder = await createOrder(selected);
+        newOrder = await ApiClient.Instance.Order.Create(selected);
         newOrders.push(newOrder);
       } else {
-        newOrder = await updateOrder(selected.id, selected);
+        newOrder = await ApiClient.Instance.Order.Update(selected.id, selected);
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }
@@ -87,7 +83,7 @@ const OrdersPage: FC = () => {
     try {
       setOrderToDelete(null);
       setShowBackdrop(true);
-      await deleteOrder(orderToDelete.id);
+      await ApiClient.Instance.Order.Delete(orderToDelete.id);
       setOrders(orders.filter((order) => order.id !== orderToDelete.id));
       enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     } catch {

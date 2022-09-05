@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { google } from 'googleapis';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
@@ -12,6 +13,8 @@ const GOOGLE_AUTHORIZATION_URL = `https://accounts.google.com/o/oauth2/v2/auth?$
 )}`;
 
 const prisma = new PrismaClient();
+
+const oauth2 = google.oauth2('v2');
 
 type GoogleProfile = {
   iss?: string;
@@ -37,17 +40,19 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
       authorization: GOOGLE_AUTHORIZATION_URL,
       profile: async (profile, tokens) => {
-        console.log(profile);
         if (!tokens.refresh_token || !tokens.id_token)
           throw 'Invalid token response';
         const googleProfile = profile as GoogleProfile;
-        console.log(googleProfile);
         const name =
           googleProfile.given_name ??
           googleProfile.name ??
           googleProfile.family_name;
         if (!googleProfile.sub || !googleProfile.email || !name)
           throw 'Invalid google profile';
+        const tokenInfo = await oauth2.tokeninfo({
+          access_token: tokens.access_token,
+        });
+        if (!tokenInfo.data.scope) throw 'Invalid scope';
         const user = await prisma.user.upsert({
           where: {
             googleId: googleProfile.sub,
@@ -67,6 +72,7 @@ export default NextAuth({
         return {
           id: googleProfile.sub,
           cuid: user.cuid,
+          scope: tokenInfo.data.scope,
           name,
         };
       },
@@ -80,6 +86,7 @@ export default NextAuth({
           ...user,
           cuid: token.cuid,
           name: token.name!,
+          scope: token.scope,
         },
       };
     },

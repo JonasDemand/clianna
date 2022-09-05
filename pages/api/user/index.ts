@@ -1,9 +1,13 @@
-import { withBody, withMiddleware } from '@utils/api/implementation/middleware';
+import {
+  withBody,
+  withMethodGuard,
+  withMiddleware,
+} from '@utils/api/middleware';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const createResponse = await DbRepo.Current.User.Create({ ...req.body });
+  const createResponse = await DbRepo.Instance.User.Create({ ...req.body });
 
   if (!createResponse) return res.status(500).send('Unable to create user');
 
@@ -21,4 +25,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+export default withMiddleware(withMethodGuard(['POST']), handler);
