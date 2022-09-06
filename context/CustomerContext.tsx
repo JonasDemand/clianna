@@ -4,6 +4,7 @@ import {
   createContext,
   FC,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -59,6 +60,19 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setCustomers(initialCustomers), []);
 
+  const updateSelected = useCallback(
+    <T extends keyof ICustomerWithOrders>(
+      property: T,
+      value: ICustomerWithOrders[T]
+    ) => {
+      if (!selected) return;
+      let newSelected = { ...selected };
+      newSelected[property] = value;
+      setSelected(newSelected);
+    },
+    [selected]
+  );
+
   return (
     <CustomerContext.Provider
       value={{
@@ -67,6 +81,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         filteredCustomers,
         selected,
         setSelected,
+        updateSelected,
         showCustomers,
         setShowCustomers,
         activeColumns,

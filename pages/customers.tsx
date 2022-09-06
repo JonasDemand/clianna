@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<CustomersProps> = async (
 ) => {
   const session = await getSession(context);
   if (!session) return { props: { customers: [] } };
-  DbRepo.Init(session.user.id);
+  DbRepo.Init(session.user.cuid);
   return {
     props: {
       customers: await DbRepo.Instance.Customer.GetAll(true),

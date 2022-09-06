@@ -17,6 +17,7 @@ import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
 const CustomersPage: FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { setShowBackdrop } = useContext(
     BackdropContext
   ) as BackdropContextType;
@@ -32,10 +33,33 @@ const CustomersPage: FC = () => {
   const [customerToDelete, setCustomerToDelete] =
     useState<ICustomerWithOrders | null>(null);
 
-  const { enqueueSnackbar } = useSnackbar();
+  const onCloseOverlay = useCallback(() => setSelected(null), [setSelected]);
+  const onCloseDialog = useCallback(() => setCustomerToDelete(null), []);
 
-  const onClose = useCallback(() => setSelected(null), [setSelected]);
-  const onSave = useCallback(async () => {
+  const onConfirmDialog = useCallback(async () => {
+    if (!customerToDelete) return;
+    try {
+      setCustomerToDelete(null);
+      setShowBackdrop(true);
+      await ApiClient.Instance.Customer.Delete(customerToDelete.id);
+      setCustomers(
+        customers.filter((customer) => customer.id !== customerToDelete.id)
+      );
+      enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
+    } catch {
+      enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
+    } finally {
+      setShowBackdrop(false);
+    }
+  }, [
+    customerToDelete,
+    customers,
+    enqueueSnackbar,
+    setCustomers,
+    setShowBackdrop,
+  ]);
+
+  const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
     if (
       isEqual(
@@ -81,33 +105,12 @@ const CustomersPage: FC = () => {
       );
     }
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
-  const onCopy = useCallback(
+
+  const onCopyRow = useCallback(
     (customer: ICustomerWithOrders) =>
       setSelected({ ...customer, id: -1, orders: [] }),
     [setSelected]
   );
-  const deleteSelectedCustomer = useCallback(async () => {
-    if (!customerToDelete) return;
-    try {
-      setCustomerToDelete(null);
-      setShowBackdrop(true);
-      await ApiClient.Instance.Customer.Delete(customerToDelete.id);
-      setCustomers(
-        customers.filter((customer) => customer.id !== customerToDelete.id)
-      );
-      enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
-    } catch {
-      enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
-    } finally {
-      setShowBackdrop(false);
-    }
-  }, [
-    customerToDelete,
-    customers,
-    enqueueSnackbar,
-    setCustomers,
-    setShowBackdrop,
-  ]);
 
   return (
     <Box
@@ -120,22 +123,22 @@ const CustomersPage: FC = () => {
         rows={filteredCustomers}
         columns={activeColumns}
         onEdit={setSelected}
-        onCopy={onCopy}
+        onCopy={onCopyRow}
         onDelete={setCustomerToDelete}
       />
       <SideOverlay
         heading="Kundenbearbeitung"
         open={!!selected}
-        onClose={onClose}
-        onSave={onSave}
+        onClose={onCloseOverlay}
+        onSave={onSaveOverlay}
       >
         <CustomerForm />
       </SideOverlay>
       <ConfirmDialog
         open={!!customerToDelete}
         title="Kunde löschen"
-        onClose={() => setCustomerToDelete(null)}
-        onConfirm={() => deleteSelectedCustomer()}
+        onClose={onCloseDialog}
+        onConfirm={onConfirmDialog}
       >
         <Typography>
           Bist du dir sicher, dass Du diesen Kunden löschen willst?

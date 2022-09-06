@@ -9,13 +9,7 @@ import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
 import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import React, {
-  ChangeEvent,
-  FC,
-  memo,
-  SyntheticEvent,
-  useContext,
-} from 'react';
+import React, { ChangeEvent, FC, SyntheticEvent, useContext } from 'react';
 
 import EnumSelect from '../Inputs/EnumSelect';
 
@@ -37,6 +31,7 @@ const CustomersTableHeader: FC = () => {
     _: SyntheticEvent<Element, Event>,
     value: GridColDef<ICustomerWithOrders>[]
   ) => setActiveVariableColumns(value);
+
   return (
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
@@ -99,4 +94,4 @@ const CustomersTableHeader: FC = () => {
   );
 };
 
-export default memo(CustomersTableHeader);
+export default CustomersTableHeader;

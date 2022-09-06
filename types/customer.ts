@@ -8,6 +8,10 @@ export type CustomerContextType = {
   filteredCustomers: ICustomerWithOrders[];
   selected: ICustomerWithOrders | null;
   setSelected: (customer: ICustomerWithOrders | null) => void;
+  updateSelected: <T extends keyof ICustomerWithOrders>(
+    property: T,
+    value: ICustomerWithOrders[T]
+  ) => void;
   showCustomers: EShowCustomer;
   setShowCustomers: (state: EShowCustomer) => void;
   activeColumns: GridColDef<ICustomerWithOrders>[];

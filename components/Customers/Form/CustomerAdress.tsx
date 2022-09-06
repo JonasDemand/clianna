@@ -2,14 +2,35 @@ import FormInput from '@components/Inputs/FormInput';
 import FormSection from '@components/SideOverlay/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Grid } from '@mui/material';
-import { FC, useContext } from 'react';
+import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const CustomerAdress: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
+
+  const onChangeStreet = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('street', e.target.value),
+    [updateSelected]
+  );
+  const onChangeStreetnumber = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('streetnumber', e.target.value),
+    [updateSelected]
+  );
+  const onChangePostalcode = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('postalcode', e.target.value),
+    [updateSelected]
+  );
+  const onChangeCity = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('city', e.target.value),
+    [updateSelected]
+  );
+
   return (
     <FormSection label="Adresse">
       {selected && (
@@ -18,48 +39,28 @@ const CustomerAdress: FC = () => {
             <FormInput
               label="Straße"
               value={selected.street}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  street: e.target.value,
-                })
-              }
+              onChange={onChangeStreet}
             />
           </Grid>
           <Grid item xs={6}>
             <FormInput
               label="Hausnummer"
               value={selected.streetnumber}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  streetnumber: e.target.value,
-                })
-              }
+              onChange={onChangeStreetnumber}
             />
           </Grid>
           <Grid item xs={6}>
             <FormInput
               label="Postleitzahl"
               value={selected.postalcode}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  postalcode: e.target.value,
-                })
-              }
+              onChange={onChangePostalcode}
             />
           </Grid>
           <Grid item xs={6}>
             <FormInput
               label="Stadt"
               value={selected.city}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  city: e.target.value,
-                })
-              }
+              onChange={onChangeCity}
             />
           </Grid>
         </Grid>

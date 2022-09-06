@@ -5,6 +5,7 @@ import { getScope } from '@utils/oauth';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
+import { useEffect, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 export type SignInProps = {
@@ -13,6 +14,13 @@ export type SignInProps = {
 
 const SignIn: NextPage = () => {
   const router = useRouter();
+
+  const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    if (router.query.error) setError('Login fehlgeschlagen');
+  }, [router.query.error]);
+
   return (
     <Box
       sx={{
@@ -44,7 +52,7 @@ const SignIn: NextPage = () => {
       </Box>
       <Box sx={{ width: { xs: 1, sm: '500px' }, my: 1 }}>
         <Divider />
-        <CredentialsForm />
+        <CredentialsForm showError={setError} />
         <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
           <GoogleButton
             className="GoogleButton"
@@ -62,9 +70,9 @@ const SignIn: NextPage = () => {
             }
           />
         </Box>
-        {router.query.error && (
+        {error && (
           <Alert variant="filled" severity="error">
-            Login fehlgeschlagen
+            {error}
           </Alert>
         )}
       </Box>

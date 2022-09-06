@@ -1,13 +1,13 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
-import { Typography } from '@mui/material';
+import ProfilePage from '@components/Profile/ProfilePage';
 import { FC } from 'react';
 
 const Profile: FC = () => {
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <Typography>Howdy :) this is your profile</Typography>
+        <ProfilePage />
       </LayoutWrapper>
     </AuthenticationWrapper>
   );

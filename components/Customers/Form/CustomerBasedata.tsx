@@ -2,18 +2,74 @@ import FormInput from '@components/Inputs/FormInput';
 import FormSection from '@components/SideOverlay/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Email, Phone, Smartphone } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
-import { FC, useContext, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useContext, useState } from 'react';
 
 const CustomerBasedata: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
   const [emailFocused, setEmailFocused] = useState(false);
-  const [telFocused, setTelFocused] = useState(false);
+  const [phoneFocused, setPhoneFocused] = useState(false);
   const [mobileFocused, setMobileFocused] = useState(false);
+
+  const onChangeFirstname = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('firstname', e.target.value),
+    [updateSelected]
+  );
+  const onChangeLastname = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('lastname', e.target.value),
+    [updateSelected]
+  );
+  const onChangePhone = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('phone', e.target.value),
+    [updateSelected]
+  );
+  const onChangeMobile = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('mobile', e.target.value),
+    [updateSelected]
+  );
+  const onChangeEmail = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('email', e.target.value),
+    [updateSelected]
+  );
+  const onChangeShoesize = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('shoesize', parseFloat(e.target.value)),
+    [updateSelected]
+  );
+
+  const onFocusPhone = useCallback(
+    () => setPhoneFocused(true),
+    [setPhoneFocused]
+  );
+  const onFocusMobile = useCallback(
+    () => setMobileFocused(true),
+    [setMobileFocused]
+  );
+  const onFocusEmail = useCallback(
+    () => setEmailFocused(true),
+    [setEmailFocused]
+  );
+
+  const onBlurPhone = useCallback(
+    () => setPhoneFocused(false),
+    [setPhoneFocused]
+  );
+  const onBlurMobile = useCallback(
+    () => setMobileFocused(false),
+    [setMobileFocused]
+  );
+  const onBlurEmail = useCallback(
+    () => setEmailFocused(false),
+    [setEmailFocused]
+  );
 
   return (
     <FormSection label="Stammdaten">
@@ -23,24 +79,14 @@ const CustomerBasedata: FC = () => {
             <FormInput
               label="Vorname"
               value={selected.firstname}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  firstname: e.target.value,
-                })
-              }
+              onChange={onChangeFirstname}
             />
           </Grid>
           <Grid item xs={6}>
             <FormInput
               label="Nachname"
               value={selected.lastname}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  lastname: e.target.value,
-                })
-              }
+              onChange={onChangeLastname}
             />
           </Grid>
           <Grid item xs={6}>
@@ -48,18 +94,13 @@ const CustomerBasedata: FC = () => {
               type="tel"
               label="Festnetztelefon"
               value={selected.phone}
-              onFocus={() => setTelFocused(true)}
-              onBlur={() => setTelFocused(false)}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  phone: e.target.value,
-                })
-              }
+              onFocus={onFocusPhone}
+              onBlur={onBlurPhone}
+              onChange={onChangePhone}
               InputProps={{
                 endAdornment: (
                   <IconButton
-                    disabled={!selected.phone || telFocused}
+                    disabled={!selected.phone || phoneFocused}
                     onClick={() => {
                       selected.phone &&
                         (window.location.href = `tel: ${selected.phone}`);
@@ -77,14 +118,9 @@ const CustomerBasedata: FC = () => {
               type="tel"
               label="Mobiltelefon"
               value={selected.mobile}
-              onFocus={() => setMobileFocused(true)}
-              onBlur={() => setMobileFocused(false)}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  mobile: e.target.value,
-                })
-              }
+              onFocus={onFocusMobile}
+              onBlur={onBlurMobile}
+              onChange={onChangeMobile}
               InputProps={{
                 endAdornment: (
                   <IconButton
@@ -106,14 +142,9 @@ const CustomerBasedata: FC = () => {
               type="email"
               label="E-Mail"
               value={selected.email}
-              onFocus={() => setEmailFocused(true)}
-              onBlur={() => setEmailFocused(false)}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  email: e.target.value,
-                })
-              }
+              onFocus={onFocusEmail}
+              onBlur={onBlurEmail}
+              onChange={onChangeEmail}
               InputProps={{
                 endAdornment: (
                   <IconButton
@@ -138,12 +169,7 @@ const CustomerBasedata: FC = () => {
               inputProps={{
                 step: '.5',
               }}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  shoesize: parseFloat(e.target.value),
-                })
-              }
+              onChange={onChangeShoesize}
             />
           </Grid>
         </Grid>

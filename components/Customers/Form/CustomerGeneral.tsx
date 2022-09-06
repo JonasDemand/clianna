@@ -1,14 +1,22 @@
 import FormSection from '@components/SideOverlay/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { FC, useContext } from 'react';
+import { FC, useCallback, useContext } from 'react';
 
 const CustomerGeneral: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     CustomerContext
   ) as CustomerContextType;
+
+  const onChangeDisabled = useCallback(
+    (_: unknown, checked: boolean) => updateSelected('disabled', checked),
+    [updateSelected]
+  );
+  const onChangeWhatsapp = useCallback(
+    (_: unknown, checked: boolean) => updateSelected('whatsapp', checked),
+    [updateSelected]
+  );
 
   return (
     <FormSection label="Allgemein">
@@ -18,24 +26,14 @@ const CustomerGeneral: FC = () => {
             <FormControlLabel
               control={<Checkbox checked={selected.disabled ?? false} />}
               label="Deaktiviert"
-              onChange={(_, checked) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  disabled: checked,
-                })
-              }
+              onChange={onChangeDisabled}
             />
           </Grid>
           <Grid item xs={6}>
             <FormControlLabel
               control={<Checkbox checked={selected.whatsapp ?? false} />}
               label="WhatsApp"
-              onChange={(_, checked) =>
-                setSelected({
-                  ...(selected as ICustomerWithOrders),
-                  whatsapp: checked,
-                })
-              }
+              onChange={onChangeWhatsapp}
             />
           </Grid>
         </Grid>
