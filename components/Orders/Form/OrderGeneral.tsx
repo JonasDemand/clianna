@@ -8,7 +8,7 @@ import {
   OrderTypeLabels,
 } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { ICustomer } from '@customTypes/database/customer';
 import { OrderContextType } from '@customTypes/order';
 import {
   Autocomplete,
@@ -20,12 +20,43 @@ import {
 } from '@mui/material';
 import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
-import { FC, useContext } from 'react';
+import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const OrderGeneral: FC = () => {
-  const { selected, setSelected, customers } = useContext(
+  const { selected, updateSelected, customers } = useContext(
     OrderContext
   ) as OrderContextType;
+
+  const onChangePending = useCallback(
+    (_: unknown, checked: boolean) => updateSelected('pending', checked),
+    [updateSelected]
+  );
+  const onChangeType = useCallback(
+    (value: EOrderType) => updateSelected('type', value),
+    [updateSelected]
+  );
+  const onChangePrice = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('price', parseFloat(e.target.value)),
+    [updateSelected]
+  );
+  const onChangeCustomer = useCallback(
+    (_: unknown, value: ICustomer | null) => updateSelected('customer', value),
+    [updateSelected]
+  );
+  const onChangeComment = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('comment', e.target.value),
+    [updateSelected]
+  );
+  const onChangeShippingtype = useCallback(
+    (value: EOrderShippingType) => updateSelected('shippingType', value),
+    [updateSelected]
+  );
+  const onChangeTaxes = useCallback(
+    (value: EOrderTax | null) => updateSelected('taxes', value),
+    [updateSelected]
+  );
 
   return (
     <FormSection label="Allgemein">
@@ -35,12 +66,7 @@ const OrderGeneral: FC = () => {
             <FormControlLabel
               control={<Checkbox checked={selected.pending ?? false} />}
               label="Ausstehend"
-              onChange={(_, checked) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  pending: checked,
-                })
-              }
+              onChange={onChangePending}
             />
           </Grid>
           <Grid item xs={6}>
@@ -52,12 +78,7 @@ const OrderGeneral: FC = () => {
               aditionalTextFieldProps={{
                 variant: 'filled',
               }}
-              onChange={(value) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  type: value,
-                })
-              }
+              onChange={onChangeType}
             />
           </Grid>
           <Grid item xs={6}>
@@ -65,12 +86,7 @@ const OrderGeneral: FC = () => {
               label="Preis"
               type="number"
               value={selected.price ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  price: parseFloat(e.target.value),
-                })
-              }
+              onChange={onChangePrice}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">€</InputAdornment>
@@ -83,12 +99,7 @@ const OrderGeneral: FC = () => {
               openOnFocus
               options={customers}
               value={selected.customer}
-              onChange={(_, value) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  customer: value,
-                })
-              }
+              onChange={onChangeCustomer}
               getOptionLabel={getCustomerLabel}
               renderInput={(params) => (
                 <TextField {...params} variant="filled" label="Kunde" />
@@ -102,12 +113,7 @@ const OrderGeneral: FC = () => {
               variant="filled"
               label="Kommentar"
               value={selected.comment ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  comment: e.target.value,
-                })
-              }
+              onChange={onChangeComment}
             />
           </Grid>
           <Grid item xs={6}>
@@ -116,12 +122,7 @@ const OrderGeneral: FC = () => {
               enumToUse={EOrderShippingType}
               enumLabel={OrderShippingTypeLabels}
               value={selected.shippingType ?? ''}
-              onChange={(value) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  shippingType: value,
-                })
-              }
+              onChange={onChangeShippingtype}
             />
           </Grid>
           <Grid item xs={6}>
@@ -130,12 +131,7 @@ const OrderGeneral: FC = () => {
               enumToUse={EOrderTax}
               enumLabel={OrderTaxLabels}
               value={selected.taxes}
-              onChange={(value) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  taxes: value,
-                })
-              }
+              onChange={onChangeTaxes}
             />
           </Grid>
         </Grid>

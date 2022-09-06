@@ -5,7 +5,7 @@ import { getScope } from '@utils/oauth';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 export type SignInProps = {
@@ -20,6 +20,20 @@ const SignIn: NextPage = () => {
   useEffect(() => {
     if (router.query.error) setError('Login fehlgeschlagen');
   }, [router.query.error]);
+
+  const onClickGoogleButton = useCallback(
+    () =>
+      signIn(
+        'google',
+        {
+          callbackUrl: (router.query.callbackUrl as string) ?? '/',
+        },
+        new URLSearchParams({
+          scope: getScope(),
+        })
+      ),
+    [router.query.callbackUrl]
+  );
 
   return (
     <Box
@@ -57,17 +71,7 @@ const SignIn: NextPage = () => {
           <GoogleButton
             className="GoogleButton"
             label="Mit Google anmelden"
-            onClick={() =>
-              signIn(
-                'google',
-                {
-                  callbackUrl: (router.query.callbackUrl as string) ?? '/',
-                },
-                new URLSearchParams({
-                  scope: getScope(),
-                })
-              )
-            }
+            onClick={onClickGoogleButton}
           />
         </Box>
         {error && (

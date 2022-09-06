@@ -33,15 +33,13 @@ const OrderTypeFrom: FC = () => {
   }
 };
 
-const OrderDetails: FC = () => {
-  return (
-    <FormControl fullWidth>
-      <FormLabel sx={{ mb: 1 }}>Details</FormLabel>
-      <Grid container spacing={2}>
-        <OrderTypeFrom />
-      </Grid>
-    </FormControl>
-  );
-};
+const OrderDetails: FC = () => (
+  <FormControl fullWidth>
+    <FormLabel sx={{ mb: 1 }}>Details</FormLabel>
+    <Grid container spacing={2}>
+      <OrderTypeFrom />
+    </Grid>
+  </FormControl>
+);
 
 export default OrderDetails;

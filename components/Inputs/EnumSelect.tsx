@@ -4,7 +4,7 @@ import {
   TextField,
   TextFieldProps,
 } from '@mui/material';
-import React from 'react';
+import React, { ChangeEvent, useCallback } from 'react';
 import { $enum } from 'ts-enum-util';
 
 export type EnumSelectProps<T> = {
@@ -32,6 +32,36 @@ const EnumSelect = <T = string | number,>({
   onInputChange,
   aditionalTextFieldProps,
 }: EnumSelectProps<T>) => {
+  const parseValue = useCallback(
+    (newValue: string) =>
+      (typeof value === 'number'
+        ? parseInt(newValue, 10)
+        : newValue) as unknown as T,
+    [value]
+  );
+
+  const onChangeAutocomplete = useCallback(
+    (_: unknown, newValue: string) =>
+      onChange && onChange(parseValue(newValue)),
+    [onChange, parseValue]
+  );
+  const onChangeSelect = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      onChange &&
+      onChange(
+        (typeof value === 'number'
+          ? parseInt(e.target.value, 10)
+          : e.target.value) as unknown as T
+      ),
+    [onChange, value]
+  );
+
+  const onInputChangeAutocomplete = useCallback(
+    (_: unknown, newValue: string) =>
+      onInputChange && onInputChange(parseValue(newValue)),
+    [onInputChange, parseValue]
+  );
+
   return autocomplete ? (
     <Autocomplete
       openOnFocus
@@ -39,22 +69,8 @@ const EnumSelect = <T = string | number,>({
       options={$enum(enumToUse).getValues()}
       value={value as string}
       inputValue={(inputValue as string) ?? ''}
-      onChange={(_, newValue) =>
-        onChange &&
-        onChange(
-          (typeof value === 'number'
-            ? parseInt(newValue, 10)
-            : newValue) as unknown as T
-        )
-      }
-      onInputChange={(_, newValue) =>
-        onInputChange &&
-        onInputChange(
-          (typeof value === 'number'
-            ? parseInt(newValue, 10)
-            : newValue) as unknown as T
-        )
-      }
+      onChange={onChangeAutocomplete}
+      onInputChange={onInputChangeAutocomplete}
       getOptionLabel={(value) => enumLabel?.get(value) ?? value}
       renderInput={(params) => (
         <TextField {...params} label={label} {...aditionalTextFieldProps} />
@@ -66,14 +82,7 @@ const EnumSelect = <T = string | number,>({
       select
       value={value}
       label={label}
-      onChange={(e) =>
-        onChange &&
-        onChange(
-          (typeof value === 'number'
-            ? parseInt(e.target.value, 10)
-            : e.target.value) as unknown as T
-        )
-      }
+      onChange={onChangeSelect}
       {...aditionalTextFieldProps}
     >
       {$enum(enumToUse).map((itemValue, i) => (

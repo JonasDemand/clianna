@@ -2,16 +2,25 @@ import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
 import { OrderSpecificationLabels } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { EOrderSpecification } from '@prisma/client';
 import dayjs from 'dayjs';
-import { FC, useContext } from 'react';
+import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 export const DuedatePicker: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     OrderContext
   ) as OrderContextType;
+
+  const onChangeDuedate = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected(
+        'dueDate',
+        e.target.value ? new Date(e.target.value) : null
+      ),
+    [updateSelected]
+  );
+
   return (
     <>
       {selected && (
@@ -24,12 +33,7 @@ export const DuedatePicker: FC = () => {
           value={
             selected.dueDate && dayjs(selected.dueDate).format('YYYY-MM-DD')
           }
-          onChange={(e) =>
-            setSelected({
-              ...(selected as IOrderWithCustomer),
-              dueDate: e.target.value ? new Date(e.target.value) : null,
-            })
-          }
+          onChange={onChangeDuedate}
         />
       )}
     </>
@@ -37,9 +41,15 @@ export const DuedatePicker: FC = () => {
 };
 
 export const SpecificationSelect: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     OrderContext
   ) as OrderContextType;
+
+  const onChangeSpecification = useCallback(
+    (value: EOrderSpecification) => updateSelected('specification', value),
+    [updateSelected]
+  );
+
   return (
     <>
       {selected && (
@@ -51,12 +61,7 @@ export const SpecificationSelect: FC = () => {
           aditionalTextFieldProps={{
             variant: 'filled',
           }}
-          onChange={(value) =>
-            setSelected({
-              ...(selected as IOrderWithCustomer),
-              specification: value,
-            })
-          }
+          onChange={onChangeSpecification}
         />
       )}
     </>

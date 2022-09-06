@@ -6,6 +6,7 @@ import {
   createContext,
   FC,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -64,6 +65,19 @@ const OrderProvider: FC<OrderContextProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const updateSelected = useCallback(
+    <T extends keyof IOrderWithCustomer>(
+      property: T,
+      value: IOrderWithCustomer[T]
+    ) => {
+      if (!selected) return;
+      let newSelected = { ...selected };
+      newSelected[property] = value;
+      setSelected(newSelected);
+    },
+    [selected]
+  );
+
   return (
     <OrderContext.Provider
       value={{
@@ -74,6 +88,7 @@ const OrderProvider: FC<OrderContextProps> = ({
         filteredOrders,
         selected,
         setSelected,
+        updateSelected,
         showOrders,
         setShowOrders,
         activeColumns,

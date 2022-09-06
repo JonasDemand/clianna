@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FC, useMemo, useState } from 'react';
+import { FC, MouseEvent, useCallback, useMemo, useState } from 'react';
 
 const pages = [
   { label: 'Kunden', route: '/customers', icon: <People /> },
@@ -25,34 +25,27 @@ const Navbar: FC = () => {
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) =>
-    setAnchorElNav(event.currentTarget);
-
-  const handleCloseNavMenu = () => setAnchorElNav(null);
-
-  const redirectRoot = () => router.push('/');
-
   const currentPage = useMemo(
     () => pages.find((x) => x.route === router.route),
     [router.route]
   );
 
+  const onClickOpenNavMenu = useCallback(
+    (event: MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget),
+    []
+  );
+  const onClickRoot = useCallback(() => router.push('/'), [router]);
+
+  const onCloseNavMenu = useCallback(() => setAnchorElNav(null), []);
+
   return (
     <>
       {/*mobile*/}
       <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleOpenNavMenu}
-          color="inherit"
-        >
+        <IconButton size="large" onClick={onClickOpenNavMenu} color="inherit">
           <MenuIcon />
         </IconButton>
         <Menu
-          id="menu-appbar"
           anchorEl={anchorElNav}
           anchorOrigin={{
             vertical: 'bottom',
@@ -64,7 +57,7 @@ const Navbar: FC = () => {
             horizontal: 'left',
           }}
           open={!!anchorElNav}
-          onClose={handleCloseNavMenu}
+          onClose={onCloseNavMenu}
           sx={{
             display: { xs: 'block', md: 'none' },
           }}
@@ -73,7 +66,7 @@ const Navbar: FC = () => {
             <MenuItem
               key={page.route}
               onClick={() => {
-                handleCloseNavMenu();
+                onCloseNavMenu();
                 page !== currentPage && router.push(page.route);
               }}
             >
@@ -86,13 +79,13 @@ const Navbar: FC = () => {
         </Menu>
       </Box>
       <Extension
-        onClick={redirectRoot}
+        onClick={onClickRoot}
         sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, cursor: 'pointer' }}
       />
       <Typography
         variant="h5"
         noWrap
-        onClick={redirectRoot}
+        onClick={onClickRoot}
         sx={{
           mr: 2,
           display: { xs: 'flex', md: 'none' },
@@ -110,13 +103,13 @@ const Navbar: FC = () => {
 
       {/*desktop*/}
       <Extension
-        onClick={redirectRoot}
+        onClick={onClickRoot}
         sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, cursor: 'pointer' }}
       />
       <Typography
         variant="h6"
         noWrap
-        onClick={redirectRoot}
+        onClick={onClickRoot}
         sx={{
           mr: 2,
           display: { xs: 'none', md: 'flex' },

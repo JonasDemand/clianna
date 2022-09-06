@@ -10,15 +10,11 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
-import { FC, useMemo, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) =>
-    setAnchorElUser(event.currentTarget);
-  const handleCloseUserMenu = () => setAnchorElUser(null);
 
   const actions = useMemo(
     () => [
@@ -40,10 +36,18 @@ const Userprofile: FC = () => {
     [router]
   );
 
+  const onClickUserMenu = useCallback(
+    (event: React.MouseEvent<HTMLElement>) =>
+      setAnchorElUser(event.currentTarget),
+    []
+  );
+
+  const onCloseUserMenu = useCallback(() => setAnchorElUser(null), []);
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Account">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+        <IconButton onClick={onClickUserMenu} sx={{ p: 0 }}>
           <Avatar />
         </IconButton>
       </Tooltip>
@@ -60,13 +64,13 @@ const Userprofile: FC = () => {
           horizontal: 'right',
         }}
         open={!!anchorElUser}
-        onClose={handleCloseUserMenu}
+        onClose={onCloseUserMenu}
       >
         {actions.map((action, i) => (
           <MenuItem
             key={i}
             onClick={() => {
-              handleCloseUserMenu();
+              onCloseUserMenu();
               action.onClick();
             }}
           >

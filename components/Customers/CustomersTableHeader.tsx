@@ -7,9 +7,16 @@ import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
-import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  Button,
+  Divider,
+  Grid,
+  TextField,
+} from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import React, { ChangeEvent, FC, SyntheticEvent, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 import EnumSelect from '../Inputs/EnumSelect';
 
@@ -24,13 +31,32 @@ const CustomersTableHeader: FC = () => {
     setShowCustomers,
   } = useContext(CustomerContext) as CustomerContextType;
 
-  const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
-    setSearchText(e.target.value);
+  const onChangeSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    [setSearchText]
+  );
+  const onChangeColumns = useCallback(
+    (_: unknown, value: GridColDef<ICustomerWithOrders>[]) =>
+      setActiveVariableColumns(value),
+    [setActiveVariableColumns]
+  );
 
-  const changeActiveColumns = (
-    _: SyntheticEvent<Element, Event>,
-    value: GridColDef<ICustomerWithOrders>[]
-  ) => setActiveVariableColumns(value);
+  const onClickAdd = useCallback(
+    () => setSelected(defaultCustomer()),
+    [setSelected]
+  );
+
+  const getOptionLabelColumns = useCallback(
+    (option: GridColDef<ICustomerWithOrders>) => option.headerName ?? '',
+    []
+  );
+
+  const renderInputColumns = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <TextField {...params} label="Spalten" />
+    ),
+    []
+  );
 
   return (
     <>
@@ -41,7 +67,7 @@ const CustomersTableHeader: FC = () => {
             type="text"
             label="Suche"
             value={searchText}
-            onChange={changeSearchText}
+            onChange={onChangeSearch}
             InputProps={{
               endAdornment: <Search />,
             }}
@@ -53,10 +79,10 @@ const CustomersTableHeader: FC = () => {
             multiple
             options={variableColumns}
             value={activeVariableColumns}
-            onChange={changeActiveColumns}
+            onChange={onChangeColumns}
             limitTags={2}
-            getOptionLabel={(option) => option.headerName ?? ''}
-            renderInput={(params) => <TextField {...params} label="Spalten" />}
+            getOptionLabel={getOptionLabelColumns}
+            renderInput={renderInputColumns}
           />
         </Grid>
       </Grid>
@@ -82,9 +108,7 @@ const CustomersTableHeader: FC = () => {
             color="success"
             fullWidth
             startIcon={<Add />}
-            onClick={() => {
-              setSelected(defaultCustomer());
-            }}
+            onClick={onClickAdd}
           >
             Hinzufügen
           </Button>

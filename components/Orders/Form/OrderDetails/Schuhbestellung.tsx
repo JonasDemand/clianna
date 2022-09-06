@@ -1,15 +1,40 @@
 import EnumSelect from '@components/Inputs/EnumSelect';
 import FormInput from '@components/Inputs/FormInput';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EOrderBrand, OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
-import { FC, useContext } from 'react';
+import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const Schuhbestellung: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     OrderContext
   ) as OrderContextType;
+
+  const onChangeBrand = useCallback(
+    (value: string | null) => updateSelected('brand', value),
+    [updateSelected]
+  );
+  const onChangeArticle = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('article', e.target.value),
+    [updateSelected]
+  );
+  const onChangeColor = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('color', e.target.value),
+    [updateSelected]
+  );
+  const onChangeDealer = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('dealer', e.target.value),
+    [updateSelected]
+  );
+  const onChangeSize = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('size', parseFloat(e.target.value)),
+    [updateSelected]
+  );
+
   return (
     <>
       {selected && (
@@ -24,12 +49,7 @@ const Schuhbestellung: FC = () => {
               aditionalTextFieldProps={{
                 variant: 'filled',
               }}
-              onInputChange={(value) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  brand: value,
-                })
-              }
+              onInputChange={onChangeBrand}
             />
           </Grid>
           <Grid item xs={6}>
@@ -37,12 +57,7 @@ const Schuhbestellung: FC = () => {
               label="Artikel"
               type="text"
               value={selected.article ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  article: e.target.value,
-                })
-              }
+              onChange={onChangeArticle}
             />
           </Grid>
           <Grid item xs={6}>
@@ -50,12 +65,7 @@ const Schuhbestellung: FC = () => {
               label="Farbe"
               type="text"
               value={selected.color ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  color: e.target.value,
-                })
-              }
+              onChange={onChangeColor}
             />
           </Grid>
           <Grid item xs={6}>
@@ -63,12 +73,7 @@ const Schuhbestellung: FC = () => {
               label="Händler"
               type="text"
               value={selected.dealer ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  dealer: e.target.value,
-                })
-              }
+              onChange={onChangeDealer}
             />
           </Grid>
           <Grid item xs={6}>
@@ -79,12 +84,7 @@ const Schuhbestellung: FC = () => {
               inputProps={{
                 step: '.5',
               }}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  size: parseFloat(e.target.value),
-                })
-              }
+              onChange={onChangeSize}
             />
           </Grid>
         </>

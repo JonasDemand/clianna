@@ -1,16 +1,22 @@
 import FormInput from '@components/Inputs/FormInput';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithCustomer } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
-import { FC, useContext } from 'react';
+import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 import { DuedatePicker } from './CommonInputs';
 
 const Miscellaneous: FC = () => {
-  const { selected, setSelected } = useContext(
+  const { selected, updateSelected } = useContext(
     OrderContext
   ) as OrderContextType;
+
+  const onChangeName = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('name', e.target.value),
+    [updateSelected]
+  );
+
   return (
     <>
       {selected && (
@@ -24,12 +30,7 @@ const Miscellaneous: FC = () => {
               variant="filled"
               label="Name"
               value={selected.name ?? ''}
-              onChange={(e) =>
-                setSelected({
-                  ...(selected as IOrderWithCustomer),
-                  name: e.target.value,
-                })
-              }
+              onChange={onChangeName}
             />
           </Grid>
         </>

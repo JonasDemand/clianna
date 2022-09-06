@@ -4,15 +4,16 @@ import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
-import { Autocomplete, Button, Divider, Grid, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  Button,
+  Divider,
+  Grid,
+  TextField,
+} from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import React, {
-  ChangeEvent,
-  FC,
-  memo,
-  SyntheticEvent,
-  useContext,
-} from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const OrdersTableHeader: FC = () => {
   const {
@@ -25,13 +26,33 @@ const OrdersTableHeader: FC = () => {
     setShowOrders,
   } = useContext(OrderContext) as OrderContextType;
 
-  const changeSearchText = (e: ChangeEvent<HTMLInputElement>) =>
-    setSearchText(e.target.value);
+  const onChangeSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    [setSearchText]
+  );
+  const onChangeColumns = useCallback(
+    (_: unknown, value: GridColDef<IOrderWithCustomer>[]) =>
+      setActiveVariableColumns(value),
+    [setActiveVariableColumns]
+  );
 
-  const changeActiveColumns = (
-    _: SyntheticEvent<Element, Event>,
-    value: GridColDef<IOrderWithCustomer>[]
-  ) => setActiveVariableColumns(value);
+  const onClickAdd = useCallback(
+    () => setSelected(defaultOrder()),
+    [setSelected]
+  );
+
+  const getOptionLabelColumns = useCallback(
+    (option: GridColDef<IOrderWithCustomer>) => option.headerName ?? '',
+    []
+  );
+
+  const renderInputColumns = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <TextField {...params} label="Spalten" />
+    ),
+    []
+  );
+
   return (
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
@@ -41,7 +62,7 @@ const OrdersTableHeader: FC = () => {
             type="text"
             label="Suche"
             value={searchText}
-            onChange={changeSearchText}
+            onChange={onChangeSearch}
             InputProps={{
               endAdornment: <Search />,
             }}
@@ -53,10 +74,10 @@ const OrdersTableHeader: FC = () => {
             multiple
             options={variableColumns}
             value={activeVariableColumns}
-            onChange={changeActiveColumns}
+            onChange={onChangeColumns}
             limitTags={2}
-            getOptionLabel={(option) => option.headerName ?? ''}
-            renderInput={(params) => <TextField {...params} label="Spalten" />}
+            getOptionLabel={getOptionLabelColumns}
+            renderInput={renderInputColumns}
           />
         </Grid>
       </Grid>
@@ -82,9 +103,7 @@ const OrdersTableHeader: FC = () => {
             color="success"
             fullWidth
             startIcon={<Add />}
-            onClick={() => {
-              setSelected(defaultOrder());
-            }}
+            onClick={onClickAdd}
           >
             Hinzufügen
           </Button>
@@ -94,4 +113,4 @@ const OrdersTableHeader: FC = () => {
   );
 };
 
-export default memo(OrdersTableHeader);
+export default OrdersTableHeader;

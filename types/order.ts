@@ -11,6 +11,10 @@ export type OrderContextType = {
   filteredOrders: IOrderWithCustomer[];
   selected: IOrderWithCustomer | null;
   setSelected: (order: IOrderWithCustomer | null) => void;
+  updateSelected: <T extends keyof IOrderWithCustomer>(
+    property: T,
+    value: IOrderWithCustomer[T]
+  ) => void;
   showOrders: EShowOrder;
   setShowOrders: (state: EShowOrder) => void;
   activeColumns: GridColDef<IOrderWithCustomer>[];
