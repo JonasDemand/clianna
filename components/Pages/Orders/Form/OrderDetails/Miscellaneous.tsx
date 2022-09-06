@@ -1,4 +1,4 @@
-import FormInput from '@components/Inputs/FormInput';
+import FormInput from '@components/Form/FormInput';
 import { OrderContext } from '@context/OrderContext';
 import { OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';

@@ -1,6 +1,6 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
-import CustomersPage from '@components/Customers/CustomersPage';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
+import CustomersPage from '@components/Pages/Customers/CustomersPage';
 import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { DbRepo } from '@utils/DbRepo';

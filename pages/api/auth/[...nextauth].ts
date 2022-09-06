@@ -68,8 +68,9 @@ export default NextAuth({
           },
         });
         return {
-          id: googleProfile.sub,
+          id: user.googleId!,
           cuid: user.cuid,
+          email: user.email,
           scope: tokenInfo.data.scope,
         };
       },
@@ -103,6 +104,7 @@ export default NextAuth({
         ...session,
         user: {
           ...user,
+          email: token.email,
           cuid: token.cuid,
           scope: token.scope,
         },
@@ -115,6 +117,6 @@ export default NextAuth({
       return token;
     },
   },
-  pages: { signIn: '/auth/signin' },
+  pages: { signIn: '/login' },
   secret: process.env.NEXTAUTH_SECRET,
 });

@@ -1,5 +1,5 @@
-import EnumSelect from '@components/Inputs/EnumSelect';
-import FormInput from '@components/Inputs/FormInput';
+import EnumSelect from '@components/Form/EnumSelect';
+import FormInput from '@components/Form/FormInput';
 import { OrderContext } from '@context/OrderContext';
 import { EOrderBrand, OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';

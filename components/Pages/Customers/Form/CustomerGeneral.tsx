@@ -1,4 +1,4 @@
-import FormSection from '@components/SideOverlay/FormSection';
+import FormSection from '@components/Form/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';

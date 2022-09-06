@@ -18,7 +18,7 @@ import {
 import { GridColDef } from '@mui/x-data-grid';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
-import EnumSelect from '../Inputs/EnumSelect';
+import EnumSelect from '../../Form/EnumSelect';
 
 const CustomersTableHeader: FC = () => {
   const {

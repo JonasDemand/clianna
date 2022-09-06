@@ -1,4 +1,4 @@
-import EnumSelect from '@components/Inputs/EnumSelect';
+import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { IOrderWithCustomer } from '@customTypes/database/order';

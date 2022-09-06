@@ -1,4 +1,6 @@
-export const getScope = (additionalScopes?: string) =>
-  `https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email ${
-    additionalScopes ?? ''
-  }`;
+import { EGoogleScope } from '@consts/oauth';
+
+export const getScope = (additionalScopes: EGoogleScope[] = []) =>
+  [EGoogleScope.userinfo_profile, EGoogleScope.userinfo_email]
+    .concat(additionalScopes)
+    .join(' ');

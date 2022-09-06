@@ -12,7 +12,7 @@ import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useContext, useState } from 'react';
 
-import { CustomerContext } from '../../context/CustomerContext';
+import { CustomerContext } from '../../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
@@ -141,7 +141,7 @@ const CustomersPage: FC = () => {
         onConfirm={onConfirmDialog}
       >
         <Typography>
-          Bist du dir sicher, dass Du diesen Kunden löschen willst?
+          Bist Du dir sicher, dass Du diesen Kunden löschen willst?
         </Typography>
         <Typography marginBottom={2}>
           Alle Zuordnungen des Kundens gehen verloren.

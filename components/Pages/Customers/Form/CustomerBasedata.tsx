@@ -1,5 +1,5 @@
-import FormInput from '@components/Inputs/FormInput';
-import FormSection from '@components/SideOverlay/FormSection';
+import FormInput from '@components/Form/FormInput';
+import FormSection from '@components/Form/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Email, Phone, Smartphone } from '@mui/icons-material';

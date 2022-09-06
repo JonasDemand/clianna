@@ -1,18 +1,14 @@
-import CredentialsForm from '@components/Authentication/CredentailsForm';
 import { LockOutlined } from '@mui/icons-material';
 import { Alert, Avatar, Box, Divider, Typography } from '@mui/material';
 import { getScope } from '@utils/oauth';
-import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
-export type SignInProps = {
-  existingEmails: string[];
-};
+import CredentialsForm from './CredentailsForm';
 
-const SignIn: NextPage = () => {
+const LoginPage: FC = () => {
   const router = useRouter();
 
   const [error, setError] = useState<string>();
@@ -84,4 +80,4 @@ const SignIn: NextPage = () => {
   );
 };
 
-export default SignIn;
+export default LoginPage;

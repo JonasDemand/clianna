@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 
-import PasswordForm from './PasswordForm';
+import PasswordForm from '../../Authentication/PasswordForm';
 
 export type CredentialsFormProps = {
   showError: (message: string) => void;
@@ -107,7 +107,7 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
       <Slide direction="right" in={showPassword} mountOnEnter unmountOnExit>
         <Paper sx={{ bgcolor: 'unset', boxShadow: 'none' }}>
           <PasswordForm
-            hasToRepeat={newAccount}
+            showRepeatPassword={newAccount}
             showValidation={showPasswordValidation}
             setShowValidation={setShowPasswordValidation}
             onChange={onChangePassword}

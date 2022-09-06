@@ -31,7 +31,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });*/
   const document = await docs.documents.create();
 
-  res.status(200).send(document);
+  res
+    .status(200)
+    .send({
+      link: `https://docs.google.com/document/d/${document.data.documentId}`,
+    });
 };
 
 export default handler;

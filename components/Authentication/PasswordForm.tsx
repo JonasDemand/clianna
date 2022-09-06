@@ -2,7 +2,7 @@ import { Box, TextField } from '@mui/material';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 
 export type PasswordFormProps = {
-  hasToRepeat: boolean;
+  showRepeatPassword?: boolean;
   showValidation: boolean;
   setShowValidation: (value: boolean) => void;
   onChange: (value: string, valid: boolean) => void;
@@ -10,7 +10,7 @@ export type PasswordFormProps = {
 
 const PasswordForm: FC<PasswordFormProps> = ({
   showValidation,
-  hasToRepeat,
+  showRepeatPassword = false,
   onChange,
   setShowValidation,
 }) => {
@@ -21,11 +21,11 @@ const PasswordForm: FC<PasswordFormProps> = ({
   useEffect(() => {
     setError(false);
     let valid = password !== '';
-    if (valid && hasToRepeat)
+    if (valid && showRepeatPassword)
       valid = repeatPassword !== '' && password === repeatPassword;
     setError(!valid);
     onChange(password, valid);
-  }, [hasToRepeat, onChange, password, repeatPassword]);
+  }, [showRepeatPassword, onChange, password, repeatPassword]);
 
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value),
@@ -44,25 +44,23 @@ const PasswordForm: FC<PasswordFormProps> = ({
   return (
     <Box onFocus={() => setShowValidation(false)}>
       <TextField
-        name="password"
         type="password"
         label="Passwort"
         fullWidth
         required
-        autoComplete="current-password"
+        autoComplete={showRepeatPassword ? 'new-password' : 'current-password'}
         value={password}
         inputRef={passwordInputRef}
         onChange={onChangePassword}
         sx={{ my: 1 }}
       />
-      {hasToRepeat && (
+      {showRepeatPassword && (
         <TextField
-          name="repeatPassword"
           type="password"
           label="Passwort wiederholen"
           fullWidth
           required
-          autoComplete="current-password"
+          autoComplete="new-password"
           value={repeatPassword}
           error={showValidation && error && !!repeatPassword}
           helperText={
