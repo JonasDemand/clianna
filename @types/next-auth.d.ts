@@ -3,7 +3,7 @@ import { User } from 'next-auth';
 declare module 'next-auth' {
   interface User {
     cuid: string;
-    scope: string;
+    gapiAccess: boolean;
   }
   interface Session {
     user: User;

@@ -1,10 +1,8 @@
 import PasswordForm from '@components/Authentication/PasswordForm';
 import FormSection from '@components/Form/FormSection';
-import { EGoogleScope } from '@consts/oauth';
 import { Folder } from '@mui/icons-material';
 import { Alert, Button, Grid, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { getScope } from '@utils/oauth';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
@@ -33,10 +31,11 @@ const ProfilePage: FC = () => {
           callbackUrl: router.pathname,
         },
         new URLSearchParams({
-          scope: getScope([EGoogleScope.documents]),
+          gapiAccess: 'true',
+          email: session?.user.email ?? '',
         })
       ),
-    [router.pathname]
+    [router.pathname, session?.user.email]
   );
 
   return (
@@ -80,25 +79,21 @@ const ProfilePage: FC = () => {
         </Grid>
         <Grid item xs={12}>
           <FormSection label="Dokumente">
-            {session?.user.scope?.includes(EGoogleScope.documents) ? (
-              <Typography>Dokumente sind aktiviert</Typography>
-            ) : (
-              <>
-                <Typography>
-                  Um die Google Docs integration zu nutzen musst Du Clianna
-                  erweiterten Zugriff auf dein Google-Konto genehmigen
-                </Typography>
-                <Box sx={{ mt: 1 }}>
-                  <Button
-                    variant="contained"
-                    startIcon={<Folder />}
-                    onClick={onClickDriveAccess}
-                  >
-                    Zugriff genehmigen
-                  </Button>
-                </Box>
-              </>
-            )}
+            <Typography>
+              Um die Google Docs und Drive Integration zu nutzen musst Du
+              Clianna erweiterten Zugriff auf dein Google-Konto genehmigen
+            </Typography>
+            <Box sx={{ mt: 1 }}>
+              <Button
+                variant="contained"
+                startIcon={<Folder />}
+                onClick={onClickDriveAccess}
+              >
+                {session?.user.gapiAccess
+                  ? 'Zugriff genehmigt'
+                  : 'Zugriff genehmigen'}
+              </Button>
+            </Box>
           </FormSection>
         </Grid>
       </Grid>

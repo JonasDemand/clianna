@@ -11,17 +11,18 @@ datasource db {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
-  cuid        String     @unique @default(cuid())
-  email       String     @unique
-  password    String?    @db.Text
-  salt        String?    @db.Text
-  googleId    String?    @unique
-  googleToken String?    @db.Text
-  googleScope String?
-  Customer    Customer[]
-  Order       Order[]
-  Document    Document[]
+  id              Int        @id @default(autoincrement())
+  cuid            String     @unique @default(cuid())
+  email           String     @unique
+  password        String?    @db.Text
+  salt            String?    @db.Text
+  googleId        String?    @unique
+  refreshToken    String?    @db.Text
+  gapiAccess      Boolean    @default(false)
+  cliannaFolderId String?
+  Customer        Customer[]
+  Order           Order[]
+  Document        Document[]
 }
 
 model Customer {

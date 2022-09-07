@@ -1,6 +1,5 @@
 import { LockOutlined } from '@mui/icons-material';
 import { Alert, Avatar, Box, Divider, Typography } from '@mui/material';
-import { getScope } from '@utils/oauth';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -19,15 +18,9 @@ const LoginPage: FC = () => {
 
   const onClickGoogleButton = useCallback(
     () =>
-      signIn(
-        'google',
-        {
-          callbackUrl: (router.query.callbackUrl as string) ?? '/',
-        },
-        new URLSearchParams({
-          scope: getScope(),
-        })
-      ),
+      signIn('google', {
+        callbackUrl: (router.query.callbackUrl as string) ?? '/',
+      }),
     [router.query.callbackUrl]
   );
 
