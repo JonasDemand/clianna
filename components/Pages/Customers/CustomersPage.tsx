@@ -37,7 +37,7 @@ const CustomersPage: FC = () => {
   const onCloseDialog = useCallback(() => setCustomerToDelete(null), []);
 
   const onConfirmDialog = useCallback(async () => {
-    if (!customerToDelete) return;
+    if (!customerToDelete?.id) return;
     try {
       setCustomerToDelete(null);
       setShowBackdrop(true);
@@ -72,7 +72,7 @@ const CustomersPage: FC = () => {
       });
       return;
     }
-    let create = selected.id === -1;
+    let create = !selected.id;
     let newCustomers = [...customers];
     let newCust = selected;
     try {
@@ -83,7 +83,7 @@ const CustomersPage: FC = () => {
         newCustomers.push(newCust);
       } else {
         newCust = await ApiClient.Instance.Customer.Update(
-          selected.id,
+          selected.id!,
           convertToICustomer(selected)
         );
         const index = newCustomers.findIndex(
@@ -108,7 +108,7 @@ const CustomersPage: FC = () => {
 
   const onCopyRow = useCallback(
     (customer: ICustomerWithOrders) =>
-      setSelected({ ...customer, id: -1, orders: [] }),
+      setSelected({ ...customer, id: undefined, orders: [] }),
     [setSelected]
   );
 

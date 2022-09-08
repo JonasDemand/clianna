@@ -15,8 +15,8 @@ const ProfilePage: FC = () => {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    session?.user.email && setEmail(session.user.email);
-  }, [session?.user.email]);
+    session?.user?.email && setEmail(session.user.email);
+  }, [session?.user?.email]);
 
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -32,10 +32,10 @@ const ProfilePage: FC = () => {
         },
         new URLSearchParams({
           gapiAccess: 'true',
-          email: session?.user.email ?? '',
+          email: session?.user?.email ?? '',
         })
       ),
-    [router.pathname, session?.user.email]
+    [router.pathname, session?.user?.email]
   );
 
   return (
@@ -89,9 +89,10 @@ const ProfilePage: FC = () => {
                 startIcon={<Folder />}
                 onClick={onClickDriveAccess}
               >
-                {session?.user.gapiAccess
+                {/*TODO
+                session?.user.gapiAccess
                   ? 'Zugriff genehmigt'
-                  : 'Zugriff genehmigen'}
+  : 'Zugriff genehmigen'*/}
               </Button>
             </Box>
           </FormSection>

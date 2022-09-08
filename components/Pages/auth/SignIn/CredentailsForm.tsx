@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 
-import PasswordForm from '../../Authentication/PasswordForm';
+import PasswordForm from '../../../Authentication/PasswordForm';
 
 export type CredentialsFormProps = {
   showError: (message: string) => void;
@@ -43,12 +43,12 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
         if (!passwordValid) return;
 
         if (newAccount)
-          await ApiClient.Instance.User.Upsert({ email, password });
+          await ApiClient.Instance.User.UpsertCredentials({ email, password });
 
         signIn('credentials', {
           email,
           password,
-          callbackUrl: (router.query.callbackUrl as string) ?? '/',
+          callbackUrl: router.query.callbackUrl?.toString() ?? '/',
         });
       } catch {
         showError('Unbekannter Fehler');

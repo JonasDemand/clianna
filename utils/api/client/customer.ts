@@ -16,7 +16,7 @@ export class Customer {
   }
 
   public async Update(
-    id: number,
+    id: string,
     customer: Omit<ICustomer, 'id'>
   ): Promise<ICustomerWithOrders> {
     const res = await fetch(`/api/customer/${id}`, {
@@ -30,7 +30,7 @@ export class Customer {
     return (await res.json()) as ICustomerWithOrders;
   }
 
-  public async Delete(id: number): Promise<void> {
+  public async Delete(id: string): Promise<void> {
     const res = await fetch(`/api/customer/${id}`, {
       method: 'DELETE',
     });

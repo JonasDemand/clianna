@@ -1,4 +1,4 @@
-export interface ICreateUserRequest {
+export interface IUpsertCredentialsRequest {
   email: string;
   password: string;
 }

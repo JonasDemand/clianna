@@ -41,7 +41,7 @@ export const columns: GridColDef<ICustomerWithOrders>[] = [
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultCustomer = (): ICustomerWithOrders => ({
-  id: -1,
+  id: undefined,
   firstname: null,
   lastname: null,
   email: null,

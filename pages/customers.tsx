@@ -5,13 +5,16 @@ import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
-import { getSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 type CustomersProps = {
   customers: ICustomerWithOrders[];
 };
 
 const Customers: NextPage<CustomersProps> = ({ customers }) => {
+  const session = useSession();
+  useEffect(() => console.log(session), [session]);
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
@@ -28,7 +31,7 @@ export const getServerSideProps: GetServerSideProps<CustomersProps> = async (
 ) => {
   const session = await getSession(context);
   if (!session) return { props: { customers: [] } };
-  DbRepo.Init(session.user.cuid);
+  DbRepo.Init(session.user.id ?? '');
   return {
     props: {
       customers: await DbRepo.Instance.Customer.GetAll(true),

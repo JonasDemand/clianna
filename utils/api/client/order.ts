@@ -16,7 +16,7 @@ export class Order {
   }
 
   public async Update(
-    id: number,
+    id: string,
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
   ): Promise<IOrderWithCustomer> {
     const res = await fetch(`/api/order/${id}`, {
@@ -30,7 +30,7 @@ export class Order {
     return (await res.json()) as IOrderWithCustomer;
   }
 
-  public async Delete(id: number): Promise<void> {
+  public async Delete(id: string): Promise<void> {
     const res = await fetch(`/api/order/${id}`, {
       method: 'DELETE',
     });

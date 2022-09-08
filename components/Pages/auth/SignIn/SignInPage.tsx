@@ -7,7 +7,7 @@ import GoogleButton from 'react-google-button';
 
 import CredentialsForm from './CredentailsForm';
 
-const LoginPage: FC = () => {
+const SignInPage: FC = () => {
   const router = useRouter();
 
   const [error, setError] = useState<string>();
@@ -19,7 +19,7 @@ const LoginPage: FC = () => {
   const onClickGoogleButton = useCallback(
     () =>
       signIn('google', {
-        callbackUrl: (router.query.callbackUrl as string) ?? '/',
+        callbackUrl: router.query.callbackUrl?.toString() ?? '/',
       }),
     [router.query.callbackUrl]
   );
@@ -73,4 +73,4 @@ const LoginPage: FC = () => {
   );
 };
 
-export default LoginPage;
+export default SignInPage;

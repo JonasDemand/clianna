@@ -1,8 +1,11 @@
-import { ICreateUserRequest, IValidateUserResponse } from '@customTypes/user';
+import {
+  IUpsertCredentialsRequest,
+  IValidateUserResponse,
+} from '@customTypes/user';
 
 export class User {
-  public async Upsert(request: ICreateUserRequest) {
-    const res = await fetch(`/api/user`, {
+  public async UpsertCredentials(request: IUpsertCredentialsRequest) {
+    const res = await fetch(`/api/user/credentials`, {
       method: 'POST',
       body: JSON.stringify(request),
       headers: { 'content-type': 'application/json' },

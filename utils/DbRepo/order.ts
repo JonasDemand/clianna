@@ -25,9 +25,9 @@ export class Order {
     name: true,
   };
 
-  private UserCuid: string;
-  public constructor(userCuid: string) {
-    this.UserCuid = userCuid;
+  private UserId: string;
+  public constructor(userId: string) {
+    this.UserId = userId;
   }
 
   public async Create<IC extends boolean>(
@@ -41,7 +41,7 @@ export class Order {
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
-        user: { connect: { cuid: this.UserCuid } },
+        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Order.DefaultSelect,
@@ -55,7 +55,7 @@ export class Order {
     return await prisma.order.findMany({
       where: {
         AND: [
-          { user: { cuid: this.UserCuid } },
+          { user: { id: this.UserId } },
           { OR: [{ customer: null }, { customer: { disabled: false } }] },
         ],
       },
@@ -66,11 +66,11 @@ export class Order {
     });
   }
   public async GetSingle<IC extends boolean>(
-    id: number,
+    id: string,
     includeCustomer: IC
   ): Promise<(IC extends true ? IOrderWithCustomer : IOrder) | null> {
     return await prisma.order.findFirst({
-      where: { AND: [{ user: { cuid: this.UserCuid } }, { id }] },
+      where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: {
         ...Order.DefaultSelect,
         customer: includeCustomer ? { select: Customer.DefaultSelect } : false,
@@ -78,12 +78,12 @@ export class Order {
     });
   }
   public async Update<IC extends boolean>(
-    id: number,
+    id: string,
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>,
     includeCustomer: IC
   ): Promise<IC extends true ? IOrderWithCustomer : IOrder> {
     await prisma.order.findFirstOrThrow({
-      where: { AND: [{ user: { cuid: this.UserCuid } }, { id }] },
+      where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: null,
     });
     return await prisma.order.update({
@@ -94,7 +94,7 @@ export class Order {
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
-        user: { connect: { cuid: this.UserCuid } },
+        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Order.DefaultSelect,
@@ -102,9 +102,9 @@ export class Order {
       },
     });
   }
-  public async Delete(id: number): Promise<void> {
+  public async Delete(id: string): Promise<void> {
     await prisma.order.findFirstOrThrow({
-      where: { AND: [{ user: { cuid: this.UserCuid } }, { id }] },
+      where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: null,
     });
     await prisma.order.delete({

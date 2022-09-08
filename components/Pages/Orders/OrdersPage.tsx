@@ -50,7 +50,7 @@ const OrdersPage: FC = () => {
       });
       return;
     }
-    let create = selected.id === -1;
+    let create = !selected.id;
     let newOrders = [...orders];
     let newOrder = selected;
     try {
@@ -58,7 +58,10 @@ const OrdersPage: FC = () => {
         newOrder = await ApiClient.Instance.Order.Create(selected);
         newOrders.push(newOrder);
       } else {
-        newOrder = await ApiClient.Instance.Order.Update(selected.id, selected);
+        newOrder = await ApiClient.Instance.Order.Update(
+          selected.id!,
+          selected
+        );
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }
@@ -78,12 +81,12 @@ const OrdersPage: FC = () => {
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
-    (order: IOrderWithCustomer) => setSelected({ ...order, id: -1 }),
+    (order: IOrderWithCustomer) => setSelected({ ...order, id: undefined }),
     [setSelected]
   );
 
   const onConfirmDialog = useCallback(async () => {
-    if (!orderToDelete) return;
+    if (!orderToDelete?.id) return;
     try {
       setOrderToDelete(null);
       setShowBackdrop(true);

@@ -3,16 +3,16 @@ import { Order } from './order';
 import { User } from './user';
 
 export class DbRepo {
-  private constructor(userCuid: string) {
+  private constructor(userId: string) {
     this.User = new User();
-    this.Order = new Order(userCuid);
-    this.Customer = new Customer(userCuid);
+    this.Order = new Order(userId);
+    this.Customer = new Customer(userId);
   }
   public User: User;
   public Order: Order;
   public Customer: Customer;
   public static Instance: DbRepo;
-  public static Init = (userCuid: string) =>
-    (DbRepo.Instance = new DbRepo(userCuid));
+  public static Init = (userId: string) =>
+    (DbRepo.Instance = new DbRepo(userId));
 }
 DbRepo.Init('');

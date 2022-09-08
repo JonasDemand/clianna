@@ -29,24 +29,20 @@ export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
     field: 'price',
     headerName: 'Preis',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.price !== null ? `${row.price.toFixed(2)} €` : '',
+    valueGetter: ({ row }) => (row.price ? `${row.price.toFixed(2)} €` : ''),
   },
   {
     field: 'shippingType',
     headerName: 'Versandtyp',
     flex: 1,
     valueGetter: ({ row }) =>
-      row.shippingType !== null
-        ? OrderShippingTypeLabels.get(row.shippingType)
-        : '',
+      row.shippingType ? OrderShippingTypeLabels.get(row.shippingType) : '',
   },
   {
     field: 'taxes',
     headerName: 'MvSt.',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.taxes !== null ? OrderTaxLabels.get(row.taxes) : '',
+    valueGetter: ({ row }) => (row.taxes ? OrderTaxLabels.get(row.taxes) : ''),
   },
 ];
 export const columns: GridColDef<IOrderWithCustomer>[] = [
@@ -60,7 +56,8 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultOrder = (): IOrderWithCustomer => ({
-  id: -1,
+  id: undefined,
+  creationDate: undefined,
   article: null,
   brand: null,
   color: null,
@@ -69,14 +66,13 @@ export const defaultOrder = (): IOrderWithCustomer => ({
   dueDate: null,
   pending: true,
   price: null,
-  shippingType: EOrderShippingType.Send,
   size: null,
   specification: null,
-  taxes: EOrderTax.Nineteen,
   type: null,
   name: null,
-  creationDate: null,
   customer: null,
+  shippingType: EOrderShippingType.Send,
+  taxes: EOrderTax.Nineteen,
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([

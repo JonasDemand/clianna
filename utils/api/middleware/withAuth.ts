@@ -7,5 +7,5 @@ export const withAuth = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!session) {
     return res.status(401).send('This method needs authorization');
   }
-  DbRepo.Init(session.user.cuid);
+  DbRepo.Init(session.user.id ?? '');
 };

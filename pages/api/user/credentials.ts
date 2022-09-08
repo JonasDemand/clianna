@@ -1,4 +1,4 @@
-import { ICreateUserRequest } from '@customTypes/user';
+import { IUpsertCredentialsRequest } from '@customTypes/user';
 import {
   withBody,
   withMethodGuard,
@@ -7,17 +7,20 @@ import {
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const createUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const body = req.body as ICreateUserRequest;
+const upsertCredentials = async (req: NextApiRequest, res: NextApiResponse) => {
+  const body = req.body as IUpsertCredentialsRequest;
 
-  await DbRepo.Instance.User.Upsert(body);
+  await DbRepo.Instance.User.UpsertCredentials(body);
   return res.status(200).send('Succesfully created credentials');
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toLocaleUpperCase()) {
     case 'POST':
-      withMiddleware(withBody(['email', 'password']), createUser)(req, res);
+      withMiddleware(withBody(['email', 'password']), upsertCredentials)(
+        req,
+        res
+      );
       break;
   }
 };

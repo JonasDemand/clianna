@@ -1,11 +1,13 @@
-import { ICreateUserRequest } from '@customTypes/user';
+import { IUpsertCredentialsRequest } from '@customTypes/user';
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
 
 const prisma = new PrismaClient();
 
 export class User {
-  public async Upsert(user: ICreateUserRequest): Promise<void> {
+  public async UpsertCredentials(
+    user: IUpsertCredentialsRequest
+  ): Promise<void> {
     const salt = createSalt();
     const hashedPassword = await hashPassword(user.password, salt);
     await prisma.user.upsert({

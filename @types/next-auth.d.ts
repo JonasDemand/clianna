@@ -1,15 +1,19 @@
-import { User } from 'next-auth';
+// eslint-disable-next-line unused-imports/no-unused-imports
+import NextAuth from 'next-auth';
 
 declare module 'next-auth' {
   interface User {
-    cuid: string;
-    gapiAccess: boolean;
+    id?: string;
+    name?: string;
+    email?: string;
+    image?: string;
+    password?: string;
+    salt?: string;
+    cliannaFolderId?: string;
   }
   interface Session {
-    user: User;
+    user: Pick<User, 'id' | 'name' | 'email' | 'image' | 'cliannaFolderId'> & {
+      refreshToken?: string;
+    };
   }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT extends User {}
 }

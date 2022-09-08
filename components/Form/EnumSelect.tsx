@@ -67,8 +67,8 @@ const EnumSelect = <T = string | number,>({
       openOnFocus
       freeSolo={freeSolo}
       options={$enum(enumToUse).getValues()}
-      value={value as string}
-      inputValue={(inputValue as string) ?? ''}
+      value={value?.toString()}
+      inputValue={inputValue?.toString() ?? ''}
       onChange={onChangeAutocomplete}
       onInputChange={onInputChangeAutocomplete}
       getOptionLabel={(value) => enumLabel?.get(value) ?? value}

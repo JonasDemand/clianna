@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  /*TODO
   const session = await getSession({ req });
   if (!session) return res.status(401).send('Unauthorized');
   const user = await prisma.user.findUniqueOrThrow({
-    where: { cuid: session.user.cuid },
+    where: { id: session.user.id },
     select: { refreshToken: true },
   });
   if (!user.refreshToken) return res.status(403).send('Unauthorized');
@@ -21,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  res.status(200).send(folder);
+  res.status(200).send(folder);*/
 };
 
 export default handler;

@@ -21,7 +21,6 @@ const Test: NextPage = () => {
             const body = await res.json();
             setDocument(body.link);
             setLoading(false);
-            console.log(document, loading);
           }}
         >
           Erstelle Dokument
