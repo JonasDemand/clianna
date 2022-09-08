@@ -24,7 +24,7 @@ const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  switch (req.method?.toUpperCase() ?? 'GET') {
+  switch (req.method?.toUpperCase()) {
     case 'GET':
       await getCustomers(req, res);
     case 'POST':

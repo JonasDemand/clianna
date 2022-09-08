@@ -35,6 +35,42 @@ const ProfilePage: FC = () => {
         <LoginConfiguration />
         <FormSection label="Dokumente">
           {session?.user.gapiAccess ? (
+            <Grid container>
+              <Grid item xs={6}>
+                <MuiTextField
+                  fullWidth
+                  disabled
+                  label="Clianna Ordner ID"
+                  value={session?.user.cliannaFolderId}
+                  onClick={() =>
+                    session?.user.cliannaFolderId &&
+                    window.open(
+                      `https://drive.google.com/drive/folders/${session?.user.cliannaFolderId}`,
+                      '_black'
+                    )
+                  }
+                  inputProps={{ sx: { cursor: 'pointer' } }}
+                  InputProps={{
+                    endAdornment: (
+                      <MuiTooltip title="Ordner neu erstellen">
+                        <IconButton
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            await fetch('/api/documents/rootfolder', {
+                              method: 'POST',
+                            });
+                          }}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <Refresh />
+                        </IconButton>
+                      </MuiTooltip>
+                    ),
+                  }}
+                />
+              </Grid>
+            </Grid>
+          ) : (
             <>
               <Typography>
                 Um die Google Docs und Drive Integration zu nutzen musst Du
@@ -51,40 +87,6 @@ const ProfilePage: FC = () => {
                 </MuiButton>
               </Box>
             </>
-          ) : (
-            <Grid container>
-              <Grid item xs={6}>
-                <MuiTextField
-                  fullWidth
-                  disabled
-                  label="Clianna Ordner"
-                  value={session?.user.cliannaFolderId}
-                  onClick={() =>
-                    session?.user.cliannaFolderId &&
-                    window.open(
-                      `https://drive.google.com/drive/folders/${session?.user.cliannaFolderId}`,
-                      '_black'
-                    )
-                  }
-                  inputProps={{ sx: { cursor: 'pointer' } }}
-                  InputProps={{
-                    endAdornment: (
-                      <MuiTooltip title="Ordner neu erstellen">
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log('here');
-                          }}
-                          sx={{ cursor: 'pointer' }}
-                        >
-                          <Refresh />
-                        </IconButton>
-                      </MuiTooltip>
-                    ),
-                  }}
-                />
-              </Grid>
-            </Grid>
           )}
         </FormSection>
       </Grid>

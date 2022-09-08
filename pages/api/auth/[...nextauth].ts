@@ -69,6 +69,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             email: user.email,
             google: !!user.googleId,
             credentials: !!user.password,
+            refreshToken: user.refreshToken,
             gapiAccess: user.gapiAccess,
             cliannaFolderId: user.cliannaFolderId,
           };
@@ -95,6 +96,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               email: user.email,
               google: !!user.googleId,
               credentials: !!user.password,
+              refreshToken: user.refreshToken,
               gapiAccess: user.gapiAccess,
               cliannaFolderId: user.cliannaFolderId,
             };
@@ -112,6 +114,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             email: token.email,
             google: token.google,
             credentials: token.credentials,
+            refreshToken: token.refreshToken,
             gapiAccess: token.gapiAccess,
             cliannaFolderId: token.cliannaFolderId,
           },
@@ -119,7 +122,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       jwt: ({ token, user }): JWT => {
         if (user) {
-          return { ...token, ...user };
+          return {
+            ...token,
+            id: user.id,
+            email: user.email,
+            google: user.google,
+            credentials: user.credentials,
+            refreshToken: token.refreshToken,
+            gapiAccess: user.gapiAccess,
+            cliannaFolderId: user.cliannaFolderId,
+          };
         }
         return token;
       },

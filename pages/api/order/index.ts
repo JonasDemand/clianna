@@ -24,7 +24,7 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  switch (req.method?.toUpperCase() ?? 'GET') {
+  switch (req.method?.toUpperCase()) {
     case 'GET':
       await getOrders(req, res);
       break;

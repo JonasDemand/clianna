@@ -1,5 +1,6 @@
 import { IUpsertCredentialsRequest } from '@customTypes/user';
 import {
+  withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
@@ -25,4 +26,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withMiddleware(withMethodGuard(['POST']), handler);
+export default withMiddleware(withMethodGuard(['POST']), withAuth, handler);

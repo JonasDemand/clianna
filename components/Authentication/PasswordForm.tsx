@@ -5,6 +5,7 @@ import { ChangeEvent, FC, useCallback, useState } from 'react';
 export type PasswordFormProps = {
   showOldPassword?: boolean;
   showRepeatPassword?: boolean;
+  focusPassword?: boolean;
   showValidation: boolean;
   setShowValidation: (value: boolean) => void;
   onChange: (value: string, valid: boolean) => void;
@@ -15,6 +16,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
   showValidation,
   showOldPassword = false,
   showRepeatPassword = false,
+  focusPassword = false,
   onChange,
   onOldPasswordChange,
   setShowValidation,
@@ -81,7 +83,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
         required
         autoComplete={showRepeatPassword ? 'new-password' : 'current-password'}
         value={password}
-        inputRef={passwordInputRef}
+        inputRef={focusPassword ? passwordInputRef : undefined}
         onChange={onChangePassword}
         sx={{ my: 1 }}
       />

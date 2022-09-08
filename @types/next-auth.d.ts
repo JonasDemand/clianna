@@ -2,27 +2,23 @@
 import NextAuth from 'next-auth';
 import NextAuthJwt from 'next-auth/jwt';
 
+interface ISession {
+  id: string;
+  email: string;
+  credentials: boolean;
+  google: boolean;
+  refreshToken: string | null;
+  gapiAccess: boolean;
+  cliannaFolderId: string | null;
+}
+
 declare module 'next-auth' {
-  interface User {
-    id: string;
-    email: string;
-    credentials: boolean;
-    google: boolean;
-    gapiAccess: boolean;
-    cliannaFolderId: string | null;
-  }
+  interface User extends ISession {}
   interface Session {
     user: User;
   }
 }
 
 declare module 'next-auth/jwt' {
-  interface JWT {
-    id: string;
-    email: string;
-    credentials: boolean;
-    google: boolean;
-    gapiAccess: boolean;
-    cliannaFolderId: string | null;
-  }
+  interface JWT extends ISession {}
 }

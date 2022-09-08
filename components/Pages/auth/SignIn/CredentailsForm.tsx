@@ -109,6 +109,7 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
       <Slide direction="right" in={showPassword} mountOnEnter unmountOnExit>
         <Paper sx={{ bgcolor: 'unset', boxShadow: 'none' }}>
           <PasswordForm
+            focusPassword
             showRepeatPassword={newAccount}
             showValidation={showPasswordValidation}
             setShowValidation={setShowPasswordValidation}
