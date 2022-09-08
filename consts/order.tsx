@@ -11,11 +11,12 @@ import {
 import { getCustomerLabel } from '@utils/customer';
 
 export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
-  { field: 'id', headerName: 'Auftragsnummer', flex: 1 },
+  { field: 'id', headerName: 'Auftrags-ID', flex: 1 },
   {
     field: 'customer',
     headerName: 'Kunde',
     flex: 1,
+
     valueGetter: ({ row }) => getCustomerLabel(row.customer),
   },
   {

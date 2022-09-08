@@ -1,3 +1,5 @@
+import MuiButton from '@components/External/MuiButton';
+import MuiTextField from '@components/External/MuiTextField';
 import {
   defaultCustomer,
   ShowCustomerLabels,
@@ -10,10 +12,8 @@ import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
-  Button,
   Divider,
   Grid,
-  TextField,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
@@ -53,7 +53,7 @@ const CustomersTableHeader: FC = () => {
 
   const renderInputColumns = useCallback(
     (params: AutocompleteRenderInputParams) => (
-      <TextField {...params} label="Spalten" />
+      <MuiTextField {...params} label="Spalten" />
     ),
     []
   );
@@ -62,7 +62,7 @@ const CustomersTableHeader: FC = () => {
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
-          <TextField
+          <MuiTextField
             fullWidth
             type="text"
             label="Suche"
@@ -103,7 +103,7 @@ const CustomersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={2}>
-          <Button
+          <MuiButton
             variant="contained"
             color="success"
             fullWidth
@@ -111,7 +111,7 @@ const CustomersTableHeader: FC = () => {
             onClick={onClickAdd}
           >
             Hinzufügen
-          </Button>
+          </MuiButton>
         </Grid>
       </Grid>
     </>

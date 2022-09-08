@@ -5,16 +5,13 @@ import CustomerProvider from '@context/CustomerContext';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
-import { getSession, useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { getSession } from 'next-auth/react';
 
 type CustomersProps = {
   customers: ICustomerWithOrders[];
 };
 
 const Customers: NextPage<CustomersProps> = ({ customers }) => {
-  const session = useSession();
-  useEffect(() => console.log(session), [session]);
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>

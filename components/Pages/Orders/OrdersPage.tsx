@@ -28,6 +28,7 @@ const OrdersPage: FC = () => {
     setSelected,
     orders,
     setOrders,
+    searchText,
   } = useContext(OrderContext) as OrderContextType;
 
   const [orderToDelete, setOrderToDelete] = useState<IOrderWithCustomer | null>(
@@ -115,6 +116,7 @@ const OrdersPage: FC = () => {
         onEdit={setSelected}
         onCopy={onCopyRow}
         onDelete={setOrderToDelete}
+        searchText={searchText}
       />
       <SideOverlay
         heading={'Auftragsbearbeitung'}

@@ -1,39 +1,58 @@
-import { Box, TextField } from '@mui/material';
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import MuiTextField from '@components/External/MuiTextField';
+import { Box } from '@mui/material';
+import { ChangeEvent, FC, useCallback, useState } from 'react';
 
 export type PasswordFormProps = {
+  showOldPassword?: boolean;
   showRepeatPassword?: boolean;
   showValidation: boolean;
   setShowValidation: (value: boolean) => void;
   onChange: (value: string, valid: boolean) => void;
+  onOldPasswordChange?: (value: string) => void;
 };
 
 const PasswordForm: FC<PasswordFormProps> = ({
   showValidation,
+  showOldPassword = false,
   showRepeatPassword = false,
   onChange,
+  onOldPasswordChange,
   setShowValidation,
 }) => {
   const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [error, setError] = useState(false);
+  const [repeatError, setRepeatError] = useState(false);
 
-  useEffect(() => {
-    setError(false);
-    let valid = password !== '';
-    if (valid && showRepeatPassword)
-      valid = repeatPassword !== '' && password === repeatPassword;
-    setError(!valid);
-    onChange(password, valid);
-  }, [showRepeatPassword, onChange, password, repeatPassword]);
+  const validate = useCallback(() => {
+    setRepeatError(false);
+    const valid = !showRepeatPassword || password === repeatPassword;
+    setRepeatError(!valid);
+    return valid;
+  }, [showRepeatPassword, password, repeatPassword]);
 
   const onChangePassword = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value),
-    []
+    (e: ChangeEvent<HTMLInputElement>) => {
+      let newValue = e.target.value;
+      setPassword(newValue);
+      onChange(newValue, validate());
+    },
+    [onChange, validate]
+  );
+  const onChangeOldPassword = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      let newValue = e.target.value;
+      setOldPassword(newValue);
+      onOldPasswordChange && onOldPasswordChange(newValue);
+    },
+    [onOldPasswordChange]
   );
   const onChangeRepeatPassword = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setRepeatPassword(e.target.value),
-    []
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setRepeatPassword(e.target.value);
+      onChange(password, validate());
+    },
+    [onChange, password, validate]
   );
 
   const passwordInputRef = useCallback(
@@ -43,7 +62,19 @@ const PasswordForm: FC<PasswordFormProps> = ({
 
   return (
     <Box onFocus={() => setShowValidation(false)}>
-      <TextField
+      {showOldPassword && (
+        <MuiTextField
+          type="password"
+          label="Altes Passwort"
+          fullWidth
+          required
+          autoComplete={'current-password'}
+          value={oldPassword}
+          onChange={onChangeOldPassword}
+          sx={{ my: 1 }}
+        />
+      )}
+      <MuiTextField
         type="password"
         label="Passwort"
         fullWidth
@@ -55,17 +86,17 @@ const PasswordForm: FC<PasswordFormProps> = ({
         sx={{ my: 1 }}
       />
       {showRepeatPassword && (
-        <TextField
+        <MuiTextField
           type="password"
           label="Passwort wiederholen"
           fullWidth
           required
           autoComplete="new-password"
           value={repeatPassword}
-          error={showValidation && error && !!repeatPassword}
+          error={showValidation && repeatError && !!repeatPassword}
           helperText={
             showValidation &&
-            error &&
+            repeatError &&
             repeatPassword &&
             'Passwort stimmt nicht überein'
           }

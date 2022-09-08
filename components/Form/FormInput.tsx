@@ -1,16 +1,9 @@
-import { TextField, TextFieldProps } from '@mui/material';
+import MuiTextField from '@components/External/MuiTextField';
+import { TextFieldProps } from '@mui/material';
 import { FC } from 'react';
 
-const FormInput: FC<TextFieldProps> = (props) => {
-  return (
-    <TextField
-      variant="filled"
-      fullWidth
-      type="text"
-      {...props}
-      value={props.value ?? ''}
-    />
-  );
+const FormTextField: FC<TextFieldProps> = (props) => {
+  return <MuiTextField variant="filled" {...props} />;
 };
 
-export default FormInput;
+export default FormTextField;

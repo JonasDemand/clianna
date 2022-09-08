@@ -1,5 +1,5 @@
 import EnumSelect from '@components/Form/EnumSelect';
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import { OrderSpecificationLabels } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
 import { OrderContextType } from '@customTypes/order';
@@ -24,7 +24,7 @@ export const DuedatePicker: FC = () => {
   return (
     <>
       {selected && (
-        <FormInput
+        <FormTextField
           label="Fertigstellungsdatum"
           type="date"
           InputLabelProps={{

@@ -1,6 +1,6 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
+import MuiButton from '@components/External/MuiButton';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
-import { LoadingButton } from '@mui/lab';
 import { Box, Link } from '@mui/material';
 import { NextPage } from 'next';
 import { useState } from 'react';
@@ -12,9 +12,9 @@ const Test: NextPage = () => {
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>
-        <LoadingButton
+        <MuiButton
+          loadingButton
           loading={loading}
-          variant="contained"
           onClick={async () => {
             setLoading(true);
             const res = await fetch('/api/gapi');
@@ -24,7 +24,7 @@ const Test: NextPage = () => {
           }}
         >
           Erstelle Dokument
-        </LoadingButton>
+        </MuiButton>
         {document && (
           <Box sx={{ mt: 2 }}>
             <Link variant="h6" target="_blank" href={document}>

@@ -1,3 +1,4 @@
+import MuiTooltip from '@components/External/MuiTooltip';
 import { Logout, ManageAccounts } from '@mui/icons-material';
 import {
   Avatar,
@@ -5,7 +6,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -46,11 +46,11 @@ const Userprofile: FC = () => {
 
   return (
     <Box sx={{ flexGrow: 0 }}>
-      <Tooltip title="Account">
+      <MuiTooltip title="Account">
         <IconButton onClick={onClickUserMenu} sx={{ p: 0 }}>
           <Avatar />
         </IconButton>
-      </Tooltip>
+      </MuiTooltip>
       <Menu
         sx={{ mt: '45px' }}
         anchorEl={anchorElUser}

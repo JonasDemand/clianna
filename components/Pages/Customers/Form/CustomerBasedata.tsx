@@ -1,4 +1,4 @@
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
@@ -76,21 +76,21 @@ const CustomerBasedata: FC = () => {
       {selected && (
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Vorname"
               value={selected.firstname}
               onChange={onChangeFirstname}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Nachname"
               value={selected.lastname}
               onChange={onChangeLastname}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               type="tel"
               label="Festnetztelefon"
               value={selected.phone}
@@ -114,7 +114,7 @@ const CustomerBasedata: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               type="tel"
               label="Mobiltelefon"
               value={selected.mobile}
@@ -138,7 +138,7 @@ const CustomerBasedata: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               type="email"
               label="E-Mail"
               value={selected.email}
@@ -162,7 +162,7 @@ const CustomerBasedata: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               type="number"
               label="Schuhgröße"
               value={selected.shoesize}

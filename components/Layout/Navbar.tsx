@@ -1,3 +1,4 @@
+import MuiButton from '@components/External/MuiButton';
 import {
   Assignment,
   Extension,
@@ -6,7 +7,6 @@ import {
 } from '@mui/icons-material';
 import {
   Box,
-  Button,
   Divider,
   IconButton,
   Menu,
@@ -131,7 +131,8 @@ const Navbar: FC = () => {
               my: 2,
             }}
           >
-            <Button
+            <MuiButton
+              variant="text"
               onClick={() => page !== currentPage && router.push(page.route)}
               sx={{
                 color: 'white',
@@ -140,7 +141,7 @@ const Navbar: FC = () => {
             >
               {page.icon}
               <Typography sx={{ ml: 1 }}>{page.label}</Typography>
-            </Button>
+            </MuiButton>
             {page === currentPage && <Divider sx={{ border: 1 }} />}
           </Box>
         ))}

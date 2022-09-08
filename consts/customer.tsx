@@ -5,7 +5,7 @@ import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
 export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
-  { field: 'id', headerName: 'Kundennummer', flex: 1 },
+  { field: 'id', headerName: 'Kudnen-ID', flex: 1 },
   { field: 'firstname', headerName: 'Vorname', flex: 1 },
   { field: 'lastname', headerName: 'Nachname', flex: 1 },
   { field: 'email', headerName: 'E-Mail', flex: 1 },

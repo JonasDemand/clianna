@@ -1,3 +1,5 @@
+import MuiButton from '@components/External/MuiButton';
+import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
@@ -7,10 +9,8 @@ import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
-  Button,
   Divider,
   Grid,
-  TextField,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
@@ -48,7 +48,7 @@ const OrdersTableHeader: FC = () => {
 
   const renderInputColumns = useCallback(
     (params: AutocompleteRenderInputParams) => (
-      <TextField {...params} label="Spalten" />
+      <MuiTextField {...params} label="Spalten" />
     ),
     []
   );
@@ -57,7 +57,7 @@ const OrdersTableHeader: FC = () => {
     <>
       <Grid container spacing={1} alignItems="center" justifyContent="center">
         <Grid item xs={12} md={6}>
-          <TextField
+          <MuiTextField
             fullWidth
             type="text"
             label="Suche"
@@ -98,7 +98,7 @@ const OrdersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={2}>
-          <Button
+          <MuiButton
             variant="contained"
             color="success"
             fullWidth
@@ -106,7 +106,7 @@ const OrdersTableHeader: FC = () => {
             onClick={onClickAdd}
           >
             Hinzufügen
-          </Button>
+          </MuiButton>
         </Grid>
       </Grid>
     </>

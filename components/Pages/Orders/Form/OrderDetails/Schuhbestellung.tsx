@@ -1,5 +1,5 @@
 import EnumSelect from '@components/Form/EnumSelect';
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import { OrderContext } from '@context/OrderContext';
 import { EOrderBrand, OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
@@ -53,7 +53,7 @@ const Schuhbestellung: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Artikel"
               type="text"
               value={selected.article ?? ''}
@@ -61,7 +61,7 @@ const Schuhbestellung: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Farbe"
               type="text"
               value={selected.color ?? ''}
@@ -69,7 +69,7 @@ const Schuhbestellung: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Händler"
               type="text"
               value={selected.dealer ?? ''}
@@ -77,7 +77,7 @@ const Schuhbestellung: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Größe"
               type="number"
               value={selected.size ?? ''}

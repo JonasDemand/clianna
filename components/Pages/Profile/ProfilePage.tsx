@@ -1,27 +1,19 @@
-import PasswordForm from '@components/Authentication/PasswordForm';
+import MuiButton from '@components/External/MuiButton';
+import MuiTextField from '@components/External/MuiTextField';
+import MuiTooltip from '@components/External/MuiTooltip';
 import FormSection from '@components/Form/FormSection';
-import { Folder } from '@mui/icons-material';
-import { Alert, Button, Grid, TextField, Typography } from '@mui/material';
+import { Folder, Refresh } from '@mui/icons-material';
+import { Grid, IconButton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback } from 'react';
+
+import LoginConfiguration from './LoginConfiguration';
 
 const ProfilePage: FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
-
-  const [showValidation, setShowValidation] = useState(false);
-  const [email, setEmail] = useState('');
-
-  useEffect(() => {
-    session?.user?.email && setEmail(session.user.email);
-  }, [session?.user?.email]);
-
-  const onChangeEmail = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
-    []
-  );
 
   const onClickDriveAccess = useCallback(
     () =>
@@ -32,71 +24,69 @@ const ProfilePage: FC = () => {
         },
         new URLSearchParams({
           gapiAccess: 'true',
-          email: session?.user?.email ?? '',
         })
       ),
-    [router.pathname, session?.user?.email]
+    [router.pathname]
   );
 
   return (
     <Grid container justifyContent="center">
-      <Grid
-        item
-        container
-        component="form"
-        spacing={2}
-        sx={{ maxWidth: '800px' }}
-      >
-        <Grid item xs={12}>
-          <Alert severity="warning" variant="filled">
-            Diese Seite ist noch im Aufbau, E-Mail und Passwort Änderungen sind
-            nicht möglich
-          </Alert>
-        </Grid>
-        <Grid item xs={6}>
-          <FormSection label="E-Mail">
-            <TextField
-              fullWidth
-              required
-              type="text"
-              label="E-Mail"
-              value={email}
-              onChange={onChangeEmail}
-            />
-          </FormSection>
-        </Grid>
-        <Grid item xs={6}>
-          <FormSection label="Passwort">
-            <Box sx={{ mt: -1 }}>
-              <PasswordForm
-                showRepeatPassword
-                showValidation={showValidation}
-                setShowValidation={setShowValidation}
-                onChange={() => {}}
-              />
-            </Box>
-          </FormSection>
-        </Grid>
-        <Grid item xs={12}>
-          <FormSection label="Dokumente">
-            <Typography>
-              Um die Google Docs und Drive Integration zu nutzen musst Du
-              Clianna erweiterten Zugriff auf dein Google-Konto genehmigen
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <Button
-                variant="contained"
-                startIcon={<Folder />}
-                onClick={onClickDriveAccess}
-              >
-                {/*TODO
-                session?.user.gapiAccess
-                  ? 'Zugriff genehmigt'
-  : 'Zugriff genehmigen'*/}
-              </Button>
-            </Box>
-          </FormSection>
-        </Grid>
+      <Grid item sx={{ maxWidth: '800px' }}>
+        <LoginConfiguration />
+        <FormSection label="Dokumente">
+          {session?.user.gapiAccess ? (
+            <>
+              <Typography>
+                Um die Google Docs und Drive Integration zu nutzen musst Du
+                Clianna erweiterten Zugriff auf dein Google-Konto genehmigen
+              </Typography>
+              <Box sx={{ mt: 1 }}>
+                <MuiButton
+                  variant="contained"
+                  disabled={session?.user.gapiAccess}
+                  startIcon={<Folder />}
+                  onClick={onClickDriveAccess}
+                >
+                  Zugriff genehmigen
+                </MuiButton>
+              </Box>
+            </>
+          ) : (
+            <Grid container>
+              <Grid item xs={6}>
+                <MuiTextField
+                  fullWidth
+                  disabled
+                  label="Clianna Ordner"
+                  value={session?.user.cliannaFolderId}
+                  onClick={() =>
+                    session?.user.cliannaFolderId &&
+                    window.open(
+                      `https://drive.google.com/drive/folders/${session?.user.cliannaFolderId}`,
+                      '_black'
+                    )
+                  }
+                  inputProps={{ sx: { cursor: 'pointer' } }}
+                  InputProps={{
+                    endAdornment: (
+                      <MuiTooltip title="Ordner neu erstellen">
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('here');
+                          }}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <Refresh />
+                        </IconButton>
+                      </MuiTooltip>
+                    ),
+                  }}
+                />
+              </Grid>
+            </Grid>
+          )}
+        </FormSection>
       </Grid>
     </Grid>
   );

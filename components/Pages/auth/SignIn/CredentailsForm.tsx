@@ -1,6 +1,7 @@
+import MuiButton from '@components/External/MuiButton';
+import MuiTextField from '@components/External/MuiTextField';
 import { ArrowBack } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import { Box, Button, Paper, Slide, TextField } from '@mui/material';
+import { Box, Paper, Slide } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
@@ -83,15 +84,16 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
 
   return (
     <Box component="form" onSubmit={onSubmitForm}>
-      <Button
+      <MuiButton
+        variant="text"
         startIcon={<ArrowBack />}
         disabled={!showPassword}
         onClick={onClickBack}
         sx={{ my: 1 }}
       >
         Zurück
-      </Button>
-      <TextField
+      </MuiButton>
+      <MuiTextField
         name="email"
         type="email"
         label="E-Mail"
@@ -114,13 +116,12 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
           />
         </Paper>
       </Slide>
-      <LoadingButton
+      <MuiButton
+        loadingButton
         loading={loading}
         type="submit"
+        color="success"
         fullWidth
-        variant="contained"
-        loadingPosition="start"
-        startIcon={<></>} //https://github.com/mui/material-ui/issues/31235
         sx={{ my: 1 }}
       >
         {!showPassword
@@ -128,7 +129,7 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
           : newAccount
           ? 'Registrieren'
           : 'Anmelden'}
-      </LoadingButton>
+      </MuiButton>
     </Box>
   );
 };

@@ -1,5 +1,5 @@
-import { LoadingButton } from '@mui/lab';
-import { Button, Divider, Drawer, Grid, Typography } from '@mui/material';
+import MuiButton from '@components/External/MuiButton';
+import { Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { FC, FormEventHandler, ReactNode, useCallback, useState } from 'react';
 
@@ -65,7 +65,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
             <Divider sx={{ mt: 2 }} />
           </Grid>
           <Grid item xs={6}>
-            <Button
+            <MuiButton
               fullWidth
               variant="contained"
               color="error"
@@ -73,19 +73,18 @@ const SideOverlay: FC<SideOverlayProps> = ({
               disabled={loading}
             >
               Abbrechen
-            </Button>
+            </MuiButton>
           </Grid>
           <Grid item xs={6}>
-            <LoadingButton
+            <MuiButton
+              loadingButton
               fullWidth
-              variant="contained"
               color="success"
               type="submit"
               loading={loading}
-              loadingPosition="start"
             >
               Speichern
-            </LoadingButton>
+            </MuiButton>
           </Grid>
         </Grid>
       </Box>

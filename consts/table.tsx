@@ -1,3 +1,4 @@
+import MuiTooltip from '@components/External/MuiTooltip';
 import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { GridColDef, GridValidRowModel } from '@mui/x-data-grid';
@@ -20,15 +21,21 @@ export const getActionColumn = <T extends GridValidRowModel>({
   width: 140,
   renderCell: ({ row }) => (
     <>
-      <IconButton disabled={!onEdit} onClick={() => onEdit!(row)}>
-        <Edit />
-      </IconButton>
-      <IconButton disabled={!onCopy} onClick={() => onCopy!(row)}>
-        <ContentCopy />
-      </IconButton>
-      <IconButton disabled={!onDelete} onClick={() => onDelete!(row)}>
-        <Delete />
-      </IconButton>
+      <MuiTooltip title="Bearbeiten">
+        <IconButton disabled={!onEdit} onClick={() => onEdit!(row)}>
+          <Edit />
+        </IconButton>
+      </MuiTooltip>
+      <MuiTooltip title="Kopieren">
+        <IconButton disabled={!onCopy} onClick={() => onCopy!(row)}>
+          <ContentCopy />
+        </IconButton>
+      </MuiTooltip>
+      <MuiTooltip title="Löschen">
+        <IconButton disabled={!onDelete} onClick={() => onDelete!(row)}>
+          <Delete />
+        </IconButton>
+      </MuiTooltip>
     </>
   ),
 });

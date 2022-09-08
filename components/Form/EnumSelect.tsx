@@ -1,9 +1,5 @@
-import {
-  Autocomplete,
-  MenuItem,
-  TextField,
-  TextFieldProps,
-} from '@mui/material';
+import MuiTextField from '@components/External/MuiTextField';
+import { Autocomplete, MenuItem, TextFieldProps } from '@mui/material';
 import React, { ChangeEvent, useCallback } from 'react';
 import { $enum } from 'ts-enum-util';
 
@@ -73,11 +69,11 @@ const EnumSelect = <T = string | number,>({
       onInputChange={onInputChangeAutocomplete}
       getOptionLabel={(value) => enumLabel?.get(value) ?? value}
       renderInput={(params) => (
-        <TextField {...params} label={label} {...aditionalTextFieldProps} />
+        <MuiTextField {...params} label={label} {...aditionalTextFieldProps} />
       )}
     />
   ) : (
-    <TextField
+    <MuiTextField
       fullWidth
       select
       value={value}
@@ -90,7 +86,7 @@ const EnumSelect = <T = string | number,>({
           {enumLabel?.get(itemValue) ?? itemValue}
         </MenuItem>
       ))}
-    </TextField>
+    </MuiTextField>
   );
 };
 

@@ -28,6 +28,7 @@ const CustomersPage: FC = () => {
     setSelected,
     filteredCustomers,
     activeColumns,
+    searchText,
   } = useContext(CustomerContext) as CustomerContextType;
 
   const [customerToDelete, setCustomerToDelete] =
@@ -125,6 +126,7 @@ const CustomersPage: FC = () => {
         onEdit={setSelected}
         onCopy={onCopyRow}
         onDelete={setCustomerToDelete}
+        searchText={searchText}
       />
       <SideOverlay
         heading="Kundenbearbeitung"

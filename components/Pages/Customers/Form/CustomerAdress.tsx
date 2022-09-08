@@ -1,4 +1,4 @@
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
@@ -36,28 +36,28 @@ const CustomerAdress: FC = () => {
       {selected && (
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Straße"
               value={selected.street}
               onChange={onChangeStreet}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Hausnummer"
               value={selected.streetnumber}
               onChange={onChangeStreetnumber}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Postleitzahl"
               value={selected.postalcode}
               onChange={onChangePostalcode}
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Stadt"
               value={selected.city}
               onChange={onChangeCity}

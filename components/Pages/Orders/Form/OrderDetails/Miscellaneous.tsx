@@ -1,4 +1,4 @@
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import { OrderContext } from '@context/OrderContext';
 import { OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
@@ -25,7 +25,7 @@ const Miscellaneous: FC = () => {
             <DuedatePicker />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               multiline
               variant="filled"
               label="Name"

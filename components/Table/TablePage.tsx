@@ -4,17 +4,22 @@ import {
   DataGrid,
   DataGridProps,
   deDE,
+  GridColDef,
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import React, { ReactNode, useMemo } from 'react';
 
+import TableCell from './TableCell';
+
 type TablePageProps<T extends GridValidRowModel> = DataGridProps<T> &
   GetActiveColumnProps<T> & {
     header: ReactNode;
+    searchText: string;
   };
 
 const TablePage = <T extends GridValidRowModel>({
   header,
+  searchText,
   onCopy,
   onDelete,
   onEdit,
@@ -39,10 +44,6 @@ const TablePage = <T extends GridValidRowModel>({
         sx={{
           flex: '1 1 auto',
           userSelect: 'none',
-          '.row-disabled': {
-            bgcolor: 'action.disabled',
-            opacity: 0.5,
-          },
           '.MuiDataGrid-cell': {
             outline: 'none !important',
           },
@@ -51,7 +52,14 @@ const TablePage = <T extends GridValidRowModel>({
         disableColumnMenu
         disableSelectionOnClick
         {...gridProps}
-        columns={gridProps.columns.concat(actionColumn)}
+        columns={gridProps.columns
+          .map<GridColDef<T>>((column) => ({
+            renderCell: ({ value }) => (
+              <TableCell search={searchText} value={value} />
+            ),
+            ...column,
+          }))
+          .concat(actionColumn)}
       />
     </Box>
   );

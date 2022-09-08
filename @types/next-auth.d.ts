@@ -1,19 +1,28 @@
-// eslint-disable-next-line unused-imports/no-unused-imports
+/* eslint-disable unused-imports/no-unused-imports */
 import NextAuth from 'next-auth';
+import NextAuthJwt from 'next-auth/jwt';
 
 declare module 'next-auth' {
   interface User {
-    id?: string;
-    name?: string;
-    email?: string;
-    image?: string;
-    password?: string;
-    salt?: string;
-    cliannaFolderId?: string;
+    id: string;
+    email: string;
+    credentials: boolean;
+    google: boolean;
+    gapiAccess: boolean;
+    cliannaFolderId: string | null;
   }
   interface Session {
-    user: Pick<User, 'id' | 'name' | 'email' | 'image' | 'cliannaFolderId'> & {
-      refreshToken?: string;
-    };
+    user: User;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    email: string;
+    credentials: boolean;
+    google: boolean;
+    gapiAccess: boolean;
+    cliannaFolderId: string | null;
   }
 }

@@ -1,6 +1,7 @@
+import MuiTextField from '@components/External/MuiTextField';
 import EnumRadioList from '@components/Form/EnumRadioList';
 import EnumSelect from '@components/Form/EnumSelect';
-import FormInput from '@components/Form/FormInput';
+import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import {
   OrderShippingTypeLabels,
@@ -12,14 +13,15 @@ import { ICustomer } from '@customTypes/database/customer';
 import { OrderContextType } from '@customTypes/order';
 import {
   Autocomplete,
+  AutocompleteRenderInputParams,
   Checkbox,
   FormControlLabel,
   Grid,
   InputAdornment,
-  TextField,
 } from '@mui/material';
 import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
+import dayjs from 'dayjs';
 import { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const OrderGeneral: FC = () => {
@@ -58,6 +60,13 @@ const OrderGeneral: FC = () => {
     [updateSelected]
   );
 
+  const renderInputCustomer = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <MuiTextField {...params} variant="filled" label="Kunde" />
+    ),
+    []
+  );
+
   return (
     <FormSection label="Allgemein">
       {selected && (
@@ -82,7 +91,7 @@ const OrderGeneral: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormInput
+            <FormTextField
               label="Preis"
               type="number"
               value={selected.price ?? ''}
@@ -94,21 +103,32 @@ const OrderGeneral: FC = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <Autocomplete
               openOnFocus
               options={customers}
               value={selected.customer}
               onChange={onChangeCustomer}
               getOptionLabel={getCustomerLabel}
-              renderInput={(params) => (
-                <TextField {...params} variant="filled" label="Kunde" />
-              )}
+              renderInput={renderInputCustomer}
               isOptionEqualToValue={(option, value) => option.id === value.id}
             />
           </Grid>
+          <Grid item xs={6}>
+            <FormTextField
+              label="Erstellungsdatum"
+              type="date"
+              disabled
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={dayjs(selected.creationDate ?? new Date()).format(
+                'YYYY-MM-DD'
+              )}
+            />
+          </Grid>
           <Grid item xs={12}>
-            <FormInput
+            <FormTextField
               multiline
               variant="filled"
               label="Kommentar"

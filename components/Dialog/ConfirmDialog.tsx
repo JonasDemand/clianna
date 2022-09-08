@@ -1,5 +1,5 @@
+import MuiButton from '@components/External/MuiButton';
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -34,12 +34,12 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
         <DialogContentText align="center">{children}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={onClose}>
+        <MuiButton variant="text" color="error" onClick={onClose}>
           Nein
-        </Button>
-        <Button color="primary" onClick={onConfirm}>
+        </MuiButton>
+        <MuiButton variant="text" color="success" onClick={onConfirm}>
           Ja
-        </Button>
+        </MuiButton>
       </DialogActions>
     </Dialog>
   );
