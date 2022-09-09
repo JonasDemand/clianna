@@ -5,8 +5,12 @@ export interface ICreateCredentialsRequest {
   password: string;
 }
 
-export interface IValidateUserResponse {
+export interface IValidationResponse {
   valid: boolean;
+}
+
+export interface IValidateCredentialsRequest {
+  password: string;
 }
 
 export interface IUpdateUserRequest

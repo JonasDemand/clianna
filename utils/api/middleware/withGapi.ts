@@ -5,7 +5,6 @@ export const withGapi =
   (needsRootfolder: boolean) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getSession({ req });
-    console.log(session);
     if (!session) {
       return res.status(401).send('This method needs authorization');
     }

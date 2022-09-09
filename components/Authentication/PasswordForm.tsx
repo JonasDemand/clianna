@@ -1,63 +1,64 @@
 import MuiTextField from '@components/External/MuiTextField';
 import { Box } from '@mui/material';
-import { ChangeEvent, FC, useCallback, useState } from 'react';
+import { ChangeEvent, FC, useCallback } from 'react';
 
 export type PasswordFormProps = {
+  required?: boolean;
   showOldPassword?: boolean;
   showRepeatPassword?: boolean;
   focusPassword?: boolean;
   showValidation: boolean;
-  setShowValidation: (value: boolean) => void;
-  onChange: (value: string, valid: boolean) => void;
+  repeatError?: boolean;
+  oldPasswordError?: boolean;
+  password: string;
+  oldPassword?: string;
+  repeatPassword?: string;
+  onPasswordChange: (value: string) => void;
   onOldPasswordChange?: (value: string) => void;
+  onRepeatPasswordChange?: (value: string) => void;
+  setShowValidation: (value: boolean) => void;
+  setRepeatError?: (value: boolean) => void;
+  setOldPasswordError?: (value: boolean) => void;
 };
 
 const PasswordForm: FC<PasswordFormProps> = ({
-  showValidation,
+  required = false,
   showOldPassword = false,
   showRepeatPassword = false,
   focusPassword = false,
-  onChange,
-  onOldPasswordChange,
+  showValidation = false,
+  repeatError = false,
+  oldPasswordError = false,
+  onPasswordChange,
+  password,
+  setOldPasswordError,
+  setRepeatError,
   setShowValidation,
+  oldPassword,
+  onOldPasswordChange,
+  onRepeatPasswordChange,
+  repeatPassword,
 }) => {
-  const [password, setPassword] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
-  const [repeatError, setRepeatError] = useState(false);
-
-  const _onChange = useCallback(
-    (password: string, repeatPassword: string) => {
-      setRepeatError(false);
-      const valid = !showRepeatPassword || password === repeatPassword;
-      setRepeatError(!valid);
-      onChange(password, valid);
-    },
-    [onChange, showRepeatPassword]
-  );
   const onChangeOldPassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      let newValue = e.target.value;
-      setOldPassword(newValue);
-      onOldPasswordChange && onOldPasswordChange(newValue);
+      onOldPasswordChange && onOldPasswordChange(e.target.value);
     },
     [onOldPasswordChange]
   );
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      setPassword(newValue);
-      _onChange(newValue, repeatPassword);
+      onPasswordChange(e.target.value);
+      setOldPasswordError && setOldPasswordError(false);
+      setRepeatError && setRepeatError(false);
     },
-    [_onChange, repeatPassword]
+    [onPasswordChange, setOldPasswordError, setRepeatError]
   );
   const onChangeRepeatPassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      setRepeatPassword(newValue);
-      _onChange(password, newValue);
+      onRepeatPasswordChange && onRepeatPasswordChange(e.target.value);
+      setRepeatError && setRepeatError(false);
     },
-    [_onChange, password]
+    [onRepeatPasswordChange, setRepeatError]
   );
 
   const passwordInputRef = useCallback(
@@ -72,9 +73,13 @@ const PasswordForm: FC<PasswordFormProps> = ({
           type="password"
           label="Altes Passwort"
           fullWidth
-          required
+          required={required}
           autoComplete={'current-password'}
           value={oldPassword}
+          error={showValidation && oldPasswordError}
+          helperText={
+            showValidation && oldPasswordError && 'Passwort ist inkorrekt'
+          }
           onChange={onChangeOldPassword}
           sx={{ my: 1 }}
         />
@@ -83,7 +88,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
         type="password"
         label="Passwort"
         fullWidth
-        required
+        required={required}
         autoComplete={showRepeatPassword ? 'new-password' : 'current-password'}
         value={password}
         inputRef={focusPassword ? passwordInputRef : undefined}
@@ -95,15 +100,12 @@ const PasswordForm: FC<PasswordFormProps> = ({
           type="password"
           label="Passwort wiederholen"
           fullWidth
-          required
+          required={required}
           autoComplete="new-password"
           value={repeatPassword}
-          error={showValidation && repeatError && !!repeatPassword}
+          error={showValidation && repeatError}
           helperText={
-            showValidation &&
-            repeatError &&
-            repeatPassword &&
-            'Passwort stimmt nicht überein'
+            showValidation && repeatError && 'Passwörter stimmen nicht überein'
           }
           disabled={!password}
           onChange={onChangeRepeatPassword}

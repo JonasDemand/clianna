@@ -18,7 +18,8 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordValid, setPasswordValid] = useState(false);
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [repeatError, setRepeatError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [newAccount, setNewAccount] = useState(false);
@@ -28,12 +29,11 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      setLoading(true);
       try {
+        setLoading(true);
         if (!showPassword) {
-          const validationResponse = await ApiClient.Instance.User.Validate(
-            email
-          );
+          const validationResponse =
+            await ApiClient.Instance.User.ValidateEmail(email);
           setShowPassword(true);
           setNewAccount(validationResponse.valid);
           setLoading(false);
@@ -41,10 +41,13 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
         }
 
         setShowPasswordValidation(true);
-        if (!passwordValid) return;
+        if (newAccount && password !== repeatPassword) {
+          setRepeatError(true);
+          return;
+        }
 
         if (newAccount)
-          await ApiClient.Instance.User.UpsertCredentials({ email, password });
+          await ApiClient.Instance.User.CreateCredentials({ email, password });
 
         signIn('credentials', {
           email,
@@ -55,14 +58,13 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
         showError('Unbekannter Fehler');
       } finally {
         setLoading(false);
-        return;
       }
     },
     [
       email,
       newAccount,
       password,
-      passwordValid,
+      repeatPassword,
       router.query.callbackUrl,
       showError,
       showPassword,
@@ -71,10 +73,6 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
 
   const onClickBack = useCallback(() => setShowPassword(false), []);
 
-  const onChangePassword = useCallback((value: string, valid: boolean) => {
-    setPassword(value);
-    setPasswordValid(valid);
-  }, []);
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
     []
@@ -113,7 +111,12 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
             showRepeatPassword={newAccount}
             showValidation={showPasswordValidation}
             setShowValidation={setShowPasswordValidation}
-            onChange={onChangePassword}
+            repeatError={repeatError}
+            setRepeatError={setRepeatError}
+            password={password}
+            onPasswordChange={setPassword}
+            repeatPassword={repeatPassword}
+            onRepeatPasswordChange={setRepeatPassword}
           />
         </Paper>
       </Slide>

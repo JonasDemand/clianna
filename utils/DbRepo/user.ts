@@ -28,8 +28,8 @@ export class User {
     });
   }
 
-  public async GetSingle() {
-    throw new Error('not Implemented');
+  public async GetAll() {
+    return await prisma.user.findMany();
   }
   public async Update(user: IUpdateUserRequest): Promise<PrismaUser> {
     let hashedPassword: string | undefined;
@@ -51,7 +51,15 @@ export class User {
     });
     return updatedUser;
   }
-  public async Delete() {
-    throw new Error('not Implemented');
+  public async ValidateCredentials(password: string) {
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: this.UserId },
+      select: { password: true, salt: true },
+    });
+    if (!user.password || !user.salt) return false;
+
+    const hash = await hashPassword(password, user.salt);
+    if (hash !== user.password) return false;
+    return true;
   }
 }

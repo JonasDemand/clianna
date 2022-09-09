@@ -4,21 +4,52 @@ import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
+import { ApiClient } from '@utils/api/client';
+import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
+import { useSnackbar } from 'notistack';
 import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 const LoginConfiguration: FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [showValidation, setShowValidation] = useState(false);
   const [email, setEmail] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+  const [showValidation, setShowValidation] = useState(false);
+  const [repeatError, setRepeatError] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     session?.user?.email && setEmail(session.user.email);
   }, [session?.user?.email]);
+
+  const validatePassword = useCallback(async () => {
+    if (!oldPassword && !newPassword && !repeatPassword) return true;
+    setShowValidation(true);
+    if (newPassword !== repeatPassword) {
+      setRepeatError(true);
+      return false;
+    }
+    let isValid = true;
+    if (session?.user.credentials) {
+      const validateRes = await ApiClient.Instance.User.ValidateCredentials(
+        oldPassword
+      );
+      isValid = validateRes.valid;
+    }
+    if (!isValid) {
+      setOldPasswordError(true);
+      return false;
+    }
+    return true;
+  }, [newPassword, oldPassword, repeatPassword, session?.user.credentials]);
 
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -33,8 +64,47 @@ const LoginConfiguration: FC = () => {
     [router.basePath, session?.user.email]
   );
 
+  const onSubmit = useCallback(
+    async (e: ChangeEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      try {
+        setLoading(true);
+
+        const passwordValid = await validatePassword();
+        if (!passwordValid) return;
+        setShowValidation(false);
+
+        await ApiClient.Instance.User.Update({
+          email,
+          password: newPassword ?? undefined,
+        });
+        await refreshSession();
+        enqueueSnackbar('Erfolgreich Profil aktualisiert', {
+          variant: 'success',
+        });
+        setOldPassword('');
+        setNewPassword('');
+        setRepeatPassword('');
+      } catch (err) {
+        enqueueSnackbar('Aktualisieren von Profil fehlgeschlagen', {
+          variant: 'error',
+        });
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, enqueueSnackbar, newPassword, validatePassword]
+  );
+
   return (
-    <Grid container spacing={2} component="form" sx={{ mb: 2 }}>
+    <Grid
+      container
+      spacing={2}
+      component="form"
+      onSubmit={onSubmit}
+      sx={{ mb: 2 }}
+    >
       <Grid item xs={12} sx={{ mb: -2 }}>
         <FormSection label="Anmeldung" />
       </Grid>
@@ -55,8 +125,16 @@ const LoginConfiguration: FC = () => {
             showRepeatPassword
             showValidation={showValidation}
             setShowValidation={setShowValidation}
-            onChange={console.log}
-            onOldPasswordChange={console.log}
+            repeatError={repeatError}
+            setRepeatError={setRepeatError}
+            password={newPassword}
+            onPasswordChange={setNewPassword}
+            oldPassword={oldPassword}
+            onOldPasswordChange={setOldPassword}
+            repeatPassword={repeatPassword}
+            onRepeatPasswordChange={setRepeatPassword}
+            oldPasswordError={oldPasswordError}
+            setOldPasswordError={setOldPasswordError}
           />
         </Box>
       </Grid>
@@ -72,6 +150,7 @@ const LoginConfiguration: FC = () => {
           <Grid item>
             <MuiButton
               loadingButton
+              loading={loading}
               type="submit"
               variant="contained"
               color="success"

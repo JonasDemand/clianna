@@ -1,6 +1,6 @@
 import { EGoogleScope } from '@customTypes/oauth';
 import { PrismaClient } from '@prisma/client';
-import { hashPassword } from '@utils/authentication';
+import { DbRepo } from '@utils/DbRepo';
 import { getScope } from '@utils/oauth';
 import { google } from 'googleapis';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -20,7 +20,9 @@ const oauth2 = google.oauth2('v2');
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const reqGapiAccess = Boolean(req.query.gapiAccess);
+  const reqRefreshJwt = Boolean(req.query.refreshSession);
   delete req.query.gapiAccess;
+  delete req.query.refreshSession;
 
   return NextAuth(req, res, {
     providers: [
@@ -98,19 +100,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           const user = await prisma.user.findUniqueOrThrow({
             where: { email: credentials.email },
           });
-          if (!user.password || !user.salt) throw 'Invalid db user';
-
-          const hash = await hashPassword(credentials?.password, user.salt);
-          if (hash === user.password)
-            return {
-              id: user.id,
-              email: user.email,
-              google: !!user.googleId,
-              credentials: !!user.password,
-              refreshToken: user.refreshToken,
-              cliannaFolderId: user.cliannaFolderId,
-            };
-          return null;
+          DbRepo.Init(user.id);
+          const isValid = await DbRepo.Instance.User.ValidateCredentials(
+            credentials.password
+          );
+          if (!isValid) return null;
+          return {
+            id: user.id,
+            email: user.email,
+            google: !!user.googleId,
+            credentials: !!user.password,
+            refreshToken: user.refreshToken,
+            cliannaFolderId: user.cliannaFolderId,
+          };
         },
       }),
     ],
@@ -129,7 +131,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           },
         };
       },
-      jwt: ({ token, user }): JWT => {
+      jwt: async ({ token, user }): Promise<JWT> => {
+        if (reqRefreshJwt) {
+          const prismaUser = await prisma.user.findUniqueOrThrow({
+            where: { id: token.id },
+          });
+          user = {
+            id: prismaUser.id,
+            email: prismaUser.email,
+            google: !!prismaUser.googleId,
+            credentials: !!prismaUser.password,
+            refreshToken: prismaUser.refreshToken,
+            cliannaFolderId: prismaUser.cliannaFolderId,
+          };
+        }
         if (user) {
           return {
             ...token,
