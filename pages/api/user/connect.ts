@@ -5,25 +5,36 @@ import {
   withMiddleware,
 } from '@utils/api/middleware';
 import { DbRepo } from '@utils/DbRepo';
+import { User } from '@utils/DbRepo/user';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const createCredentials = async (req: NextApiRequest, res: NextApiResponse) => {
+const connectCredentialsAccount = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
   const body = req.body as ICredentailsRequest;
 
-  await DbRepo.Instance.User.CreateCredentials(body);
+  const newUserId = await DbRepo.Instance.User.GetIdFromEmail(body.email);
+  const newUserRepo = new User(newUserId);
+
+  const isValid = await newUserRepo.ValidateCredentials(body.password);
+  if (!isValid) return res.status(403).send('Authentication failed');
+
+  DbRepo.Instance.User.MigrateFromId(newUserId);
+
   return res.status(200).send('Succesfully created credentials');
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toLocaleUpperCase()) {
-    case 'POST':
-      withMiddleware(withBody(['password']), createCredentials)(req, res);
+    case 'PUT':
+      connectCredentialsAccount(req, res);
       break;
   }
 };
 
 export default withMiddleware(
   withMethodGuard(['POST']),
-  withBody(['email']),
+  withBody(['email', 'password']),
   handler
 );

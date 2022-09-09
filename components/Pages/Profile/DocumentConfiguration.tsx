@@ -24,13 +24,13 @@ const DocumentConfiguration: FC = () => {
       signIn(
         'google',
         {
-          callbackUrl: router.pathname,
+          callbackUrl: router.asPath,
         },
         new URLSearchParams({
           gapiAccess: 'true',
         })
       ),
-    [router.pathname]
+    [router.asPath]
   );
   const onClickCreateRootfolder = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {

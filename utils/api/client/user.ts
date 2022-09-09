@@ -1,11 +1,11 @@
 import {
-  ICreateCredentialsRequest,
+  ICredentailsRequest,
   IUpdateUserRequest,
   IValidationResponse,
 } from '@customTypes/messages/user';
 
 export class User {
-  public async CreateCredentials(request: ICreateCredentialsRequest) {
+  public async CreateCredentials(request: ICredentailsRequest) {
     const res = await fetch(`/api/user/credentials`, {
       method: 'POST',
       body: JSON.stringify(request),

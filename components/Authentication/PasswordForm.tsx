@@ -22,7 +22,7 @@ export type PasswordFormProps = {
 };
 
 const PasswordForm: FC<PasswordFormProps> = ({
-  required = false,
+  required = true,
   showOldPassword = false,
   showRepeatPassword = false,
   focusPassword = false,

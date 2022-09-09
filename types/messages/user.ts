@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-export interface ICreateCredentialsRequest {
+export interface ICredentailsRequest {
   email: string;
   password: string;
 }

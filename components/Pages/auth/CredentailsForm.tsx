@@ -1,21 +1,27 @@
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import { ArrowBack } from '@mui/icons-material';
-import { Box, Paper, Slide } from '@mui/material';
+import { Box } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
-import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
-import { ChangeEvent, FC, useCallback, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 
 import PasswordForm from '../../Authentication/PasswordForm';
 
 export type CredentialsFormProps = {
   showError: (message: string) => void;
+  initialEmail?: string;
+  onLogin: (
+    email: string,
+    password: string,
+    newAccount: boolean
+  ) => Promise<void> | void;
 };
 
-const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
-  const router = useRouter();
-
+const CredentialsForm: FC<CredentialsFormProps> = ({
+  showError,
+  initialEmail,
+  onLogin,
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
@@ -24,6 +30,12 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [newAccount, setNewAccount] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+
+  useEffect(() => {
+    if (!initialEmail) return;
+    setEmail(initialEmail);
+    setShowPassword(true);
+  }, [initialEmail]);
 
   const onSubmitForm = useCallback(
     async (e: ChangeEvent<HTMLFormElement>) => {
@@ -46,14 +58,7 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
           return;
         }
 
-        if (newAccount)
-          await ApiClient.Instance.User.CreateCredentials({ email, password });
-
-        signIn('credentials', {
-          email,
-          password,
-          callbackUrl: router.query.callbackUrl?.toString() ?? '/',
-        });
+        onLogin(email, password, newAccount);
       } catch {
         showError('Unbekannter Fehler');
       } finally {
@@ -63,9 +68,9 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
     [
       email,
       newAccount,
+      onLogin,
       password,
       repeatPassword,
-      router.query.callbackUrl,
       showError,
       showPassword,
     ]
@@ -85,7 +90,7 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
       <MuiButton
         variant="text"
         startIcon={<ArrowBack />}
-        disabled={!showPassword}
+        disabled={!showPassword || !!initialEmail}
         onClick={onClickBack}
         sx={{ my: 1 }}
       >
@@ -104,22 +109,20 @@ const CredentialsForm: FC<CredentialsFormProps> = ({ showError }) => {
         onChange={onChangeEmail}
         sx={{ my: 1 }}
       />
-      <Slide direction="right" in={showPassword} mountOnEnter unmountOnExit>
-        <Paper sx={{ bgcolor: 'unset', boxShadow: 'none' }}>
-          <PasswordForm
-            focusPassword
-            showRepeatPassword={newAccount}
-            showValidation={showPasswordValidation}
-            setShowValidation={setShowPasswordValidation}
-            repeatError={repeatError}
-            setRepeatError={setRepeatError}
-            password={password}
-            onPasswordChange={setPassword}
-            repeatPassword={repeatPassword}
-            onRepeatPasswordChange={setRepeatPassword}
-          />
-        </Paper>
-      </Slide>
+      {showPassword && (
+        <PasswordForm
+          focusPassword
+          showRepeatPassword={newAccount}
+          showValidation={showPasswordValidation}
+          setShowValidation={setShowPasswordValidation}
+          repeatError={repeatError}
+          setRepeatError={setRepeatError}
+          password={password}
+          onPasswordChange={setPassword}
+          repeatPassword={repeatPassword}
+          onRepeatPasswordChange={setRepeatPassword}
+        />
+      )}
       <MuiButton
         loadingButton
         loading={loading}

@@ -54,10 +54,7 @@ export class Order {
   ): Promise<IC extends true ? IOrderWithCustomer[] : IOrder[]> {
     return await prisma.order.findMany({
       where: {
-        AND: [
-          { user: { id: this.UserId } },
-          { OR: [{ customer: null }, { customer: { disabled: false } }] },
-        ],
+        user: { id: this.UserId },
       },
       select: {
         ...Order.DefaultSelect,

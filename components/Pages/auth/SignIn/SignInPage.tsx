@@ -1,5 +1,6 @@
 import { LockOutlined } from '@mui/icons-material';
 import { Alert, Box } from '@mui/material';
+import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -25,9 +26,27 @@ const SignInPage: FC = () => {
     [router.query.callbackUrl]
   );
 
+  const onLogin = useCallback(
+    async (email: string, password: string, newAccount: boolean) => {
+      if (newAccount)
+        await ApiClient.Instance.User.CreateCredentials({ email, password });
+
+      signIn('credentials', {
+        email,
+        password,
+        callbackUrl: router.query.callbackUrl?.toString() ?? '/',
+      });
+    },
+    [router.query.callbackUrl]
+  );
+
   return (
     <AuthLayout title="Anmeldung" icon={<LockOutlined />}>
-      <CredentialsForm showError={setError} />
+      <CredentialsForm
+        showError={setError}
+        onLogin={onLogin}
+        initialEmail={router.query.email?.toString()}
+      />
       <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
         <GoogleButton
           className="GoogleButton"
