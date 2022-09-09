@@ -7,7 +7,7 @@ import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import { ChangeEvent, FC, useCallback, useState } from 'react';
 
-import PasswordForm from '../../../Authentication/PasswordForm';
+import PasswordForm from '../../Authentication/PasswordForm';
 
 export type CredentialsFormProps = {
   showError: (message: string) => void;
