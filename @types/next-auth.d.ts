@@ -8,7 +8,6 @@ interface ISession {
   credentials: boolean;
   google: boolean;
   refreshToken: string | null;
-  gapiAccess: boolean;
   cliannaFolderId: string | null;
 }
 

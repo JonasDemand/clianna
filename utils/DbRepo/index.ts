@@ -4,7 +4,7 @@ import { User } from './user';
 
 export class DbRepo {
   private constructor(userId: string) {
-    this.User = new User();
+    this.User = new User(userId);
     this.Order = new Order(userId);
     this.Customer = new Customer(userId);
   }

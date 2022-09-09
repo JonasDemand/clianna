@@ -9,11 +9,11 @@ export const withGapi =
     if (!session) {
       return res.status(401).send('This method needs authorization');
     }
-    if (!session.user.google || !session.user.refreshToken)
+    if (!session.user.google)
       return res
         .status(401)
         .send('This method needs connection to your google account');
-    if (!session.user.gapiAccess)
+    if (!session.user.refreshToken)
       return res
         .status(403)
         .send('This method needs access to the google drive and docs api');

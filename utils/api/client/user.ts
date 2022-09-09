@@ -1,10 +1,10 @@
 import {
-  IUpsertCredentialsRequest,
+  ICreateCredentialsRequest,
   IValidateUserResponse,
-} from '@customTypes/user';
+} from '@customTypes/messages/user';
 
 export class User {
-  public async UpsertCredentials(request: IUpsertCredentialsRequest) {
+  public async UpsertCredentials(request: ICreateCredentialsRequest) {
     const res = await fetch(`/api/user/credentials`, {
       method: 'POST',
       body: JSON.stringify(request),

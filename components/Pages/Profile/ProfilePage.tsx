@@ -34,7 +34,7 @@ const ProfilePage: FC = () => {
       <Grid item sx={{ maxWidth: '800px' }}>
         <LoginConfiguration />
         <FormSection label="Dokumente">
-          {session?.user.gapiAccess ? (
+          {session?.user.refreshToken ? (
             <Grid container>
               <Grid item xs={6}>
                 <MuiTextField
@@ -59,6 +59,9 @@ const ProfilePage: FC = () => {
                             await fetch('/api/documents/rootfolder', {
                               method: 'POST',
                             });
+                            signIn('google', {
+                              callbackUrl: router.pathname,
+                            });
                           }}
                           sx={{ cursor: 'pointer' }}
                         >
@@ -77,14 +80,19 @@ const ProfilePage: FC = () => {
                 Clianna erweiterten Zugriff auf dein Google-Konto genehmigen
               </Typography>
               <Box sx={{ mt: 1 }}>
-                <MuiButton
-                  variant="contained"
-                  disabled={session?.user.gapiAccess}
-                  startIcon={<Folder />}
-                  onClick={onClickDriveAccess}
+                <MuiTooltip
+                  title="Es muss  ein Google Account verbunden werden, um Dokumente freizuschalten"
+                  show={!session?.user.google}
                 >
-                  Zugriff genehmigen
-                </MuiButton>
+                  <MuiButton
+                    variant="contained"
+                    disabled={!session?.user.google}
+                    startIcon={<Folder />}
+                    onClick={onClickDriveAccess}
+                  >
+                    Zugriff genehmigen
+                  </MuiButton>
+                </MuiTooltip>
               </Box>
             </>
           )}

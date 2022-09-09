@@ -11,6 +11,11 @@ import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
 const prisma = new PrismaClient();
 
+const oauth2Client = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
+);
 const oauth2 = google.oauth2('v2');
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -23,44 +28,51 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         clientId: process.env.GOOGLE_CLIENT_ID ?? '',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
         authorization: {
-          params: {
-            prompt: 'consent',
-            access_type: 'offline',
-            scope: getScope(
-              reqGapiAccess ? [EGoogleScope.docs, EGoogleScope.drive] : []
-            ),
-          },
+          params: reqGapiAccess
+            ? {
+                prompt: 'consent',
+                access_type: 'offline',
+                scope: getScope([EGoogleScope.docs, EGoogleScope.drive]),
+              }
+            : { scope: getScope() },
         },
         profile: async (profile, tokens) => {
-          if (!tokens.refresh_token || !tokens.id_token)
-            throw 'Invalid token response';
-
           const googleProfile = profile as GoogleProfile;
-          if (!googleProfile.sub || !googleProfile.email)
-            throw 'Invalid google profile';
 
-          const tokenInfo = await oauth2.tokeninfo({
-            access_token: tokens.access_token,
-          });
-          if (!tokenInfo.data.scope) throw 'Invalid scope';
-          const gapiAccess = [EGoogleScope.docs, EGoogleScope.drive].every(
-            (scope) => tokenInfo.data.scope?.includes(scope)
-          );
+          let refreshToken: string | undefined | null = tokens.refresh_token;
+          if (!refreshToken) {
+            const existingUser = await prisma.user.findUnique({
+              where: { googleId: profile.sub },
+              select: { refreshToken: true },
+            });
+            refreshToken = existingUser?.refreshToken ?? undefined;
+          }
+          if (refreshToken) {
+            oauth2Client.setCredentials({
+              refresh_token: refreshToken,
+            });
+            try {
+              //If the user revokes access the refeshToken needs to be deleted to prevent errors
+              await oauth2.tokeninfo({
+                auth: oauth2Client,
+              });
+            } catch {
+              refreshToken = null;
+            }
+          }
 
           const user = await prisma.user.upsert({
             where: {
               googleId: googleProfile.sub,
             },
             update: {
-              gapiAccess,
+              refreshToken,
               googleId: googleProfile.sub,
-              refreshToken: tokens.refresh_token,
             },
             create: {
-              gapiAccess,
+              refreshToken,
               email: googleProfile.email,
               googleId: googleProfile.sub,
-              refreshToken: tokens.refresh_token,
             },
           });
 
@@ -70,7 +82,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             google: !!user.googleId,
             credentials: !!user.password,
             refreshToken: user.refreshToken,
-            gapiAccess: user.gapiAccess,
             cliannaFolderId: user.cliannaFolderId,
           };
         },
@@ -97,7 +108,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               google: !!user.googleId,
               credentials: !!user.password,
               refreshToken: user.refreshToken,
-              gapiAccess: user.gapiAccess,
               cliannaFolderId: user.cliannaFolderId,
             };
           return null;
@@ -115,7 +125,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             google: token.google,
             credentials: token.credentials,
             refreshToken: token.refreshToken,
-            gapiAccess: token.gapiAccess,
             cliannaFolderId: token.cliannaFolderId,
           },
         };
@@ -128,8 +137,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             email: user.email,
             google: user.google,
             credentials: user.credentials,
-            refreshToken: token.refreshToken,
-            gapiAccess: user.gapiAccess,
+            refreshToken: user.refreshToken,
             cliannaFolderId: user.cliannaFolderId,
           };
         }

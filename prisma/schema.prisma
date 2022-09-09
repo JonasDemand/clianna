@@ -17,7 +17,6 @@ model User {
   salt            String?    @db.Text
   googleId        String?    @unique
   refreshToken    String?    @db.Text
-  gapiAccess      Boolean    @default(false)
   cliannaFolderId String?
   Customer        Customer[]
   Order           Order[]

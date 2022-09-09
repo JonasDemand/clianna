@@ -1,4 +1,4 @@
-import SignInPage from '@components/Pages/auth/SignIn/SignInPage';
+import SignInPage from '@components/Pages/Auth/SignIn/SignInPage';
 import { NextPage } from 'next';
 
 const SignIn: NextPage = () => <SignInPage />;

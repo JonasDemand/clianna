@@ -26,20 +26,14 @@ const PasswordForm: FC<PasswordFormProps> = ({
   const [repeatPassword, setRepeatPassword] = useState('');
   const [repeatError, setRepeatError] = useState(false);
 
-  const validate = useCallback(() => {
-    setRepeatError(false);
-    const valid = !showRepeatPassword || password === repeatPassword;
-    setRepeatError(!valid);
-    return valid;
-  }, [showRepeatPassword, password, repeatPassword]);
-
-  const onChangePassword = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      let newValue = e.target.value;
-      setPassword(newValue);
-      onChange(newValue, validate());
+  const _onChange = useCallback(
+    (password: string, repeatPassword: string) => {
+      setRepeatError(false);
+      const valid = !showRepeatPassword || password === repeatPassword;
+      setRepeatError(!valid);
+      onChange(password, valid);
     },
-    [onChange, validate]
+    [onChange, showRepeatPassword]
   );
   const onChangeOldPassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -49,12 +43,21 @@ const PasswordForm: FC<PasswordFormProps> = ({
     },
     [onOldPasswordChange]
   );
+  const onChangePassword = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setPassword(newValue);
+      _onChange(newValue, repeatPassword);
+    },
+    [_onChange, repeatPassword]
+  );
   const onChangeRepeatPassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setRepeatPassword(e.target.value);
-      onChange(password, validate());
+      const newValue = e.target.value;
+      setRepeatPassword(newValue);
+      _onChange(password, newValue);
     },
-    [onChange, password, validate]
+    [_onChange, password]
   );
 
   const passwordInputRef = useCallback(
