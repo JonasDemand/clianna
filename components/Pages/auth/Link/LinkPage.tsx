@@ -1,8 +1,9 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import { Google } from '@mui/icons-material';
 import { Alert } from '@mui/material';
+import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { FC, useCallback, useState } from 'react';
 
 import AuthLayout from '../AuthLayout';
@@ -10,24 +11,23 @@ import CredentialsForm from '../CredentailsForm';
 
 const LinkPage: FC = () => {
   const router = useRouter();
-  const { data: session } = useSession();
 
   const [error, setError] = useState<string>();
 
   const onLogin = useCallback(
     async (email: string, password: string) => {
-      const oldUserId = session?.user.id;
-      const signInResponse = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-      if (!signInResponse?.ok) {
-        setError('Login fehlgeschlagen');
+      const res = await ApiClient.Instance.User.Connect({ email, password });
+      if (res.error) {
+        res.error.status === 403
+          ? setError('Login fehlgeschlagen')
+          : setError('Verbinden von Usern fehlgeschlagen');
         return;
       }
+      signIn('google', {
+        callbackUrl: router.query.callbackUrl?.toString() ?? '/',
+      });
     },
-    [session?.user.id]
+    [router.query.callbackUrl]
   );
 
   return (

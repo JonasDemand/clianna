@@ -34,6 +34,9 @@ export class User {
     });
     return user.id;
   }
+  public async GetCurrent() {
+    return await prisma.user.findUniqueOrThrow({ where: { id: this.UserId } });
+  }
   public async GetAll() {
     return await prisma.user.findMany();
   }
@@ -52,6 +55,8 @@ export class User {
         password: hashedPassword,
         email: user.email,
         salt: salt,
+        googleId: user.googleId,
+        refreshToken: user.refreshToken,
         cliannaFolderId: user.cliannaFolderId,
       },
     });
@@ -69,20 +74,27 @@ export class User {
     return true;
   }
   public async MigrateFromId(id: string) {
-    const currentUser = await prisma.user.findUniqueOrThrow({
-      where: { id: this.UserId },
-    });
+    const currentUser = await this.GetCurrent();
     const customers = await DbRepo.Instance.Customer.GetAll(false);
     const orders = await DbRepo.Instance.Order.GetAll(false);
+
     await prisma.user.update({
       where: { id },
       data: {
-        googleId: currentUser.googleId,
-        refreshToken: currentUser.refreshToken,
         Customer: { connect: customers.map((x) => ({ id: x.id })) },
         Order: { connect: orders.map((x) => ({ id: x.id })) },
-        //TODO: Add documents
       },
     });
+
+    await this.Delete();
+    const newUserRepo = new User(id);
+    newUserRepo.Update({
+      googleId: currentUser.googleId,
+      refreshToken: currentUser.refreshToken,
+      cliannaFolderId: currentUser.cliannaFolderId,
+    });
+  }
+  public async Delete() {
+    await prisma.user.delete({ where: { id: this.UserId } });
   }
 }

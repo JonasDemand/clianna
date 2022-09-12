@@ -41,7 +41,6 @@ export const withMiddleware = (...middlewares: Middleware[]) => {
         }
       }
     }
-
     for (let index = 0; index < middlewares.length; index++) {
       const middleware = middlewares[index];
       const nextMiddleware = middlewares[index + 1];

@@ -14,4 +14,4 @@ export interface IValidateCredentialsRequest {
 }
 
 export interface IUpdateUserRequest
-  extends Omit<Partial<User>, 'id' | 'salt' | 'googleId' | 'refreshToken'> {}
+  extends Omit<Partial<User>, 'id' | 'salt'> {}

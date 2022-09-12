@@ -42,11 +42,7 @@ const SignInPage: FC = () => {
 
   return (
     <AuthLayout title="Anmeldung" icon={<LockOutlined />}>
-      <CredentialsForm
-        showError={setError}
-        onLogin={onLogin}
-        initialEmail={router.query.email?.toString()}
-      />
+      <CredentialsForm showError={setError} onLogin={onLogin} />
       <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
         <GoogleButton
           className="GoogleButton"

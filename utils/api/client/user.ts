@@ -1,10 +1,12 @@
 import {
   ICredentailsRequest,
-  IUpdateUserRequest,
   IValidationResponse,
 } from '@customTypes/messages/user';
 
+import { createClientFunction } from './helpers';
+
 export class User {
+  public constructor() {}
   public async CreateCredentials(request: ICredentailsRequest) {
     const res = await fetch(`/api/user/credentials`, {
       method: 'POST',
@@ -35,14 +37,18 @@ export class User {
     }
     return (await res.json()) as IValidationResponse;
   }
-  public async Update(request: IUpdateUserRequest) {
+  public async Update(request: ICredentailsRequest) {
     const res = await fetch(`/api/user`, {
       method: 'PUT',
       body: JSON.stringify(request),
       headers: { 'content-type': 'application/json' },
     });
     if (!res.ok) {
-      throw 'Failed to validate email';
+      throw { status: res.status, body: res.body };
     }
   }
+  public Connect = createClientFunction<ICredentailsRequest, void, string>(
+    '/api/user/connect',
+    'POST'
+  );
 }

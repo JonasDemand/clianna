@@ -59,9 +59,9 @@ const LoginConfiguration: FC = () => {
   const onClickGoogleButton = useCallback(
     () =>
       signIn('google', {
-        callbackUrl: `${router.basePath}/auth/link?email=${session?.user.email}`,
+        callbackUrl: `${router.basePath}/auth/link?email=${session?.user.email}&callbackUrl=${router.basePath}${router.asPath}`,
       }),
-    [router.basePath, session?.user.email]
+    [router.asPath, router.basePath, session?.user.email]
   );
 
   const onSubmit = useCallback(
@@ -121,8 +121,9 @@ const LoginConfiguration: FC = () => {
       <Grid item xs={6}>
         <Box sx={{ mt: -1 }}>
           <PasswordForm
-            showOldPassword={session?.user.credentials}
             showRepeatPassword
+            required={false}
+            showOldPassword={session?.user.credentials}
             showValidation={showValidation}
             setShowValidation={setShowValidation}
             repeatError={repeatError}
