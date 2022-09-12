@@ -1,41 +1,21 @@
 import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IUpsertRequest } from '@customTypes/messages/order';
+
+import { createClientFunction } from './helpers';
 
 export class Order {
-  public static async Create(
-    order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
-  ): Promise<IOrderWithCustomer> {
-    const res = await fetch('/api/order', {
-      method: 'POST',
-      body: JSON.stringify(order),
-      headers: { 'content-type': 'application/json' },
-    });
-    if (!res.ok) {
-      throw 'Failed to create order';
-    }
-    return (await res.json()) as IOrderWithCustomer;
-  }
+  public static Create = createClientFunction<
+    IUpsertRequest,
+    IOrderWithCustomer,
+    string
+  >('/api/order', 'POST');
 
-  public static async Update(
-    id: string,
-    order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
-  ): Promise<IOrderWithCustomer> {
-    const res = await fetch(`/api/order/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(order),
-      headers: { 'content-type': 'application/json' },
-    });
-    if (!res.ok) {
-      throw 'Failed to update order';
-    }
-    return (await res.json()) as IOrderWithCustomer;
-  }
+  public static Update = (id: string, request: IUpsertRequest) =>
+    createClientFunction<IUpsertRequest, IOrderWithCustomer, string>(
+      `/api/order/${id}`,
+      'PUT'
+    )(request);
 
-  public static async Delete(id: string): Promise<void> {
-    const res = await fetch(`/api/order/${id}`, {
-      method: 'DELETE',
-    });
-    if (!res.ok) {
-      throw 'Failed to delete order';
-    }
-  }
+  public static Delete = (id: string) =>
+    createClientFunction<void, void, string>(`/api/order/${id}`, 'DELETE')();
 }

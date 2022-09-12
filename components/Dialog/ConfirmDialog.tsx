@@ -31,7 +31,9 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
         {title}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText align="center">{children}</DialogContentText>
+        <DialogContentText align="center" component="div">
+          {children}
+        </DialogContentText>
       </DialogContent>
       <DialogActions>
         <MuiButton variant="text" color="error" onClick={onClose}>

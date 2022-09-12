@@ -8,8 +8,3 @@ export const getCustomerLabel = (
         customer.firstname ? ` ${customer.firstname}` : ''
       }${customer.lastname ? ` ${customer.lastname}` : ''}`
     : '';
-
-export const convertToICustomer = (customer: ICustomerWithOrders) => {
-  const { id: _id, orders: _orders, ...newCust } = customer;
-  return newCust as ICustomer;
-};

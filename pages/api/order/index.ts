@@ -1,4 +1,4 @@
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IUpsertRequest } from '@customTypes/messages/order';
 import {
   withAuth,
   withBody,
@@ -15,7 +15,7 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id: _, ...body } = req.body as IOrderWithCustomer;
+  const body = req.body as IUpsertRequest;
 
   const order = await DbRepo.Instance.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');

@@ -12,12 +12,12 @@ export class User {
     void,
     string
   >('/api/user/credentials', 'POST');
-  public static ValidateEmail = async (email: string) =>
+  public static ValidateEmail = (email: string) =>
     createClientFunction<void, IValidationResponse, string>(
       `/api/user/validate/email/${email}`,
       'GET'
     )();
-  public static ValidateCredentials = async (password: string) =>
+  public static ValidateCredentials = (password: string) =>
     createClientFunction<void, IValidationResponse, string>(
       `/api/user/validate/credentials/${password}`,
       'GET'

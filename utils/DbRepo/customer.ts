@@ -1,4 +1,5 @@
 import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
+import { IUpsertRequest } from '@customTypes/messages/customer';
 import { PrismaClient } from '@prisma/client';
 
 import { Order } from './order';
@@ -32,7 +33,7 @@ export class Customer {
     includeOrders: IO
   ): Promise<IO extends true ? ICustomerWithOrders : ICustomer> {
     return await prisma.customer.create({
-      data: { ...customer, user: { connect: { id: this.UserId } } },
+      data: { ...customer, orders: {}, user: { connect: { id: this.UserId } } },
       select: {
         ...Customer.DefaultSelect,
         orders: includeOrders ? { select: Order.DefaultSelect } : false,
@@ -77,7 +78,7 @@ export class Customer {
   }
   public async Update<IO extends boolean>(
     id: string,
-    customer: Omit<ICustomer, 'id'>,
+    customer: IUpsertRequest,
     includeOrders: IO
   ): Promise<IO extends true ? ICustomerWithOrders : ICustomer> {
     await prisma.customer.findFirstOrThrow({
@@ -90,7 +91,7 @@ export class Customer {
         ...Customer.DefaultSelect,
         orders: includeOrders ? { select: Order.DefaultSelect } : false,
       },
-      data: { ...customer, user: { connect: { id: this.UserId } } },
+      data: { ...customer, orders: {}, user: { connect: { id: this.UserId } } },
     });
   }
   public async Delete(id: string): Promise<void> {

@@ -1,4 +1,4 @@
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IUpsertRequest } from '@customTypes/messages/order';
 import {
   withAuth,
   withBody,
@@ -20,7 +20,7 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const { id: _, ...body } = req.body as IOrderWithCustomer;
+  const body = req.body as IUpsertRequest;
 
   const customer = await DbRepo.Instance.Order.Update(
     id!.toString(),

@@ -53,29 +53,37 @@ const OrdersPage: FC = () => {
     }
     let create = !selected.id;
     let newOrders = [...orders];
-    let newOrder = selected;
-    try {
-      if (create) {
-        newOrder = await ApiClient.Order.Create(selected);
-        newOrders.push(newOrder);
-      } else {
-        newOrder = await ApiClient.Order.Update(selected.id!, selected);
-        const index = newOrders.findIndex((order) => order.id === newOrder.id);
-        newOrders[index] = newOrder;
+    if (create) {
+      const createResponse = await ApiClient.Order.Create(selected);
+      if (createResponse.error || !createResponse.response) {
+        enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
+          variant: 'error',
+        });
+        return;
       }
-      setOrders(newOrders);
-      setSelected(null);
-      enqueueSnackbar(
-        `Erfolgreich Auftrag ${create ? 'erstellt' : 'aktualisiert'}`,
-        { variant: 'success' }
+      newOrders.push(createResponse.response);
+    } else {
+      const updateResponse = await ApiClient.Order.Update(
+        selected.id!,
+        selected
       );
-    } catch {
-      enqueueSnackbar(
-        `${create ? 'Erstellen' : 'Aktualisieren'} von Auftrag
-          fehlgeschlagen`,
-        { variant: 'error' }
+      if (updateResponse.error || !updateResponse.response) {
+        enqueueSnackbar('Aktualisieren von Auftrag fehlgeschlagen', {
+          variant: 'error',
+        });
+        return;
+      }
+      const index = newOrders.findIndex(
+        (order) => order.id === updateResponse.response!.id
       );
+      newOrders[index] = updateResponse.response;
     }
+    setOrders(newOrders);
+    setSelected(null);
+    enqueueSnackbar(
+      `Erfolgreich Auftrag ${create ? 'erstellt' : 'aktualisiert'}`,
+      { variant: 'success' }
+    );
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
@@ -85,19 +93,18 @@ const OrdersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;
-    try {
-      setOrderToDelete(null);
-      setShowBackdrop(true);
-      await ApiClient.Order.Delete(orderToDelete.id);
-      setOrders(orders.filter((order) => order.id !== orderToDelete.id));
-      enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
-    } catch {
+    setOrderToDelete(null);
+    setShowBackdrop(true);
+    const deleteReponse = await ApiClient.Order.Delete(orderToDelete.id);
+    setShowBackdrop(false);
+    if (deleteReponse.error) {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',
       });
-    } finally {
-      setShowBackdrop(false);
+      return;
     }
+    enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
+    setOrders(orders.filter((order) => order.id !== orderToDelete.id));
   }, [enqueueSnackbar, orderToDelete, orders, setOrders, setShowBackdrop]);
 
   return (

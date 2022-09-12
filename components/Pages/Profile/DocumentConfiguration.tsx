@@ -35,18 +35,17 @@ const DocumentConfiguration: FC = () => {
   const onClickCreateRootfolder = useCallback(
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
-      try {
-        setRootfolderLoading(true);
-        await ApiClient.Document.CreateRootFolder();
-        await refreshSession();
-        enqueueSnackbar('Erfolgreich Ordner erstellt', { variant: 'success' });
-      } catch {
+      setRootfolderLoading(true);
+      const createFolderResponse = await ApiClient.Document.CreateRootFolder();
+      await refreshSession();
+      setRootfolderLoading(false);
+      if (createFolderResponse.error) {
         enqueueSnackbar('Erstellen von Ordner fehlgeschlagen', {
           variant: 'error',
         });
-      } finally {
-        setRootfolderLoading(false);
+        return;
       }
+      enqueueSnackbar('Erfolgreich Ordner erstellt', { variant: 'success' });
     },
     [enqueueSnackbar]
   );

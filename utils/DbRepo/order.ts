@@ -1,4 +1,5 @@
 import { IOrder, IOrderWithCustomer } from '@customTypes/database/order';
+import { IUpsertRequest } from '@customTypes/messages/order';
 import { PrismaClient } from '@prisma/client';
 
 import { Customer } from './customer';
@@ -31,7 +32,7 @@ export class Order {
   }
 
   public async Create<IC extends boolean>(
-    order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>,
+    order: IUpsertRequest,
     includeCustomer: IC
   ): Promise<IC extends true ? IOrderWithCustomer : IOrder> {
     return await prisma.order.create({
@@ -76,7 +77,7 @@ export class Order {
   }
   public async Update<IC extends boolean>(
     id: string,
-    order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>,
+    order: IUpsertRequest,
     includeCustomer: IC
   ): Promise<IC extends true ? IOrderWithCustomer : IOrder> {
     await prisma.order.findFirstOrThrow({

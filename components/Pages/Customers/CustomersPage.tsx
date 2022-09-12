@@ -7,7 +7,7 @@ import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithOrders } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
-import { convertToICustomer, getCustomerLabel } from '@utils/customer';
+import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useContext, useState } from 'react';
@@ -39,19 +39,20 @@ const CustomersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
-    try {
-      setCustomerToDelete(null);
-      setShowBackdrop(true);
-      await ApiClient.Customer.Delete(customerToDelete.id);
-      setCustomers(
-        customers.filter((customer) => customer.id !== customerToDelete.id)
-      );
-      enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
-    } catch {
-      enqueueSnackbar('Löschen von Kunde fehlgeschlagen', { variant: 'error' });
-    } finally {
-      setShowBackdrop(false);
+    setCustomerToDelete(null);
+    setShowBackdrop(true);
+    const deleteResponse = await ApiClient.Customer.Delete(customerToDelete.id);
+    setShowBackdrop(false);
+    if (deleteResponse.error) {
+      enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
+        variant: 'error',
+      });
+      return;
     }
+    enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
+    setCustomers(
+      customers.filter((customer) => customer.id !== customerToDelete.id)
+    );
   }, [
     customerToDelete,
     customers,
@@ -75,34 +76,38 @@ const CustomersPage: FC = () => {
     }
     let create = !selected.id;
     let newCustomers = [...customers];
-    let newCust = selected;
-    try {
-      if (create) {
-        newCust = await ApiClient.Customer.Create(convertToICustomer(selected));
-        newCustomers.push(newCust);
-      } else {
-        newCust = await ApiClient.Customer.Update(
-          selected.id!,
-          convertToICustomer(selected)
-        );
-        const index = newCustomers.findIndex(
-          (customer) => customer.id === newCust.id
-        );
-        newCustomers[index] = newCust;
+    if (create) {
+      const createResponse = await ApiClient.Customer.Create(selected);
+      if (createResponse.error || !createResponse.response) {
+        enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
+          variant: 'error',
+        });
+        return;
       }
-      setCustomers(newCustomers);
-      setSelected(null);
-      enqueueSnackbar(
-        `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
-        { variant: 'success' }
+      console.log(createResponse, newCustomers);
+      newCustomers.push(createResponse.response);
+    } else {
+      const updateResponse = await ApiClient.Customer.Update(
+        selected.id!,
+        selected
       );
-    } catch {
-      enqueueSnackbar(
-        `${create ? 'Erstellen' : 'Aktualisieren'} von Kunde
-          fehlgeschlagen`,
-        { variant: 'error' }
+      if (updateResponse.error || !updateResponse.response) {
+        enqueueSnackbar('Aktualisieren von Kunde fehlgeschlagen', {
+          variant: 'error',
+        });
+        return;
+      }
+      const index = newCustomers.findIndex(
+        (customer) => customer.id === updateResponse.response!.id
       );
+      newCustomers[index] = updateResponse.response;
     }
+    setCustomers(newCustomers);
+    setSelected(null);
+    enqueueSnackbar(
+      `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
+      { variant: 'success' }
+    );
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
   const onCopyRow = useCallback(

@@ -69,32 +69,31 @@ const LoginConfiguration: FC = () => {
   const onSubmit = useCallback(
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
-      try {
-        setLoading(true);
+      setLoading(true);
 
-        const passwordValid = await validatePassword();
-        if (!passwordValid) return;
-        setShowValidation(false);
+      const passwordValid = await validatePassword();
+      if (!passwordValid) return;
+      setShowValidation(false);
 
-        await ApiClient.User.Update({
-          email,
-          password: newPassword ?? undefined,
-        });
-        await refreshSession();
-        enqueueSnackbar('Erfolgreich Profil aktualisiert', {
-          variant: 'success',
-        });
-        setOldPassword('');
-        setNewPassword('');
-        setRepeatPassword('');
-      } catch (err) {
+      const updateResponse = await ApiClient.User.Update({
+        email,
+        password: newPassword ?? undefined,
+      });
+      await refreshSession();
+      setLoading(false);
+      if (updateResponse.error) {
         enqueueSnackbar('Aktualisieren von Profil fehlgeschlagen', {
           variant: 'error',
         });
-        throw err;
-      } finally {
-        setLoading(false);
+        return;
       }
+      enqueueSnackbar('Erfolgreich Profil aktualisiert', {
+        variant: 'success',
+      });
+
+      setOldPassword('');
+      setNewPassword('');
+      setRepeatPassword('');
     },
     [email, enqueueSnackbar, newPassword, validatePassword]
   );

@@ -3,6 +3,6 @@ export interface IResponse<RES, ERR> {
   error?: {
     status: number;
     statusText: string;
-    body: ERR | string;
+    body?: ERR;
   };
 }

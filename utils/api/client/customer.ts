@@ -1,41 +1,21 @@
-import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { IUpsertRequest } from '@customTypes/messages/customer';
+
+import { createClientFunction } from './helpers';
 
 export class Customer {
-  public static async Create(
-    customer: Omit<ICustomer, 'id'>
-  ): Promise<ICustomerWithOrders> {
-    const res = await fetch('/api/customer', {
-      method: 'POST',
-      body: JSON.stringify(customer),
-      headers: { 'content-type': 'application/json' },
-    });
-    if (!res.ok) {
-      throw 'Failed to create customer';
-    }
-    return (await res.json()) as ICustomerWithOrders;
-  }
+  public static Create = createClientFunction<
+    IUpsertRequest,
+    ICustomerWithOrders,
+    string
+  >('/api/customer', 'POST');
 
-  public static async Update(
-    id: string,
-    customer: Omit<ICustomer, 'id'>
-  ): Promise<ICustomerWithOrders> {
-    const res = await fetch(`/api/customer/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(customer),
-      headers: { 'content-type': 'application/json' },
-    });
-    if (!res.ok) {
-      throw 'Failed to update customer';
-    }
-    return (await res.json()) as ICustomerWithOrders;
-  }
+  public static Update = (id: string, request: IUpsertRequest) =>
+    createClientFunction<IUpsertRequest, ICustomerWithOrders, string>(
+      `/api/customer/${id}`,
+      'PUT'
+    )(request);
 
-  public static async Delete(id: string): Promise<void> {
-    const res = await fetch(`/api/customer/${id}`, {
-      method: 'DELETE',
-    });
-    if (!res.ok) {
-      throw 'Failed to delete customer';
-    }
-  }
+  public static Delete = (id: string) =>
+    createClientFunction<void, void, string>(`/api/customer/${id}`, 'DELETE')();
 }

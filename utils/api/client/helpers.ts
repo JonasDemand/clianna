@@ -8,17 +8,17 @@ export const createClientFunction =
       body: request && JSON.stringify(request),
       headers: request && { 'content-type': 'application/json' },
     });
-    const isJsonResponse =
-      res.headers.get('content-type') === 'application/json';
+    let body: object | undefined;
+    try {
+      body = await res.json();
+    } catch {}
     return {
-      response: isJsonResponse ? ((await res.json()) as RES) : undefined,
+      response: body ? (body as RES) : undefined,
       error: !res.ok
         ? {
             status: res.status,
             statusText: res.statusText,
-            body: isJsonResponse
-              ? ((await res.json()) as ERR)
-              : await res.text(),
+            body: body ? (body as ERR) : undefined,
           }
         : undefined,
     };
