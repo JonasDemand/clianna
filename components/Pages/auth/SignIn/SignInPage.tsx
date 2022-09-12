@@ -29,7 +29,7 @@ const SignInPage: FC = () => {
   const onLogin = useCallback(
     async (email: string, password: string, newAccount: boolean) => {
       if (newAccount)
-        await ApiClient.Instance.User.CreateCredentials({ email, password });
+        await ApiClient.User.CreateCredentials({ email, password });
 
       signIn('credentials', {
         email,

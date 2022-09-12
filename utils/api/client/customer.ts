@@ -1,7 +1,7 @@
 import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
 
 export class Customer {
-  public async Create(
+  public static async Create(
     customer: Omit<ICustomer, 'id'>
   ): Promise<ICustomerWithOrders> {
     const res = await fetch('/api/customer', {
@@ -15,7 +15,7 @@ export class Customer {
     return (await res.json()) as ICustomerWithOrders;
   }
 
-  public async Update(
+  public static async Update(
     id: string,
     customer: Omit<ICustomer, 'id'>
   ): Promise<ICustomerWithOrders> {
@@ -30,7 +30,7 @@ export class Customer {
     return (await res.json()) as ICustomerWithOrders;
   }
 
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     const res = await fetch(`/api/customer/${id}`, {
       method: 'DELETE',
     });

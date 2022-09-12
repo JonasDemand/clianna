@@ -39,10 +39,12 @@ const LoginConfiguration: FC = () => {
     }
     let isValid = true;
     if (session?.user.credentials) {
-      const validateRes = await ApiClient.Instance.User.ValidateCredentials(
+      const validationResponse = await ApiClient.User.ValidateCredentials(
         oldPassword
       );
-      isValid = validateRes.valid;
+      if (validationResponse.error || !validationResponse.response)
+        isValid = false;
+      else isValid = validationResponse.response.valid;
     }
     if (!isValid) {
       setOldPasswordError(true);
@@ -74,7 +76,7 @@ const LoginConfiguration: FC = () => {
         if (!passwordValid) return;
         setShowValidation(false);
 
-        await ApiClient.Instance.User.Update({
+        await ApiClient.User.Update({
           email,
           password: newPassword ?? undefined,
         });

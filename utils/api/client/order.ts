@@ -1,7 +1,7 @@
 import { IOrderWithCustomer } from '@customTypes/database/order';
 
 export class Order {
-  public async Create(
+  public static async Create(
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
   ): Promise<IOrderWithCustomer> {
     const res = await fetch('/api/order', {
@@ -15,7 +15,7 @@ export class Order {
     return (await res.json()) as IOrderWithCustomer;
   }
 
-  public async Update(
+  public static async Update(
     id: string,
     order: Omit<IOrderWithCustomer, 'id' | 'creationDate'>
   ): Promise<IOrderWithCustomer> {
@@ -30,7 +30,7 @@ export class Order {
     return (await res.json()) as IOrderWithCustomer;
   }
 
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     const res = await fetch(`/api/order/${id}`, {
       method: 'DELETE',
     });

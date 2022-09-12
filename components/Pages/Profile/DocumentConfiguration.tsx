@@ -37,7 +37,7 @@ const DocumentConfiguration: FC = () => {
       e.stopPropagation();
       try {
         setRootfolderLoading(true);
-        await ApiClient.Instance.Document.CreateRootFolder();
+        await ApiClient.Document.CreateRootFolder();
         await refreshSession();
         enqueueSnackbar('Erfolgreich Ordner erstellt', { variant: 'success' });
       } catch {

@@ -42,7 +42,7 @@ const CustomersPage: FC = () => {
     try {
       setCustomerToDelete(null);
       setShowBackdrop(true);
-      await ApiClient.Instance.Customer.Delete(customerToDelete.id);
+      await ApiClient.Customer.Delete(customerToDelete.id);
       setCustomers(
         customers.filter((customer) => customer.id !== customerToDelete.id)
       );
@@ -78,12 +78,10 @@ const CustomersPage: FC = () => {
     let newCust = selected;
     try {
       if (create) {
-        newCust = await ApiClient.Instance.Customer.Create(
-          convertToICustomer(selected)
-        );
+        newCust = await ApiClient.Customer.Create(convertToICustomer(selected));
         newCustomers.push(newCust);
       } else {
-        newCust = await ApiClient.Instance.Customer.Update(
+        newCust = await ApiClient.Customer.Update(
           selected.id!,
           convertToICustomer(selected)
         );

@@ -16,7 +16,7 @@ const LinkPage: FC = () => {
 
   const onLogin = useCallback(
     async (email: string, password: string) => {
-      const res = await ApiClient.Instance.User.Connect({ email, password });
+      const res = await ApiClient.User.Connect({ email, password });
       if (res.error) {
         res.error.status === 403
           ? setError('Login fehlgeschlagen')

@@ -41,29 +41,27 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      try {
-        setLoading(true);
-        if (!showPassword) {
-          const validationResponse =
-            await ApiClient.Instance.User.ValidateEmail(email);
-          setShowPassword(true);
-          setNewAccount(validationResponse.valid);
-          setLoading(false);
-          return;
-        }
-
-        setShowPasswordValidation(true);
-        if (newAccount && password !== repeatPassword) {
-          setRepeatError(true);
-          return;
-        }
-
-        onLogin(email, password, newAccount);
-      } catch {
-        showError('Unbekannter Fehler');
-      } finally {
+      setLoading(true);
+      if (!showPassword) {
+        const validationResponse = await ApiClient.User.ValidateEmail(email);
         setLoading(false);
+        if (validationResponse.error || !validationResponse.response) {
+          showError('Unbekannter Fehler');
+          return;
+        }
+        setShowPassword(true);
+        setNewAccount(validationResponse.response.valid);
+        setLoading(false);
+        return;
       }
+
+      setShowPasswordValidation(true);
+      if (newAccount && password !== repeatPassword) {
+        setRepeatError(true);
+        return;
+      }
+
+      onLogin(email, password, newAccount);
     },
     [
       email,

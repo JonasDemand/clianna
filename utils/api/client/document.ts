@@ -1,7 +1,7 @@
 import { ICreateRootfolderResponse } from '@customTypes/messages/document';
 
 export class Document {
-  public async CreateRootFolder(): Promise<ICreateRootfolderResponse> {
+  public static async CreateRootFolder(): Promise<ICreateRootfolderResponse> {
     const res = await fetch(`/api/document/rootfolder`, {
       method: 'POST',
     });

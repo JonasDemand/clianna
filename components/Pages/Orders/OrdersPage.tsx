@@ -56,13 +56,10 @@ const OrdersPage: FC = () => {
     let newOrder = selected;
     try {
       if (create) {
-        newOrder = await ApiClient.Instance.Order.Create(selected);
+        newOrder = await ApiClient.Order.Create(selected);
         newOrders.push(newOrder);
       } else {
-        newOrder = await ApiClient.Instance.Order.Update(
-          selected.id!,
-          selected
-        );
+        newOrder = await ApiClient.Order.Update(selected.id!, selected);
         const index = newOrders.findIndex((order) => order.id === newOrder.id);
         newOrders[index] = newOrder;
       }
@@ -91,7 +88,7 @@ const OrdersPage: FC = () => {
     try {
       setOrderToDelete(null);
       setShowBackdrop(true);
-      await ApiClient.Instance.Order.Delete(orderToDelete.id);
+      await ApiClient.Order.Delete(orderToDelete.id);
       setOrders(orders.filter((order) => order.id !== orderToDelete.id));
       enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     } catch {

@@ -4,6 +4,10 @@ export interface ICredentailsRequest {
   email: string;
   password: string;
 }
+export interface IUpdateRequest extends Partial<ICredentailsRequest> {
+  googleId?: string;
+  refreshToken?: string;
+}
 
 export interface IValidationResponse {
   valid: boolean;
