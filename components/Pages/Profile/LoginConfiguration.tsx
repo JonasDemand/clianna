@@ -66,9 +66,8 @@ const LoginConfiguration: FC = () => {
         oldPassword,
         password: newPassword,
       });
-      await refreshSession();
-      setLoading(false);
       if (updateResponse.error) {
+        setLoading(false);
         if (updateResponse.error.status === 403) {
           setOldPasswordError(true);
           enqueueSnackbar('Altes Passwort ist nicht korrekt', {
@@ -81,6 +80,8 @@ const LoginConfiguration: FC = () => {
         });
         return;
       }
+      await refreshSession();
+      setLoading(false);
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',
       });
