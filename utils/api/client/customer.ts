@@ -1,4 +1,4 @@
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { IUpsertRequest } from '@customTypes/messages/customer';
 
 import { createClientFunction } from './helpers';
@@ -6,12 +6,12 @@ import { createClientFunction } from './helpers';
 export class Customer {
   public static Create = createClientFunction<
     IUpsertRequest,
-    ICustomerWithOrders,
+    ICustomerWithDependencies,
     string
   >('/api/customer', 'POST');
 
   public static Update = (id: string, request: IUpsertRequest) =>
-    createClientFunction<IUpsertRequest, ICustomerWithOrders, string>(
+    createClientFunction<IUpsertRequest, ICustomerWithDependencies, string>(
       `/api/customer/${id}`,
       'PUT'
     )(request);

@@ -3,7 +3,7 @@ import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -31,7 +31,7 @@ const OrdersTableHeader: FC = () => {
     [setSearchText]
   );
   const onChangeColumns = useCallback(
-    (_: unknown, value: GridColDef<IOrderWithCustomer>[]) =>
+    (_: unknown, value: GridColDef<IOrderWithDependencies>[]) =>
       setActiveVariableColumns(value),
     [setActiveVariableColumns]
   );
@@ -42,7 +42,7 @@ const OrdersTableHeader: FC = () => {
   );
 
   const getOptionLabelColumns = useCallback(
-    (option: GridColDef<IOrderWithCustomer>) => option.headerName ?? '',
+    (option: GridColDef<IOrderWithDependencies>) => option.headerName ?? '',
     []
   );
 
@@ -69,7 +69,7 @@ const OrdersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<IOrderWithCustomer>, true>
+          <Autocomplete<GridColDef<IOrderWithDependencies>, true>
             openOnFocus
             multiple
             options={variableColumns}

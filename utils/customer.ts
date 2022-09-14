@@ -1,7 +1,10 @@
-import { ICustomer, ICustomerWithOrders } from '@customTypes/database/customer';
+import {
+  ICustomer,
+  ICustomerWithDependencies,
+} from '@customTypes/database/customer';
 
 export const getCustomerLabel = (
-  customer: ICustomerWithOrders | ICustomer | null | undefined
+  customer: ICustomerWithDependencies | ICustomer | null | undefined
 ) =>
   customer
     ? `${customer.id}${customer.firstname || customer.lastname ? ' -' : ''}${

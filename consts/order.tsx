@@ -1,4 +1,4 @@
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -10,7 +10,7 @@ import {
 } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
 
-export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
+export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
   { field: 'id', headerName: 'Auftrags-ID', flex: 1 },
   {
     field: 'customer',
@@ -46,7 +46,7 @@ export const variableColumns: GridColDef<IOrderWithCustomer>[] = [
     valueGetter: ({ row }) => (row.taxes ? OrderTaxLabels.get(row.taxes) : ''),
   },
 ];
-export const columns: GridColDef<IOrderWithCustomer>[] = [
+export const columns: GridColDef<IOrderWithDependencies>[] = [
   {
     field: 'pending',
     headerName: 'Ausstehend',
@@ -56,7 +56,7 @@ export const columns: GridColDef<IOrderWithCustomer>[] = [
 ];
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
-export const defaultOrder = (): IOrderWithCustomer => ({
+export const defaultOrder = (): IOrderWithDependencies => ({
   id: undefined,
   creationDate: undefined,
   article: null,

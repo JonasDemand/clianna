@@ -1,3 +1,4 @@
+import DocumentForm from '@components/Form/DocumentForm';
 import { Grid } from '@mui/material';
 import { FC } from 'react';
 
@@ -15,6 +16,9 @@ const CustomerForm: FC = () => (
     </Grid>
     <Grid item>
       <CustomerAdress />
+    </Grid>
+    <Grid item>
+      <DocumentForm />
     </Grid>
   </Grid>
 );

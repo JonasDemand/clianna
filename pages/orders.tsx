@@ -3,14 +3,14 @@ import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import OrdersPage from '@components/Pages/Orders/OrdersPage';
 import OrderProvider from '@context/OrderContext';
 import { ICustomer } from '@customTypes/database/customer';
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 
 type OrdersProps = {
   customers: ICustomer[];
-  orders: IOrderWithCustomer[];
+  orders: IOrderWithDependencies[];
 };
 
 const Orders: NextPage<OrdersProps> = ({ orders, customers }) => {

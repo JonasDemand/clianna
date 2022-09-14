@@ -4,7 +4,7 @@ import TablePage from '@components/Table/TablePage';
 import { BackdropContext } from '@context/BackdropContext';
 import { OrderContext } from '@context/OrderContext';
 import { BackdropContextType } from '@customTypes/backdrop';
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
@@ -31,9 +31,8 @@ const OrdersPage: FC = () => {
     searchText,
   } = useContext(OrderContext) as OrderContextType;
 
-  const [orderToDelete, setOrderToDelete] = useState<IOrderWithCustomer | null>(
-    null
-  );
+  const [orderToDelete, setOrderToDelete] =
+    useState<IOrderWithDependencies | null>(null);
 
   const onCloseOverlay = useCallback(() => setSelected(null), [setSelected]);
   const onCloseDialog = useCallback(() => setOrderToDelete(null), []);
@@ -87,7 +86,7 @@ const OrdersPage: FC = () => {
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
-    (order: IOrderWithCustomer) => setSelected({ ...order, id: undefined }),
+    (order: IOrderWithDependencies) => setSelected({ ...order, id: undefined }),
     [setSelected]
   );
 
@@ -113,7 +112,7 @@ const OrdersPage: FC = () => {
         height: 1,
       }}
     >
-      <TablePage<IOrderWithCustomer>
+      <TablePage<IOrderWithDependencies>
         header={<OrdersTableHeader />}
         rows={filteredOrders}
         columns={activeColumns}

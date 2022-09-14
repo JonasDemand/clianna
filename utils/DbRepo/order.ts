@@ -1,8 +1,9 @@
-import { IOrder, IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrder, IOrderWithDependencies } from '@customTypes/database/order';
 import { IUpsertRequest } from '@customTypes/messages/order';
 import { PrismaClient } from '@prisma/client';
 
 import { Customer } from './customer';
+import { Document } from './document';
 
 const prisma = new PrismaClient();
 
@@ -31,10 +32,18 @@ export class Order {
     this.UserId = userId;
   }
 
-  public async Create<IC extends boolean>(
+  public async Create<ID extends boolean>(
     order: IUpsertRequest,
-    includeCustomer: IC
-  ): Promise<IC extends true ? IOrderWithCustomer : IOrder> {
+    includeDependencies: ID
+  ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
+    if (order.customer?.id)
+      await prisma.order.findFirstOrThrow({
+        where: {
+          AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
+        },
+        select: null,
+      });
+
     return await prisma.order.create({
       data: {
         ...order,
@@ -46,40 +55,55 @@ export class Order {
       },
       select: {
         ...Order.DefaultSelect,
-        customer: includeCustomer ? { select: Customer.DefaultSelect } : false,
+        customer: includeDependencies
+          ? { select: Customer.DefaultSelect }
+          : false,
+        documents: includeDependencies
+          ? { select: Document.DefaultSelect }
+          : false,
       },
     });
   }
-  public async GetAll<IC extends boolean>(
-    includeCustomer: IC
-  ): Promise<IC extends true ? IOrderWithCustomer[] : IOrder[]> {
+  public async GetAll<ID extends boolean>(
+    includeDependencies: ID
+  ): Promise<ID extends true ? IOrderWithDependencies[] : IOrder[]> {
     return await prisma.order.findMany({
       where: {
         user: { id: this.UserId },
       },
       select: {
         ...Order.DefaultSelect,
-        customer: includeCustomer ? { select: Customer.DefaultSelect } : false,
+        customer: includeDependencies
+          ? { select: Customer.DefaultSelect }
+          : false,
+        documents: includeDependencies
+          ? { select: Document.DefaultSelect }
+          : false,
       },
     });
   }
-  public async GetSingle<IC extends boolean>(
+  public async GetSingle<ID extends boolean>(
     id: string,
-    includeCustomer: IC
-  ): Promise<(IC extends true ? IOrderWithCustomer : IOrder) | null> {
+    includeDependencies: ID
+  ): Promise<(ID extends true ? IOrderWithDependencies : IOrder) | null> {
     return await prisma.order.findFirst({
       where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: {
         ...Order.DefaultSelect,
-        customer: includeCustomer ? { select: Customer.DefaultSelect } : false,
+        customer: includeDependencies
+          ? { select: Customer.DefaultSelect }
+          : false,
+        documents: includeDependencies
+          ? { select: Document.DefaultSelect }
+          : false,
       },
     });
   }
-  public async Update<IC extends boolean>(
+  public async Update<ID extends boolean>(
     id: string,
     order: IUpsertRequest,
-    includeCustomer: IC
-  ): Promise<IC extends true ? IOrderWithCustomer : IOrder> {
+    includeDependencies: ID
+  ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
     await prisma.order.findFirstOrThrow({
       where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: null,
@@ -92,11 +116,17 @@ export class Order {
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
+        documents: {},
         user: { connect: { id: this.UserId } },
       },
       select: {
         ...Order.DefaultSelect,
-        customer: includeCustomer ? { select: Customer.DefaultSelect } : false,
+        customer: includeDependencies
+          ? { select: Customer.DefaultSelect }
+          : false,
+        documents: includeDependencies
+          ? { select: Document.DefaultSelect }
+          : false,
       },
     });
   }

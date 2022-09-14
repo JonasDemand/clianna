@@ -1,3 +1,3 @@
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 
-export interface IUpsertRequest extends Omit<ICustomerWithOrders, 'id'> {}
+export interface IUpsertRequest extends Omit<ICustomerWithDependencies, 'id'> {}

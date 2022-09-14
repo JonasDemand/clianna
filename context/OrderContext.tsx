@@ -1,6 +1,6 @@
 import { columns, defaultVariableColumns } from '@consts/order';
 import { ICustomer } from '@customTypes/database/customer';
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import {
   createContext,
@@ -17,7 +17,7 @@ export const OrderContext = createContext<OrderContextType | null>(null);
 type OrderContextProps = {
   children: ReactNode;
   initialCustomers: ICustomer[];
-  initialOrders: IOrderWithCustomer[];
+  initialOrders: IOrderWithDependencies[];
 };
 
 const OrderProvider: FC<OrderContextProps> = ({
@@ -25,14 +25,14 @@ const OrderProvider: FC<OrderContextProps> = ({
   initialCustomers,
   initialOrders,
 }) => {
-  const [orders, setOrders] = useState<IOrderWithCustomer[]>([]);
+  const [orders, setOrders] = useState<IOrderWithDependencies[]>([]);
   const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<IOrderWithCustomer | null>(null);
+  const [selected, setSelected] = useState<IOrderWithDependencies | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -66,9 +66,9 @@ const OrderProvider: FC<OrderContextProps> = ({
   }, []);
 
   const updateSelected = useCallback(
-    <T extends keyof IOrderWithCustomer>(
+    <T extends keyof IOrderWithDependencies>(
       property: T,
-      value: IOrderWithCustomer[T]
+      value: IOrderWithDependencies[T]
     ) => {
       if (!selected) return;
       let newSelected = { ...selected };

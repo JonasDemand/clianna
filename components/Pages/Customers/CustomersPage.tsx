@@ -4,7 +4,7 @@ import TablePage from '@components/Table/TablePage';
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { getCustomerLabel } from '@utils/customer';
@@ -32,7 +32,7 @@ const CustomersPage: FC = () => {
   } = useContext(CustomerContext) as CustomerContextType;
 
   const [customerToDelete, setCustomerToDelete] =
-    useState<ICustomerWithOrders | null>(null);
+    useState<ICustomerWithDependencies | null>(null);
 
   const onCloseOverlay = useCallback(() => setSelected(null), [setSelected]);
   const onCloseDialog = useCallback(() => setCustomerToDelete(null), []);
@@ -110,7 +110,7 @@ const CustomersPage: FC = () => {
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
   const onCopyRow = useCallback(
-    (customer: ICustomerWithOrders) =>
+    (customer: ICustomerWithDependencies) =>
       setSelected({ ...customer, id: undefined, orders: [] }),
     [setSelected]
   );
@@ -121,7 +121,7 @@ const CustomersPage: FC = () => {
         height: 1,
       }}
     >
-      <TablePage<ICustomerWithOrders>
+      <TablePage<ICustomerWithDependencies>
         header={<CustomersTableHeader />}
         rows={filteredCustomers}
         columns={activeColumns}

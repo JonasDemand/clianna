@@ -2,13 +2,13 @@ import AuthenticationWrapper from '@components/Authentication/AuthenticationWrap
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import CustomersPage from '@components/Pages/Customers/CustomersPage';
 import CustomerProvider from '@context/CustomerContext';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 
 type CustomersProps = {
-  customers: ICustomerWithOrders[];
+  customers: ICustomerWithDependencies[];
 };
 
 const Customers: NextPage<CustomersProps> = ({ customers }) => {

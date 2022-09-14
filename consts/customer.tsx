@@ -1,10 +1,10 @@
 import { EShowCustomer } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { IOrder } from '@customTypes/database/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
-export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
+export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
   { field: 'id', headerName: 'Kudnen-ID', flex: 1 },
   { field: 'firstname', headerName: 'Vorname', flex: 1 },
   { field: 'lastname', headerName: 'Nachname', flex: 1 },
@@ -29,7 +29,7 @@ export const variableColumns: GridColDef<ICustomerWithOrders>[] = [
     valueGetter: ({ row }) => row.orders.length,
   },
 ];
-export const columns: GridColDef<ICustomerWithOrders>[] = [
+export const columns: GridColDef<ICustomerWithDependencies>[] = [
   {
     field: 'disabled',
     headerName: 'Aktiv',
@@ -40,7 +40,7 @@ export const columns: GridColDef<ICustomerWithOrders>[] = [
 
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
-export const defaultCustomer = (): ICustomerWithOrders => ({
+export const defaultCustomer = (): ICustomerWithDependencies => ({
   id: undefined,
   firstname: null,
   lastname: null,

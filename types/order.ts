@@ -1,26 +1,26 @@
 import { GridColDef } from '@mui/x-data-grid';
 
 import { ICustomer } from './database/customer';
-import { IOrderWithCustomer } from './database/order';
+import { IOrderWithDependencies } from './database/order';
 
 export type OrderContextType = {
   customers: ICustomer[];
   setCustomers: (customers: ICustomer[]) => void;
-  orders: IOrderWithCustomer[];
-  setOrders: (orders: IOrderWithCustomer[]) => void;
-  filteredOrders: IOrderWithCustomer[];
-  selected: IOrderWithCustomer | null;
-  setSelected: (order: IOrderWithCustomer | null) => void;
-  updateSelected: <T extends keyof IOrderWithCustomer>(
+  orders: IOrderWithDependencies[];
+  setOrders: (orders: IOrderWithDependencies[]) => void;
+  filteredOrders: IOrderWithDependencies[];
+  selected: IOrderWithDependencies | null;
+  setSelected: (order: IOrderWithDependencies | null) => void;
+  updateSelected: <T extends keyof IOrderWithDependencies>(
     property: T,
-    value: IOrderWithCustomer[T]
+    value: IOrderWithDependencies[T]
   ) => void;
   showOrders: EShowOrder;
   setShowOrders: (state: EShowOrder) => void;
-  activeColumns: GridColDef<IOrderWithCustomer>[];
-  activeVariableColumns: GridColDef<IOrderWithCustomer>[];
+  activeColumns: GridColDef<IOrderWithDependencies>[];
+  activeVariableColumns: GridColDef<IOrderWithDependencies>[];
   setActiveVariableColumns: (
-    activeColumns: GridColDef<IOrderWithCustomer>[]
+    activeColumns: GridColDef<IOrderWithDependencies>[]
   ) => void;
   searchText: string;
   setSearchText: (text: string) => void;

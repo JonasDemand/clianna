@@ -1,4 +1,4 @@
-import { IOrderWithCustomer } from '@customTypes/database/order';
+import { IOrderWithDependencies } from '@customTypes/database/order';
 
 export interface IUpsertRequest
-  extends Omit<IOrderWithCustomer, 'id' | 'creationDate'> {}
+  extends Omit<IOrderWithDependencies, 'id' | 'creationDate'> {}

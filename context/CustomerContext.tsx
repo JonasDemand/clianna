@@ -1,5 +1,5 @@
 import { columns, defaultVariableColumns } from '@consts/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import {
   createContext,
   FC,
@@ -16,20 +16,22 @@ export const CustomerContext = createContext<CustomerContextType | null>(null);
 
 type CustomerContextProps = {
   children: ReactNode;
-  initialCustomers: ICustomerWithOrders[];
+  initialCustomers: ICustomerWithDependencies[];
 };
 
 const CustomerProvider: FC<CustomerContextProps> = ({
   children,
   initialCustomers,
 }) => {
-  const [customers, setCustomers] = useState<ICustomerWithOrders[]>([]);
+  const [customers, setCustomers] = useState<ICustomerWithDependencies[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<ICustomerWithOrders | null>(null);
+  const [selected, setSelected] = useState<ICustomerWithDependencies | null>(
+    null
+  );
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -61,9 +63,9 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   useEffect(() => setCustomers(initialCustomers), []);
 
   const updateSelected = useCallback(
-    <T extends keyof ICustomerWithOrders>(
+    <T extends keyof ICustomerWithDependencies>(
       property: T,
-      value: ICustomerWithOrders[T]
+      value: ICustomerWithDependencies[T]
     ) => {
       if (!selected) return;
       let newSelected = { ...selected };

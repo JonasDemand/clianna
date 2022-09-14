@@ -7,7 +7,7 @@ import {
 } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
-import { ICustomerWithOrders } from '@customTypes/database/customer';
+import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -36,7 +36,7 @@ const CustomersTableHeader: FC = () => {
     [setSearchText]
   );
   const onChangeColumns = useCallback(
-    (_: unknown, value: GridColDef<ICustomerWithOrders>[]) =>
+    (_: unknown, value: GridColDef<ICustomerWithDependencies>[]) =>
       setActiveVariableColumns(value),
     [setActiveVariableColumns]
   );
@@ -47,7 +47,7 @@ const CustomersTableHeader: FC = () => {
   );
 
   const getOptionLabelColumns = useCallback(
-    (option: GridColDef<ICustomerWithOrders>) => option.headerName ?? '',
+    (option: GridColDef<ICustomerWithDependencies>) => option.headerName ?? '',
     []
   );
 
@@ -74,7 +74,7 @@ const CustomersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<ICustomerWithOrders>, true>
+          <Autocomplete<GridColDef<ICustomerWithDependencies>, true>
             openOnFocus
             multiple
             options={variableColumns}
