@@ -1,7 +1,6 @@
-import { IUpdateUserRequest } from '@customTypes/messages/user';
+import { IUpdateRequest } from '@customTypes/messages/user';
 import {
   withAuth,
-  withBody,
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
@@ -9,7 +8,14 @@ import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const updateUser = async (req: NextApiRequest, res: NextApiResponse) => {
-  const body = req.body as IUpdateUserRequest;
+  const body = req.body as IUpdateRequest;
+
+  if (body.password) {
+    const isValid = await DbRepo.Instance.User.ValidateCredentials(
+      body.oldPassword ?? ''
+    );
+    if (!isValid) return res.status(403).send('Authentication failed');
+  }
 
   await DbRepo.Instance.User.Update(body);
   return res.status(200).send('User successfully updated');
@@ -23,9 +29,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default withMiddleware(
-  withMethodGuard(['PUT']),
-  withBody(),
-  withAuth,
-  handler
-);
+export default withMiddleware(withMethodGuard(['PUT']), withAuth, handler);

@@ -17,7 +17,10 @@ const createCredentials = async (req: NextApiRequest, res: NextApiResponse) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toLocaleUpperCase()) {
     case 'POST':
-      withMiddleware(withBody(['password']), createCredentials)(req, res);
+      withMiddleware(withBody(['email', 'password']), createCredentials)(
+        req,
+        res
+      );
       break;
   }
 };

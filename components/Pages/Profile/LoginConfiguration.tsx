@@ -30,29 +30,6 @@ const LoginConfiguration: FC = () => {
     session?.user?.email && setEmail(session.user.email);
   }, [session?.user?.email]);
 
-  const validatePassword = useCallback(async () => {
-    if (!oldPassword && !newPassword && !repeatPassword) return true;
-    setShowValidation(true);
-    if (newPassword !== repeatPassword) {
-      setRepeatError(true);
-      return false;
-    }
-    let isValid = true;
-    if (session?.user.credentials) {
-      const validationResponse = await ApiClient.User.ValidateCredentials(
-        oldPassword
-      );
-      if (validationResponse.error || !validationResponse.response)
-        isValid = false;
-      else isValid = validationResponse.response.valid;
-    }
-    if (!isValid) {
-      setOldPasswordError(true);
-      return false;
-    }
-    return true;
-  }, [newPassword, oldPassword, repeatPassword, session?.user.credentials]);
-
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
     []
@@ -69,19 +46,36 @@ const LoginConfiguration: FC = () => {
   const onSubmit = useCallback(
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      if (email === session?.user.email && !oldPassword) {
+        enqueueSnackbar('Keine Daten zum Speichern vorhanden', {
+          variant: 'info',
+        });
+        return;
+      }
+
+      if (oldPassword && newPassword !== repeatPassword) {
+        setRepeatError(true);
+        setShowValidation(true);
+        return;
+      }
+
       setLoading(true);
-
-      const passwordValid = await validatePassword();
-      if (!passwordValid) return;
-      setShowValidation(false);
-
       const updateResponse = await ApiClient.User.Update({
         email,
-        password: newPassword ?? undefined,
+        oldPassword,
+        password: newPassword,
       });
       await refreshSession();
       setLoading(false);
       if (updateResponse.error) {
+        if (updateResponse.error.status === 403) {
+          setOldPasswordError(true);
+          enqueueSnackbar('Altes Passwort ist nicht korrekt', {
+            variant: 'error',
+          });
+          return;
+        }
         enqueueSnackbar('Aktualisieren von Profil fehlgeschlagen', {
           variant: 'error',
         });
@@ -90,12 +84,15 @@ const LoginConfiguration: FC = () => {
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',
       });
-
-      setOldPassword('');
-      setNewPassword('');
-      setRepeatPassword('');
     },
-    [email, enqueueSnackbar, newPassword, validatePassword]
+    [
+      email,
+      enqueueSnackbar,
+      newPassword,
+      oldPassword,
+      repeatPassword,
+      session?.user.email,
+    ]
   );
 
   return (

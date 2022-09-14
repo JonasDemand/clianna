@@ -41,8 +41,8 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      setLoading(true);
       if (!showPassword) {
+        setLoading(true);
         const validationResponse = await ApiClient.User.ValidateEmail(email);
         setLoading(false);
         if (validationResponse.error || !validationResponse.response) {
@@ -51,7 +51,6 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
         }
         setShowPassword(true);
         setNewAccount(validationResponse.response.valid);
-        setLoading(false);
         return;
       }
 

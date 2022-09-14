@@ -1,6 +1,6 @@
 import {
   ICredentailsRequest as ICredentailsRequest,
-  IUpdateUserRequest,
+  IUpdateRequest,
 } from '@customTypes/messages/user';
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
@@ -40,7 +40,7 @@ export class User {
   public async GetAll() {
     return await prisma.user.findMany();
   }
-  public async Update(user: IUpdateUserRequest): Promise<PrismaUser> {
+  public async Update(user: IUpdateRequest): Promise<PrismaUser> {
     let hashedPassword: string | undefined;
     let salt: string | undefined;
     if (user.password) {
