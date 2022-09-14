@@ -38,9 +38,9 @@ const LoginConfiguration: FC = () => {
   const onClickGoogleButton = useCallback(
     () =>
       signIn('google', {
-        callbackUrl: `${router.basePath}/auth/link?email=${session?.user.email}&callbackUrl=${router.basePath}${router.asPath}`,
+        callbackUrl: `/auth/link?email=${session?.user.email}&callbackUrl=${router.asPath}`,
       }),
-    [router.asPath, router.basePath, session?.user.email]
+    [router.asPath, session?.user.email]
   );
 
   const onSubmit = useCallback(

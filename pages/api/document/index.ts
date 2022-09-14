@@ -4,37 +4,36 @@ import {
   withMiddleware,
 } from '@utils/api/middleware';
 import { withGapi } from '@utils/api/middleware/withGapi';
-import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 
-const createRootfolder = async (req: NextApiRequest, res: NextApiResponse) => {
+const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   const gapi = new GapiWrapper(session!.user.refreshToken!);
-  const folder = await gapi.drive.files.create({
+  const document = await gapi.drive.files.create({
     requestBody: {
       name: `Clianna_${session!.user.id}`,
-      mimeType: 'application/vnd.google-apps.folder',
+      mimeType: 'application/vnd.google-apps.document',
+      parents: [session!.user.cliannaFolderId!],
     },
   });
-  const cliannaFolderId = folder.data.id;
-  if (!cliannaFolderId)
+  const documentId = document.data.id;
+  if (!documentId)
     return res.status(500).send('Google Drive API didnt return any ID');
-  DbRepo.Instance.User.Update({ cliannaFolderId });
-  return res.status(200).send({ cliannaFolderId });
+  return res.status(200).send({ id: documentId });
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toUpperCase()) {
     case 'POST':
-      await createRootfolder(req, res);
+      await createDocument(req, res);
   }
 };
 
 export default withMiddleware(
   withMethodGuard(['POST']),
   withAuth,
-  withGapi(false),
+  withGapi(true),
   handler
 );

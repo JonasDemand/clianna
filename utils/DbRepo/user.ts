@@ -86,7 +86,6 @@ export class User {
       },
     });
 
-    console.log(currentUser);
     await this.Delete();
     const newUserRepo = new User(id);
     newUserRepo.Update({

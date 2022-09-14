@@ -24,7 +24,7 @@ const DocumentConfiguration: FC = () => {
       signIn(
         'google',
         {
-          callbackUrl: router.asPath,
+          callbackUrl: `${router.asPath}?createRootfolder=true`,
         },
         new URLSearchParams({
           gapiAccess: 'true',

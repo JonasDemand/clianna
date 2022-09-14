@@ -84,7 +84,6 @@ const CustomersPage: FC = () => {
         });
         return;
       }
-      console.log(createResponse, newCustomers);
       newCustomers.push(createResponse.response);
     } else {
       const updateResponse = await ApiClient.Customer.Update(

@@ -34,7 +34,7 @@ const Navbar: FC = () => {
     (event: MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget),
     []
   );
-  const onClickRoot = useCallback(() => router.push('/'), [router]);
+  const onClickRoot = useCallback(() => router.replace('/'), [router]);
 
   const onCloseNavMenu = useCallback(() => setAnchorElNav(null), []);
 
@@ -67,7 +67,7 @@ const Navbar: FC = () => {
               key={page.route}
               onClick={() => {
                 onCloseNavMenu();
-                page !== currentPage && router.push(page.route);
+                page !== currentPage && router.replace(page.route);
               }}
             >
               {page.icon}
@@ -133,7 +133,7 @@ const Navbar: FC = () => {
           >
             <MuiButton
               variant="text"
-              onClick={() => page !== currentPage && router.push(page.route)}
+              onClick={() => page !== currentPage && router.replace(page.route)}
               sx={{
                 color: 'white',
                 display: 'flex',
