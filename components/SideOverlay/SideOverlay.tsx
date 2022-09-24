@@ -51,18 +51,19 @@ const SideOverlay: FC<SideOverlayProps> = ({
         }}
       >
         <Typography variant="h6">{heading}</Typography>
-        <Divider sx={{ mb: 2 }} />
+        <Divider />
         <Box
           sx={{
             flex: '1 1 auto',
             overflow: 'auto',
+            py: 2,
           }}
         >
           {children}
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Divider sx={{ mt: 2 }} />
+            <Divider />
           </Grid>
           <Grid item xs={6}>
             <MuiButton

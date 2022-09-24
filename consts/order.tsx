@@ -1,3 +1,4 @@
+import { IDocument } from '@customTypes/database/document';
 import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
@@ -74,6 +75,7 @@ export const defaultOrder = (): IOrderWithDependencies => ({
   customer: null,
   shippingType: EOrderShippingType.Send,
   taxes: EOrderTax.Nineteen,
+  documents: new Array<IDocument>(),
 });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([

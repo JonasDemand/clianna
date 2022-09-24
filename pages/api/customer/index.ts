@@ -1,4 +1,4 @@
-import { ICustomer } from '@customTypes/database/customer';
+import { IUpsertRequest } from '@customTypes/messages/customer';
 import {
   withAuth,
   withBody,
@@ -15,7 +15,7 @@ const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { id: _, ...body } = req.body as ICustomer;
+  const body = req.body as IUpsertRequest;
 
   const customer = await DbRepo.Instance.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');

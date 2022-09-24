@@ -1,26 +1,35 @@
 import DocumentForm from '@components/Form/DocumentForm';
+import { CustomerContext } from '@context/CustomerContext';
+import { CustomerContextType } from '@customTypes/customer';
 import { Grid } from '@mui/material';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerGeneral from './CustomerGeneral';
 
-const CustomerForm: FC = () => (
-  <Grid container direction="column" spacing={2}>
-    <Grid item>
-      <CustomerGeneral />
+const CustomerForm: FC = () => {
+  const { selected } = useContext(CustomerContext) as CustomerContextType;
+  return (
+    <Grid container direction="column" spacing={2}>
+      {selected && (
+        <>
+          <Grid item>
+            <CustomerGeneral />
+          </Grid>
+          <Grid item>
+            <CustomerBasedata />
+          </Grid>
+          <Grid item>
+            <CustomerAdress />
+          </Grid>
+          <Grid item>
+            <DocumentForm documents={selected.documents} />
+          </Grid>
+        </>
+      )}
     </Grid>
-    <Grid item>
-      <CustomerBasedata />
-    </Grid>
-    <Grid item>
-      <CustomerAdress />
-    </Grid>
-    <Grid item>
-      <DocumentForm />
-    </Grid>
-  </Grid>
-);
+  );
+};
 
 export default CustomerForm;

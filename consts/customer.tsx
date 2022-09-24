@@ -1,11 +1,12 @@
 import { EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
+import { IDocument } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
 export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
-  { field: 'id', headerName: 'Kudnen-ID', flex: 1 },
+  { field: 'id', headerName: 'Kunden-ID', flex: 1 },
   { field: 'firstname', headerName: 'Vorname', flex: 1 },
   { field: 'lastname', headerName: 'Nachname', flex: 1 },
   { field: 'email', headerName: 'E-Mail', flex: 1 },
@@ -55,6 +56,7 @@ export const defaultCustomer = (): ICustomerWithDependencies => ({
   whatsapp: false,
   disabled: false,
   orders: new Array<IOrder>(),
+  documents: new Array<IDocument>(),
 });
 
 export const ShowCustomerLabels = new Map<EShowCustomer, string>([

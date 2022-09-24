@@ -1,6 +1,6 @@
 import ConfirmDialog from '@components/Dialog/ConfirmDialog';
+import MuiTable from '@components/External/MuiTable';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
-import TablePage from '@components/Table/TablePage';
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
@@ -121,7 +121,7 @@ const CustomersPage: FC = () => {
         height: 1,
       }}
     >
-      <TablePage<ICustomerWithDependencies>
+      <MuiTable<ICustomerWithDependencies>
         header={<CustomersTableHeader />}
         rows={filteredCustomers}
         columns={activeColumns}

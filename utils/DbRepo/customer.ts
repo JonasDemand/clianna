@@ -37,7 +37,12 @@ export class Customer {
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
     return await prisma.customer.create({
-      data: { ...customer, orders: {}, user: { connect: { id: this.UserId } } },
+      data: {
+        ...customer,
+        orders: {},
+        documents: {},
+        user: { connect: { id: this.UserId } },
+      },
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies ? { select: Order.DefaultSelect } : false,

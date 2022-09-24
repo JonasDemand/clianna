@@ -21,7 +21,12 @@ const MuiTooltip: FC<MuiTooltipProps> = ({ show = true, ...props }) => {
       {...props}
       title={<Typography variant="body2">{props.title}</Typography>}
     >
-      <Typography variant="body2" sx={{ display: 'inline-block' }}>
+      <Typography
+        variant="body2"
+        overflow="hidden"
+        textOverflow="ellipsis"
+        sx={{ display: 'inline-block' }}
+      >
         {props.children}
       </Typography>
     </Tooltip>

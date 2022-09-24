@@ -9,22 +9,22 @@ import {
 } from '@mui/x-data-grid';
 import React, { ReactNode, useMemo } from 'react';
 
-import TableCell from './TableCell';
+import TableCell from '../Table/TableCell';
 
-type TablePageProps<T extends GridValidRowModel> = DataGridProps<T> &
+type MuiTableProps<T extends GridValidRowModel> = DataGridProps<T> &
   GetActiveColumnProps<T> & {
     header: ReactNode;
     searchText: string;
   };
 
-const TablePage = <T extends GridValidRowModel>({
+const MuiTable = <T extends GridValidRowModel>({
   header,
   searchText,
   onCopy,
   onDelete,
   onEdit,
   ...gridProps
-}: TablePageProps<T>) => {
+}: MuiTableProps<T>) => {
   const actionColumn = useMemo(
     () => getActionColumn({ onCopy, onDelete, onEdit }),
     [onCopy, onDelete, onEdit]
@@ -65,4 +65,4 @@ const TablePage = <T extends GridValidRowModel>({
   );
 };
 
-export default TablePage;
+export default MuiTable;
