@@ -6,6 +6,7 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
+import { withGapi } from '@utils/api/middleware/withGapi';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -72,5 +73,6 @@ export default withMiddleware(
   withMethodGuard(['GET', 'PUT', 'DELETE']),
   withQueryParameters([{ name: 'id', isNumber: false }]),
   withAuth,
+  withGapi(true),
   handler
 );

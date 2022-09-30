@@ -21,6 +21,11 @@ export class Document {
       `/api/document/${id}`,
       'PUT'
     )(request);
+  public static Copy = (id: string, request: IUpsertRequest) =>
+    createClientFunction<IUpsertRequest, IDocumentWithDependencies, string>(
+      `/api/document/${id}/copy`,
+      'POST'
+    )(request);
 
   public static Delete = (id: string) =>
     createClientFunction<void, void, string>(`/api/document/${id}`, 'DELETE')();

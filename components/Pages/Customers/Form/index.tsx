@@ -36,7 +36,7 @@ const CustomerForm: FC = () => {
             <DocumentForm
               documents={selected.documents}
               onUpdate={onUpdateDocuments}
-              reference={{ customer: selected }}
+              reference={{ customer: selected.id }}
             />
           </Grid>
         </>

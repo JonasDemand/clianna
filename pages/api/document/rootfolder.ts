@@ -22,6 +22,11 @@ const createRootfolder = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!cliannaFolderId)
     return res.status(500).send('Google Drive API didnt return any ID');
   DbRepo.Instance.User.Update({ cliannaFolderId });
+
+  await fetch(
+    `${process.env.NEXTAUTH_URL}/api/auth/session?refreshSession=true`
+  );
+
   return res.status(200).send({ cliannaFolderId });
 };
 

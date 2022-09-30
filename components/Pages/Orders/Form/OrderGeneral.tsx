@@ -150,7 +150,7 @@ const OrderGeneral: FC = () => {
               label="Steuer"
               enumToUse={EOrderTax}
               enumLabel={OrderTaxLabels}
-              value={selected.taxes}
+              value={selected.taxes ?? ''}
               onChange={onChangeTaxes}
             />
           </Grid>
