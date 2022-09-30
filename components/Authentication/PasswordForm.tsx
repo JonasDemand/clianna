@@ -74,7 +74,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
           label="Altes Passwort"
           fullWidth
           required={required}
-          autoComplete={'current-password'}
+          autoComplete="current-password"
           value={oldPassword}
           error={showValidation && oldPasswordError}
           helperText={

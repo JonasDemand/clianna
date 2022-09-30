@@ -113,7 +113,7 @@ const OrdersPage: FC = () => {
         searchText={searchText}
       />
       <SideOverlay
-        heading={'Auftrag bearbeiten'}
+        heading="Auftrag bearbeiten"
         open={!!selected}
         onClose={onCloseOverlay}
         onSave={onSaveOverlay}
