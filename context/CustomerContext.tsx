@@ -1,5 +1,6 @@
 import { columns, defaultVariableColumns } from '@consts/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
+import { searchArray } from '@utils/search';
 import {
   createContext,
   FC,
@@ -44,19 +45,13 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     [activeColumns]
   );*/
   const filteredCustomers = useMemo(() => {
-    const searchTerms = searchText
-      .split(' ')
-      .map((txt) => `.*${txt.toLowerCase()}.*`);
     const pendingValue = showCustomers === EShowCustomer.Disabled;
     const customersToSearch =
       showCustomers === EShowCustomer.All
         ? customers
         : customers.filter((customer) => customer.disabled === pendingValue);
 
-    return customersToSearch.filter((customer) => {
-      const searchText = JSON.stringify(customer).toLowerCase();
-      return searchTerms.every((term) => searchText.match(term));
-    });
+    return searchArray(customersToSearch, searchText);
   }, [searchText, showCustomers, customers]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

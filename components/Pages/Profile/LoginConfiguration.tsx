@@ -61,14 +61,14 @@ const LoginConfiguration: FC = () => {
       }
 
       setLoading(true);
-      const updateResponse = await ApiClient.User.Update({
+      const { error } = await ApiClient.User.Update({
         email,
         oldPassword,
         password: newPassword,
       });
-      if (updateResponse.error) {
+      if (error) {
         setLoading(false);
-        if (updateResponse.error.status === 403) {
+        if (error.status === 403) {
           setOldPasswordError(true);
           enqueueSnackbar('Altes Passwort ist nicht korrekt', {
             variant: 'error',

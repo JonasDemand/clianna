@@ -47,10 +47,12 @@ export class Order {
     return await prisma.order.create({
       data: {
         ...order,
-        creationDate: undefined,
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
+        documents: undefined,
+        id: undefined,
+        creationDate: undefined,
         user: { connect: { id: this.UserId } },
       },
       select: {
@@ -112,11 +114,12 @@ export class Order {
       where: { id },
       data: {
         ...order,
-        creationDate: undefined,
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
-        documents: {},
+        documents: undefined,
+        id: undefined,
+        creationDate: undefined,
         user: { connect: { id: this.UserId } },
       },
       select: {

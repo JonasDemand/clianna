@@ -2,6 +2,7 @@ import { columns, defaultVariableColumns } from '@consts/order';
 import { ICustomer } from '@customTypes/database/customer';
 import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
+import { searchArray } from '@utils/search';
 import {
   createContext,
   FC,
@@ -44,19 +45,13 @@ const OrderProvider: FC<OrderContextProps> = ({
     [activeColumns]
   );*/
   const filteredOrders = useMemo(() => {
-    const searchTerms = searchText
-      .split(' ')
-      .map((txt) => `.*${txt.toLowerCase()}.*`);
     const pendingValue = showOrders === EShowOrder.Pending;
     const ordersToSearch =
       showOrders === EShowOrder.All
         ? orders
         : orders.filter((order) => order.pending === pendingValue);
 
-    return ordersToSearch.filter((order) => {
-      const searchText = JSON.stringify(order).toLowerCase();
-      return searchTerms.every((term) => searchText.match(term));
-    });
+    return searchArray(ordersToSearch, searchText);
   }, [orders, searchText, showOrders]);
 
   useEffect(() => {

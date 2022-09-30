@@ -36,10 +36,10 @@ const DocumentConfiguration: FC = () => {
     async (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       setRootfolderLoading(true);
-      const createFolderResponse = await ApiClient.Document.CreateRootFolder();
+      const { error } = await ApiClient.Document.CreateRootFolder();
       await refreshSession();
       setRootfolderLoading(false);
-      if (createFolderResponse.error) {
+      if (error) {
         enqueueSnackbar('Erstellen von Ordner fehlgeschlagen', {
           variant: 'error',
         });

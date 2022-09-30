@@ -43,14 +43,14 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
 
       if (!showPassword) {
         setLoading(true);
-        const validationResponse = await ApiClient.User.ValidateEmail(email);
+        const { error, response } = await ApiClient.User.ValidateEmail(email);
         setLoading(false);
-        if (validationResponse.error || !validationResponse.response) {
+        if (error || !response) {
           showError('Unbekannter Fehler');
           return;
         }
         setShowPassword(true);
-        setNewAccount(validationResponse.response.valid);
+        setNewAccount(response.valid);
         return;
       }
 

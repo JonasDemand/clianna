@@ -1,9 +1,7 @@
 import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
-import { BackdropContext } from '@context/BackdropContext';
 import { OrderContext } from '@context/OrderContext';
-import { BackdropContextType } from '@customTypes/backdrop';
 import { IOrderWithDependencies } from '@customTypes/database/order';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
@@ -18,9 +16,7 @@ import OrdersTableHeader from './OrdersTableHeader';
 
 const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+
   const {
     filteredOrders,
     activeColumns,
@@ -53,29 +49,27 @@ const OrdersPage: FC = () => {
     let create = !selected.id;
     let newOrders = [...orders];
     if (create) {
-      const createResponse = await ApiClient.Order.Create(selected);
-      if (createResponse.error || !createResponse.response) {
+      const { error, response } = await ApiClient.Order.Create(selected);
+      if (error || !response) {
         enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      newOrders.push(createResponse.response);
+      newOrders.push(response);
     } else {
-      const updateResponse = await ApiClient.Order.Update(
+      const { error, response } = await ApiClient.Order.Update(
         selected.id!,
         selected
       );
-      if (updateResponse.error || !updateResponse.response) {
+      if (error || !response) {
         enqueueSnackbar('Aktualisieren von Auftrag fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      const index = newOrders.findIndex(
-        (order) => order.id === updateResponse.response!.id
-      );
-      newOrders[index] = updateResponse.response;
+      const index = newOrders.findIndex((order) => order.id === response!.id);
+      newOrders[index] = response;
     }
     setOrders(newOrders);
     setSelected(null);
@@ -92,11 +86,8 @@ const OrdersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;
-    setOrderToDelete(null);
-    setShowBackdrop(true);
-    const deleteReponse = await ApiClient.Order.Delete(orderToDelete.id);
-    setShowBackdrop(false);
-    if (deleteReponse.error) {
+    const { error } = await ApiClient.Order.Delete(orderToDelete.id);
+    if (error) {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',
       });
@@ -104,7 +95,7 @@ const OrdersPage: FC = () => {
     }
     enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
-  }, [enqueueSnackbar, orderToDelete, orders, setOrders, setShowBackdrop]);
+  }, [enqueueSnackbar, orderToDelete, orders, setOrders]);
 
   return (
     <Box
@@ -122,7 +113,7 @@ const OrdersPage: FC = () => {
         searchText={searchText}
       />
       <SideOverlay
-        heading={'Auftragsbearbeitung'}
+        heading={'Auftrag bearbeiten'}
         open={!!selected}
         onClose={onCloseOverlay}
         onSave={onSaveOverlay}
@@ -140,8 +131,12 @@ const OrdersPage: FC = () => {
         </Typography>
         <Typography fontWeight="bold">
           Auftrag {orderToDelete?.id}
-          <br />
-          Für Kunde {getCustomerLabel(orderToDelete?.customer)}
+          {orderToDelete?.customer && (
+            <>
+              <br />
+              Für Kunde {getCustomerLabel(orderToDelete?.customer)}
+            </>
+          )}
         </Typography>
       </ConfirmDialog>
     </Box>

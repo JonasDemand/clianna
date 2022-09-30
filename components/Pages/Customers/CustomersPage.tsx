@@ -1,8 +1,6 @@
 import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
-import { BackdropContext } from '@context/BackdropContext';
-import { BackdropContextType } from '@customTypes/backdrop';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { Box, Typography } from '@mui/material';
@@ -18,9 +16,6 @@ import CustomerForm from './Form';
 
 const CustomersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
   const {
     customers,
     setCustomers,
@@ -40,10 +35,8 @@ const CustomersPage: FC = () => {
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
     setCustomerToDelete(null);
-    setShowBackdrop(true);
-    const deleteResponse = await ApiClient.Customer.Delete(customerToDelete.id);
-    setShowBackdrop(false);
-    if (deleteResponse.error) {
+    const { error } = await ApiClient.Customer.Delete(customerToDelete.id);
+    if (error) {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
         variant: 'error',
       });
@@ -53,13 +46,7 @@ const CustomersPage: FC = () => {
     setCustomers(
       customers.filter((customer) => customer.id !== customerToDelete.id)
     );
-  }, [
-    customerToDelete,
-    customers,
-    enqueueSnackbar,
-    setCustomers,
-    setShowBackdrop,
-  ]);
+  }, [customerToDelete, customers, enqueueSnackbar, setCustomers]);
 
   const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
@@ -77,29 +64,29 @@ const CustomersPage: FC = () => {
     let create = !selected.id;
     let newCustomers = [...customers];
     if (create) {
-      const createResponse = await ApiClient.Customer.Create(selected);
-      if (createResponse.error || !createResponse.response) {
+      const { error, response } = await ApiClient.Customer.Create(selected);
+      if (error || !response) {
         enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      newCustomers.push(createResponse.response);
+      newCustomers.push(response);
     } else {
-      const updateResponse = await ApiClient.Customer.Update(
+      const { error, response } = await ApiClient.Customer.Update(
         selected.id!,
         selected
       );
-      if (updateResponse.error || !updateResponse.response) {
+      if (error || !response) {
         enqueueSnackbar('Aktualisieren von Kunde fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
       const index = newCustomers.findIndex(
-        (customer) => customer.id === updateResponse.response!.id
+        (customer) => customer.id === response!.id
       );
-      newCustomers[index] = updateResponse.response;
+      newCustomers[index] = response;
     }
     setCustomers(newCustomers);
     setSelected(null);
@@ -131,7 +118,7 @@ const CustomersPage: FC = () => {
         searchText={searchText}
       />
       <SideOverlay
-        heading="Kundenbearbeitung"
+        heading="Kunde bearbeiten"
         open={!!selected}
         onClose={onCloseOverlay}
         onSave={onSaveOverlay}
@@ -147,7 +134,7 @@ const CustomersPage: FC = () => {
         <Typography>
           Bist Du dir sicher, dass Du diesen Kunden löschen willst?
         </Typography>
-        <Typography marginBottom={2}>
+        <Typography mb={2}>
           Alle Zuordnungen des Kundens gehen verloren.
         </Typography>
         <Typography fontWeight="bold">

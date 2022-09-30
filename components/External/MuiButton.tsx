@@ -11,7 +11,7 @@ const MuiButton: FC<MuiButtonProps> = ({ loadingButton = false, ...props }) =>
   loadingButton ? (
     <LoadingButton
       variant="contained"
-      loadingPosition="start"
+      loadingPosition="center"
       startIcon={<></>} //https://github.com/mui/material-ui/issues/31235
       {...props}
     >

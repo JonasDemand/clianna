@@ -1,15 +1,24 @@
 import DocumentForm from '@components/Form/DocumentForm';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
+import { IDocument } from '@customTypes/database/document';
 import { Grid } from '@mui/material';
-import { FC, useContext } from 'react';
+import { FC, useCallback, useContext } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerGeneral from './CustomerGeneral';
 
 const CustomerForm: FC = () => {
-  const { selected } = useContext(CustomerContext) as CustomerContextType;
+  const { selected, updateSelected } = useContext(
+    CustomerContext
+  ) as CustomerContextType;
+
+  const onUpdateDocuments = useCallback(
+    (documents: IDocument[]) => updateSelected('documents', documents),
+    [updateSelected]
+  );
+
   return (
     <Grid container direction="column" spacing={2}>
       {selected && (
@@ -24,7 +33,11 @@ const CustomerForm: FC = () => {
             <CustomerAdress />
           </Grid>
           <Grid item>
-            <DocumentForm documents={selected.documents} />
+            <DocumentForm
+              documents={selected.documents}
+              onUpdate={onUpdateDocuments}
+              reference={{ customer: selected }}
+            />
           </Grid>
         </>
       )}

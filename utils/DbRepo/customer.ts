@@ -39,8 +39,9 @@ export class Customer {
     return await prisma.customer.create({
       data: {
         ...customer,
-        orders: {},
-        documents: {},
+        id: undefined,
+        orders: undefined,
+        documents: undefined,
         user: { connect: { id: this.UserId } },
       },
       select: {
@@ -117,8 +118,9 @@ export class Customer {
       },
       data: {
         ...customer,
-        orders: {},
-        documents: {},
+        id: undefined,
+        orders: undefined,
+        documents: undefined,
         user: { connect: { id: this.UserId } },
       },
     });

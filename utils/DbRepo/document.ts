@@ -36,6 +36,7 @@ export class Document {
         order: document.order?.id
           ? { connect: { id: document.order.id } }
           : undefined,
+        id: undefined,
         user: { connect: { id: this.UserId } },
       },
       select: {
@@ -102,6 +103,7 @@ export class Document {
         order: document.order?.id
           ? { connect: { id: document.order.id } }
           : undefined,
+        id: undefined,
         user: { connect: { id: this.UserId } },
       },
     });
