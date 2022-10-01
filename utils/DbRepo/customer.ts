@@ -36,12 +36,41 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
+    const existPromises: Array<Promise<any>> = [];
+    if (customer.orders)
+      existPromises.concat(
+        customer.orders.map((x) =>
+          prisma.order.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    if (customer.documents)
+      existPromises.concat(
+        customer.documents.map((x) =>
+          prisma.document.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    await Promise.all(existPromises);
+
     return await prisma.customer.create({
       data: {
         ...customer,
         id: undefined,
-        orders: undefined,
-        documents: undefined,
+        orders: {
+          connect: customer.orders?.map((x) => ({ id: x.id ?? '' })),
+        },
+        documents: {
+          connect: customer.documents?.map((x) => ({ id: x.id ?? '' })),
+        },
         user: { connect: { id: this.UserId } },
       },
       select: {
@@ -103,10 +132,36 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
-    await prisma.customer.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
-      select: null,
-    });
+    const existPromises: Array<Promise<any>> = [
+      prisma.customer.findFirstOrThrow({
+        where: { AND: [{ user: { id: this.UserId } }, { id }] },
+        select: null,
+      }),
+    ];
+    if (customer.orders)
+      existPromises.concat(
+        customer.orders.map((x) =>
+          prisma.order.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    if (customer.documents)
+      existPromises.concat(
+        customer.documents.map((x) =>
+          prisma.document.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    await Promise.all(existPromises);
+
     return await prisma.customer.update({
       where: { id },
       select: {
@@ -119,8 +174,12 @@ export class Customer {
       data: {
         ...customer,
         id: undefined,
-        orders: undefined,
-        documents: undefined,
+        orders: {
+          connect: customer.orders?.map((x) => ({ id: x.id ?? '' })),
+        },
+        documents: {
+          connect: customer.documents?.map((x) => ({ id: x.id ?? '' })),
+        },
         user: { connect: { id: this.UserId } },
       },
     });

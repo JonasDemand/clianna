@@ -1,5 +1,6 @@
 import { IDocument } from '@customTypes/database/document';
 import { IOrderWithDependencies } from '@customTypes/database/order';
+import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
@@ -58,21 +59,7 @@ export const columns: GridColDef<IOrderWithDependencies>[] = [
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultOrder = (): IOrderWithDependencies => ({
-  id: undefined,
-  creationDate: undefined,
-  article: null,
-  brand: null,
-  color: null,
-  comment: null,
-  dealer: null,
-  dueDate: null,
-  pending: true,
-  price: null,
-  size: null,
-  specification: null,
-  type: null,
-  name: null,
-  customer: null,
+  id: EId.Create,
   shippingType: EOrderShippingType.Send,
   taxes: EOrderTax.Nineteen,
   documents: new Array<IDocument>(),

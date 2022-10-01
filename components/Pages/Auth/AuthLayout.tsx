@@ -35,7 +35,7 @@ const AuthLayout: FC<AuthLayoutProps> = ({ children, title, icon }) => (
       >
         {icon}
       </Avatar>
-      <Typography component="h1" variant="h5" textAlign="center">
+      <Typography variant="h5" textAlign="center">
         {title}
       </Typography>
     </Box>

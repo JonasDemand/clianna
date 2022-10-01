@@ -1,4 +1,4 @@
-import { LockOutlined } from '@mui/icons-material';
+import { Lock } from '@mui/icons-material';
 import { Alert, Box } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
@@ -41,7 +41,7 @@ const SignInPage: FC = () => {
   );
 
   return (
-    <AuthLayout title="Anmeldung" icon={<LockOutlined />}>
+    <AuthLayout title="Anmeldung" icon={<Lock />}>
       <CredentialsForm showError={setError} onLogin={onLogin} />
       <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
         <GoogleButton

@@ -1,8 +1,12 @@
 import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
+import { BackdropContext } from '@context/BackdropContext';
 import { OrderContext } from '@context/OrderContext';
+import { BackdropContextType } from '@customTypes/backdrop';
+import { IDocument } from '@customTypes/database/document';
 import { IOrderWithDependencies } from '@customTypes/database/order';
+import { EId } from '@customTypes/id';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
@@ -17,6 +21,9 @@ import OrdersTableHeader from './OrdersTableHeader';
 const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
+  const { setShowBackdrop } = useContext(
+    BackdropContext
+  ) as BackdropContextType;
   const {
     filteredOrders,
     activeColumns,
@@ -30,7 +37,14 @@ const OrdersPage: FC = () => {
   const [orderToDelete, setOrderToDelete] =
     useState<IOrderWithDependencies | null>(null);
 
-  const onCloseOverlay = useCallback(() => setSelected(null), [setSelected]);
+  const onCloseOverlay = useCallback(() => {
+    setSelected(null);
+    if (!selected || !selected.id) return;
+    let newOrders = [...orders];
+    const index = newOrders.findIndex((order) => order.id === selected.id);
+    newOrders[index] = { ...newOrders[index], documents: selected.documents };
+    setOrders(newOrders);
+  }, [orders, selected, setOrders, setSelected]);
   const onCloseDialog = useCallback(() => setOrderToDelete(null), []);
 
   const onSaveOverlay = useCallback(async () => {
@@ -46,7 +60,7 @@ const OrdersPage: FC = () => {
       });
       return;
     }
-    let create = !selected.id;
+    let create = selected.id === EId.Create;
     let newOrders = [...orders];
     if (create) {
       const { error, response } = await ApiClient.Order.Create(selected);
@@ -68,7 +82,7 @@ const OrdersPage: FC = () => {
         });
         return;
       }
-      const index = newOrders.findIndex((order) => order.id === response!.id);
+      const index = newOrders.findIndex((order) => order.id === response.id);
       newOrders[index] = response;
     }
     setOrders(newOrders);
@@ -80,8 +94,33 @@ const OrdersPage: FC = () => {
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
-    (order: IOrderWithDependencies) => setSelected({ ...order, id: undefined }),
-    [setSelected]
+    async (order: IOrderWithDependencies) => {
+      let documents: Array<IDocument> = [];
+      if (order.documents) {
+        setShowBackdrop(true);
+        const createDocumentRes = await Promise.all(
+          order.documents.map((document) =>
+            document.id
+              ? ApiClient.Document.Copy(document.id, { name: document.name })
+              : ApiClient.Document.Create({ name: document.name })
+          )
+        );
+        setShowBackdrop(false);
+        if (createDocumentRes.some((res) => res.error || !res.response)) {
+          enqueueSnackbar('Kopieren von Dokumenten fehlgeschlagen', {
+            variant: 'error',
+          });
+          return;
+        }
+        documents = createDocumentRes.map((res) => res.response!);
+      }
+      setSelected({
+        ...order,
+        id: EId.Create,
+        documents,
+      });
+    },
+    [enqueueSnackbar, setSelected, setShowBackdrop]
   );
 
   const onConfirmDialog = useCallback(async () => {

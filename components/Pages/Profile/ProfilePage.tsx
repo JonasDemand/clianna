@@ -16,12 +16,16 @@ const ProfilePage: FC = () => {
   ) as BackdropContextType;
 
   useEffect(() => {
-    if (Boolean(router.query.createRootfolder)) {
+    const createFolder = async () => {
+      if (!Boolean(router.query.createRootfolder)) return;
       setShowBackdrop(true);
       router.replace('/profile', undefined, { shallow: true });
-      ApiClient.Document.CreateRootFolder().then(refreshSession);
+      await ApiClient.Document.CreateRootFolder();
+      await refreshSession();
       setShowBackdrop(false);
-    }
+    };
+
+    createFolder();
   }, [router, router.query.createRootfolder, setShowBackdrop]);
 
   return (

@@ -14,28 +14,40 @@ export const getActionColumn = <T extends GridValidRowModel>({
   onEdit,
   onCopy,
   onDelete,
-}: GetActiveColumnProps<T>): GridColDef<T> => ({
-  field: '',
-  headerName: '',
-  sortable: false,
-  width: 140,
-  renderCell: ({ row }) => (
-    <>
-      <MuiTooltip title="Bearbeiten">
-        <IconButton disabled={!onEdit} onClick={() => onEdit!(row)}>
-          <Edit />
-        </IconButton>
-      </MuiTooltip>
-      <MuiTooltip title="Kopieren">
-        <IconButton disabled={!onCopy} onClick={() => onCopy!(row)}>
-          <ContentCopy />
-        </IconButton>
-      </MuiTooltip>
-      <MuiTooltip title="Löschen">
-        <IconButton disabled={!onDelete} onClick={() => onDelete!(row)}>
-          <Delete />
-        </IconButton>
-      </MuiTooltip>
-    </>
-  ),
-});
+}: GetActiveColumnProps<T>): GridColDef<T> => {
+  let width = 20;
+  if (onEdit) width += 40;
+  if (onCopy) width += 40;
+  if (onDelete) width += 40;
+  return {
+    field: '',
+    headerName: '',
+    sortable: false,
+    width,
+    renderCell: ({ row }) => (
+      <>
+        {onEdit && (
+          <MuiTooltip title="Bearbeiten">
+            <IconButton onClick={() => onEdit!(row)}>
+              <Edit />
+            </IconButton>
+          </MuiTooltip>
+        )}
+        {onCopy && (
+          <MuiTooltip title="Kopieren">
+            <IconButton onClick={() => onCopy!(row)}>
+              <ContentCopy />
+            </IconButton>
+          </MuiTooltip>
+        )}
+        {onDelete && (
+          <MuiTooltip title="Löschen">
+            <IconButton onClick={() => onDelete!(row)}>
+              <Delete />
+            </IconButton>
+          </MuiTooltip>
+        )}
+      </>
+    ),
+  };
+};

@@ -3,6 +3,7 @@ import MuiTable from '@components/External/MuiTable';
 import SideOverlay from '@components/SideOverlay/SideOverlay';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
+import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { getCustomerLabel } from '@utils/customer';
@@ -61,7 +62,7 @@ const CustomersPage: FC = () => {
       });
       return;
     }
-    let create = !selected.id;
+    let create = selected.id === EId.Create;
     let newCustomers = [...customers];
     if (create) {
       const { error, response } = await ApiClient.Customer.Create(selected);
@@ -96,12 +97,6 @@ const CustomersPage: FC = () => {
     );
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
-  const onCopyRow = useCallback(
-    (customer: ICustomerWithDependencies) =>
-      setSelected({ ...customer, id: undefined, orders: [] }),
-    [setSelected]
-  );
-
   return (
     <Box
       sx={{
@@ -113,7 +108,6 @@ const CustomersPage: FC = () => {
         rows={filteredCustomers}
         columns={activeColumns}
         onEdit={setSelected}
-        onCopy={onCopyRow}
         onDelete={setCustomerToDelete}
         searchText={searchText}
       />

@@ -2,6 +2,7 @@ import { EShowCustomer } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { IDocument } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
+import { EId } from '@customTypes/id';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 
@@ -42,17 +43,7 @@ export const columns: GridColDef<ICustomerWithDependencies>[] = [
 export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultCustomer = (): ICustomerWithDependencies => ({
-  id: undefined,
-  firstname: null,
-  lastname: null,
-  email: null,
-  street: null,
-  streetnumber: null,
-  city: null,
-  postalcode: null,
-  phone: null,
-  shoesize: null,
-  mobile: null,
+  id: EId.Create,
   whatsapp: false,
   disabled: false,
   orders: new Array<IOrder>(),

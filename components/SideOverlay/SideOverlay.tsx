@@ -70,7 +70,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
               fullWidth
               variant="contained"
               color="error"
-              onClick={onClose}
+              onClick={_onClose}
               disabled={loading}
             >
               Abbrechen

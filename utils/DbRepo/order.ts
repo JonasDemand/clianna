@@ -36,13 +36,28 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
+    const existPromises: Array<Promise<any>> = [];
     if (order.customer?.id)
-      await prisma.order.findFirstOrThrow({
-        where: {
-          AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
-        },
-        select: null,
-      });
+      existPromises.push(
+        prisma.customer.findFirstOrThrow({
+          where: {
+            AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
+          },
+          select: null,
+        })
+      );
+    if (order.documents)
+      existPromises.concat(
+        order.documents.map((x) =>
+          prisma.document.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    await Promise.all(existPromises);
 
     return await prisma.order.create({
       data: {
@@ -50,7 +65,9 @@ export class Order {
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
-        documents: undefined,
+        documents: {
+          connect: order.documents?.map((x) => ({ id: x.id ?? '' })),
+        },
         id: undefined,
         creationDate: undefined,
         user: { connect: { id: this.UserId } },
@@ -106,10 +123,34 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
-    await prisma.order.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
-      select: null,
-    });
+    const existPromises: Array<Promise<any>> = [
+      prisma.order.findFirstOrThrow({
+        where: { AND: [{ user: { id: this.UserId } }, { id }] },
+        select: null,
+      }),
+    ];
+    if (order.customer?.id)
+      existPromises.push(
+        prisma.customer.findFirstOrThrow({
+          where: {
+            AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
+          },
+          select: null,
+        })
+      );
+    if (order.documents)
+      existPromises.concat(
+        order.documents.map((x) =>
+          prisma.document.findFirstOrThrow({
+            where: {
+              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+            },
+            select: null,
+          })
+        )
+      );
+    await Promise.all(existPromises);
+
     return await prisma.order.update({
       where: { id },
       data: {
@@ -117,7 +158,9 @@ export class Order {
         customer: order.customer?.id
           ? { connect: { id: order.customer.id } }
           : undefined,
-        documents: undefined,
+        documents: {
+          connect: order.documents?.map((x) => ({ id: x.id ?? '' })),
+        },
         id: undefined,
         creationDate: undefined,
         user: { connect: { id: this.UserId } },
