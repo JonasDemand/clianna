@@ -125,11 +125,8 @@ const CustomersPage: FC = () => {
         onClose={onCloseDialog}
         onConfirm={onConfirmDialog}
       >
-        <Typography>
-          Bist Du dir sicher, dass Du diesen Kunden löschen willst?
-        </Typography>
         <Typography mb={2}>
-          Alle Zuordnungen des Kundens gehen verloren.
+          Bist Du dir sicher, dass Du diesen Kunden löschen willst?
         </Typography>
         <Typography fontWeight="bold">
           {getCustomerLabel(customerToDelete)}

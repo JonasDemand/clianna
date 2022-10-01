@@ -40,7 +40,7 @@ model Customer {
   disabled     Boolean?
   orders       Order[]
   documents    Document[]
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
@@ -62,9 +62,9 @@ model Order {
   dealer        String?
   size          Float?
   name          String?
-  customer      Customer?            @relation(fields: [customerId], references: [id])
+  customer      Customer?            @relation(fields: [customerId], references: [id], onDelete: Cascade)
   documents     Document[]
-  user          User                 @relation(fields: [userId], references: [id])
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Document {
@@ -75,9 +75,9 @@ model Document {
   googleId   String?
   name       String?
   template   Boolean   @default(false)
-  customer   Customer? @relation(fields: [customerId], references: [id])
-  order      Order?    @relation(fields: [orderId], references: [id])
-  user       User      @relation(fields: [userId], references: [id])
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  order      Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum EOrderShippingType {

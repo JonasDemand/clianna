@@ -30,7 +30,7 @@ const OrderFrom: FC = () => {
           </Grid>
           <Grid item>
             <DocumentForm
-              documents={selected.documents}
+              documents={selected.documents ?? []}
               onUpdate={onUpdateDocuments}
               reference={{ order: selected.id }}
             />

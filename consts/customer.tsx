@@ -28,7 +28,7 @@ export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
     field: 'orders',
     headerName: 'Offene Bestellungen',
     flex: 1,
-    valueGetter: ({ row }) => row.orders.length,
+    valueGetter: ({ row }) => row.orders?.length ?? 0,
   },
 ];
 export const columns: GridColDef<ICustomerWithDependencies>[] = [

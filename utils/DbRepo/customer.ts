@@ -75,7 +75,9 @@ export class Customer {
       },
       select: {
         ...Customer.DefaultSelect,
-        orders: includeDependencies ? { select: Order.DefaultSelect } : false,
+        orders: includeDependencies
+          ? { select: { ...Order.DefaultSelect, documents: true } }
+          : false,
         documents: includeDependencies
           ? { select: Document.DefaultSelect }
           : false,
@@ -90,7 +92,10 @@ export class Customer {
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies
-          ? { where: { pending: true }, select: Order.DefaultSelect }
+          ? {
+              where: { pending: true },
+              select: { ...Order.DefaultSelect, documents: true },
+            }
           : false,
         documents: includeDependencies
           ? { select: Document.DefaultSelect }
@@ -105,7 +110,9 @@ export class Customer {
       where: { AND: [{ user: { id: this.UserId } }, { disabled: false }] },
       select: {
         ...Customer.DefaultSelect,
-        orders: includeDependencies ? { select: Order.DefaultSelect } : false,
+        orders: includeDependencies
+          ? { select: { ...Order.DefaultSelect, documents: true } }
+          : false,
         documents: includeDependencies
           ? { select: Document.DefaultSelect }
           : false,
@@ -120,7 +127,9 @@ export class Customer {
       where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: {
         ...Customer.DefaultSelect,
-        orders: includeDependencies ? { select: Order.DefaultSelect } : false,
+        orders: includeDependencies
+          ? { select: { ...Order.DefaultSelect, documents: true } }
+          : false,
         documents: includeDependencies
           ? { select: Document.DefaultSelect }
           : false,
@@ -166,7 +175,9 @@ export class Customer {
       where: { id },
       select: {
         ...Customer.DefaultSelect,
-        orders: includeDependencies ? { select: Order.DefaultSelect } : false,
+        orders: includeDependencies
+          ? { select: { ...Order.DefaultSelect, documents: true } }
+          : false,
         documents: includeDependencies
           ? { select: Document.DefaultSelect }
           : false,

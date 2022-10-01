@@ -11,7 +11,10 @@ const ReactHighlighter: FC<HighlighterProps> = (props) => (
       },
     }}
   >
-    <Highlighter {...props} textToHighlight={props.textToHighlight ?? ''} />
+    <Highlighter
+      {...props}
+      textToHighlight={props.textToHighlight?.toString() ?? ''}
+    />
   </Box>
 );
 

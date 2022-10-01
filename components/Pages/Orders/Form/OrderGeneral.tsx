@@ -107,7 +107,7 @@ const OrderGeneral: FC = () => {
             <Autocomplete
               openOnFocus
               options={customers}
-              value={selected.customer}
+              value={selected.customer ?? null}
               onChange={onChangeCustomer}
               getOptionLabel={getCustomerLabel}
               renderInput={renderInputCustomer}
