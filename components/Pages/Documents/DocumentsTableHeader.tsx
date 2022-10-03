@@ -16,11 +16,11 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const DocumentsTableHeader: FC = () => {
   const {
-    searchText,
     showDocuments,
     setShowDocuments,
     activeVariableColumns,
@@ -30,7 +30,10 @@ const DocumentsTableHeader: FC = () => {
   } = useContext(DocumentContext) as DocumentContextType;
 
   const onChangeSearch = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    debounce(
+      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+      500
+    ),
     [setSearchText]
   );
   const onChangeColumns = useCallback(
@@ -64,7 +67,6 @@ const DocumentsTableHeader: FC = () => {
             fullWidth
             type="text"
             label="Suche"
-            value={searchText}
             onChange={onChangeSearch}
             InputProps={{
               endAdornment: <Search />,

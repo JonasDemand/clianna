@@ -16,13 +16,13 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 import EnumSelect from '../../Form/EnumSelect';
 
 const CustomersTableHeader: FC = () => {
   const {
-    searchText,
     showCustomers,
     activeVariableColumns,
     setSelected,
@@ -32,7 +32,10 @@ const CustomersTableHeader: FC = () => {
   } = useContext(CustomerContext) as CustomerContextType;
 
   const onChangeSearch = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    debounce(
+      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+      500
+    ),
     [setSearchText]
   );
   const onChangeColumns = useCallback(
@@ -66,7 +69,6 @@ const CustomersTableHeader: FC = () => {
             fullWidth
             type="text"
             label="Suche"
-            value={searchText}
             onChange={onChangeSearch}
             InputProps={{
               endAdornment: <Search />,

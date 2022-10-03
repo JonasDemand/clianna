@@ -13,11 +13,11 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const OrdersTableHeader: FC = () => {
   const {
-    searchText,
     showOrders,
     activeVariableColumns,
     setSelected,
@@ -27,7 +27,10 @@ const OrdersTableHeader: FC = () => {
   } = useContext(OrderContext) as OrderContextType;
 
   const onChangeSearch = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    debounce(
+      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+      500
+    ),
     [setSearchText]
   );
   const onChangeColumns = useCallback(
@@ -61,7 +64,6 @@ const OrdersTableHeader: FC = () => {
             fullWidth
             type="text"
             label="Suche"
-            value={searchText}
             onChange={onChangeSearch}
             InputProps={{
               endAdornment: <Search />,

@@ -7,7 +7,7 @@ const MuiTextField: FC<TextFieldProps> = (props) => (
     fullWidth
     type="text"
     {...props}
-    value={props.value ?? ''}
+    value={props.value !== null ? props.value : ''}
   />
 );
 
