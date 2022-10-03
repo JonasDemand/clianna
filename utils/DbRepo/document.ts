@@ -43,7 +43,7 @@ export class Document {
         ...Document.DefaultSelect,
         order: includeDependencies ? { select: Order.DefaultSelect } : false,
         customer: includeDependencies
-          ? { select: Customer.DefaultSelect }
+          ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
       },
     });
@@ -57,7 +57,7 @@ export class Document {
         ...Document.DefaultSelect,
         order: includeDependencies ? { select: Order.DefaultSelect } : false,
         customer: includeDependencies
-          ? { select: Customer.DefaultSelect }
+          ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
       },
     });
@@ -72,7 +72,7 @@ export class Document {
         ...Document.DefaultSelect,
         order: includeDependencies ? { select: Order.DefaultSelect } : false,
         customer: includeDependencies
-          ? { select: Customer.DefaultSelect }
+          ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
       },
     });
@@ -92,7 +92,7 @@ export class Document {
         ...Document.DefaultSelect,
         order: includeDependencies ? { select: Order.DefaultSelect } : false,
         customer: includeDependencies
-          ? { select: Customer.DefaultSelect }
+          ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
       },
       data: {

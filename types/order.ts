@@ -5,7 +5,6 @@ import { IOrderWithDependencies } from './database/order';
 
 export type OrderContextType = {
   customers: ICustomer[];
-  setCustomers: (customers: ICustomer[]) => void;
   orders: IOrderWithDependencies[];
   setOrders: (orders: IOrderWithDependencies[]) => void;
   filteredOrders: IOrderWithDependencies[];

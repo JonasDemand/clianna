@@ -27,7 +27,6 @@ const OrderProvider: FC<OrderContextProps> = ({
   initialOrders,
 }) => {
   const [orders, setOrders] = useState<IOrderWithDependencies[]>([]);
-  const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
@@ -55,7 +54,6 @@ const OrderProvider: FC<OrderContextProps> = ({
   }, [orders, searchText, showOrders]);
 
   useEffect(() => {
-    setCustomers(initialCustomers);
     setOrders(initialOrders);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -76,8 +74,7 @@ const OrderProvider: FC<OrderContextProps> = ({
   return (
     <OrderContext.Provider
       value={{
-        customers,
-        setCustomers,
+        customers: initialCustomers,
         orders,
         setOrders,
         filteredOrders,

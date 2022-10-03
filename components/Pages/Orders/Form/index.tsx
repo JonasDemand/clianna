@@ -1,4 +1,4 @@
-import DocumentForm from '@components/Form/DocumentForm';
+import DocumentFormSection from '@components/Form/DocumentFormSection';
 import { OrderContext } from '@context/OrderContext';
 import { IDocument } from '@customTypes/database/document';
 import { OrderContextType } from '@customTypes/order';
@@ -29,7 +29,7 @@ const OrderFrom: FC = () => {
             <OrderDetails />
           </Grid>
           <Grid item>
-            <DocumentForm
+            <DocumentFormSection
               documents={selected.documents ?? []}
               onUpdate={onUpdateDocuments}
               reference={{ order: selected.id }}

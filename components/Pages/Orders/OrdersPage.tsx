@@ -38,12 +38,12 @@ const OrdersPage: FC = () => {
     useState<IOrderWithDependencies | null>(null);
 
   const onCloseOverlay = useCallback(() => {
-    setSelected(null);
-    if (!selected || !selected.id) return;
+    if (!selected) return;
     let newOrders = [...orders];
     const index = newOrders.findIndex((order) => order.id === selected.id);
     newOrders[index] = { ...newOrders[index], documents: selected.documents };
     setOrders(newOrders);
+    setSelected(null);
   }, [orders, selected, setOrders, setSelected]);
   const onCloseDialog = useCallback(() => setOrderToDelete(null), []);
 
@@ -87,10 +87,7 @@ const OrdersPage: FC = () => {
     }
     setOrders(newOrders);
     setSelected(null);
-    enqueueSnackbar(
-      `Erfolgreich Auftrag ${create ? 'erstellt' : 'aktualisiert'}`,
-      { variant: 'success' }
-    );
+    enqueueSnackbar('Erfolgreich Auftrag aktualisiert', { variant: 'success' });
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
@@ -161,7 +158,7 @@ const OrdersPage: FC = () => {
       </SideOverlay>
       <ConfirmDialog
         open={!!orderToDelete}
-        title="Kunde löschen"
+        title="Auftrag löschen"
         onClose={onCloseDialog}
         onConfirm={onConfirmDialog}
       >

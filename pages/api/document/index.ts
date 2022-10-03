@@ -18,7 +18,7 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   const gapi = new GapiWrapper(session!.user.refreshToken!);
 
-  const docsResponse = await gapi.drive.files.create({
+  const driveResponse = await gapi.drive.files.create({
     requestBody: {
       name: initialDocument.id,
       mimeType: 'application/vnd.google-apps.document',
@@ -27,7 +27,7 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   });
   const updatedDocument = await DbRepo.Instance.Document.Update(
     initialDocument.id ?? '',
-    { googleId: docsResponse.data.id },
+    { googleId: driveResponse.data.id },
     false
   );
 

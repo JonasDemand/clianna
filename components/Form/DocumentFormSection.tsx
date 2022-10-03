@@ -2,7 +2,7 @@ import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiButton from '@components/External/MuiButton';
 import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
-import { columns } from '@consts/document';
+import { formColumns } from '@consts/document';
 import {
   IDocument,
   IDocumentWithDependencies,
@@ -28,7 +28,7 @@ type DocumentFormProps = {
   reference: { customer?: string; order?: string };
 };
 
-const DocumentForm: FC<DocumentFormProps> = ({
+const DocumentFormSection: FC<DocumentFormProps> = ({
   documents,
   onUpdate,
   reference,
@@ -122,12 +122,9 @@ const DocumentForm: FC<DocumentFormProps> = ({
       : (newDocuments[index] = response);
     onUpdate(newDocuments);
 
-    enqueueSnackbar(
-      `Erfolgreich Dokument ${!selected.id ? 'erstellt' : 'aktualisiert'}`,
-      {
-        variant: 'success',
-      }
-    );
+    enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
+      variant: 'success',
+    });
   }, [documents, enqueueSnackbar, onUpdate, selected, withReference]);
 
   const onCopyDocument = useCallback(
@@ -141,7 +138,10 @@ const DocumentForm: FC<DocumentFormProps> = ({
   );
 
   const onClickAdd = useCallback(() => setSelected({ id: EId.Create }), []);
-  const onClickProfile = useCallback(() => router.push('/profile'), [router]);
+  const onClickProfile = useCallback(
+    () => router.replace('/profile'),
+    [router]
+  );
 
   const onChangeSearch = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
@@ -187,12 +187,12 @@ const DocumentForm: FC<DocumentFormProps> = ({
                 </Grid>
               }
               searchText={searchText}
-              columns={columns}
+              columns={formColumns}
               rows={filteredDocuments}
               onDelete={setDocumentToDelete}
               onEdit={setSelected}
               onCopy={onCopyDocument}
-            ></MuiTable>
+            />
           </Box>
         ) : (
           <Grid container alignItems="center" justifyContent="center">
@@ -260,4 +260,4 @@ const DocumentForm: FC<DocumentFormProps> = ({
   );
 };
 
-export default DocumentForm;
+export default DocumentFormSection;

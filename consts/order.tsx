@@ -92,8 +92,8 @@ export const OrderTypeLabels = new Map<EOrderType, string>([
   [EOrderType.Einlagenarbeiten, 'Einlagenarbeiten'],
   [EOrderType.Abrolloptimierung, 'Abrolloptimierung'],
   [EOrderType.Schuharbeiten, 'Schuharbeiten'],
-  [EOrderType.Massschuhleisten, 'Massschuhleisten'],
-  [EOrderType.Massschuhe, 'Massschuhe'],
+  [EOrderType.Massschuhleisten, 'Maßschuhleisten'],
+  [EOrderType.Massschuhe, 'Maßschuhe'],
   [EOrderType.Schuhbestellung, 'Schuhbestellung'],
   [EOrderType.Miscellaneous, 'Sonstiges'],
 ]);

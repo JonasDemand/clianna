@@ -30,7 +30,20 @@ const CustomersPage: FC = () => {
   const [customerToDelete, setCustomerToDelete] =
     useState<ICustomerWithDependencies | null>(null);
 
-  const onCloseOverlay = useCallback(() => setSelected(null), [setSelected]);
+  const onCloseOverlay = useCallback(() => {
+    if (!selected) return;
+    let newCustomers = [...customers];
+
+    const index = newCustomers.findIndex(
+      (customer) => customer.id === selected.id
+    );
+    newCustomers[index] = {
+      ...newCustomers[index],
+      documents: selected.documents,
+    };
+    setCustomers(newCustomers);
+    setSelected(null);
+  }, [customers, selected, setCustomers, setSelected]);
   const onCloseDialog = useCallback(() => setCustomerToDelete(null), []);
 
   const onConfirmDialog = useCallback(async () => {
@@ -91,10 +104,7 @@ const CustomersPage: FC = () => {
     }
     setCustomers(newCustomers);
     setSelected(null);
-    enqueueSnackbar(
-      `Erfolgreich Kunde ${create ? 'erstellt' : 'aktualisiert'}`,
-      { variant: 'success' }
-    );
+    enqueueSnackbar('Erfolgreich Kunde erstellt', { variant: 'success' });
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
   return (

@@ -9,6 +9,7 @@ import {
 import { withGapi } from '@utils/api/middleware/withGapi';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
+import { replaceTextFromObject } from '@utils/templating';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/react';
 
@@ -22,23 +23,58 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   );
   if (!documentToCopy) return res.status(404).send('Document not found');
 
-  const initialDocument = await DbRepo.Instance.Document.Create(body, false);
+  const initialDocument = await DbRepo.Instance.Document.Create(body, true);
 
   const session = await getSession({ req });
   const gapi = new GapiWrapper(session!.user.refreshToken!);
 
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
 
-  const docsResponse = await gapi.drive.files.copy({
+  const driveCreateResponse = await gapi.drive.files.copy({
     fileId: documentToCopy.googleId,
     requestBody: {
       name: initialDocument.id,
       parents: [session!.user.cliannaFolderId!],
     },
   });
+  const driveId = driveCreateResponse.data.id;
+  if (!driveId) return res.status(500).send('Invalid gapi response');
+  const test = replaceTextFromObject(
+    initialDocument.customer ? 'customer' : 'order',
+    initialDocument.customer ?? initialDocument.order!
+  )
+    .map((x) => x.replaceTemplate)
+    .join('\n');
+  //console.log(test)
+  console.log(
+    replaceTextFromObject(
+      initialDocument.customer ? 'customer' : 'order',
+      initialDocument.customer ?? initialDocument.order!
+    )
+      .map((x) => x.replaceTemplate)
+      .join('\n')
+  );
+  if (
+    documentToCopy.template &&
+    (initialDocument.customer || initialDocument.order)
+  )
+    await gapi.docs.documents.batchUpdate({
+      documentId: driveId,
+      requestBody: {
+        requests: replaceTextFromObject(
+          initialDocument.customer ? 'customer' : 'order',
+          initialDocument.customer ?? initialDocument.order!
+        ).map(({ replaceValue, replaceTemplate }) => ({
+          replaceAllText: {
+            containsText: { matchCase: false, text: replaceTemplate },
+            replaceText: replaceValue,
+          },
+        })),
+      },
+    });
   const updatedDocument = await DbRepo.Instance.Document.Update(
     initialDocument.id ?? '',
-    { googleId: docsResponse.data.id },
+    { googleId: driveId },
     false
   );
   return res.status(200).send(updatedDocument);

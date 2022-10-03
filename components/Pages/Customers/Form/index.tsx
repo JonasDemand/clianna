@@ -1,4 +1,4 @@
-import DocumentForm from '@components/Form/DocumentForm';
+import DocumentFormSection from '@components/Form/DocumentFormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { IDocument } from '@customTypes/database/document';
@@ -33,7 +33,7 @@ const CustomerForm: FC = () => {
             <CustomerAdress />
           </Grid>
           <Grid item>
-            <DocumentForm
+            <DocumentFormSection
               documents={selected.documents ?? []}
               onUpdate={onUpdateDocuments}
               reference={{ customer: selected.id }}

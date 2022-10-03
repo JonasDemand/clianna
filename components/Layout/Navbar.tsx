@@ -1,34 +1,31 @@
-import MuiButton from '@components/External/MuiButton';
 import {
   Assignment,
+  Description,
   Extension,
   Menu as MenuIcon,
   People,
 } from '@mui/icons-material';
 import {
   Box,
-  Divider,
   IconButton,
   Menu,
   MenuItem,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FC, MouseEvent, useCallback, useMemo, useState } from 'react';
+import { FC, MouseEvent, useCallback, useState } from 'react';
 
 const pages = [
   { label: 'Kunden', route: '/customers', icon: <People /> },
   { label: 'Aufträge', route: '/orders', icon: <Assignment /> },
+  { label: 'Dokumente', route: '/documents', icon: <Description /> },
 ];
 
 const Navbar: FC = () => {
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
-  const currentPage = useMemo(
-    () => pages.find((x) => x.route === router.route),
-    [router.route]
-  );
 
   const onClickOpenNavMenu = useCallback(
     (event: MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget),
@@ -67,7 +64,7 @@ const Navbar: FC = () => {
               key={page.route}
               onClick={() => {
                 onCloseNavMenu();
-                page !== currentPage && router.replace(page.route);
+                page.route !== router.route && router.replace(page.route);
               }}
             >
               {page.icon}
@@ -123,29 +120,28 @@ const Navbar: FC = () => {
       >
         CLIANNA
       </Typography>
-      <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+      <Tabs
+        value={router.route}
+        sx={{
+          flexGrow: 1,
+          display: { xs: 'none', md: 'flex' },
+          '.MuiTabs-indicator': { backgroundColor: 'whitesmoke' },
+        }}
+        onChange={(_, value) => router.replace(value)}
+      >
         {pages.map((page) => (
-          <Box
+          <Tab
+            value={page.route}
             key={page.route}
-            sx={{
-              my: 2,
-            }}
-          >
-            <MuiButton
-              variant="text"
-              onClick={() => page !== currentPage && router.replace(page.route)}
-              sx={{
-                color: 'white',
-                display: 'flex',
-              }}
-            >
-              {page.icon}
-              <Typography sx={{ ml: 1 }}>{page.label}</Typography>
-            </MuiButton>
-            {page === currentPage && <Divider sx={{ border: 1 }} />}
-          </Box>
+            label={
+              <Box sx={{ display: 'flex', color: 'whitesmoke' }}>
+                {page.icon}
+                <Typography sx={{ ml: 1 }}>{page.label}</Typography>
+              </Box>
+            }
+          />
         ))}
-      </Box>
+      </Tabs>
     </>
   );
 };
