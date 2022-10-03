@@ -9,7 +9,7 @@ import OrderDetails from './OrderDetails';
 import OrderGeneral from './OrderGeneral';
 
 const OrderFrom: FC = () => {
-  const { selected, updateSelected } = useContext(
+  const { selected, updateSelected, templates } = useContext(
     OrderContext
   ) as OrderContextType;
 
@@ -31,6 +31,7 @@ const OrderFrom: FC = () => {
           <Grid item>
             <DocumentFormSection
               documents={selected.documents ?? []}
+              templates={templates}
               onUpdate={onUpdateDocuments}
               reference={{ order: selected.id }}
             />

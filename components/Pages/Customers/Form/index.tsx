@@ -10,10 +10,9 @@ import CustomerBasedata from './CustomerBasedata';
 import CustomerGeneral from './CustomerGeneral';
 
 const CustomerForm: FC = () => {
-  const { selected, updateSelected } = useContext(
+  const { selected, updateSelected, templates } = useContext(
     CustomerContext
   ) as CustomerContextType;
-
   const onUpdateDocuments = useCallback(
     (documents: IDocument[]) => updateSelected('documents', documents),
     [updateSelected]
@@ -35,6 +34,7 @@ const CustomerForm: FC = () => {
           <Grid item>
             <DocumentFormSection
               documents={selected.documents ?? []}
+              templates={templates}
               onUpdate={onUpdateDocuments}
               reference={{ customer: selected.id }}
             />

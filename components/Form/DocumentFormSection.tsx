@@ -9,7 +9,15 @@ import {
 } from '@customTypes/database/document';
 import { EId } from '@customTypes/id';
 import { Add, Lock, Search } from '@mui/icons-material';
-import { Avatar, Box, Grid, Link, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  AutocompleteRenderInputParams,
+  Avatar,
+  Box,
+  Grid,
+  Link,
+  Typography,
+} from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
@@ -24,12 +32,14 @@ import FormSection from './FormSection';
 
 type DocumentFormProps = {
   documents: IDocument[];
+  templates: IDocument[];
   onUpdate: (documents: IDocument[]) => void;
   reference: { customer?: string; order?: string };
 };
 
 const DocumentFormSection: FC<DocumentFormProps> = ({
   documents,
+  templates,
   onUpdate,
   reference,
 }) => {
@@ -44,7 +54,11 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   const [searchText, setSearchText] = useState('');
 
   const filteredDocuments = useMemo(
-    () => searchArray(documents, searchText),
+    () =>
+      searchArray(
+        documents.filter((document) => !document.template),
+        searchText
+      ),
     [documents, searchText]
   );
   const withReference = useCallback(
@@ -79,6 +93,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       return;
     }
     onUpdate(documents.filter((x) => x.id !== documentToDelete.id));
+    setDocumentToDelete(null);
 
     enqueueSnackbar('Erfolgreich Dokument gelöscht', {
       variant: 'success',
@@ -121,6 +136,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       ? newDocuments.push(response)
       : (newDocuments[index] = response);
     onUpdate(newDocuments);
+    setSelected(null);
 
     enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
       variant: 'success',
@@ -145,6 +161,28 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
 
   const onChangeSearch = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
+    []
+  );
+  const onChangeTemplate = useCallback(
+    (_: unknown, value: IDocument | null) =>
+      setSelected({
+        ...selected,
+        id: value ? `${EId.Copy}_${value.id}` : EId.Create,
+        name: selected?.name ?? value?.name,
+      }),
+    [selected]
+  );
+
+  const renderInputTemplate = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <MuiTextField {...params} label="Template" />
+    ),
+    []
+  );
+
+  const getOptionLabelTemplate = useCallback(
+    (option: IDocument) =>
+      `${option.id} ${option.name ? ` - ${option.name}` : ''}`,
     []
   );
 
@@ -227,7 +265,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
         confirmLabel="Speichern"
         abortLabel="Abbrechen"
       >
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={6}>
             <MuiTextField
               required
@@ -241,6 +279,20 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
               }
             />
           </Grid>
+          {(selected?.id === EId.Create ||
+            templates.findIndex(
+              (document) => document.id === getCopyId(selected?.id ?? '')
+            ) !== -1) && (
+            <Grid item xs={6}>
+              <Autocomplete
+                openOnFocus
+                options={templates}
+                onChange={onChangeTemplate}
+                getOptionLabel={getOptionLabelTemplate}
+                renderInput={renderInputTemplate}
+              />
+            </Grid>
+          )}
         </Grid>
       </ConfirmDialog>
       <ConfirmDialog

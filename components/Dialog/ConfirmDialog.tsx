@@ -38,8 +38,7 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
     setLoading(true);
     await onConfirm();
     setLoading(false);
-    onClose();
-  }, [onClose, onConfirm]);
+  }, [onConfirm]);
 
   const _onClose = useCallback(() => {
     if (loading) return;

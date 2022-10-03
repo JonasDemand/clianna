@@ -1,5 +1,6 @@
 import { columns, defaultVariableColumns } from '@consts/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
+import { IDocument } from '@customTypes/database/document';
 import { searchArray } from '@utils/search';
 import {
   createContext,
@@ -18,11 +19,13 @@ export const CustomerContext = createContext<CustomerContextType | null>(null);
 type CustomerContextProps = {
   children: ReactNode;
   initialCustomers: ICustomerWithDependencies[];
+  initialTemplates: IDocument[];
 };
 
 const CustomerProvider: FC<CustomerContextProps> = ({
   children,
   initialCustomers,
+  initialTemplates,
 }) => {
   const [customers, setCustomers] = useState<ICustomerWithDependencies[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
@@ -76,6 +79,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         customers,
         setCustomers,
         filteredCustomers,
+        templates: initialTemplates,
         selected,
         setSelected,
         updateSelected,

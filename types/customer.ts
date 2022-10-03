@@ -1,11 +1,13 @@
 import { GridColDef } from '@mui/x-data-grid';
 
 import { ICustomerWithDependencies } from './database/customer';
+import { IDocument } from './database/document';
 
 export type CustomerContextType = {
   customers: ICustomerWithDependencies[];
   setCustomers: (customers: ICustomerWithDependencies[]) => void;
   filteredCustomers: ICustomerWithDependencies[];
+  templates: IDocument[];
   selected: ICustomerWithDependencies | null;
   setSelected: (customer: ICustomerWithDependencies | null) => void;
   updateSelected: <T extends keyof ICustomerWithDependencies>(

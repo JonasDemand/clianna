@@ -29,15 +29,17 @@ export const replaceTextFromObject = (
   prefix: string,
   obj: object
 ): Replacement[] => {
-  console.log(prefix, obj);
   let results: Replacement[] = [];
   Object.entries(obj).forEach(([key, value]) => {
     const replaceTemplate = `${
       !prefix.startsWith('{{') ? '{{' : ''
     }${prefix}.${key}`;
     if (Array.isArray(value)) {
-      value.forEach((x, i) =>
-        results.concat(replaceTextFromObject(`${replaceTemplate}[${i}]`, x))
+      value.forEach(
+        (x, i) =>
+          (results = results.concat(
+            replaceTextFromObject(`${replaceTemplate}[${i}]`, x)
+          ))
       );
       return;
     }
@@ -46,7 +48,7 @@ export const replaceTextFromObject = (
       typeof value === 'object' &&
       !(value instanceof Date)
     ) {
-      results.concat(replaceTextFromObject(`${replaceTemplate}`, value));
+      results = results.concat(replaceTextFromObject(replaceTemplate, value));
       return;
     }
 

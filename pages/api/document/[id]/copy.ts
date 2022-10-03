@@ -39,21 +39,6 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   });
   const driveId = driveCreateResponse.data.id;
   if (!driveId) return res.status(500).send('Invalid gapi response');
-  const test = replaceTextFromObject(
-    initialDocument.customer ? 'customer' : 'order',
-    initialDocument.customer ?? initialDocument.order!
-  )
-    .map((x) => x.replaceTemplate)
-    .join('\n');
-  //console.log(test)
-  console.log(
-    replaceTextFromObject(
-      initialDocument.customer ? 'customer' : 'order',
-      initialDocument.customer ?? initialDocument.order!
-    )
-      .map((x) => x.replaceTemplate)
-      .join('\n')
-  );
   if (
     documentToCopy.template &&
     (initialDocument.customer || initialDocument.order)

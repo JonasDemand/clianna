@@ -41,7 +41,9 @@ export class Document {
       },
       select: {
         ...Document.DefaultSelect,
-        order: includeDependencies ? { select: Order.DefaultSelect } : false,
+        order: includeDependencies
+          ? { select: { ...Order.DefaultSelect, customer: true } }
+          : false,
         customer: includeDependencies
           ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
@@ -55,7 +57,9 @@ export class Document {
       where: { user: { id: this.UserId } },
       select: {
         ...Document.DefaultSelect,
-        order: includeDependencies ? { select: Order.DefaultSelect } : false,
+        order: includeDependencies
+          ? { select: { ...Order.DefaultSelect, customer: true } }
+          : false,
         customer: includeDependencies
           ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
@@ -70,7 +74,25 @@ export class Document {
       where: { AND: [{ user: { id: this.UserId } }, { id }] },
       select: {
         ...Document.DefaultSelect,
-        order: includeDependencies ? { select: Order.DefaultSelect } : false,
+        order: includeDependencies
+          ? { select: { ...Order.DefaultSelect, customer: true } }
+          : false,
+        customer: includeDependencies
+          ? { select: { ...Customer.DefaultSelect, orders: true } }
+          : false,
+      },
+    });
+  }
+  public async GetTemplates<ID extends boolean>(
+    includeDependencies: ID
+  ): Promise<ID extends true ? IDocumentWithDependencies[] : IDocument[]> {
+    return await prisma.document.findMany({
+      where: { user: { id: this.UserId }, template: true },
+      select: {
+        ...Document.DefaultSelect,
+        order: includeDependencies
+          ? { select: { ...Order.DefaultSelect, customer: true } }
+          : false,
         customer: includeDependencies
           ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,
@@ -90,7 +112,9 @@ export class Document {
       where: { id },
       select: {
         ...Document.DefaultSelect,
-        order: includeDependencies ? { select: Order.DefaultSelect } : false,
+        order: includeDependencies
+          ? { select: { ...Order.DefaultSelect, customer: true } }
+          : false,
         customer: includeDependencies
           ? { select: { ...Customer.DefaultSelect, orders: true } }
           : false,

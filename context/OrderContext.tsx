@@ -1,5 +1,6 @@
 import { columns, defaultVariableColumns } from '@consts/order';
 import { ICustomer } from '@customTypes/database/customer';
+import { IDocument } from '@customTypes/database/document';
 import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { searchArray } from '@utils/search';
@@ -18,6 +19,7 @@ export const OrderContext = createContext<OrderContextType | null>(null);
 type OrderContextProps = {
   children: ReactNode;
   initialCustomers: ICustomer[];
+  initialTemplates: IDocument[];
   initialOrders: IOrderWithDependencies[];
 };
 
@@ -25,6 +27,7 @@ const OrderProvider: FC<OrderContextProps> = ({
   children,
   initialCustomers,
   initialOrders,
+  initialTemplates,
 }) => {
   const [orders, setOrders] = useState<IOrderWithDependencies[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
@@ -75,6 +78,7 @@ const OrderProvider: FC<OrderContextProps> = ({
     <OrderContext.Provider
       value={{
         customers: initialCustomers,
+        templates: initialTemplates,
         orders,
         setOrders,
         filteredOrders,

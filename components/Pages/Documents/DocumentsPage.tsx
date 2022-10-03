@@ -117,7 +117,7 @@ const DocumentsPage: FC = () => {
         searchText={searchText}
       />
       <SideOverlay
-        heading="Auftrag bearbeiten"
+        heading="Dokument bearbeiten"
         open={!!selected}
         onClose={onCloseOverlay}
         onSave={onSaveOverlay}

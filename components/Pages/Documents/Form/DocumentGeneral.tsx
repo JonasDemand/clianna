@@ -76,6 +76,7 @@ const DocumentGeneral: FC = () => {
           <Grid item xs={6}>
             <Autocomplete
               openOnFocus
+              disabled={selected.template}
               options={customers.concat(orders) as (ICustomer | IOrder)[]}
               groupBy={(option) => (isCustomer(option) ? 'Kunden' : 'Aufträge')}
               value={selected.customer ?? selected.order}
