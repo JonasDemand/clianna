@@ -47,6 +47,9 @@ const MuiTable = <T extends GridValidRowModel>({
           '.MuiDataGrid-cell': {
             outline: 'none !important',
           },
+          '.MuiDataGrid-row': {
+            cursor: gridProps ? 'pointer' : 'unset',
+          },
         }}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
         disableColumnMenu

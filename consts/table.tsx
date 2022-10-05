@@ -28,21 +28,36 @@ export const getActionColumn = <T extends GridValidRowModel>({
       <>
         {onEdit && (
           <MuiTooltip title="Bearbeiten">
-            <IconButton onClick={() => onEdit!(row)}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit!(row);
+              }}
+            >
               <Edit />
             </IconButton>
           </MuiTooltip>
         )}
         {onCopy && (
           <MuiTooltip title="Kopieren">
-            <IconButton onClick={() => onCopy!(row)}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onCopy!(row);
+              }}
+            >
               <ContentCopy />
             </IconButton>
           </MuiTooltip>
         )}
         {onDelete && (
           <MuiTooltip title="Löschen">
-            <IconButton onClick={() => onDelete!(row)}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete!(row);
+              }}
+            >
               <Delete />
             </IconButton>
           </MuiTooltip>

@@ -134,6 +134,11 @@ const OrdersPage: FC = () => {
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
   }, [enqueueSnackbar, orderToDelete, orders, setOrders]);
 
+  const onRowClick = useCallback(
+    ({ row }: { row: IOrderWithDependencies }) => setSelected(row),
+    [setSelected]
+  );
+
   return (
     <Box
       sx={{
@@ -144,7 +149,7 @@ const OrdersPage: FC = () => {
         header={<OrdersTableHeader />}
         rows={filteredOrders}
         columns={activeColumns}
-        onEdit={setSelected}
+        onRowClick={onRowClick}
         onCopy={onCopyRow}
         onDelete={setOrderToDelete}
         searchText={searchText}

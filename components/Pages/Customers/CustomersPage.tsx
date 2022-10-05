@@ -107,6 +107,11 @@ const CustomersPage: FC = () => {
     enqueueSnackbar('Erfolgreich Kunde erstellt', { variant: 'success' });
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
+  const onRowClick = useCallback(
+    ({ row }: { row: ICustomerWithDependencies }) => setSelected(row),
+    [setSelected]
+  );
+
   return (
     <Box
       sx={{
@@ -117,7 +122,7 @@ const CustomersPage: FC = () => {
         header={<CustomersTableHeader />}
         rows={filteredCustomers}
         columns={activeColumns}
-        onEdit={setSelected}
+        onRowClick={onRowClick}
         onDelete={setCustomerToDelete}
         searchText={searchText}
       />

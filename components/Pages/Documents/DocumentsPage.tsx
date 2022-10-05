@@ -102,6 +102,11 @@ const DocumentsPage: FC = () => {
     );
   }, [documentToDelete, documents, enqueueSnackbar, setDocuments]);
 
+  const onRowClick = useCallback(
+    ({ row }: { row: IDocumentWithDependencies }) => setSelected(row),
+    [setSelected]
+  );
+
   return (
     <Box
       sx={{
@@ -112,7 +117,7 @@ const DocumentsPage: FC = () => {
         header={<DocumentsTableHeader />}
         rows={filteredDocuments}
         columns={activeColumns}
-        onEdit={setSelected}
+        onRowClick={onRowClick}
         onCopy={onCopyRow}
         onDelete={setDocumentToDelete}
         searchText={searchText}
