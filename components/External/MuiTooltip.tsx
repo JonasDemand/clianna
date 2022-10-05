@@ -1,5 +1,5 @@
 import { Tooltip, TooltipProps, Typography } from '@mui/material';
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 export type MuiTooltipProps = TooltipProps & {
   show?: boolean;

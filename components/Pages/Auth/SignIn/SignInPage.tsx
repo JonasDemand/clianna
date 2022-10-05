@@ -3,7 +3,7 @@ import { Alert, Box } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import GoogleButton from 'react-google-button';
 
 import AuthLayout from '../AuthLayout';

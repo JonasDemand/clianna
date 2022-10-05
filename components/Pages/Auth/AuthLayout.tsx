@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, Typography } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 export type AuthLayoutProps = {
   title: string;

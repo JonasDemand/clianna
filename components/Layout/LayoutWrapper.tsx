@@ -1,5 +1,5 @@
 import { AppBar, Box, Container, Toolbar } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import Navbar from './Navbar';
 import Userprofile from './Userprofile';

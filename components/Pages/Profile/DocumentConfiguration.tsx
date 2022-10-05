@@ -10,7 +10,7 @@ import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import React, { FC, MouseEvent, useCallback, useState } from 'react';
 
 const DocumentConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

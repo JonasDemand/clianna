@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/router';
-import { FC, MouseEvent, useCallback, useState } from 'react';
+import React, { FC, MouseEvent, useCallback, useState } from 'react';
 
 const pages = [
   { label: 'Kunden', route: '/customers', icon: <People /> },

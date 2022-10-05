@@ -22,7 +22,7 @@ import {
 import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
 import dayjs from 'dayjs';
-import { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const OrderGeneral: FC = () => {
   const { selected, updateSelected, customers } = useContext(

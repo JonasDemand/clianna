@@ -4,7 +4,7 @@ import { Grid } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
-import { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import DocumentConfiguration from './DocumentConfiguration';
 import LoginConfiguration from './LoginConfiguration';

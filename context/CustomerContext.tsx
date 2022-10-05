@@ -2,7 +2,7 @@ import { columns, defaultVariableColumns } from '@consts/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { IDocument } from '@customTypes/database/document';
 import { searchArray } from '@utils/search';
-import {
+import React, {
   createContext,
   FC,
   ReactNode,

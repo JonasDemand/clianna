@@ -8,6 +8,7 @@ import { IOrderWithDependencies } from '@customTypes/database/order';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import React from 'react';
 
 type OrdersProps = {
   customers: ICustomer[];

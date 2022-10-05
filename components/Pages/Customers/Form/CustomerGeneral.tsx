@@ -2,7 +2,7 @@ import FormSection from '@components/Form/FormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 
 const CustomerGeneral: FC = () => {
   const { selected, updateSelected } = useContext(

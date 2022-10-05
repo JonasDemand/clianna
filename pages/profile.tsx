@@ -1,9 +1,10 @@
 import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
 import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import ProfilePage from '@components/Pages/Profile/ProfilePage';
-import { FC } from 'react';
+import { NextPage } from 'next';
+import React from 'react';
 
-const Profile: FC = () => {
+const Profile: NextPage = () => {
   return (
     <AuthenticationWrapper>
       <LayoutWrapper>

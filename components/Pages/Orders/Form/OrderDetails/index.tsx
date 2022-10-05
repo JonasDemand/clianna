@@ -2,7 +2,7 @@ import { OrderContext } from '@context/OrderContext';
 import { OrderContextType } from '@customTypes/order';
 import { FormControl, FormLabel, Grid, Typography } from '@mui/material';
 import { EOrderType } from '@prisma/client';
-import { FC, useContext } from 'react';
+import React, { FC, useContext } from 'react';
 
 import General from './General';
 import Massschuhleisten from './Massschuhleisten';

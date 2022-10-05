@@ -9,7 +9,13 @@ import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
-import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import GoogleButton from 'react-google-button';
 
 const LoginConfiguration: FC = () => {

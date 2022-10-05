@@ -4,7 +4,7 @@ import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
 import { DocumentContextType, EShowDocument } from '@customTypes/document';
 import { searchArray } from '@utils/search';
-import {
+import React, {
   createContext,
   FC,
   ReactNode,

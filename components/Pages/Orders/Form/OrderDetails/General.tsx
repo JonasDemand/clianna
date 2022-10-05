@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 import { DuedatePicker, SpecificationSelect } from './CommonInputs';
 

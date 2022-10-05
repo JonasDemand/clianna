@@ -3,6 +3,7 @@ import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { getCustomerLabel } from '@utils/customer';
+import React from 'react';
 
 export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
   { field: 'id', headerName: 'Dokumente-ID', flex: 1 },

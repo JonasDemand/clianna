@@ -11,6 +11,7 @@ import {
   EOrderType,
 } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
+import React from 'react';
 
 export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
   { field: 'id', headerName: 'Auftrags-ID', flex: 1 },

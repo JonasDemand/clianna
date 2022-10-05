@@ -5,6 +5,7 @@ import { IOrder } from '@customTypes/database/order';
 import { EId } from '@customTypes/id';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
+import React from 'react';
 
 export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
   { field: 'id', headerName: 'Kunden-ID', flex: 1 },

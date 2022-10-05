@@ -1,7 +1,13 @@
 import { BackdropContextType } from '@customTypes/backdrop';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
-import { createContext, FC, ReactNode, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  FC,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
 
 export const BackdropContext = createContext<BackdropContextType | null>(null);
 

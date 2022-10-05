@@ -16,11 +16,10 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@customTypes/*": ["types/*"],
+      "@customTypes/*": ["./types/*"],
       "@components/*": ["./components/*"],
       "@consts/*": ["./consts/*"],
       "@context/*": ["./context/*"],
-      "@pages/*": ["./pages/*"],
       "@utils/*": ["./utils/*"]
     }
   },

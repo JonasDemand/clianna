@@ -1,7 +1,7 @@
 import MuiTooltip from '@components/External/MuiTooltip';
 import ReactHighlighter from '@components/External/ReactHighlighter';
 import { Box, Link } from '@mui/material';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 const isValidHttpUrl = (s: string) => {
   let url;

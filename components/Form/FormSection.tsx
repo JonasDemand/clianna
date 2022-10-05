@@ -1,5 +1,5 @@
 import { FormControl, FormGroup, FormLabel } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 export type FormBodyProps = {
   label: string;

@@ -11,7 +11,7 @@ import { getCustomerLabel } from '@utils/customer';
 import { getCopyId } from '@utils/id';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useState } from 'react';
 
 import DocumentsTableHeader from './DocumentsTableHeader';
 import DocumentForm from './Form';

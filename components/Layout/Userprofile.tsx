@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import { signOut } from 'next-auth/react';
-import { FC, useCallback, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {
   const router = useRouter();

@@ -1,7 +1,13 @@
 import MuiButton from '@components/External/MuiButton';
 import { Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { FC, FormEventHandler, ReactNode, useCallback, useState } from 'react';
+import React, {
+  FC,
+  FormEventHandler,
+  ReactNode,
+  useCallback,
+  useState,
+} from 'react';
 
 export type SideOverlayProps = {
   children: ReactNode;

@@ -1,6 +1,6 @@
 import MuiTextField from '@components/External/MuiTextField';
 import { Box } from '@mui/material';
-import { ChangeEvent, FC, useCallback } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 export type PasswordFormProps = {
   required?: boolean;

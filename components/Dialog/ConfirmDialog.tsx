@@ -7,7 +7,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { FC, ReactNode, useCallback, useRef, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useRef, useState } from 'react';
 
 export type ConfirmDialogProps = {
   title: string;

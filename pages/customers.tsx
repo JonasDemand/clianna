@@ -7,6 +7,7 @@ import { IDocument } from '@customTypes/database/document';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
+import React from 'react';
 
 type CustomersProps = {
   customers: ICustomerWithDependencies[];

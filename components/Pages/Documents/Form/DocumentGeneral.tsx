@@ -13,7 +13,7 @@ import {
   Grid,
 } from '@mui/material';
 import { getCustomerLabel } from '@utils/customer';
-import { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const DocumentGeneral: FC = () => {
   const { selected, updateSelected, customers, orders } = useContext(

@@ -4,7 +4,7 @@ import { Alert } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import AuthLayout from '../AuthLayout';
 import CredentialsForm from '../CredentailsForm';

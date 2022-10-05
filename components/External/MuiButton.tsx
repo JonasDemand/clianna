@@ -1,6 +1,6 @@
 import { LoadingButton, LoadingButtonProps } from '@mui/lab';
 import { Button, ButtonProps } from '@mui/material';
-import { FC } from 'react';
+import React, { FC } from 'react';
 
 type MuiButtonProps = ButtonProps &
   LoadingButtonProps & {

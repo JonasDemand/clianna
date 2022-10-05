@@ -4,7 +4,13 @@ import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Email, Phone, Smartphone } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
-import { ChangeEvent, FC, useCallback, useContext, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 
 const CustomerBasedata: FC = () => {
   const { selected, updateSelected } = useContext(

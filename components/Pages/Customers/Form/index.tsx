@@ -3,7 +3,7 @@ import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { IDocument } from '@customTypes/database/document';
 import { Grid } from '@mui/material';
-import { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';

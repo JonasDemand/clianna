@@ -1,7 +1,7 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { signIn, useSession } from 'next-auth/react';
-import { FC, ReactNode, useContext, useEffect } from 'react';
+import React, { FC, ReactNode, useContext, useEffect } from 'react';
 
 export type AuthenticationWrapperProps = {
   children: ReactNode;

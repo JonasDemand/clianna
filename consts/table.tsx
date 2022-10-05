@@ -2,6 +2,8 @@ import MuiTooltip from '@components/External/MuiTooltip';
 import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { GridColDef, GridValidRowModel } from '@mui/x-data-grid';
+import React from 'react';
+
 type ColumnEvent<T extends GridValidRowModel> = (row: T) => void;
 
 export type GetActiveColumnProps<T extends GridValidRowModel> = {

@@ -3,7 +3,7 @@ import { OrderContext } from '@context/OrderContext';
 import { IDocument } from '@customTypes/database/document';
 import { OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
-import { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 
 import OrderDetails from './OrderDetails';
 import OrderGeneral from './OrderGeneral';
