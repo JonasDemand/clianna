@@ -159,6 +159,11 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     [router]
   );
 
+  const onRowClick = useCallback(
+    ({ row }: { row: IDocument }) => setSelected(row),
+    [setSelected]
+  );
+
   const onChangeSearch = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
     []
@@ -227,9 +232,9 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
               searchText={searchText}
               columns={formColumns}
               rows={filteredDocuments}
-              onDelete={setDocumentToDelete}
-              onEdit={setSelected}
+              onRowClick={onRowClick}
               onCopy={onCopyDocument}
+              onDelete={setDocumentToDelete}
             />
           </Box>
         ) : (
