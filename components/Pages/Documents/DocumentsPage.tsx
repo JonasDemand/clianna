@@ -96,6 +96,7 @@ const DocumentsPage: FC = () => {
       return;
     }
     enqueueSnackbar('Erfolgreich Dokument gelöscht', { variant: 'success' });
+    setDocumentToDelete(null);
     setDocuments(
       documents.filter((document) => document.id !== documentToDelete.id)
     );

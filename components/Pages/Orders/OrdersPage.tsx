@@ -130,6 +130,7 @@ const OrdersPage: FC = () => {
       return;
     }
     enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
+    setOrderToDelete(null);
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
   }, [enqueueSnackbar, orderToDelete, orders, setOrders]);
 

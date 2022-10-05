@@ -48,7 +48,6 @@ const CustomersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
-    setCustomerToDelete(null);
     const { error } = await ApiClient.Customer.Delete(customerToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
@@ -57,6 +56,7 @@ const CustomersPage: FC = () => {
       return;
     }
     enqueueSnackbar('Erfolgreich Kunde gelöscht', { variant: 'success' });
+    setCustomerToDelete(null);
     setCustomers(
       customers.filter((customer) => customer.id !== customerToDelete.id)
     );
