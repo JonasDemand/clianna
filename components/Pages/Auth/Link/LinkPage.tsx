@@ -1,4 +1,4 @@
-import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
+import AuthenticationWrapper from '@components/Wrappers/AuthenticationWrapper';
 import { Google } from '@mui/icons-material';
 import { Alert } from '@mui/material';
 import { ApiClient } from '@utils/api/client';

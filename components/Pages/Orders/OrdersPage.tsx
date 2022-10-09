@@ -1,6 +1,6 @@
-import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
-import SideOverlay from '@components/SideOverlay/SideOverlay';
+import ConfirmDialog from '@components/Modals/ConfirmDialog';
+import SideOverlay from '@components/Modals/SideOverlay';
 import { BackdropContext } from '@context/BackdropContext';
 import { OrderContext } from '@context/OrderContext';
 import { BackdropContextType } from '@customTypes/backdrop';

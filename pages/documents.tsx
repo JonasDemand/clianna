@@ -1,6 +1,6 @@
-import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
-import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import DocumentsPage from '@components/Pages/Documents/DocumentsPage';
+import AuthenticationWrapper from '@components/Wrappers/AuthenticationWrapper';
+import LayoutWrapper from '@components/Wrappers/LayoutWrapper';
 import DocumentProvider from '@context/DocumentContext';
 import { ICustomer } from '@customTypes/database/customer';
 import { IDocumentWithDependencies } from '@customTypes/database/document';

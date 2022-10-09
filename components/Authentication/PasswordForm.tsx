@@ -7,7 +7,7 @@ export type PasswordFormProps = {
   showOldPassword?: boolean;
   showRepeatPassword?: boolean;
   focusPassword?: boolean;
-  showValidation: boolean;
+  showValidation?: boolean;
   repeatError?: boolean;
   oldPasswordError?: boolean;
   password: string;
@@ -16,7 +16,7 @@ export type PasswordFormProps = {
   onPasswordChange: (value: string) => void;
   onOldPasswordChange?: (value: string) => void;
   onRepeatPasswordChange?: (value: string) => void;
-  setShowValidation: (value: boolean) => void;
+  setShowValidation?: (value: boolean) => void;
   setRepeatError?: (value: boolean) => void;
   setOldPasswordError?: (value: boolean) => void;
 };
@@ -67,9 +67,10 @@ const PasswordForm: FC<PasswordFormProps> = ({
   );
 
   return (
-    <Box onFocus={() => setShowValidation(false)}>
+    <Box onFocus={() => setShowValidation && setShowValidation(false)}>
       {showOldPassword && (
         <MuiTextField
+          inputProps={{ 'data-testid': 'oldPassword' }}
           type="password"
           label="Altes Passwort"
           fullWidth
@@ -85,6 +86,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
         />
       )}
       <MuiTextField
+        inputProps={{ 'data-testid': 'password' }}
         type="password"
         label="Passwort"
         fullWidth
@@ -97,6 +99,7 @@ const PasswordForm: FC<PasswordFormProps> = ({
       />
       {showRepeatPassword && (
         <MuiTextField
+          inputProps={{ 'data-testid': 'repeatPassword' }}
           type="password"
           label="Passwort wiederholen"
           fullWidth

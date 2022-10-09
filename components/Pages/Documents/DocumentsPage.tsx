@@ -1,6 +1,6 @@
-import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
-import SideOverlay from '@components/SideOverlay/SideOverlay';
+import ConfirmDialog from '@components/Modals/ConfirmDialog';
+import SideOverlay from '@components/Modals/SideOverlay';
 import { DocumentContext } from '@context/DocumentContext';
 import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { DocumentContextType } from '@customTypes/document';

@@ -1,6 +1,6 @@
-import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiTable from '@components/External/MuiTable';
-import SideOverlay from '@components/SideOverlay/SideOverlay';
+import ConfirmDialog from '@components/Modals/ConfirmDialog';
+import SideOverlay from '@components/Modals/SideOverlay';
 import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { EId } from '@customTypes/id';

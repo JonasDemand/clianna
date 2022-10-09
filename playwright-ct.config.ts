@@ -29,7 +29,19 @@ const config: PlaywrightTestConfig = {
     /* Port to use for Playwright component endpoint. */
     ctPort: 3100,
 
-    ctViteConfig: { plugins: [tsconfigPaths()] },
+    ctViteConfig: {
+      plugins: [tsconfigPaths()],
+      resolve: {
+        alias: [
+          { find: 'next/router', replacement: 'next-router-mock' },
+          { find: 'next/dist/client/router', replacement: 'next-router-mock' },
+          {
+            find: 'next-auth/react',
+            replacement: './test/mocks/next-auth/react.tsx',
+          },
+        ],
+      },
+    },
   },
   updateSnapshots: 'missing',
 

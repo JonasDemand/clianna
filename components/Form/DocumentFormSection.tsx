@@ -1,7 +1,7 @@
-import ConfirmDialog from '@components/Dialog/ConfirmDialog';
 import MuiButton from '@components/External/MuiButton';
 import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
+import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import { formColumns } from '@consts/document';
 import {
   IDocument,

@@ -1,6 +1,6 @@
-import AuthenticationWrapper from '@components/Authentication/AuthenticationWrapper';
-import LayoutWrapper from '@components/Layout/LayoutWrapper';
 import ProfilePage from '@components/Pages/Profile/ProfilePage';
+import AuthenticationWrapper from '@components/Wrappers/AuthenticationWrapper';
+import LayoutWrapper from '@components/Wrappers/LayoutWrapper';
 import { NextPage } from 'next';
 import React from 'react';
 

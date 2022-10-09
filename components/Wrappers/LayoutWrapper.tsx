@@ -1,8 +1,8 @@
 import { AppBar, Box, Container, Toolbar } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 
-import Navbar from './Navbar';
-import Userprofile from './Userprofile';
+import Navbar from '../Layout/Navbar';
+import Userprofile from '../Layout/Userprofile';
 
 type LayoutWrapperProps = {
   children: ReactNode;
