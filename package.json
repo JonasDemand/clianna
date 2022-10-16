@@ -11,6 +11,7 @@
     "prisma-deploy": "prisma migrate deploy",
     "prisma-generate": "prisma generate",
     "test-ct": "playwright test -c playwright-ct.config.ts",
+    "test-ct-update": "playwright test -c playwright-ct.config.ts --update-snapshots",
     "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug"
   },
   "dependencies": {

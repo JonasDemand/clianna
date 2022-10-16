@@ -9,3 +9,6 @@ export interface ICustomerWithDependencies extends ICustomer {
   orders?: Omit<IOrderWithDependencies, 'customer'>[];
   documents?: Omit<IDocumentWithDependencies, 'customer'>[];
 }
+
+export interface ICustomerOnlyMeta
+  extends Pick<Customer, 'id' | 'firstname' | 'lastname'> {}

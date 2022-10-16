@@ -84,6 +84,12 @@ export class Customer {
       },
     });
   }
+  public async GetOnlyMeta() {
+    return await prisma.customer.findMany({
+      where: { user: { id: this.UserId } },
+      select: { firstname: true, lastname: true, id: true, disabled: true },
+    });
+  }
   public async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {

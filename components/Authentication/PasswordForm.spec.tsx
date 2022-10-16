@@ -35,19 +35,25 @@ test('required', async ({ mount }) => {
 });
 
 test('old password', async ({ mount }) => {
+  let oldPassword = 'safe-password',
+    oldPasswordError = true;
   const component = await mount(
     <ProviderWrapper>
       <PasswordForm
         required
         showValidation
-        oldPasswordError
         showOldPassword
-        oldPassword="safe-password"
+        oldPasswordError={oldPasswordError}
+        oldPassword={oldPassword}
         password="unsafe-password"
         onPasswordChange={() => {}}
+        setOldPasswordError={(value) => (oldPasswordError = value)}
+        onOldPasswordChange={(value) => (oldPassword = value)}
       />
     </ProviderWrapper>
   );
   const form = component.locator('_react=PasswordForm');
+  await expect(form).toHaveScreenshot();
+  await form.locator('data-testid=oldPassword').type('.');
   await expect(form).toHaveScreenshot();
 });

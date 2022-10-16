@@ -42,8 +42,9 @@ const PasswordForm: FC<PasswordFormProps> = ({
   const onChangeOldPassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       onOldPasswordChange && onOldPasswordChange(e.target.value);
+      setOldPasswordError && setOldPasswordError(false);
     },
-    [onOldPasswordChange]
+    [onOldPasswordChange, setOldPasswordError]
   );
   const onChangePassword = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,13 +62,18 @@ const PasswordForm: FC<PasswordFormProps> = ({
     [onRepeatPasswordChange, setRepeatError]
   );
 
+  const onFocusForm = useCallback(
+    () => setShowValidation && setShowValidation(false),
+    [setShowValidation]
+  );
+
   const passwordInputRef = useCallback(
     (input: any) => input && !password && input.focus(),
     [password]
   );
 
   return (
-    <Box onFocus={() => setShowValidation && setShowValidation(false)}>
+    <Box onFocus={onFocusForm}>
       {showOldPassword && (
         <MuiTextField
           inputProps={{ 'data-testid': 'oldPassword' }}
