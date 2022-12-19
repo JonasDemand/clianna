@@ -1,5 +1,5 @@
-import { BackdropContext } from '@context/BackdropContext';
-import { BackdropContextType } from '@customTypes/backdrop';
+import { GlobalContext } from '@context/GlobalContext';
+import { GlobalContextType } from '@customTypes/global';
 import { Grid } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { refreshSession } from '@utils/nextauth';
@@ -11,22 +11,20 @@ import LoginConfiguration from './LoginConfiguration';
 
 const ProfilePage: FC = () => {
   const router = useRouter();
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const { showBackdrop } = useContext(GlobalContext) as GlobalContextType;
 
   useEffect(() => {
     const createFolder = async () => {
       if (!Boolean(router.query.createRootfolder)) return;
-      setShowBackdrop(true);
+      showBackdrop(true);
       router.replace('/profile', undefined, { shallow: true });
       await ApiClient.Document.CreateRootFolder();
       await refreshSession();
-      setShowBackdrop(false);
+      showBackdrop(false);
     };
 
     createFolder();
-  }, [router, router.query.createRootfolder, setShowBackdrop]);
+  }, [router, router.query.createRootfolder, showBackdrop]);
 
   return (
     <Grid container justifyContent="center">

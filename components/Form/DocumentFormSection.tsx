@@ -3,10 +3,12 @@ import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import { formColumns } from '@consts/document';
+import { GlobalContext } from '@context/GlobalContext';
 import {
   IDocument,
   IDocumentWithDependencies,
 } from '@customTypes/database/document';
+import { GlobalContextType } from '@customTypes/global';
 import { EId } from '@customTypes/id';
 import { Add, Lock, Search } from '@mui/icons-material';
 import {
@@ -26,7 +28,14 @@ import { isEqual } from 'lodash';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
-import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 
 import FormSection from './FormSection';
 
@@ -46,6 +55,8 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { data: session } = useSession();
+
+  const { isDragging } = useContext(GlobalContext) as GlobalContextType;
 
   const [documentToDelete, setDocumentToDelete] = useState<IDocument | null>(
     null
@@ -196,46 +207,50 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       <FormSection label="Dokumente">
         {session?.user.refreshToken && session.user.cliannaFolderId ? (
           <Box sx={{ height: '500px' }}>
-            <MuiTable
-              header={
-                <Grid
-                  container
-                  spacing={1}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Grid item xs={12} md={8}>
-                    <MuiTextField
-                      fullWidth
-                      type="text"
-                      label="Suche"
-                      value={searchText}
-                      onChange={onChangeSearch}
-                      InputProps={{
-                        endAdornment: <Search />,
-                      }}
-                    />
+            {isDragging ? (
+              <Box sx={{ outline: '2px dashed black' }}></Box>
+            ) : (
+              <MuiTable
+                header={
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Grid item xs={12} md={8}>
+                      <MuiTextField
+                        fullWidth
+                        type="text"
+                        label="Suche"
+                        value={searchText}
+                        onChange={onChangeSearch}
+                        InputProps={{
+                          endAdornment: <Search />,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <MuiButton
+                        variant="contained"
+                        color="success"
+                        fullWidth
+                        startIcon={<Add />}
+                        onClick={onClickAdd}
+                      >
+                        Hinzufügen
+                      </MuiButton>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} md={4}>
-                    <MuiButton
-                      variant="contained"
-                      color="success"
-                      fullWidth
-                      startIcon={<Add />}
-                      onClick={onClickAdd}
-                    >
-                      Hinzufügen
-                    </MuiButton>
-                  </Grid>
-                </Grid>
-              }
-              searchText={searchText}
-              columns={formColumns}
-              rows={filteredDocuments}
-              onRowClick={onRowClick}
-              onCopy={onCopyDocument}
-              onDelete={setDocumentToDelete}
-            />
+                }
+                searchText={searchText}
+                columns={formColumns}
+                rows={filteredDocuments}
+                onRowClick={onRowClick}
+                onCopy={onCopyDocument}
+                onDelete={setDocumentToDelete}
+              />
+            )}
           </Box>
         ) : (
           <Grid container alignItems="center" justifyContent="center">

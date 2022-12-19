@@ -1,4 +1,4 @@
-import BackdropProvider from '@context/BackdropContext';
+import GlobalProvider from '@context/GlobalContext';
 import { ThemeProvider } from '@emotion/react';
 import { Slide } from '@mui/material';
 import theme from '@utils/theme';
@@ -24,7 +24,7 @@ const ProviderWrapper: FC<ProviderWrapperProps> = ({ children, session }) => {
           }}
           TransitionComponent={Slide}
         >
-          <BackdropProvider>{children}</BackdropProvider>
+          <GlobalProvider>{children}</GlobalProvider>
         </SnackbarProvider>
       </SessionProvider>
     </ThemeProvider>

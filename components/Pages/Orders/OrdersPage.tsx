@@ -1,11 +1,11 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { BackdropContext } from '@context/BackdropContext';
+import { GlobalContext } from '@context/GlobalContext';
 import { OrderContext } from '@context/OrderContext';
-import { BackdropContextType } from '@customTypes/backdrop';
 import { IDocument } from '@customTypes/database/document';
 import { IOrderWithDependencies } from '@customTypes/database/order';
+import { GlobalContextType } from '@customTypes/global';
 import { EId } from '@customTypes/id';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
@@ -21,9 +21,7 @@ import OrdersTableHeader from './OrdersTableHeader';
 const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const { showBackdrop } = useContext(GlobalContext) as GlobalContextType;
   const {
     filteredOrders,
     activeColumns,
@@ -94,7 +92,7 @@ const OrdersPage: FC = () => {
     async (order: IOrderWithDependencies) => {
       let documents: Array<IDocument> = [];
       if (order.documents) {
-        setShowBackdrop(true);
+        showBackdrop(true);
         const createDocumentRes = await Promise.all(
           order.documents.map((document) =>
             document.id
@@ -102,7 +100,7 @@ const OrdersPage: FC = () => {
               : ApiClient.Document.Create({ name: document.name })
           )
         );
-        setShowBackdrop(false);
+        showBackdrop(false);
         if (createDocumentRes.some((res) => res.error || !res.response)) {
           enqueueSnackbar('Kopieren von Dokumenten fehlgeschlagen', {
             variant: 'error',
@@ -117,7 +115,7 @@ const OrdersPage: FC = () => {
         documents,
       });
     },
-    [enqueueSnackbar, setSelected, setShowBackdrop]
+    [enqueueSnackbar, setSelected, showBackdrop]
   );
 
   const onConfirmDialog = useCallback(async () => {

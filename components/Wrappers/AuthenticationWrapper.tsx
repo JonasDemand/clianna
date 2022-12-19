@@ -1,5 +1,5 @@
-import { BackdropContext } from '@context/BackdropContext';
-import { BackdropContextType } from '@customTypes/backdrop';
+import { GlobalContext } from '@context/GlobalContext';
+import { GlobalContextType } from '@customTypes/global';
 import { signIn, useSession } from 'next-auth/react';
 import React, { FC, ReactNode, useContext, useEffect } from 'react';
 
@@ -10,14 +10,12 @@ export type AuthenticationWrapperProps = {
 const AuthenticationWrapper: FC<AuthenticationWrapperProps> = ({
   children,
 }) => {
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const { showBackdrop } = useContext(GlobalContext) as GlobalContextType;
   const { data: session, status } = useSession();
   useEffect(() => {
     if (!session && status !== 'loading') signIn();
   }, [session, status]);
-  useEffect(() => setShowBackdrop(!session), [session, setShowBackdrop]);
+  useEffect(() => showBackdrop(!session), [session, showBackdrop]);
   return <>{session && <>{children}</>}</>;
 };
 
