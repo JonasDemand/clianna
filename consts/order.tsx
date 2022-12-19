@@ -26,7 +26,7 @@ export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
     field: 'type',
     headerName: 'Typ',
     flex: 1,
-    valueGetter: ({ row }) => (row.type ? EOrderType[row.type] : ''),
+    valueGetter: ({ row }) => (row.type ? OrderTypeLabels.get(row.type) : ''),
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
   {
@@ -61,6 +61,7 @@ export const defaultVariableColumns = variableColumns.slice(0, 3);
 
 export const defaultOrder = (): IOrderWithDependencies => ({
   id: EId.Create,
+  pending: true,
   shippingType: EOrderShippingType.Send,
   taxes: EOrderTax.Nineteen,
   documents: new Array<IDocument>(),
