@@ -1,4 +1,4 @@
-import { columns, variableColumns } from '@consts/document';
+import { columns, defaultVariableColumns } from '@consts/document';
 import { ICustomer } from '@customTypes/database/customer';
 import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
@@ -31,8 +31,9 @@ const DocumentProvider: FC<DocumentContextProps> = ({
 }) => {
   const [documents, setDocuments] = useState<IDocumentWithDependencies[]>([]);
   const [showDocuments, setShowDocuments] = useState(EShowDocument.All);
-  const [activeVariableColumns, setActiveVariableColumns] =
-    useState(variableColumns);
+  const [activeVariableColumns, setActiveVariableColumns] = useState(
+    defaultVariableColumns
+  );
   const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<IDocumentWithDependencies | null>(
     null

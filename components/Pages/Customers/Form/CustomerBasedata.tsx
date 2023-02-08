@@ -50,6 +50,11 @@ const CustomerBasedata: FC = () => {
       updateSelected('shoesize', parseFloat(e.target.value)),
     [updateSelected]
   );
+  const onChangeFibu = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      updateSelected('fibu', parseInt(e.target.value)),
+    [updateSelected]
+  );
 
   const onFocusPhone = useCallback(
     () => setPhoneFocused(true),
@@ -176,6 +181,14 @@ const CustomerBasedata: FC = () => {
                 step: '.5',
               }}
               onChange={onChangeShoesize}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <FormTextField
+              type="number"
+              label="FiBu-ID"
+              value={selected.fibu}
+              onChange={onChangeFibu}
             />
           </Grid>
         </Grid>

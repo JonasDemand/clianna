@@ -38,6 +38,7 @@ model Customer {
   whatsapp     Boolean?
   shoesize     Float?
   disabled     Boolean?
+  fibu         Int?
   orders       Order[]
   documents    Document[]
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)

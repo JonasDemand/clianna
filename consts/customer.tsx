@@ -19,6 +19,7 @@ export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
   { field: 'phone', headerName: 'Festnetztelefon', flex: 1 },
   { field: 'mobile', headerName: 'Mobiltelefon', flex: 1 },
   { field: 'shoesize', headerName: 'Schuhgröße', flex: 1 },
+  { field: 'fibu', headerName: 'FiBu-ID', flex: 1 },
   {
     field: 'whatsapp',
     headerName: 'WhatsApp',
@@ -41,7 +42,7 @@ export const columns: GridColDef<ICustomerWithDependencies>[] = [
   },
 ];
 
-export const defaultVariableColumns = variableColumns.slice(0, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 3);
 
 export const defaultCustomer = (): ICustomerWithDependencies => ({
   id: EId.Create,

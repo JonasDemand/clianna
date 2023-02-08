@@ -25,6 +25,7 @@ export class Customer {
     whatsapp: true,
     shoesize: true,
     disabled: true,
+    fibu: true,
   };
 
   private UserId: string;

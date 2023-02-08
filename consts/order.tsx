@@ -57,7 +57,7 @@ export const columns: GridColDef<IOrderWithDependencies>[] = [
     renderCell: ({ row }) => (row.pending ? <Check /> : <Close />),
   },
 ];
-export const defaultVariableColumns = variableColumns.slice(0, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 3);
 
 export const defaultOrder = (): IOrderWithDependencies => ({
   id: EId.Create,

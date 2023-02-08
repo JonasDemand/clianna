@@ -36,7 +36,7 @@ export const columns: GridColDef<IDocumentWithDependencies>[] = [
   },
 ];
 
-export const formColumns = variableColumns.slice(0, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 3);
 
 export const ShowDocumentLabels = new Map<EShowDocument, string>([
   [EShowDocument.All, 'Alle'],

@@ -7,7 +7,7 @@ export const getCustomerLabel = (
   customer: ICustomerWithDependencies | ICustomer | null | undefined
 ) =>
   customer
-    ? `${customer.id}${customer.firstname || customer.lastname ? ' -' : ''}${
+    ? `${!customer.firstname && !customer.lastname ? 'Kunde ohne Name' : ''}${
         customer.firstname ? ` ${customer.firstname}` : ''
       }${customer.lastname ? ` ${customer.lastname}` : ''}`
     : '';
