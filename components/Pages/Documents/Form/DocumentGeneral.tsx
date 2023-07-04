@@ -49,7 +49,7 @@ const DocumentGeneral: FC = () => {
 
   const renderInputReference = useCallback(
     (params: AutocompleteRenderInputParams) => (
-      <MuiTextField {...params} variant="filled" label="Referenz" required />
+      <MuiTextField {...params} variant="filled" label="Referenz" />
     ),
     []
   );
