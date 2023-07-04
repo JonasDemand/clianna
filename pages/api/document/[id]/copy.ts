@@ -26,7 +26,7 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const initialDocument = await DbRepo.Instance.Document.Create(body, true);
 
   const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
 
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
 

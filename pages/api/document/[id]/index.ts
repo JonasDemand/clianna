@@ -10,7 +10,6 @@ import { withGapi } from '@utils/api/middleware/withGapi';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const getDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -41,8 +40,7 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
 
   const document = await DbRepo.Instance.Document.GetSingle(
     id!.toString(),

@@ -9,7 +9,6 @@ import {
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -40,8 +39,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
 
   const customer = await DbRepo.Instance.Customer.GetSingle(
     id!.toString(),

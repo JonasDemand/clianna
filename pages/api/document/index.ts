@@ -16,7 +16,7 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const initialDocument = await DbRepo.Instance.Document.Create(body, false);
 
   const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
 
   const driveResponse = await gapi.drive.files.create({
     requestBody: {

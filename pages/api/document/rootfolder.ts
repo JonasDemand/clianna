@@ -11,7 +11,7 @@ import { getSession } from 'next-auth/react';
 
 const createRootfolder = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
   const folder = await gapi.drive.files.create({
     requestBody: {
       name: `Clianna_${session!.user.id}`,

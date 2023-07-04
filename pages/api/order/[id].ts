@@ -9,7 +9,6 @@ import {
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -36,8 +35,7 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const gapi = new GapiWrapper();
 
   const order = await DbRepo.Instance.Order.GetSingle(id!.toString(), true);
   if (!order) return res.status(404).send('Unable to retrieve order');

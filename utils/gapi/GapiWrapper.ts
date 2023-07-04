@@ -6,13 +6,15 @@ export class GapiWrapper {
   public docs: docs_v1.Docs;
   public drive: drive_v3.Drive;
 
-  constructor(refreshToken: string) {
+  constructor() {
     this.oauth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
       `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
     );
-    this.oauth2Client.setCredentials({ refresh_token: refreshToken });
+    this.oauth2Client.setCredentials({
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
     this.docs = google.docs({
       version: 'v1',
       auth: this.oauth2Client,
