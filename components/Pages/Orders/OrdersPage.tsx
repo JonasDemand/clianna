@@ -114,6 +114,7 @@ const OrdersPage: FC = () => {
       setSelected({
         ...order,
         id: EId.Create,
+        creationDate: new Date(),
         documents,
       });
     },

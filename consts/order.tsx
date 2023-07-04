@@ -11,6 +11,7 @@ import {
   EOrderType,
 } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
+import dayjs from 'dayjs';
 import React from 'react';
 
 export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
@@ -29,6 +30,20 @@ export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
     valueGetter: ({ row }) => (row.type ? OrderTypeLabels.get(row.type) : ''),
   },
   { field: 'comment', headerName: 'Kommentar', flex: 1 },
+  {
+    field: 'creationDate',
+    headerName: 'Erstellungsdatum',
+    flex: 1,
+    valueGetter: ({ row }) =>
+      row.creationDate ? dayjs(row.creationDate).format('DD.MM.YYYY') : '',
+  },
+  {
+    field: 'dueDate',
+    headerName: 'Fertigstellungsdatum',
+    flex: 1,
+    valueGetter: ({ row }) =>
+      row.dueDate ? dayjs(row.dueDate).format('DD.MM.YYYY') : '',
+  },
   {
     field: 'price',
     headerName: 'Preis',
