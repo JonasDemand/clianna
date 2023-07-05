@@ -22,7 +22,9 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
@@ -38,7 +40,9 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
   const { id } = req.query;
 
   const gapi = new GapiWrapper();

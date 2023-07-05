@@ -13,7 +13,9 @@ import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
-  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
   const body = req.body as IUpsertRequest;
   const initialDocument = await DbRepo.Document.Create(body, false);
 

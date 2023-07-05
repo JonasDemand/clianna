@@ -18,7 +18,9 @@ const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
-  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
 
   const customer = await DbRepo.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');

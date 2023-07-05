@@ -37,7 +37,9 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
 
   const gapi = new GapiWrapper();
 
