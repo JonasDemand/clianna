@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/order';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -32,7 +33,10 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!customer) return res.status(500).send('Unable to update customer');
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/orders', '/customers'] },
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
     baseUrl
   );
   return res.status(200).send(body);
@@ -44,8 +48,6 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
 
-  const gapi = new GapiWrapper();
-
   const order = await DbRepo.Order.GetSingle(id!.toString(), true);
   if (!order) return res.status(404).send('Unable to retrieve order');
 
@@ -53,13 +55,18 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
     await Promise.all(
       order.documents
         .filter((x) => x.googleId)
-        .map((x) => gapi.drive.files.delete({ fileId: x.googleId! }))
+        .map((x) =>
+          GapiWrapper.Instance.drive.files.delete({ fileId: x.googleId! })
+        )
     );
 
   await DbRepo.Order.Delete(id!.toString());
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/orders', '/customers'] },
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
     baseUrl
   );
   return res.status(200).send('Deletion of order successful');

@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/document';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -7,7 +8,6 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
-import { withGapi } from '@utils/api/middleware/withGapi';
 import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
@@ -26,15 +26,13 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const initialDocument = await DbRepo.Document.Create(body, true);
 
-  const gapi = new GapiWrapper();
-
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
 
-  const driveCreateResponse = await gapi.drive.files.copy({
+  const driveCreateResponse = await GapiWrapper.Instance.drive.files.copy({
     fileId: documentToCopy.googleId,
     requestBody: {
       name: initialDocument.id,
-      parents: [environment.GOOGLE_ROOT_FOLDER_ID],
+      parents: [environment.GOOGLE_DRIVE_ROOT_FOLDER],
     },
   });
   const driveId = driveCreateResponse.data.id;
@@ -43,7 +41,7 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     documentToCopy.template &&
     (initialDocument.customer || initialDocument.order)
   )
-    await gapi.docs.documents.batchUpdate({
+    await GapiWrapper.Instance.docs.documents.batchUpdate({
       documentId: driveId,
       requestBody: {
         requests: replaceTextFromObject(
@@ -66,7 +64,7 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   Revalidate.Post(
     {
       secret: environment.SECRET,
-      paths: ['/customers', '/docuemnts', '/orders'],
+      paths: defaultRevalidatePaths,
     },
     baseUrl
   );
@@ -86,6 +84,5 @@ export default withMiddleware(
   withQueryParameters([{ name: 'id', isNumber: false }]),
   withBody(),
   withAuth,
-  withGapi(true),
   handler
 );

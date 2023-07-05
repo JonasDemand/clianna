@@ -1,5 +1,6 @@
 // THIS IS AN AUTOGENERATE SCRIPT! Use "npm run convert-config" to re-create
-export const environment = {  NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
+export const environment = {
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
   SECRET: process.env.SECRET!,
   GOOGLE_SERVICEACCOUNT_PROJECT_ID: process.env.GOOGLE_SERVICEACCOUNT_PROJECT_ID!,
   GOOGLE_SERVICEACCOUNT_PRIVATE_KEY_ID: process.env.GOOGLE_SERVICEACCOUNT_PRIVATE_KEY_ID!,

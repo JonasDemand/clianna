@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/customer';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -32,7 +33,10 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!customer) return res.status(500).send('Unable to update customer');
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/customers'] },
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
     baseUrl
   );
   res.status(200).send(customer);
@@ -44,8 +48,6 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 
-  const gapi = new GapiWrapper();
-
   const customer = await DbRepo.Customer.GetSingle(id!.toString(), true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
@@ -54,7 +56,9 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
     deleteFilesProm.concat(
       customer.documents
         .filter((x) => x.googleId)
-        .map((x) => gapi.drive.files.delete({ fileId: x.googleId! }))
+        .map((x) =>
+          GapiWrapper.Instance.drive.files.delete({ fileId: x.googleId! })
+        )
     );
   if (customer.orders) {
     deleteFilesProm.concat(
@@ -64,7 +68,9 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
           order
             .documents!.filter((document) => document.googleId)
             .map((document) =>
-              gapi.drive.files.delete({ fileId: document.googleId! })
+              GapiWrapper.Instance.drive.files.delete({
+                fileId: document.googleId!,
+              })
             )
         )
         .flat()
@@ -75,7 +81,10 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   await DbRepo.Customer.Delete(id!.toString());
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/customers'] },
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
     baseUrl
   );
   return res.status(200).send('Deletion of customer successful');

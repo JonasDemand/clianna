@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/customer';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -26,7 +27,7 @@ const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!customer) return res.status(500).send('Unable to create customer');
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/customers'] },
+    { secret: environment.SECRET, paths: defaultRevalidatePaths },
     baseUrl
   );
   return res.status(200).send(customer);

@@ -1,27 +1,56 @@
 import { environment } from '@utils/config';
-import { OAuth2Client } from 'google-auth-library';
 import { docs_v1, drive_v3, google } from 'googleapis';
 
+const credentials = {
+  type: 'service_account',
+  universe_domain: 'googleapis.com',
+  project_id: environment.GOOGLE_SERVICEACCOUNT_PROJECT_ID,
+  private_key_id: environment.GOOGLE_SERVICEACCOUNT_PRIVATE_KEY_ID,
+  private_key: environment.GOOGLE_SERVICEACCOUNT_PRIVATE_KEY,
+  client_email: environment.GOOGLE_SERVICEACCOUNT_CLIENT_EMAIL,
+  client_id: environment.GOOGLE_SERVICEACCOUNT_CLIENT_ID,
+  auth_uri: environment.GOOGLE_SERVICEACCOUNT_AUTH_URI,
+  token_uri: environment.GOOGLE_SERVICEACCOUNT_TOKEN_URI,
+  auth_provider_x509_cert_url:
+    environment.GOOGLE_SERVICEACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
+  client_x509_cert_url: environment.GOOGLE_SERVICEACCOUNT_CLIENT_X509_CERT_URL,
+};
+
 export class GapiWrapper {
-  private oauth2Client: OAuth2Client;
+  public static Instance: GapiWrapper;
   public docs: docs_v1.Docs;
   public drive: drive_v3.Drive;
 
   constructor() {
-    this.oauth2Client = new google.auth.OAuth2(
-      environment.GOOGLE_CLIENT_ID,
-      environment.GOOGLE_CLIENT_SECRET
-    );
-    this.oauth2Client.setCredentials({
-      refresh_token: environment.GOOGLE_REFRESH_TOKEN,
-    });
     this.docs = google.docs({
       version: 'v1',
-      auth: this.oauth2Client,
     });
     this.drive = google.drive({
       version: 'v3',
-      auth: this.oauth2Client,
+    });
+  }
+
+  public async Init() {
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: [
+        'https://www.googleapis.com/auth/documents',
+        'https://www.googleapis.com/auth/drive',
+      ],
+    });
+
+    const client = await auth.getClient();
+
+    this.docs = google.docs({
+      version: 'v1',
+      auth: client,
+    });
+    this.drive = google.drive({
+      version: 'v3',
+      auth: client,
     });
   }
 }
+
+GapiWrapper.Instance = new GapiWrapper();
+GapiWrapper.Instance.Init();

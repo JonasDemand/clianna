@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/document';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -6,7 +7,6 @@ import {
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
-import { withGapi } from '@utils/api/middleware/withGapi';
 import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
@@ -19,13 +19,11 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
   const initialDocument = await DbRepo.Document.Create(body, false);
 
-  const gapi = new GapiWrapper();
-
-  const driveResponse = await gapi.drive.files.create({
+  const driveResponse = await GapiWrapper.Instance.drive.files.create({
     requestBody: {
       name: initialDocument.id,
       mimeType: 'application/vnd.google-apps.document',
-      parents: [environment.GOOGLE_ROOT_FOLDER_ID],
+      parents: [environment.GOOGLE_DRIVE_ROOT_FOLDER],
     },
   });
   const updatedDocument = await DbRepo.Document.Update(
@@ -37,7 +35,7 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   Revalidate.Post(
     {
       secret: environment.SECRET,
-      paths: ['/customers', '/docuemnts', '/orders'],
+      paths: defaultRevalidatePaths,
     },
     baseUrl
   );
@@ -55,6 +53,5 @@ export default withMiddleware(
   withMethodGuard(['POST']),
   withBody(['name']),
   withAuth,
-  withGapi(true),
   handler
 );

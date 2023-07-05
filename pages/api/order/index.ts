@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/order';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -26,7 +27,10 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!order) return res.status(500).send('Unable to create order');
 
   Revalidate.Post(
-    { secret: environment.SECRET, paths: ['/orders', '/customers'] },
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
     baseUrl
   );
   res.status(200).send(order);

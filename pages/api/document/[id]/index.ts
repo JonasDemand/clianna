@@ -1,3 +1,4 @@
+import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/document';
 import { Revalidate } from '@utils/api/client/revalidate';
 import {
@@ -7,7 +8,6 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
-import { withGapi } from '@utils/api/middleware/withGapi';
 import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
@@ -35,7 +35,7 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   Revalidate.Post(
     {
       secret: environment.SECRET,
-      paths: ['/customers', '/docuemnts', '/orders'],
+      paths: defaultRevalidatePaths,
     },
     baseUrl
   );
@@ -48,18 +48,16 @@ const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
 
-  const gapi = new GapiWrapper();
-
   const document = await DbRepo.Document.GetSingle(id!.toString(), false);
   if (document?.googleId)
-    gapi.drive.files.delete({ fileId: document?.googleId });
+    GapiWrapper.Instance.drive.files.delete({ fileId: document?.googleId });
 
   await DbRepo.Document.Delete(id!.toString());
 
   Revalidate.Post(
     {
       secret: environment.SECRET,
-      paths: ['/customers', '/docuemnts', '/orders'],
+      paths: defaultRevalidatePaths,
     },
     baseUrl
   );
@@ -84,6 +82,5 @@ export default withMiddleware(
   withMethodGuard(['GET', 'PUT', 'DELETE']),
   withQueryParameters([{ name: 'id', isNumber: false }]),
   withAuth,
-  withGapi(true),
   handler
 );
