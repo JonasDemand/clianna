@@ -18,12 +18,7 @@ export class Document {
     template: true,
   };
 
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async Create<ID extends boolean>(
+  public static async Create<ID extends boolean>(
     document: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies : IDocument> {
@@ -49,7 +44,7 @@ export class Document {
       },
     });
   }
-  public async GetAll<ID extends boolean>(
+  public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies[] : IDocument[]> {
     return await prisma.document.findMany({
@@ -64,7 +59,7 @@ export class Document {
       },
     });
   }
-  public async GetSingle<ID extends boolean>(
+  public static async GetSingle<ID extends boolean>(
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? IDocumentWithDependencies : IDocument) | null> {
@@ -81,7 +76,7 @@ export class Document {
       },
     });
   }
-  public async GetTemplates<ID extends boolean>(
+  public static async GetTemplates<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies[] : IDocument[]> {
     return await prisma.document.findMany({
@@ -97,7 +92,7 @@ export class Document {
       },
     });
   }
-  public async Update<ID extends boolean>(
+  public static async Update<ID extends boolean>(
     id: string,
     document: IUpsertRequest,
     includeDependencies: ID
@@ -129,7 +124,7 @@ export class Document {
       },
     });
   }
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     await prisma.document.findFirstOrThrow({
       where: { id },
       select: null,

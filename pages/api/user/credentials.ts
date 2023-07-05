@@ -10,7 +10,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const createCredentials = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as ICredentailsRequest;
 
-  await DbRepo.Instance.User.CreateCredentials(body);
+  await DbRepo.User.Create(body);
   return res.status(200).send('Succesfully created credentials');
 };
 

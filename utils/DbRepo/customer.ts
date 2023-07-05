@@ -28,12 +28,7 @@ export class Customer {
     fibu: true,
   };
 
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async Create<ID extends boolean>(
+  public static async Create<ID extends boolean>(
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
@@ -82,12 +77,12 @@ export class Customer {
       },
     });
   }
-  public async GetOnlyMeta() {
+  public static async GetOnlyMeta() {
     return await prisma.customer.findMany({
       select: { firstname: true, lastname: true, id: true, disabled: true },
     });
   }
-  public async GetAll<ID extends boolean>(
+  public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
     return await prisma.customer.findMany({
@@ -105,7 +100,7 @@ export class Customer {
       },
     });
   }
-  public async GetActive<ID extends boolean>(
+  public static async GetActive<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
     return await prisma.customer.findMany({
@@ -121,7 +116,7 @@ export class Customer {
       },
     });
   }
-  public async GetSingle<ID extends boolean>(
+  public static async GetSingle<ID extends boolean>(
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? ICustomerWithDependencies : ICustomer) | null> {
@@ -138,7 +133,7 @@ export class Customer {
       },
     });
   }
-  public async Update<ID extends boolean>(
+  public static async Update<ID extends boolean>(
     id: string,
     customer: IUpsertRequest,
     includeDependencies: ID
@@ -196,7 +191,7 @@ export class Customer {
       },
     });
   }
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     await prisma.customer.findFirstOrThrow({
       where: { id },
       select: null,

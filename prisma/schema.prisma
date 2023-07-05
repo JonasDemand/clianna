@@ -15,6 +15,7 @@ model User {
   email    String  @unique
   password String? @db.Text
   salt     String? @db.Text
+  enabled  Boolean @default(false)
 }
 
 model Customer {

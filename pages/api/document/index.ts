@@ -13,7 +13,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
-  const initialDocument = await DbRepo.Instance.Document.Create(body, false);
+  const initialDocument = await DbRepo.Document.Create(body, false);
 
   const gapi = new GapiWrapper();
 
@@ -24,7 +24,7 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
       parents: [environment.GOOGLE_ROOT_FOLDER_ID],
     },
   });
-  const updatedDocument = await DbRepo.Instance.Document.Update(
+  const updatedDocument = await DbRepo.Document.Update(
     initialDocument.id ?? '',
     { googleId: driveResponse.data.id },
     false

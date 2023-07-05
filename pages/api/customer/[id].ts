@@ -13,10 +13,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const customer = await DbRepo.Instance.Customer.GetSingle(
-    id!.toString(),
-    true
-  );
+  const customer = await DbRepo.Customer.GetSingle(id!.toString(), true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
   res.status(200).send(customer);
@@ -26,11 +23,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
-  const customer = await DbRepo.Instance.Customer.Update(
-    id!.toString(),
-    body,
-    true
-  );
+  const customer = await DbRepo.Customer.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
   res.status(200).send(customer);
@@ -41,10 +34,7 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const gapi = new GapiWrapper();
 
-  const customer = await DbRepo.Instance.Customer.GetSingle(
-    id!.toString(),
-    true
-  );
+  const customer = await DbRepo.Customer.GetSingle(id!.toString(), true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
   const deleteFilesProm: Array<Promise<any>> = [];
@@ -70,7 +60,7 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   await Promise.all(deleteFilesProm);
 
-  await DbRepo.Instance.Customer.Delete(id!.toString());
+  await DbRepo.Customer.Delete(id!.toString());
   return res.status(200).send('Deletion of customer successful');
 };
 

@@ -27,12 +27,7 @@ export class Order {
     name: true,
   };
 
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async Create<ID extends boolean>(
+  public static async Create<ID extends boolean>(
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
@@ -78,7 +73,7 @@ export class Order {
       },
     });
   }
-  public async GetAll<ID extends boolean>(
+  public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies[] : IOrder[]> {
     return await prisma.order.findMany({
@@ -93,7 +88,7 @@ export class Order {
       },
     });
   }
-  public async GetSingle<ID extends boolean>(
+  public static async GetSingle<ID extends boolean>(
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? IOrderWithDependencies : IOrder) | null> {
@@ -110,7 +105,7 @@ export class Order {
       },
     });
   }
-  public async Update<ID extends boolean>(
+  public static async Update<ID extends boolean>(
     id: string,
     order: IUpsertRequest,
     includeDependencies: ID
@@ -163,7 +158,7 @@ export class Order {
       },
     });
   }
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     await prisma.order.findFirstOrThrow({
       where: { id },
       select: null,

@@ -17,13 +17,10 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
-  const documentToCopy = await DbRepo.Instance.Document.GetSingle(
-    id!.toString(),
-    false
-  );
+  const documentToCopy = await DbRepo.Document.GetSingle(id!.toString(), false);
   if (!documentToCopy) return res.status(404).send('Document not found');
 
-  const initialDocument = await DbRepo.Instance.Document.Create(body, true);
+  const initialDocument = await DbRepo.Document.Create(body, true);
 
   const gapi = new GapiWrapper();
 
@@ -56,7 +53,7 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
         })),
       },
     });
-  const updatedDocument = await DbRepo.Instance.Document.Update(
+  const updatedDocument = await DbRepo.Document.Update(
     initialDocument.id ?? '',
     { googleId: driveId },
     false

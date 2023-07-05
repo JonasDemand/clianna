@@ -9,7 +9,7 @@ import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
-  const orders = await DbRepo.Instance.Order.GetAll(true);
+  const orders = await DbRepo.Order.GetAll(true);
   if (!orders) return res.status(500).send('Unable to retrieve orders');
   res.status(200).send(orders);
 };
@@ -17,7 +17,7 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
 
-  const order = await DbRepo.Instance.Order.Create(body, true);
+  const order = await DbRepo.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
 
   res.status(200).send(order);

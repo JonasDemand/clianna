@@ -12,7 +12,7 @@ const createCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest[];
 
   const customers = await Promise.all(
-    body.map((customer) => DbRepo.Instance.Customer.Create(customer, true))
+    body.map((customer) => DbRepo.Customer.Create(customer, true))
   );
 
   res.status(200).send(customers);

@@ -37,12 +37,11 @@ export const getServerSideProps: GetServerSideProps<OrdersProps> = async (
 ) => {
   const session = await getSession(context);
   if (!session) return { props: { documents: [], customers: [], orders: [] } };
-  DbRepo.Init(session.user.id ?? '');
   return {
     props: {
-      documents: await DbRepo.Instance.Document.GetAll(true),
-      orders: await DbRepo.Instance.Order.GetAll(false),
-      customers: await DbRepo.Instance.Customer.GetActive(false),
+      documents: await DbRepo.Document.GetAll(true),
+      orders: await DbRepo.Order.GetAll(false),
+      customers: await DbRepo.Customer.GetActive(false),
     },
   };
 };

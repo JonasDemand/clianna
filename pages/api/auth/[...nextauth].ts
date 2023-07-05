@@ -9,7 +9,6 @@ const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const reqRefreshJwt = Boolean(req.query.refreshSession);
-  delete req.query.gapiAccess;
   delete req.query.refreshSession;
 
   return NextAuth(req, res, {
@@ -23,14 +22,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         async authorize(credentials) {
           if (!credentials?.email || !credentials.password) return null;
 
-          const user = await prisma.user.findUniqueOrThrow({
-            where: { email: credentials.email },
-          });
-          DbRepo.Init(user.id);
-          const isValid = await DbRepo.Instance.User.ValidateCredentials(
+          const user = await DbRepo.User.GetSingleFromEmail(credentials.email);
+          if (!user) {
+            DbRepo.User.Create(credentials);
+            return null;
+          }
+          if (!user.enabled) return null;
+
+          const isValid = await DbRepo.User.ValidateCredentials(
+            credentials.email,
             credentials.password
           );
           if (!isValid) return null;
+
           return {
             id: user.id,
             email: user.email,
