@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 var currentSession: SessionContextValue = {
   data: null,
   status: 'unauthenticated',
+  update: () => new Promise((res) => res(null)),
 };
 
 export const SessionProvider = ({
@@ -14,7 +15,12 @@ export const SessionProvider = ({
   children: ReactNode;
   session?: Session;
 }) => {
-  if (session) currentSession = { data: session, status: 'authenticated' };
+  if (session)
+    currentSession = {
+      data: session,
+      status: 'authenticated',
+      update: () => new Promise((res) => res(null)),
+    };
   return children;
 };
 

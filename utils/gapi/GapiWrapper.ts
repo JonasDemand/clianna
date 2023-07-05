@@ -39,15 +39,13 @@ export class GapiWrapper {
       ],
     });
 
-    const client = await auth.getClient();
-
     this.docs = google.docs({
       version: 'v1',
-      auth: client,
+      auth,
     });
     this.drive = google.drive({
       version: 'v3',
-      auth: client,
+      auth,
     });
   }
 }

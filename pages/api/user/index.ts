@@ -12,9 +12,6 @@ const updateUser = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpdateRequest;
   const session = await getSession({ req });
 
-  if (!session?.user)
-    return res.status(401).send('This method needs authorization');
-
   if (body.password) {
     const isValid = await DbRepo.User.ValidateCredentials(
       body.email ?? '',
@@ -23,7 +20,7 @@ const updateUser = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!isValid) return res.status(403).send('Authentication failed');
   }
 
-  await DbRepo.User.Update(session.user.id, body);
+  await DbRepo.User.Update(session!.user.id, body);
   return res.status(200).send('User successfully updated');
 };
 

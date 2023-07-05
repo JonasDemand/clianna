@@ -66,7 +66,6 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
       />
 
       <PasswordForm
-        focusPassword
         showValidation={showPasswordValidation}
         setShowValidation={setShowPasswordValidation}
         repeatError={repeatError}

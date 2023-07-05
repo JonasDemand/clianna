@@ -51,10 +51,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             ...user,
             id: token.id,
             email: token.email,
-            google: token.google,
-            credentials: token.credentials,
-            refreshToken: token.refreshToken,
-            cliannaFolderId: token.cliannaFolderId,
           },
         };
       },
@@ -66,7 +62,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           user = {
             id: prismaUser.id,
             email: prismaUser.email,
-            credentials: !!prismaUser.password,
           };
         }
         if (user) {
@@ -74,10 +69,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             ...token,
             id: user.id,
             email: user.email,
-            google: user.google,
-            credentials: user.credentials,
-            refreshToken: user.refreshToken,
-            cliannaFolderId: user.cliannaFolderId,
           };
         }
         return token;
