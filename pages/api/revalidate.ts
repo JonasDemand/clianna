@@ -10,8 +10,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const revalidate = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IRevalidateRequest;
 
-  console.log({ body, secret: environment.SECRET });
-
   if (body.secret !== environment.SECRET) {
     return res.status(401).json({ message: 'Invalid token' });
   }
