@@ -12,7 +12,8 @@
     "prisma-generate": "prisma generate",
     "test-ct": "playwright test -c playwright-ct.config.ts",
     "test-ct-update": "playwright test -c playwright-ct.config.ts --update-snapshots",
-    "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug"
+    "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug",
+    "convert-config": "./convert-env-to-config.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",

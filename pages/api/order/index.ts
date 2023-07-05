@@ -18,7 +18,7 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 

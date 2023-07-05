@@ -15,7 +15,7 @@ import { replaceTextFromObject } from '@utils/templating';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;

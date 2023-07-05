@@ -23,7 +23,7 @@ const getDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
@@ -43,7 +43,7 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;

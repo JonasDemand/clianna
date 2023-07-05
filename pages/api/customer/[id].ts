@@ -23,7 +23,7 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const body = req.body as IUpsertRequest;
@@ -40,7 +40,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
 

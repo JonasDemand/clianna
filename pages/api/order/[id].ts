@@ -22,7 +22,7 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
@@ -39,7 +39,7 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
-  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
   const host = req.headers.host;
   const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
