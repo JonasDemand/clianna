@@ -16,19 +16,30 @@ export class Document {
     string
   >('/api/document', 'POST');
 
-  public static Update = (id: string, request: IUpsertRequest) =>
+  public static Update = (
+    id: string,
+    request: IUpsertRequest,
+    baseUrl?: string
+  ) =>
     createClientFunction<IUpsertRequest, IDocumentWithDependencies, string>(
       `/api/document/${id}`,
       'PUT'
-    )(request);
-  public static Copy = (id: string, request: IUpsertRequest) =>
+    )(request, baseUrl);
+  public static Copy = (
+    id: string,
+    request: IUpsertRequest,
+    baseUrl?: string
+  ) =>
     createClientFunction<IUpsertRequest, IDocumentWithDependencies, string>(
       `/api/document/${id}/copy`,
       'POST'
-    )(request);
+    )(request, baseUrl);
 
-  public static Delete = (id: string) =>
-    createClientFunction<void, void, string>(`/api/document/${id}`, 'DELETE')();
+  public static Delete = (id: string, baseUrl?: string) =>
+    createClientFunction<void, void, string>(`/api/document/${id}`, 'DELETE')(
+      undefined,
+      baseUrl
+    );
 
   public static CreateRootFolder = createClientFunction<
     void,

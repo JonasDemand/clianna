@@ -1,4 +1,5 @@
 import { IUpsertRequest } from '@customTypes/messages/order';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -6,6 +7,7 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -20,18 +22,23 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
   const customer = await DbRepo.Order.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
-  res.revalidate('/orders');
-  res.revalidate('/customers');
+  Revalidate.Post(
+    environment.SECRET,
+    { paths: ['/orders', '/customers'] },
+    baseUrl
+  );
   return res.status(200).send(body);
 };
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
   const { id } = req.query;
 
   const gapi = new GapiWrapper();
@@ -48,8 +55,11 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await DbRepo.Order.Delete(id!.toString());
 
-  res.revalidate('/orders');
-  res.revalidate('/customers');
+  Revalidate.Post(
+    environment.SECRET,
+    { paths: ['/orders', '/customers'] },
+    baseUrl
+  );
   return res.status(200).send('Deletion of order successful');
 };
 

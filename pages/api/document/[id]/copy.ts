@@ -1,4 +1,5 @@
 import { IUpsertRequest } from '@customTypes/messages/document';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -14,6 +15,7 @@ import { replaceTextFromObject } from '@utils/templating';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
@@ -59,9 +61,11 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     false
   );
 
-  res.revalidate('/docuemnts');
-  res.revalidate('/customers');
-  res.revalidate('/orders');
+  Revalidate.Post(
+    environment.SECRET,
+    { paths: ['/customers', '/docuemnts', '/orders'] },
+    baseUrl
+  );
   return res.status(200).send(updatedDocument);
 };
 

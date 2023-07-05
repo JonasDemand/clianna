@@ -1,10 +1,12 @@
 import { IUpsertRequest } from '@customTypes/messages/customer';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -16,11 +18,12 @@ const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
 
   const customer = await DbRepo.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');
 
-  res.revalidate('/customers');
+  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
   return res.status(200).send(customer);
 };
 

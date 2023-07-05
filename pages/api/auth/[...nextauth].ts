@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { Session } from 'next-auth';
@@ -83,7 +84,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     },
     pages: { signIn: '/auth/signin' },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: environment.SECRET,
   });
 };
 

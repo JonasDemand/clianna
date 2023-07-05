@@ -1,4 +1,5 @@
 import { IUpsertRequest } from '@customTypes/messages/customer';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -6,6 +7,7 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -21,17 +23,21 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
+  const protocol = req.headers['x-forwarded-proto'] || 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}/`;
   const body = req.body as IUpsertRequest;
 
   const customer = await DbRepo.Customer.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
-  res.revalidate('/customers');
+  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
   res.status(200).send(customer);
 };
 
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
 
   const gapi = new GapiWrapper();
 
@@ -63,7 +69,7 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await DbRepo.Customer.Delete(id!.toString());
 
-  res.revalidate('/customers');
+  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
   return res.status(200).send('Deletion of customer successful');
 };
 

@@ -10,11 +10,15 @@ export class Customer {
     string
   >('/api/customer', 'POST');
 
-  public static Update = (id: string, request: IUpsertRequest) =>
+  public static Update = (
+    id: string,
+    request: IUpsertRequest,
+    baseUrl?: string
+  ) =>
     createClientFunction<IUpsertRequest, ICustomerWithDependencies, string>(
       `/api/customer/${id}`,
       'PUT'
-    )(request);
+    )(request, baseUrl);
 
   public static Delete = (id: string) =>
     createClientFunction<void, void, string>(`/api/customer/${id}`, 'DELETE')();

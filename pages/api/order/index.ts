@@ -1,10 +1,12 @@
 import { IUpsertRequest } from '@customTypes/messages/order';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -16,12 +18,16 @@ const getOrders = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
 
   const order = await DbRepo.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
 
-  res.revalidate('/orders');
-  res.revalidate('/customers');
+  Revalidate.Post(
+    environment.SECRET,
+    { paths: ['/orders', '/customers'] },
+    baseUrl
+  );
   res.status(200).send(order);
 };
 

@@ -1,3 +1,4 @@
+import { environment } from '@utils/config';
 import { OAuth2Client } from 'google-auth-library';
 import { docs_v1, drive_v3, google } from 'googleapis';
 
@@ -8,12 +9,11 @@ export class GapiWrapper {
 
   constructor() {
     this.oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.NEXTAUTH_URL}/api/auth/callback/google`
+      environment.GOOGLE_CLIENT_ID,
+      environment.GOOGLE_CLIENT_SECRET
     );
     this.oauth2Client.setCredentials({
-      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+      refresh_token: environment.GOOGLE_REFRESH_TOKEN,
     });
     this.docs = google.docs({
       version: 'v1',

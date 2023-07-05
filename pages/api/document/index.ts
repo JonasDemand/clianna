@@ -1,4 +1,5 @@
 import { IUpsertRequest } from '@customTypes/messages/document';
+import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -12,6 +13,7 @@ import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
+  const baseUrl = `${req.headers['x-forwarded-proto']}://${req.headers.host}/`;
   const body = req.body as IUpsertRequest;
   const initialDocument = await DbRepo.Document.Create(body, false);
 
@@ -30,9 +32,11 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     false
   );
 
-  res.revalidate('/docuemnts');
-  res.revalidate('/customers');
-  res.revalidate('/orders');
+  Revalidate.Post(
+    environment.SECRET,
+    { paths: ['/customers', '/docuemnts', '/orders'] },
+    baseUrl
+  );
   return res.status(200).send(updatedDocument);
 };
 
