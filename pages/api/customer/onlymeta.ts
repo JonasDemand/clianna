@@ -12,7 +12,7 @@ const getCustomersOnlyMeta = async (
 ) => {
   const customers = await DbRepo.Customer.GetOnlyMeta();
   if (!customers) return res.status(500).send('Unable to retrieve customers');
-  res.status(200).send(customers);
+  return res.status(200).send(customers);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

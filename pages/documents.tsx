@@ -6,8 +6,7 @@ import { ICustomer } from '@customTypes/database/customer';
 import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
 import { DbRepo } from '@utils/DbRepo';
-import { GetServerSideProps, NextPage } from 'next';
-import { getSession } from 'next-auth/react';
+import { GetStaticProps, NextPage } from 'next';
 import React from 'react';
 
 type OrdersProps = {
@@ -32,11 +31,7 @@ const Documents: NextPage<OrdersProps> = ({ documents, orders, customers }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<OrdersProps> = async (
-  context
-) => {
-  const session = await getSession(context);
-  if (!session) return { props: { documents: [], customers: [], orders: [] } };
+export const getStaticProps: GetStaticProps<OrdersProps> = async () => {
   return {
     props: {
       documents: await DbRepo.Document.GetAll(true),

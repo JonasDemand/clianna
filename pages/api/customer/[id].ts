@@ -26,6 +26,7 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const customer = await DbRepo.Customer.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
+  res.revalidate('/customers');
   res.status(200).send(customer);
 };
 
@@ -61,6 +62,8 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   await Promise.all(deleteFilesProm);
 
   await DbRepo.Customer.Delete(id!.toString());
+
+  res.revalidate('/customers');
   return res.status(200).send('Deletion of customer successful');
 };
 

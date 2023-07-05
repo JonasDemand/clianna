@@ -58,6 +58,10 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     { googleId: driveId },
     false
   );
+
+  res.revalidate('/docuemnts');
+  res.revalidate('/customers');
+  res.revalidate('/orders');
   return res.status(200).send(updatedDocument);
 };
 

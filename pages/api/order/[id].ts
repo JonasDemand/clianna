@@ -16,7 +16,7 @@ const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const order = await DbRepo.Order.GetSingle(id!.toString(), true);
   if (!order) return res.status(404).send('Unable to retrieve order');
 
-  res.status(200).send(order);
+  return res.status(200).send(order);
 };
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -25,7 +25,10 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const customer = await DbRepo.Order.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
-  res.status(200).send(body);
+
+  res.revalidate('/orders');
+  res.revalidate('/customers');
+  return res.status(200).send(body);
 };
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -44,6 +47,9 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
     );
 
   await DbRepo.Order.Delete(id!.toString());
+
+  res.revalidate('/orders');
+  res.revalidate('/customers');
   return res.status(200).send('Deletion of order successful');
 };
 

@@ -30,6 +30,9 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     false
   );
 
+  res.revalidate('/docuemnts');
+  res.revalidate('/customers');
+  res.revalidate('/orders');
   return res.status(200).send(updatedDocument);
 };
 

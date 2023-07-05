@@ -20,6 +20,8 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const order = await DbRepo.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
 
+  res.revalidate('/orders');
+  res.revalidate('/customers');
   res.status(200).send(order);
 };
 

@@ -11,7 +11,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
   const customers = await DbRepo.Customer.GetAll(true);
   if (!customers) return res.status(500).send('Unable to retrieve customers');
-  res.status(200).send(customers);
+  return res.status(200).send(customers);
 };
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,7 +20,8 @@ const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const customer = await DbRepo.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');
 
-  res.status(200).send(customer);
+  res.revalidate('/customers');
+  return res.status(200).send(customer);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

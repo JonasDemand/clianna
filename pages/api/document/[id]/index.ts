@@ -27,6 +27,9 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const document = await DbRepo.Document.Update(id!.toString(), body, true);
   if (!document) return res.status(500).send('Unable to update document');
 
+  res.revalidate('/docuemnts');
+  res.revalidate('/customers');
+  res.revalidate('/orders');
   res.status(200).send(document);
 };
 
@@ -40,6 +43,10 @@ const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     gapi.drive.files.delete({ fileId: document?.googleId });
 
   await DbRepo.Document.Delete(id!.toString());
+
+  res.revalidate('/docuemnts');
+  res.revalidate('/customers');
+  res.revalidate('/orders');
   return res.status(200).send('Deletion of document successful');
 };
 

@@ -15,7 +15,8 @@ const createCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
     body.map((customer) => DbRepo.Customer.Create(customer, true))
   );
 
-  res.status(200).send(customers);
+  res.revalidate('/customers');
+  return res.status(200).send(customers);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
