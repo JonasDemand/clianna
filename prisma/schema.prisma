@@ -11,21 +11,14 @@ datasource db {
 }
 
 model User {
-  id              String     @id @default(cuid())
-  email           String     @unique
-  password        String?    @db.Text
-  salt            String?    @db.Text
-  googleId        String?    @unique
-  refreshToken    String?    @db.Text
-  cliannaFolderId String?
-  Customer        Customer[]
-  Order           Order[]
-  Document        Document[]
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String? @db.Text
+  salt     String? @db.Text
 }
 
 model Customer {
   id           String     @id @default(cuid())
-  userId       String
   firstname    String?
   lastname     String?
   email        String?
@@ -41,12 +34,10 @@ model Customer {
   fibu         Int?
   orders       Order[]
   documents    Document[]
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
   id            String               @id @default(cuid())
-  userId        String
   customerId    String?
   creationDate  DateTime             @default(now())
   pending       Boolean              @default(true)
@@ -65,12 +56,10 @@ model Order {
   name          String?
   customer      Customer?            @relation(fields: [customerId], references: [id], onDelete: Cascade)
   documents     Document[]
-  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Document {
   id         String    @id @default(cuid())
-  userId     String
   customerId String?
   orderId    String?
   googleId   String?
@@ -78,7 +67,6 @@ model Document {
   template   Boolean   @default(false)
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
   order      Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum EOrderShippingType {

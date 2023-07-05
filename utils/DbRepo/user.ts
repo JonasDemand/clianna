@@ -5,8 +5,6 @@ import {
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
 
-import { DbRepo } from '.';
-
 const prisma = new PrismaClient();
 
 export class User {
@@ -55,9 +53,6 @@ export class User {
         password: hashedPassword,
         email: user.email,
         salt: salt,
-        googleId: user.googleId,
-        refreshToken: user.refreshToken,
-        cliannaFolderId: user.cliannaFolderId,
       },
     });
     return updatedUser;
@@ -72,27 +67,6 @@ export class User {
     const hash = await hashPassword(password, user.salt);
     if (hash !== user.password) return false;
     return true;
-  }
-  public async MigrateFromId(id: string) {
-    const currentUser = await this.GetCurrent();
-    const customers = await DbRepo.Instance.Customer.GetAll(false);
-    const orders = await DbRepo.Instance.Order.GetAll(false);
-
-    await prisma.user.update({
-      where: { id },
-      data: {
-        Customer: { connect: customers.map((x) => ({ id: x.id })) },
-        Order: { connect: orders.map((x) => ({ id: x.id })) },
-      },
-    });
-
-    await this.Delete();
-    const newUserRepo = new User(id);
-    newUserRepo.Update({
-      googleId: currentUser.googleId,
-      refreshToken: currentUser.refreshToken,
-      cliannaFolderId: currentUser.cliannaFolderId,
-    });
   }
   public async Delete() {
     await prisma.user.delete({ where: { id: this.UserId } });

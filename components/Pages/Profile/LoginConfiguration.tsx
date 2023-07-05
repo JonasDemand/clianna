@@ -128,7 +128,7 @@ const LoginConfiguration: FC = () => {
           <PasswordForm
             showRepeatPassword
             required={false}
-            showOldPassword={session?.user.credentials}
+            showOldPassword
             showValidation={showValidation}
             setShowValidation={setShowValidation}
             repeatError={repeatError}
@@ -168,7 +168,7 @@ const LoginConfiguration: FC = () => {
           <Grid item>
             <GoogleButton
               label="Google-Account verlinken"
-              disabled={session?.user.google}
+              disabled
               onClick={onClickGoogleButton}
             />
           </Grid>

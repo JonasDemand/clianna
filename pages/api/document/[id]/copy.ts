@@ -7,11 +7,11 @@ import {
   withQueryParameters,
 } from '@utils/api/middleware';
 import { withGapi } from '@utils/api/middleware/withGapi';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { replaceTextFromObject } from '@utils/templating';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
@@ -25,7 +25,6 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const initialDocument = await DbRepo.Instance.Document.Create(body, true);
 
-  const session = await getSession({ req });
   const gapi = new GapiWrapper();
 
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
@@ -34,7 +33,7 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     fileId: documentToCopy.googleId,
     requestBody: {
       name: initialDocument.id,
-      parents: [session!.user.cliannaFolderId!],
+      parents: [environment.GOOGLE_ROOT_FOLDER_ID],
     },
   });
   const driveId = driveCreateResponse.data.id;

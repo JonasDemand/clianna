@@ -5,10 +5,6 @@ import NextAuthJwt from 'next-auth/jwt';
 interface ISession {
   id: string;
   email: string;
-  credentials: boolean;
-  google: boolean;
-  refreshToken: string | null;
-  cliannaFolderId: string | null;
 }
 
 declare module 'next-auth' {

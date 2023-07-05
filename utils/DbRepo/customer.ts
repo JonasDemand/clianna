@@ -43,7 +43,7 @@ export class Customer {
         customer.orders.map((x) =>
           prisma.order.findFirstOrThrow({
             where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+              id: x.id,
             },
             select: null,
           })
@@ -53,9 +53,7 @@ export class Customer {
       existPromises.concat(
         customer.documents.map((x) =>
           prisma.document.findFirstOrThrow({
-            where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
-            },
+            where: { id: x.id },
             select: null,
           })
         )
@@ -72,7 +70,6 @@ export class Customer {
         documents: {
           connect: customer.documents?.map((x) => ({ id: x.id ?? '' })),
         },
-        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Customer.DefaultSelect,
@@ -87,7 +84,6 @@ export class Customer {
   }
   public async GetOnlyMeta() {
     return await prisma.customer.findMany({
-      where: { user: { id: this.UserId } },
       select: { firstname: true, lastname: true, id: true, disabled: true },
     });
   }
@@ -95,7 +91,6 @@ export class Customer {
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
     return await prisma.customer.findMany({
-      where: { user: { id: this.UserId } },
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies
@@ -114,7 +109,7 @@ export class Customer {
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
     return await prisma.customer.findMany({
-      where: { AND: [{ user: { id: this.UserId } }, { disabled: false }] },
+      where: { disabled: false },
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies
@@ -131,7 +126,7 @@ export class Customer {
     includeDependencies: ID
   ): Promise<(ID extends true ? ICustomerWithDependencies : ICustomer) | null> {
     return await prisma.customer.findFirst({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies
@@ -150,7 +145,7 @@ export class Customer {
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
     const existPromises: Array<Promise<any>> = [
       prisma.customer.findFirstOrThrow({
-        where: { AND: [{ user: { id: this.UserId } }, { id }] },
+        where: { id },
         select: null,
       }),
     ];
@@ -159,7 +154,7 @@ export class Customer {
         customer.orders.map((x) =>
           prisma.order.findFirstOrThrow({
             where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+              id: x.id,
             },
             select: null,
           })
@@ -170,7 +165,7 @@ export class Customer {
         customer.documents.map((x) =>
           prisma.document.findFirstOrThrow({
             where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
+              AND: { id: x.id },
             },
             select: null,
           })
@@ -198,13 +193,12 @@ export class Customer {
         documents: {
           connect: customer.documents?.map((x) => ({ id: x.id ?? '' })),
         },
-        user: { connect: { id: this.UserId } },
       },
     });
   }
   public async Delete(id: string): Promise<void> {
     await prisma.customer.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: null,
     });
     await prisma.customer.delete({
