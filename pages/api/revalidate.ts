@@ -3,16 +3,16 @@ import {
   withBody,
   withMethodGuard,
   withMiddleware,
-  withQueryParameters,
 } from '@utils/api/middleware';
 import { environment } from '@utils/config';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const revalidate = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { secret } = req.query;
   const body = req.body as IRevalidateRequest;
 
-  if (secret !== environment.SECRET) {
+  console.log({ body, secret: environment.SECRET });
+
+  if (body.secret !== environment.SECRET) {
     return res.status(401).json({ message: 'Invalid token' });
   }
 
@@ -28,11 +28,7 @@ const revalidate = async (req: NextApiRequest, res: NextApiResponse) => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method?.toLocaleUpperCase()) {
     case 'POST':
-      withMiddleware(
-        withQueryParameters([{ name: 'secret', isNumber: false }]),
-        withBody(['paths']),
-        revalidate
-      )(req, res);
+      withMiddleware(withBody(['secret', 'paths']), revalidate)(req, res);
       break;
   }
 };

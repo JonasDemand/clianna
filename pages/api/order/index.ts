@@ -20,14 +20,13 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
 
   const order = await DbRepo.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
 
   Revalidate.Post(
-    environment.SECRET,
-    { paths: ['/orders', '/customers'] },
+    { secret: environment.SECRET, paths: ['/orders', '/customers'] },
     baseUrl
   );
   res.status(200).send(order);

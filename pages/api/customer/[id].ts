@@ -25,13 +25,16 @@ const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
   const body = req.body as IUpsertRequest;
 
   const customer = await DbRepo.Customer.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
-  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
+  Revalidate.Post(
+    { secret: environment.SECRET, paths: ['/customers'] },
+    baseUrl
+  );
   res.status(200).send(customer);
 };
 
@@ -39,7 +42,7 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
 
   const gapi = new GapiWrapper();
 
@@ -71,7 +74,10 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await DbRepo.Customer.Delete(id!.toString());
 
-  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
+  Revalidate.Post(
+    { secret: environment.SECRET, paths: ['/customers'] },
+    baseUrl
+  );
   return res.status(200).send('Deletion of customer successful');
 };
 

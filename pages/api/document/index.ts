@@ -15,7 +15,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
   const body = req.body as IUpsertRequest;
   const initialDocument = await DbRepo.Document.Create(body, false);
 
@@ -35,8 +35,10 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   );
 
   Revalidate.Post(
-    environment.SECRET,
-    { paths: ['/customers', '/docuemnts', '/orders'] },
+    {
+      secret: environment.SECRET,
+      paths: ['/customers', '/docuemnts', '/orders'],
+    },
     baseUrl
   );
   return res.status(200).send(updatedDocument);

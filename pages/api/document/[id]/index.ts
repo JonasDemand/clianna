@@ -25,7 +25,7 @@ const getDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
@@ -33,8 +33,10 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!document) return res.status(500).send('Unable to update document');
 
   Revalidate.Post(
-    environment.SECRET,
-    { paths: ['/customers', '/docuemnts', '/orders'] },
+    {
+      secret: environment.SECRET,
+      paths: ['/customers', '/docuemnts', '/orders'],
+    },
     baseUrl
   );
   res.status(200).send(document);
@@ -43,7 +45,7 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
 
   const gapi = new GapiWrapper();
@@ -55,8 +57,10 @@ const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   await DbRepo.Document.Delete(id!.toString());
 
   Revalidate.Post(
-    environment.SECRET,
-    { paths: ['/customers', '/docuemnts', '/orders'] },
+    {
+      secret: environment.SECRET,
+      paths: ['/customers', '/docuemnts', '/orders'],
+    },
     baseUrl
   );
   return res.status(200).send('Deletion of document successful');

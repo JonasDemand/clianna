@@ -14,13 +14,16 @@ const createCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest[];
   const protocol = req.headers['x-forwarded-proto'] || 'http';
   const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}/`;
+  const baseUrl = `${protocol}://${host}`;
 
   const customers = await Promise.all(
     body.map((customer) => DbRepo.Customer.Create(customer, true))
   );
 
-  Revalidate.Post(environment.SECRET, { paths: ['/customers'] }, baseUrl);
+  Revalidate.Post(
+    { secret: environment.SECRET, paths: ['/customers'] },
+    baseUrl
+  );
   return res.status(200).send(customers);
 };
 
