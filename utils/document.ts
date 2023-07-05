@@ -5,5 +5,4 @@ import {
 
 export const getDocumentLabel = (
   document: IDocument | IDocumentWithDependencies | null | undefined
-) =>
-  document ? `${document.id}${document.name ? ` - ${document.name}` : ''}` : '';
+) => document?.name ?? '';

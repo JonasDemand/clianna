@@ -8,14 +8,12 @@ import {
   IDocumentWithDependencies,
 } from '@customTypes/database/document';
 import { EId } from '@customTypes/id';
-import { Add, Lock, Search } from '@mui/icons-material';
+import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
-  Avatar,
   Box,
   Grid,
-  Link,
   Typography,
 } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
@@ -23,8 +21,6 @@ import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
 import { isEqual } from 'lodash';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
 
@@ -43,9 +39,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   onUpdate,
   reference,
 }) => {
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const { data: session } = useSession();
 
   const [documentToDelete, setDocumentToDelete] = useState<IDocument | null>(
     null
@@ -154,10 +148,6 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   );
 
   const onClickAdd = useCallback(() => setSelected({ id: EId.Create }), []);
-  const onClickProfile = useCallback(
-    () => router.replace('/profile'),
-    [router]
-  );
 
   const onRowClick = useCallback(
     ({ row }: { row: IDocument }) => setSelected(row),
@@ -194,72 +184,48 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   return (
     <>
       <FormSection label="Dokumente">
-        {session?.user.refreshToken && session.user.cliannaFolderId ? (
-          <Box sx={{ height: '500px' }}>
-            <MuiTable
-              header={
-                <Grid
-                  container
-                  spacing={1}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Grid item xs={12} md={8}>
-                    <MuiTextField
-                      fullWidth
-                      type="text"
-                      label="Suche"
-                      value={searchText}
-                      onChange={onChangeSearch}
-                      InputProps={{
-                        endAdornment: <Search />,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <MuiButton
-                      variant="contained"
-                      color="success"
-                      fullWidth
-                      startIcon={<Add />}
-                      onClick={onClickAdd}
-                    >
-                      Hinzufügen
-                    </MuiButton>
-                  </Grid>
-                </Grid>
-              }
-              searchText={searchText}
-              columns={defaultVariableColumns}
-              rows={filteredDocuments}
-              onRowClick={onRowClick}
-              onCopy={onCopyDocument}
-              onDelete={setDocumentToDelete}
-            />
-          </Box>
-        ) : (
-          <Grid container alignItems="center" justifyContent="center">
-            <Grid item>
-              <Avatar
-                sx={{
-                  m: 1,
-                  bgcolor: 'secondary.main',
-                }}
+        <Box sx={{ height: '500px' }}>
+          <MuiTable
+            header={
+              <Grid
+                container
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
               >
-                <Lock />
-              </Avatar>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="body1" textAlign="center">
-                Muss im{' '}
-                <Link onClick={onClickProfile} sx={{ cursor: 'pointer' }}>
-                  Profil
-                </Link>{' '}
-                konfiguriert werden
-              </Typography>
-            </Grid>
-          </Grid>
-        )}
+                <Grid item xs={12} md={8}>
+                  <MuiTextField
+                    fullWidth
+                    type="text"
+                    label="Suche"
+                    value={searchText}
+                    onChange={onChangeSearch}
+                    InputProps={{
+                      endAdornment: <Search />,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <MuiButton
+                    variant="contained"
+                    color="success"
+                    fullWidth
+                    startIcon={<Add />}
+                    onClick={onClickAdd}
+                  >
+                    Hinzufügen
+                  </MuiButton>
+                </Grid>
+              </Grid>
+            }
+            searchText={searchText}
+            columns={defaultVariableColumns}
+            rows={filteredDocuments}
+            onRowClick={onRowClick}
+            onCopy={onCopyDocument}
+            onDelete={setDocumentToDelete}
+          />
+        </Box>
       </FormSection>
 
       <ConfirmDialog

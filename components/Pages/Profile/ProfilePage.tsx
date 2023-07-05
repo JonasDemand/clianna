@@ -6,7 +6,6 @@ import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect } from 'react';
 
-import DocumentConfiguration from './DocumentConfiguration';
 import LoginConfiguration from './LoginConfiguration';
 
 const ProfilePage: FC = () => {
@@ -32,7 +31,6 @@ const ProfilePage: FC = () => {
     <Grid container justifyContent="center">
       <Grid item sx={{ maxWidth: '800px' }}>
         <LoginConfiguration />
-        <DocumentConfiguration />
       </Grid>
     </Grid>
   );
