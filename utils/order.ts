@@ -1,3 +1,4 @@
+import { OrderTypeLabels } from '@consts/order';
 import { IOrder, IOrderWithDependencies } from '@customTypes/database/order';
 
 import { formatDate } from './date';
@@ -7,6 +8,6 @@ export const getOrderLabel = (
 ) =>
   order
     ? `${!order.type && !order.creationDate ? 'Auftrag ohne Infos' : ''}${
-        order.type ? ` ${order.type}` : 'Kein Typ'
+        order.type ? ` ${OrderTypeLabels.get(order.type)}` : 'Kein Typ'
       } - ${formatDate(order.creationDate)}`
     : '';
