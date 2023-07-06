@@ -5,6 +5,7 @@ import { IOrder } from '@customTypes/database/order';
 import { EId } from '@customTypes/id';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
+import { ECustomerSalutation } from '@prisma/client';
 import React from 'react';
 
 export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
@@ -56,4 +57,11 @@ export const ShowCustomerLabels = new Map<EShowCustomer, string>([
   [EShowCustomer.All, 'Alle'],
   [EShowCustomer.Active, 'Aktiv'],
   [EShowCustomer.Disabled, 'Deaktiviert'],
+]);
+
+export const CustomerSalutationLabels = new Map<ECustomerSalutation, string>([
+  [ECustomerSalutation.Mr, 'Herr'],
+  [ECustomerSalutation.Mrs, 'Frau'],
+  [ECustomerSalutation.Diverse, 'Divers'],
+  [ECustomerSalutation.Company, 'Firma'],
 ]);

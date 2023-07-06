@@ -26,6 +26,7 @@ export class Customer {
     shoesize: true,
     disabled: true,
     fibu: true,
+    salutation: true,
   };
 
   public static async Create<ID extends boolean>(

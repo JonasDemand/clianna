@@ -19,7 +19,7 @@ model User {
 }
 
 model Customer {
-  id           String     @id @default(cuid())
+  id           String               @id @default(cuid())
   firstname    String?
   lastname     String?
   email        String?
@@ -33,6 +33,7 @@ model Customer {
   shoesize     Float?
   disabled     Boolean?
   fibu         Int?
+  salutation   ECustomerSalutation?
   orders       Order[]
   documents    Document[]
 }
@@ -90,4 +91,11 @@ enum EOrderType {
 enum EOrderTax {
   Nineteen
   Seven
+}
+
+enum ECustomerSalutation {
+  Mr
+  Mrs
+  Diverse
+  Company
 }
