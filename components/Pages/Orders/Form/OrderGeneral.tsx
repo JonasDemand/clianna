@@ -22,7 +22,13 @@ import {
 import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
 import dayjs from 'dayjs';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  KeyboardEvent,
+  useCallback,
+  useContext,
+} from 'react';
 
 const OrderGeneral: FC = () => {
   const { selected, updateSelected, customers } = useContext(
@@ -35,11 +41,6 @@ const OrderGeneral: FC = () => {
   );
   const onChangeType = useCallback(
     (value: EOrderType) => updateSelected('type', value),
-    [updateSelected]
-  );
-  const onChangePrice = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('price', parseFloat(e.target.value)),
     [updateSelected]
   );
   const onChangeCustomer = useCallback(
@@ -65,6 +66,21 @@ const OrderGeneral: FC = () => {
       <MuiTextField {...params} variant="filled" label="Kunde" />
     ),
     []
+  );
+
+  const onKeyDownPrice = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (selected?.price === null || selected?.price === undefined) return;
+      if (e.key === 'Backspace') {
+        updateSelected('price', selected?.price / 10);
+        return;
+      }
+      if (isNaN(parseInt(e.key))) return;
+
+      const newVal = parseFloat(selected.price.toFixed(2) + e.key);
+      updateSelected('price', newVal * 10);
+    },
+    [selected?.price, updateSelected]
   );
 
   return (
@@ -94,8 +110,8 @@ const OrderGeneral: FC = () => {
             <FormTextField
               label="Preis"
               type="number"
-              value={selected.price ?? ''}
-              onChange={onChangePrice}
+              value={selected.price?.toFixed(2) ?? ''}
+              onKeyDown={onKeyDownPrice}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">€</InputAdornment>

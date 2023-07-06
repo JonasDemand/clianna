@@ -27,7 +27,8 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
     field: 'customer',
     headerName: 'Kunde',
     flex: 1,
-    valueGetter: ({ row }) => getCustomerLabel(row.customer),
+    valueGetter: ({ row }) =>
+      getCustomerLabel(row.customer ?? row.order?.customer),
   },
   {
     field: 'order',

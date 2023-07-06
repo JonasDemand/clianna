@@ -72,6 +72,7 @@ export const defaultOrder = (): IOrderWithDependencies => ({
   pending: true,
   shippingType: EOrderShippingType.Send,
   taxes: EOrderTax.Nineteen,
+  price: 0,
   documents: new Array<IDocument>(),
 });
 
