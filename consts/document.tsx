@@ -3,6 +3,7 @@ import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { getCustomerLabel } from '@utils/customer';
+import { getOrderLabel } from '@utils/order';
 import React from 'react';
 
 export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
@@ -16,15 +17,16 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
       `https://docs.google.com/document/d/${row.googleId}`,
   },
   {
-    field: 'customer/order',
-    headerName: 'Referenz',
+    field: 'customer',
+    headerName: 'Kunde',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.customer
-        ? `Kunde ${getCustomerLabel(row.customer)}`
-        : row.order
-        ? `Auftrag ${row.order.id}`
-        : '',
+    valueGetter: ({ row }) => getCustomerLabel(row.customer),
+  },
+  {
+    field: 'order',
+    headerName: 'Auftrag',
+    flex: 1,
+    valueGetter: ({ row }) => getOrderLabel(row.order),
   },
 ];
 export const columns: GridColDef<IDocumentWithDependencies>[] = [
