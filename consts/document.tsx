@@ -3,6 +3,7 @@ import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { getCustomerLabel } from '@utils/customer';
+import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';
 import React from 'react';
 
@@ -15,6 +16,12 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
     flex: 1,
     valueGetter: ({ row }) =>
       `https://docs.google.com/document/d/${row.googleId}`,
+  },
+  {
+    field: 'creationDate',
+    headerName: 'Erstellungsdatum',
+    flex: 1,
+    renderCell: ({ row }) => formatDate(row.creationDate),
   },
   {
     field: 'customer',
@@ -38,7 +45,7 @@ export const columns: GridColDef<IDocumentWithDependencies>[] = [
   },
 ];
 
-export const defaultVariableColumns = variableColumns.slice(1, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 4);
 
 export const ShowDocumentLabels = new Map<EShowDocument, string>([
   [EShowDocument.All, 'Alle'],

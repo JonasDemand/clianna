@@ -60,14 +60,15 @@ model Order {
 }
 
 model Document {
-  id         String    @id @default(cuid())
-  customerId String?
-  orderId    String?
-  googleId   String?
-  name       String?
-  template   Boolean   @default(false)
-  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  order      Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id           String    @id @default(cuid())
+  customerId   String?
+  orderId      String?
+  googleId     String?
+  name         String?
+  creationDate DateTime  @default(now())
+  template     Boolean   @default(false)
+  customer     Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  order        Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 enum EOrderShippingType {

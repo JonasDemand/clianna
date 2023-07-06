@@ -16,6 +16,7 @@ export class Document {
     googleId: true,
     name: true,
     template: true,
+    creationDate: true,
   };
 
   public static async Create<ID extends boolean>(
