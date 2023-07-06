@@ -24,6 +24,11 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
     renderCell: ({ row }) => formatDate(row.creationDate),
   },
   {
+    field: 'incrementalId',
+    headerName: 'Inkrementelle ID',
+    flex: 1,
+  },
+  {
     field: 'customer',
     headerName: 'Kunde',
     flex: 1,

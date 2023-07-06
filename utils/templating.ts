@@ -17,7 +17,7 @@ const SalutationLabels = new Map<ECustomerSalutation, string>([
 export type Replacement = { replaceTemplate: string; replaceValue: string };
 
 const getReplaceTemplate = (prefix: string, key: string): string =>
-  `${!prefix.startsWith('{{') ? '{{' : ''}${prefix}.${key}`;
+  `${!prefix.startsWith('{{') ? '{{' : ''}${prefix}${prefix ? '.' : ''}${key}`;
 
 const customKeyActions: Record<
   string,
@@ -50,6 +50,7 @@ const customLabels: Record<string, (value: any) => string> = {
   shippingType: (value) => OrderShippingTypeLabels.get(value) ?? '',
   type: (value) => OrderTypeLabels.get(value) ?? '',
   salutation: (value) => SalutationLabels.get(value) ?? '',
+  incrementalId: (value) => value?.toString().padStart(4, '0') ?? '',
 };
 
 const getLabel = (key: string, value: any): string => {
@@ -63,8 +64,8 @@ const getLabel = (key: string, value: any): string => {
 };
 
 export const replaceTextFromObject = (
-  prefix: string,
-  obj: object
+  obj: object,
+  prefix: string = ''
 ): Replacement[] => {
   let results: Replacement[] = [];
   Object.entries(obj).forEach(([key, value]) => {
@@ -73,7 +74,7 @@ export const replaceTextFromObject = (
       value.forEach(
         (x, i) =>
           (results = results.concat(
-            replaceTextFromObject(`${replaceTemplate}[${i}]`, x)
+            replaceTextFromObject(x, `${replaceTemplate}[${i}]`)
           ))
       );
       return;
@@ -83,7 +84,7 @@ export const replaceTextFromObject = (
       typeof value === 'object' &&
       !(value instanceof Date)
     ) {
-      results = results.concat(replaceTextFromObject(replaceTemplate, value));
+      results = results.concat(replaceTextFromObject(value, replaceTemplate));
       return;
     }
 
@@ -94,5 +95,6 @@ export const replaceTextFromObject = (
           replaceValue: getLabel(key, value),
         });
   });
+  console.log({ results });
   return results;
 };

@@ -24,7 +24,18 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const documentToCopy = await DbRepo.Document.GetSingle(id!.toString(), false);
   if (!documentToCopy) return res.status(404).send('Document not found');
 
-  const initialDocument = await DbRepo.Document.Create(body, true);
+  const initialDocument = await DbRepo.Document.Create(
+    { ...body, incrementalId: documentToCopy.incrementalId ?? null },
+    true
+  );
+  if (documentToCopy.incrementalId)
+    await DbRepo.Document.Update(
+      documentToCopy.id!,
+      {
+        incrementalId: documentToCopy.incrementalId + 1,
+      },
+      false
+    );
 
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
 
@@ -44,15 +55,14 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     await GapiWrapper.Instance.docs.documents.batchUpdate({
       documentId: driveId,
       requestBody: {
-        requests: replaceTextFromObject(
-          initialDocument.customer ? 'customer' : 'order',
-          initialDocument.customer ?? initialDocument.order!
-        ).map(({ replaceValue, replaceTemplate }) => ({
-          replaceAllText: {
-            containsText: { matchCase: false, text: replaceTemplate },
-            replaceText: replaceValue,
-          },
-        })),
+        requests: replaceTextFromObject(initialDocument).map(
+          ({ replaceValue, replaceTemplate }) => ({
+            replaceAllText: {
+              containsText: { matchCase: false, text: replaceTemplate },
+              replaceText: replaceValue,
+            },
+          })
+        ),
       },
     });
   const updatedDocument = await DbRepo.Document.Update(

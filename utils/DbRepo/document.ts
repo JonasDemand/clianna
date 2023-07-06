@@ -17,6 +17,7 @@ export class Document {
     name: true,
     template: true,
     creationDate: true,
+    incrementalId: true,
   };
 
   public static async Create<ID extends boolean>(
