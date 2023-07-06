@@ -7,7 +7,7 @@ import { DocumentContextType } from '@customTypes/document';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
-import { getCustomerLabel } from '@utils/customer';
+import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -140,15 +140,7 @@ const DocumentsPage: FC = () => {
           Bist du dir sicher, dass Du dieses Dokument löschen willst?
         </Typography>
         <Typography fontWeight="bold">
-          Dokument {documentToDelete?.id}
-          {(documentToDelete?.customer || documentToDelete?.order) && (
-            <>
-              <br />
-              {documentToDelete.customer
-                ? `Für Kunde ${getCustomerLabel(documentToDelete.customer)}`
-                : `Für Auftrag ${documentToDelete.order?.id}`}
-            </>
-          )}
+          {getDocumentLabel(documentToDelete)}
         </Typography>
       </ConfirmDialog>
     </Box>

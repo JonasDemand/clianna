@@ -34,6 +34,7 @@ export const getStaticProps: GetStaticProps<CustomersProps> = async () => {
       customers: await DbRepo.Customer.GetAll(true),
       templates: await DbRepo.Document.GetTemplates(false),
     },
+    revalidate: 60,
   };
 };
 

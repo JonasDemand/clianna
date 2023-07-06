@@ -38,6 +38,7 @@ export const getStaticProps: GetStaticProps<OrdersProps> = async () => {
       orders: await DbRepo.Order.GetAll(false),
       customers: await DbRepo.Customer.GetActive(false),
     },
+    revalidate: 60,
   };
 };
 
