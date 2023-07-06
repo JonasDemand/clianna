@@ -38,25 +38,24 @@ model Customer {
 }
 
 model Order {
-  id            String               @id @default(cuid())
-  customerId    String?
-  creationDate  DateTime             @default(now())
-  pending       Boolean              @default(true)
-  shippingType  EOrderShippingType?
-  comment       String?
-  price         Float?
-  taxes         EOrderTax?
-  dueDate       DateTime?
-  type          EOrderType?
-  specification EOrderSpecification?
-  brand         String?
-  article       String?
-  color         String?
-  dealer        String?
-  size          Float?
-  name          String?
-  customer      Customer?            @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  documents     Document[]
+  id           String              @id @default(cuid())
+  customerId   String?
+  creationDate DateTime            @default(now())
+  pending      Boolean             @default(true)
+  shippingType EOrderShippingType?
+  comment      String?
+  price        Float?
+  taxes        EOrderTax?
+  dueDate      DateTime?
+  type         EOrderType?
+  brand        String?
+  article      String?
+  color        String?
+  dealer       String?
+  size         Float?
+  name         String?
+  customer     Customer?           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  documents    Document[]
 }
 
 model Document {
@@ -86,17 +85,6 @@ enum EOrderType {
   Massschuhe
   Schuhbestellung
   Miscellaneous
-}
-
-enum EOrderSpecification {
-  Sport
-  Business
-  Casual
-  Workwear
-  Massschuhe
-  SchuhleistenEinleisten
-  Erstlieferung
-  Nachlieferung
 }
 
 enum EOrderTax {

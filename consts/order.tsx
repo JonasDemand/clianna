@@ -4,12 +4,7 @@ import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import {
-  EOrderShippingType,
-  EOrderSpecification,
-  EOrderTax,
-  EOrderType,
-} from '@prisma/client';
+import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import React from 'react';
@@ -89,17 +84,6 @@ export const ShowOrderLabels = new Map<EShowOrder, string>([
 export const OrderTaxLabels = new Map<EOrderTax, string>([
   [EOrderTax.Nineteen, '19%'],
   [EOrderTax.Seven, '7%'],
-]);
-
-export const OrderSpecificationLabels = new Map<EOrderSpecification, string>([
-  [EOrderSpecification.Sport, 'Sport'],
-  [EOrderSpecification.Business, 'Business'],
-  [EOrderSpecification.Casual, 'Casual'],
-  [EOrderSpecification.Workwear, 'Workwear'],
-  [EOrderSpecification.Massschuhe, 'Maßschuhe'],
-  [EOrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
-  [EOrderSpecification.Erstlieferung, 'Erstlieferung'],
-  [EOrderSpecification.Nachlieferung, 'Nachlieferung'],
 ]);
 
 export const OrderTypeLabels = new Map<EOrderType, string>([

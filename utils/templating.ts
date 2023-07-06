@@ -1,6 +1,5 @@
 import {
   OrderShippingTypeLabels,
-  OrderSpecificationLabels,
   OrderTaxLabels,
   OrderTypeLabels,
 } from '@consts/order';
@@ -13,7 +12,6 @@ const customLabels: Record<string, (value: any) => string> = {
   taxes: (value) => OrderTaxLabels.get(value) ?? '',
   shippingType: (value) => OrderShippingTypeLabels.get(value) ?? '',
   type: (value) => OrderTypeLabels.get(value) ?? '',
-  specification: (value) => OrderSpecificationLabels.get(value) ?? '',
 };
 
 const getLabel = (key: string, value: any): string => {

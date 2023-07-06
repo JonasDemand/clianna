@@ -18,7 +18,6 @@ export class Order {
     taxes: true,
     dueDate: true,
     type: true,
-    specification: true,
     brand: true,
     article: true,
     color: true,
