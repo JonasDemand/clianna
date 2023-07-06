@@ -173,8 +173,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   );
 
   const getOptionLabelTemplate = useCallback(
-    (option: IDocument) =>
-      `${option.id} ${option.name ? ` - ${option.name}` : ''}`,
+    (option: IDocument) => option.name ?? '',
     []
   );
 
