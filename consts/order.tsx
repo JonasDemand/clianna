@@ -11,7 +11,7 @@ import {
   EOrderType,
 } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
-import dayjs from 'dayjs';
+import { formatDate } from '@utils/date';
 import React from 'react';
 
 export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
@@ -34,15 +34,13 @@ export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
     field: 'creationDate',
     headerName: 'Erstellungsdatum',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.creationDate ? dayjs(row.creationDate).format('DD.MM.YYYY') : '',
+    renderCell: ({ row }) => formatDate(row.creationDate),
   },
   {
     field: 'dueDate',
     headerName: 'Fertigstellungsdatum',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.dueDate ? dayjs(row.dueDate).format('DD.MM.YYYY') : '',
+    renderCell: ({ row }) => formatDate(row.dueDate),
   },
   {
     field: 'price',

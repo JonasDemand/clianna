@@ -4,7 +4,8 @@ import {
   OrderTaxLabels,
   OrderTypeLabels,
 } from '@consts/order';
-import dayjs from 'dayjs';
+
+import { formatDate } from './date';
 
 export type Replacement = { replaceTemplate: string; replaceValue: string };
 
@@ -19,7 +20,7 @@ const getLabel = (key: string, value: any): string => {
   if (value === null || value === undefined) return '';
   if (customLabels[key]) return customLabels[key](value);
   if (typeof value === 'boolean') return value ? 'Ja' : 'Nein';
-  if (value instanceof Date) return dayjs(value).format('DD.MM.YYYY');
+  if (value instanceof Date) return formatDate(value);
 
   if (typeof value.toString === 'function') return value.toString();
   return '';

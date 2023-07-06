@@ -13,6 +13,7 @@ import {
   Grid,
 } from '@mui/material';
 import { getCustomerLabel } from '@utils/customer';
+import { getOrderLabel } from '@utils/order';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
 const DocumentGeneral: FC = () => {
@@ -82,7 +83,9 @@ const DocumentGeneral: FC = () => {
               value={selected.customer ?? selected.order}
               onChange={onChangeReference}
               getOptionLabel={(option) =>
-                isCustomer(option) ? getCustomerLabel(option) : option.id ?? ''
+                isCustomer(option)
+                  ? getCustomerLabel(option)
+                  : getOrderLabel(option)
               }
               renderInput={renderInputReference}
               isOptionEqualToValue={(option, value) => option?.id === value?.id}

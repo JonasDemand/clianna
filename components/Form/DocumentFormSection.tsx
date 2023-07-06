@@ -108,10 +108,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     }
 
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.Document.Copy(
-          getCopyId(selected.id),
-          withReference(selected)
-        )
+      ? await ApiClient.Document.Copy(getCopyId(selected.id), selected)
       : selected.id === EId.Create
       ? await ApiClient.Document.Create(withReference(selected))
       : await ApiClient.Document.Update(selected.id, selected);

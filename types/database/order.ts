@@ -7,5 +7,5 @@ export interface IOrder extends Omit<Partial<Order>, 'userId' | 'customerId'> {}
 
 export interface IOrderWithDependencies extends IOrder {
   customer?: Omit<ICustomerWithDependencies, 'orders'> | null;
-  documents?: Omit<IDocumentWithDependencies, 'document'>[];
+  documents?: Omit<IDocumentWithDependencies, 'order'>[];
 }
