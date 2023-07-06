@@ -28,6 +28,13 @@ export const variableColumns: GridColDef<ICustomerWithDependencies>[] = [
     renderCell: ({ row }) => (row.whatsapp ? <Check /> : <Close />),
   },
   {
+    field: 'salutation',
+    headerName: 'Anrede',
+    flex: 1,
+    valueGetter: ({ row }) =>
+      row.salutation ? CustomerSalutationLabels.get(row.salutation) : '',
+  },
+  {
     field: 'orders',
     headerName: 'Offene Bestellungen',
     flex: 1,
