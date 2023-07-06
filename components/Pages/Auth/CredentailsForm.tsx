@@ -1,8 +1,6 @@
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
-import { ArrowBack } from '@mui/icons-material';
 import { Box } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
 import React, {
   ChangeEvent,
   FC,
@@ -16,15 +14,10 @@ import PasswordForm from '../../Authentication/PasswordForm';
 export type CredentialsFormProps = {
   showError: (message: string) => void;
   initialEmail?: string;
-  onLogin: (
-    email: string,
-    password: string,
-    newAccount: boolean
-  ) => Promise<void> | void;
+  onLogin: (email: string, password: string) => Promise<void> | void;
 };
 
 const CredentialsForm: FC<CredentialsFormProps> = ({
-  showError,
   initialEmail,
   onLogin,
 }) => {
@@ -32,54 +25,23 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [repeatError, setRepeatError] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [newAccount, setNewAccount] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
 
   useEffect(() => {
     if (!initialEmail) return;
     setEmail(initialEmail);
-    setShowPassword(true);
   }, [initialEmail]);
 
   const onSubmitForm = useCallback(
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (!showPassword) {
-        setLoading(true);
-        const { error, response } = await ApiClient.User.ValidateEmail(email);
-        setLoading(false);
-        if (error || !response) {
-          showError('Unbekannter Fehler');
-          return;
-        }
-        setShowPassword(true);
-        setNewAccount(response.valid);
-        return;
-      }
-
       setShowPasswordValidation(true);
-      if (newAccount && password !== repeatPassword) {
-        setRepeatError(true);
-        return;
-      }
 
-      onLogin(email, password, newAccount);
+      onLogin(email, password);
     },
-    [
-      email,
-      newAccount,
-      onLogin,
-      password,
-      repeatPassword,
-      showError,
-      showPassword,
-    ]
+    [email, onLogin, password]
   );
-
-  const onClickBack = useCallback(() => setShowPassword(false), []);
 
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -90,15 +52,6 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
 
   return (
     <Box component="form" onSubmit={onSubmitForm}>
-      <MuiButton
-        variant="text"
-        startIcon={<ArrowBack />}
-        disabled={!showPassword || !!initialEmail}
-        onClick={onClickBack}
-        sx={{ my: 1 }}
-      >
-        Zurück
-      </MuiButton>
       <MuiTextField
         name="email"
         type="email"
@@ -106,39 +59,31 @@ const CredentialsForm: FC<CredentialsFormProps> = ({
         autoComplete="email"
         fullWidth
         required
-        disabled={showPassword}
         value={email}
         inputRef={inputRefEmail}
         onChange={onChangeEmail}
         sx={{ my: 1 }}
       />
-      {showPassword && (
-        <PasswordForm
-          focusPassword
-          showRepeatPassword={newAccount}
-          showValidation={showPasswordValidation}
-          setShowValidation={setShowPasswordValidation}
-          repeatError={repeatError}
-          setRepeatError={setRepeatError}
-          password={password}
-          onPasswordChange={setPassword}
-          repeatPassword={repeatPassword}
-          onRepeatPasswordChange={setRepeatPassword}
-        />
-      )}
+
+      <PasswordForm
+        showValidation={showPasswordValidation}
+        setShowValidation={setShowPasswordValidation}
+        repeatError={repeatError}
+        setRepeatError={setRepeatError}
+        password={password}
+        onPasswordChange={setPassword}
+        repeatPassword={repeatPassword}
+        onRepeatPasswordChange={setRepeatPassword}
+      />
+
       <MuiButton
         loadingButton
-        loading={loading}
         type="submit"
         color="success"
         fullWidth
         sx={{ my: 1 }}
       >
-        {!showPassword
-          ? 'Weiter mit E-Mail'
-          : newAccount
-          ? 'Registrieren'
-          : 'Anmelden'}
+        Anmelden
       </MuiButton>
     </Box>
   );

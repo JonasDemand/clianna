@@ -2,8 +2,8 @@ import { IResponse } from '@customTypes/api';
 
 export const createClientFunction =
   <REQ = void, RES = void, ERR = void>(url: string, method: string) =>
-  async (request?: REQ): Promise<IResponse<RES, ERR>> => {
-    const res = await fetch(url, {
+  async (request?: REQ, host?: string): Promise<IResponse<RES, ERR>> => {
+    const res = await fetch(host ? host + url : url, {
       method: method,
       body: request && JSON.stringify(request),
       headers: request && { 'content-type': 'application/json' },

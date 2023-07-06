@@ -95,7 +95,7 @@ const DocumentsTableHeader: FC = () => {
       >
         <Grid item xs={12} md={2}>
           <EnumSelect
-            label="Status"
+            label="Typ"
             value={showDocuments}
             enumToUse={EShowOrder}
             enumLabel={ShowDocumentLabels}

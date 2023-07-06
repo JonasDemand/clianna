@@ -6,8 +6,7 @@ import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
 import { refreshSession } from '@utils/nextauth';
-import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, {
   ChangeEvent,
@@ -16,12 +15,10 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import GoogleButton from 'react-google-button';
 
 const LoginConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { data: session } = useSession();
-  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -39,14 +36,6 @@ const LoginConfiguration: FC = () => {
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
     []
-  );
-
-  const onClickGoogleButton = useCallback(
-    () =>
-      signIn('google', {
-        callbackUrl: `/auth/link?email=${session?.user.email}&callbackUrl=${router.asPath}`,
-      }),
-    [router.asPath, session?.user.email]
   );
 
   const onSubmit = useCallback(
@@ -128,7 +117,7 @@ const LoginConfiguration: FC = () => {
           <PasswordForm
             showRepeatPassword
             required={false}
-            showOldPassword={session?.user.credentials}
+            showOldPassword
             showValidation={showValidation}
             setShowValidation={setShowValidation}
             repeatError={repeatError}
@@ -164,13 +153,6 @@ const LoginConfiguration: FC = () => {
             >
               Speichern
             </MuiButton>
-          </Grid>
-          <Grid item>
-            <GoogleButton
-              label="Google-Account verlinken"
-              disabled={session?.user.google}
-              onClick={onClickGoogleButton}
-            />
           </Grid>
         </Grid>
       </Grid>

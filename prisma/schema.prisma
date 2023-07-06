@@ -11,21 +11,15 @@ datasource db {
 }
 
 model User {
-  id              String     @id @default(cuid())
-  email           String     @unique
-  password        String?    @db.Text
-  salt            String?    @db.Text
-  googleId        String?    @unique
-  refreshToken    String?    @db.Text
-  cliannaFolderId String?
-  Customer        Customer[]
-  Order           Order[]
-  Document        Document[]
+  id       String  @id @default(cuid())
+  email    String  @unique
+  password String? @db.Text
+  salt     String? @db.Text
+  enabled  Boolean @default(false)
 }
 
 model Customer {
-  id           String     @id @default(cuid())
-  userId       String
+  id           String               @id @default(cuid())
   firstname    String?
   lastname     String?
   email        String?
@@ -39,46 +33,43 @@ model Customer {
   shoesize     Float?
   disabled     Boolean?
   fibu         Int?
+  salutation   ECustomerSalutation?
   orders       Order[]
   documents    Document[]
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
-  id            String               @id @default(cuid())
-  userId        String
-  customerId    String?
-  creationDate  DateTime             @default(now())
-  pending       Boolean              @default(true)
-  shippingType  EOrderShippingType?
-  comment       String?
-  price         Float?
-  taxes         EOrderTax?
-  dueDate       DateTime?
-  type          EOrderType?
-  specification EOrderSpecification?
-  brand         String?
-  article       String?
-  color         String?
-  dealer        String?
-  size          Float?
-  name          String?
-  customer      Customer?            @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  documents     Document[]
-  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String              @id @default(cuid())
+  customerId   String?
+  creationDate DateTime            @default(now())
+  pending      Boolean             @default(true)
+  shippingType EOrderShippingType?
+  comment      String?
+  price        Float?
+  taxes        EOrderTax?
+  dueDate      DateTime?
+  type         EOrderType?
+  brand        String?
+  article      String?
+  color        String?
+  dealer       String?
+  size         Float?
+  name         String?
+  customer     Customer?           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  documents    Document[]
 }
 
 model Document {
-  id         String    @id @default(cuid())
-  userId     String
-  customerId String?
-  orderId    String?
-  googleId   String?
-  name       String?
-  template   Boolean   @default(false)
-  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  order      Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  customerId    String?
+  orderId       String?
+  googleId      String?
+  name          String?
+  creationDate  DateTime  @default(now())
+  template      Boolean   @default(false)
+  incrementalId Int?
+  customer      Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  order         Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 enum EOrderShippingType {
@@ -98,18 +89,14 @@ enum EOrderType {
   Miscellaneous
 }
 
-enum EOrderSpecification {
-  Sport
-  Business
-  Casual
-  Workwear
-  Massschuhe
-  SchuhleistenEinleisten
-  Erstlieferung
-  Nachlieferung
-}
-
 enum EOrderTax {
   Nineteen
   Seven
+}
+
+enum ECustomerSalutation {
+  Mr
+  Mrs
+  Diverse
+  Company
 }

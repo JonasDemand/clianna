@@ -10,12 +10,22 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const createCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest[];
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
   const customers = await Promise.all(
-    body.map((customer) => DbRepo.Instance.Customer.Create(customer, true))
+    body.map((customer) => DbRepo.Customer.Create(customer, true))
   );
 
-  res.status(200).send(customers);
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
+  return res.status(200).send(customers);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

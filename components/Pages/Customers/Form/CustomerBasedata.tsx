@@ -1,9 +1,12 @@
+import EnumSelect from '@components/Form/EnumSelect';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
+import { CustomerSalutationLabels } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Email, Phone, Smartphone } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
+import { ECustomerSalutation } from '@prisma/client';
 import React, {
   ChangeEvent,
   FC,
@@ -55,6 +58,10 @@ const CustomerBasedata: FC = () => {
       updateSelected('fibu', parseInt(e.target.value)),
     [updateSelected]
   );
+  const onChangeSalutation = useCallback(
+    (value: ECustomerSalutation) => updateSelected('salutation', value),
+    [updateSelected]
+  );
 
   const onFocusPhone = useCallback(
     () => setPhoneFocused(true),
@@ -86,7 +93,19 @@ const CustomerBasedata: FC = () => {
     <FormSection label="Stammdaten">
       {selected && (
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={2}>
+            <EnumSelect
+              label="Anrede"
+              enumToUse={ECustomerSalutation}
+              enumLabel={CustomerSalutationLabels}
+              value={selected.salutation ?? ''}
+              aditionalTextFieldProps={{
+                variant: 'filled',
+              }}
+              onChange={onChangeSalutation}
+            />
+          </Grid>
+          <Grid item xs={4}>
             <FormTextField
               label="Vorname"
               value={selected.firstname}

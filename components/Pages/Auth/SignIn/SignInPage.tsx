@@ -1,10 +1,8 @@
 import { Lock } from '@mui/icons-material';
-import { Alert, Box } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import GoogleButton from 'react-google-button';
 
 import AuthLayout from '../AuthLayout';
 import CredentialsForm from '../CredentailsForm';
@@ -15,22 +13,14 @@ const SignInPage: FC = () => {
   const [error, setError] = useState<string>();
 
   useEffect(() => {
-    if (router.query.error) setError('Login fehlgeschlagen');
+    if (router.query.error)
+      setError(
+        'Login fehlgeschlagen. Kontaktiere einen Administrator um den Account zu aktivieren.'
+      );
   }, [router.query.error]);
 
-  const onClickGoogleButton = useCallback(
-    () =>
-      signIn('google', {
-        callbackUrl: router.query.callbackUrl?.toString() ?? '/',
-      }),
-    [router.query.callbackUrl]
-  );
-
   const onLogin = useCallback(
-    async (email: string, password: string, newAccount: boolean) => {
-      if (newAccount)
-        await ApiClient.User.CreateCredentials({ email, password });
-
+    async (email: string, password: string) => {
       signIn('credentials', {
         email,
         password,
@@ -43,13 +33,6 @@ const SignInPage: FC = () => {
   return (
     <AuthLayout title="Anmeldung" icon={<Lock />}>
       <CredentialsForm showError={setError} onLogin={onLogin} />
-      <Box sx={{ my: 2, '.GoogleButton': { width: '100% !important' } }}>
-        <GoogleButton
-          className="GoogleButton"
-          label="Mit Google anmelden"
-          onClick={onClickGoogleButton}
-        />
-      </Box>
       {error && (
         <Alert variant="filled" severity="error">
           {error}

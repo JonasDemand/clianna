@@ -18,7 +18,6 @@ export class Order {
     taxes: true,
     dueDate: true,
     type: true,
-    specification: true,
     brand: true,
     article: true,
     color: true,
@@ -27,12 +26,7 @@ export class Order {
     name: true,
   };
 
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async Create<ID extends boolean>(
+  public static async Create<ID extends boolean>(
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
@@ -40,9 +34,7 @@ export class Order {
     if (order.customer?.id)
       existPromises.push(
         prisma.customer.findFirstOrThrow({
-          where: {
-            AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
-          },
+          where: { id: order.customer?.id },
           select: null,
         })
       );
@@ -50,9 +42,7 @@ export class Order {
       existPromises.concat(
         order.documents.map((x) =>
           prisma.document.findFirstOrThrow({
-            where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
-            },
+            where: { id: x.id },
             select: null,
           })
         )
@@ -70,7 +60,6 @@ export class Order {
         },
         id: undefined,
         creationDate: undefined,
-        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Order.DefaultSelect,
@@ -83,13 +72,10 @@ export class Order {
       },
     });
   }
-  public async GetAll<ID extends boolean>(
+  public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies[] : IOrder[]> {
     return await prisma.order.findMany({
-      where: {
-        user: { id: this.UserId },
-      },
       select: {
         ...Order.DefaultSelect,
         customer: includeDependencies
@@ -101,12 +87,12 @@ export class Order {
       },
     });
   }
-  public async GetSingle<ID extends boolean>(
+  public static async GetSingle<ID extends boolean>(
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? IOrderWithDependencies : IOrder) | null> {
     return await prisma.order.findFirst({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: {
         ...Order.DefaultSelect,
         customer: includeDependencies
@@ -118,23 +104,21 @@ export class Order {
       },
     });
   }
-  public async Update<ID extends boolean>(
+  public static async Update<ID extends boolean>(
     id: string,
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
     const existPromises: Array<Promise<any>> = [
       prisma.order.findFirstOrThrow({
-        where: { AND: [{ user: { id: this.UserId } }, { id }] },
+        where: { id },
         select: null,
       }),
     ];
     if (order.customer?.id)
       existPromises.push(
         prisma.customer.findFirstOrThrow({
-          where: {
-            AND: [{ id: order.customer?.id }, { user: { id: this.UserId } }],
-          },
+          where: { id: order.customer?.id },
           select: null,
         })
       );
@@ -142,9 +126,7 @@ export class Order {
       existPromises.concat(
         order.documents.map((x) =>
           prisma.document.findFirstOrThrow({
-            where: {
-              AND: [{ id: x.id }, { user: { id: this.UserId } }],
-            },
+            where: { id: x.id },
             select: null,
           })
         )
@@ -163,7 +145,6 @@ export class Order {
         },
         id: undefined,
         creationDate: undefined,
-        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Order.DefaultSelect,
@@ -176,9 +157,9 @@ export class Order {
       },
     });
   }
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     await prisma.order.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: null,
     });
     await prisma.order.delete({

@@ -10,12 +10,19 @@ export class Order {
     string
   >('/api/order', 'POST');
 
-  public static Update = (id: string, request: IUpsertRequest) =>
+  public static Update = (
+    id: string,
+    request: IUpsertRequest,
+    baseUrl?: string
+  ) =>
     createClientFunction<IUpsertRequest, IOrderWithDependencies, string>(
       `/api/order/${id}`,
       'PUT'
-    )(request);
+    )(request, baseUrl);
 
-  public static Delete = (id: string) =>
-    createClientFunction<void, void, string>(`/api/order/${id}`, 'DELETE')();
+  public static Delete = (id: string, baseUrl?: string) =>
+    createClientFunction<void, void, string>(`/api/order/${id}`, 'DELETE')(
+      undefined,
+      baseUrl
+    );
 }

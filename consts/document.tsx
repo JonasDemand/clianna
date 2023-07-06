@@ -3,6 +3,8 @@ import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import { getCustomerLabel } from '@utils/customer';
+import { formatDate } from '@utils/date';
+import { getOrderLabel } from '@utils/order';
 import React from 'react';
 
 export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
@@ -16,15 +18,28 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
       `https://docs.google.com/document/d/${row.googleId}`,
   },
   {
-    field: 'customer/order',
-    headerName: 'Referenz',
+    field: 'creationDate',
+    headerName: 'Erstellungsdatum',
+    flex: 1,
+    renderCell: ({ row }) => formatDate(row.creationDate),
+  },
+  {
+    field: 'incrementalId',
+    headerName: 'Inkrementelle ID',
+    flex: 1,
+  },
+  {
+    field: 'customer',
+    headerName: 'Kunde',
     flex: 1,
     valueGetter: ({ row }) =>
-      row.customer
-        ? `Kunde ${getCustomerLabel(row.customer)}`
-        : row.order
-        ? `Auftrag ${row.order.id}`
-        : '',
+      getCustomerLabel(row.customer ?? row.order?.customer),
+  },
+  {
+    field: 'order',
+    headerName: 'Auftrag',
+    flex: 1,
+    valueGetter: ({ row }) => getOrderLabel(row.order),
   },
 ];
 export const columns: GridColDef<IDocumentWithDependencies>[] = [
@@ -36,7 +51,7 @@ export const columns: GridColDef<IDocumentWithDependencies>[] = [
   },
 ];
 
-export const defaultVariableColumns = variableColumns.slice(1, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 4);
 
 export const ShowDocumentLabels = new Map<EShowDocument, string>([
   [EShowDocument.All, 'Alle'],

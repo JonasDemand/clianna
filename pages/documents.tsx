@@ -7,7 +7,6 @@ import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
 import { DbRepo } from '@utils/DbRepo';
 import { GetServerSideProps, NextPage } from 'next';
-import { getSession } from 'next-auth/react';
 import React from 'react';
 
 type OrdersProps = {
@@ -32,17 +31,12 @@ const Documents: NextPage<OrdersProps> = ({ documents, orders, customers }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<OrdersProps> = async (
-  context
-) => {
-  const session = await getSession(context);
-  if (!session) return { props: { documents: [], customers: [], orders: [] } };
-  DbRepo.Init(session.user.id ?? '');
+export const getServerSideProps: GetServerSideProps<OrdersProps> = async () => {
   return {
     props: {
-      documents: await DbRepo.Instance.Document.GetAll(true),
-      orders: await DbRepo.Instance.Order.GetAll(false),
-      customers: await DbRepo.Instance.Customer.GetActive(false),
+      documents: await DbRepo.Document.GetAll(true),
+      orders: await DbRepo.Order.GetAll(false),
+      customers: await DbRepo.Customer.GetActive(false),
     },
   };
 };

@@ -3,7 +3,7 @@ import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { IDocument } from '@customTypes/database/document';
 import { Grid } from '@mui/material';
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext, useMemo } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
@@ -13,6 +13,14 @@ const CustomerForm: FC = () => {
   const { selected, updateSelected, templates } = useContext(
     CustomerContext
   ) as CustomerContextType;
+
+  const documents = useMemo(
+    () =>
+      (selected?.documents ?? []).concat(
+        selected?.orders?.flatMap<IDocument>((x) => x.documents ?? []) ?? []
+      ),
+    [selected?.documents, selected?.orders]
+  );
   const onUpdateDocuments = useCallback(
     (documents: IDocument[]) => updateSelected('documents', documents),
     [updateSelected]
@@ -33,7 +41,7 @@ const CustomerForm: FC = () => {
           </Grid>
           <Grid item>
             <DocumentFormSection
-              documents={selected.documents ?? []}
+              documents={documents ?? []}
               templates={templates}
               onUpdate={onUpdateDocuments}
               reference={{ customer: selected.id }}

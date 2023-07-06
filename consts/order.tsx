@@ -4,14 +4,9 @@ import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import {
-  EOrderShippingType,
-  EOrderSpecification,
-  EOrderTax,
-  EOrderType,
-} from '@prisma/client';
+import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
 import { getCustomerLabel } from '@utils/customer';
-import dayjs from 'dayjs';
+import { formatDate } from '@utils/date';
 import React from 'react';
 
 export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
@@ -34,15 +29,13 @@ export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
     field: 'creationDate',
     headerName: 'Erstellungsdatum',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.creationDate ? dayjs(row.creationDate).format('DD.MM.YYYY') : '',
+    renderCell: ({ row }) => formatDate(row.creationDate),
   },
   {
     field: 'dueDate',
     headerName: 'Fertigstellungsdatum',
     flex: 1,
-    valueGetter: ({ row }) =>
-      row.dueDate ? dayjs(row.dueDate).format('DD.MM.YYYY') : '',
+    renderCell: ({ row }) => formatDate(row.dueDate),
   },
   {
     field: 'price',
@@ -79,6 +72,7 @@ export const defaultOrder = (): IOrderWithDependencies => ({
   pending: true,
   shippingType: EOrderShippingType.Send,
   taxes: EOrderTax.Nineteen,
+  price: 0,
   documents: new Array<IDocument>(),
 });
 
@@ -91,17 +85,6 @@ export const ShowOrderLabels = new Map<EShowOrder, string>([
 export const OrderTaxLabels = new Map<EOrderTax, string>([
   [EOrderTax.Nineteen, '19%'],
   [EOrderTax.Seven, '7%'],
-]);
-
-export const OrderSpecificationLabels = new Map<EOrderSpecification, string>([
-  [EOrderSpecification.Sport, 'Sport'],
-  [EOrderSpecification.Business, 'Business'],
-  [EOrderSpecification.Casual, 'Casual'],
-  [EOrderSpecification.Workwear, 'Workwear'],
-  [EOrderSpecification.Massschuhe, 'Maßschuhe'],
-  [EOrderSpecification.SchuhleistenEinleisten, 'Schuhleisten einleisten'],
-  [EOrderSpecification.Erstlieferung, 'Erstlieferung'],
-  [EOrderSpecification.Nachlieferung, 'Nachlieferung'],
 ]);
 
 export const OrderTypeLabels = new Map<EOrderType, string>([

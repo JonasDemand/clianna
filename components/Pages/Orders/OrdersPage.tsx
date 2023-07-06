@@ -10,7 +10,7 @@ import { EId } from '@customTypes/id';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
 import { ApiClient } from '@utils/api/client';
-import { getCustomerLabel } from '@utils/customer';
+import { getOrderLabel } from '@utils/order';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useContext, useState } from 'react';
@@ -173,13 +173,7 @@ const OrdersPage: FC = () => {
           Bist du dir sicher, dass Du diesen Auftrag löschen willst?
         </Typography>
         <Typography fontWeight="bold">
-          Auftrag {orderToDelete?.id}
-          {orderToDelete?.customer && (
-            <>
-              <br />
-              Für Kunde {getCustomerLabel(orderToDelete?.customer)}
-            </>
-          )}
+          {getOrderLabel(orderToDelete)}
         </Typography>
       </ConfirmDialog>
     </Box>

@@ -14,7 +14,11 @@ export const SessionProvider = ({
   children: ReactNode;
   session?: Session;
 }) => {
-  if (session) currentSession = { data: session, status: 'authenticated' };
+  if (session)
+    currentSession = {
+      data: session,
+      status: 'authenticated',
+    };
   return children;
 };
 

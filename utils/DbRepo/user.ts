@@ -5,42 +5,38 @@ import {
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
 
-import { DbRepo } from '.';
-
 const prisma = new PrismaClient();
 
 export class User {
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async CreateCredentials(user: ICredentailsRequest): Promise<void> {
+  public static async Create(user: ICredentailsRequest): Promise<PrismaUser> {
     const salt = createSalt();
     const hashedPassword = await hashPassword(user.password, salt);
-    await prisma.user.create({
+    return await prisma.user.create({
       data: {
         email: user.email,
         password: hashedPassword,
         salt: salt,
       },
-      select: null,
     });
   }
-  public async GetIdFromEmail(email: string): Promise<string> {
-    const user = await prisma.user.findUniqueOrThrow({
+  public static async GetSingleFromEmail(
+    email: string
+  ): Promise<PrismaUser | null> {
+    const user = await prisma.user.findFirst({
       where: { email },
-      select: { id: true },
     });
-    return user.id;
+    return user;
   }
-  public async GetCurrent() {
-    return await prisma.user.findUniqueOrThrow({ where: { id: this.UserId } });
+  public static async GetSingle(id: string): Promise<PrismaUser | null> {
+    return await prisma.user.findFirst({ where: { id } });
   }
-  public async GetAll() {
+  public static async GetAll(): Promise<PrismaUser[]> {
     return await prisma.user.findMany();
   }
-  public async Update(user: IUpdateRequest): Promise<PrismaUser> {
+  public static async Update(
+    id: string,
+    user: IUpdateRequest
+  ): Promise<PrismaUser> {
     let hashedPassword: string | undefined;
     let salt: string | undefined;
     if (user.password) {
@@ -49,52 +45,31 @@ export class User {
     }
     const updatedUser = await prisma.user.update({
       where: {
-        id: this.UserId,
+        id,
       },
       data: {
         password: hashedPassword,
         email: user.email,
         salt: salt,
-        googleId: user.googleId,
-        refreshToken: user.refreshToken,
-        cliannaFolderId: user.cliannaFolderId,
       },
     });
     return updatedUser;
   }
-  public async ValidateCredentials(password: string) {
+  public static async ValidateCredentials(
+    email: string,
+    password: string
+  ): Promise<boolean> {
     const user = await prisma.user.findUniqueOrThrow({
-      where: { id: this.UserId },
-      select: { password: true, salt: true },
+      where: { email },
+      select: { password: true, salt: true, enabled: true },
     });
-    if (!user.password || !user.salt) return false;
+    if (!user.password || !user.salt || !user.enabled) return false;
 
     const hash = await hashPassword(password, user.salt);
     if (hash !== user.password) return false;
     return true;
   }
-  public async MigrateFromId(id: string) {
-    const currentUser = await this.GetCurrent();
-    const customers = await DbRepo.Instance.Customer.GetAll(false);
-    const orders = await DbRepo.Instance.Order.GetAll(false);
-
-    await prisma.user.update({
-      where: { id },
-      data: {
-        Customer: { connect: customers.map((x) => ({ id: x.id })) },
-        Order: { connect: orders.map((x) => ({ id: x.id })) },
-      },
-    });
-
-    await this.Delete();
-    const newUserRepo = new User(id);
-    newUserRepo.Update({
-      googleId: currentUser.googleId,
-      refreshToken: currentUser.refreshToken,
-      cliannaFolderId: currentUser.cliannaFolderId,
-    });
-  }
-  public async Delete() {
-    await prisma.user.delete({ where: { id: this.UserId } });
+  public static async Delete(id: string): Promise<void> {
+    await prisma.user.delete({ where: { id } });
   }
 }

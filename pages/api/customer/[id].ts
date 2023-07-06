@@ -9,15 +9,11 @@ import {
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const customer = await DbRepo.Instance.Customer.GetSingle(
-    id!.toString(),
-    true
-  );
+  const customer = await DbRepo.Customer.GetSingle(id!.toString(), true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
   res.status(200).send(customer);
@@ -25,28 +21,31 @@ const getCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const updateCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   const body = req.body as IUpsertRequest;
 
-  const customer = await DbRepo.Instance.Customer.Update(
-    id!.toString(),
-    body,
-    true
-  );
+  const customer = await DbRepo.Customer.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
   res.status(200).send(customer);
 };
 
 const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
-
-  const customer = await DbRepo.Instance.Customer.GetSingle(
-    id!.toString(),
-    true
-  );
+  const customer = await DbRepo.Customer.GetSingle(id!.toString(), true);
   if (!customer) return res.status(404).send('Unable to retrieve customer');
 
   const deleteFilesProm: Array<Promise<any>> = [];
@@ -54,7 +53,9 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
     deleteFilesProm.concat(
       customer.documents
         .filter((x) => x.googleId)
-        .map((x) => gapi.drive.files.delete({ fileId: x.googleId! }))
+        .map((x) =>
+          GapiWrapper.Instance.drive.files.delete({ fileId: x.googleId! })
+        )
     );
   if (customer.orders) {
     deleteFilesProm.concat(
@@ -64,7 +65,9 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
           order
             .documents!.filter((document) => document.googleId)
             .map((document) =>
-              gapi.drive.files.delete({ fileId: document.googleId! })
+              GapiWrapper.Instance.drive.files.delete({
+                fileId: document.googleId!,
+              })
             )
         )
         .flat()
@@ -72,7 +75,15 @@ const deleteCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   }
   await Promise.all(deleteFilesProm);
 
-  await DbRepo.Instance.Customer.Delete(id!.toString());
+  await DbRepo.Customer.Delete(id!.toString());
+
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
   return res.status(200).send('Deletion of customer successful');
 };
 

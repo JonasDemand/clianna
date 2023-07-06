@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
 ## Getting Started
 
-First, run the development server:
+TODO
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## .env example
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+\# Next-Auth
+NEXTAUTH_URL=http://localhost:3000
+SECRET=cyutB9kUcMcxtgdywOmwPu3gybEjTzlhWqcaRj4BWeA=
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+\# Google Service Account
+GOOGLE_SERVICEACCOUNT_PROJECT_ID=your-project-id
+GOOGLE_SERVICEACCOUNT_PRIVATE_KEY_ID=your-private-key-id
+GOOGLE_SERVICEACCOUNT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nYour private key\n-----END PRIVATE KEY-----\n"
+GOOGLE_SERVICEACCOUNT_CLIENT_EMAIL=your-service-account-email
+GOOGLE_SERVICEACCOUNT_CLIENT_ID=your-client-id
+GOOGLE_SERVICEACCOUNT_AUTH_URI=https://accounts.google.com/o/oauth2/auth
+GOOGLE_SERVICEACCOUNT_TOKEN_URI=https://accounts.google.com/o/oauth2/token
+GOOGLE_SERVICEACCOUNT_AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
+GOOGLE_SERVICEACCOUNT_CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/your-service-account-email
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+\# Google Drive
+GOOGLE_DRIVE_ROOT_FOLDER=\*\*\*
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+\# DBs
+DATABASE_URL=mysql://root:@localhost:3306/clianna?connection_limit=1&pool_timeout=0
 
-## Learn More
+DATABASE_URL_DEV=\*\*\*
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+DATABASE_URL_PROD=\*\*\*

@@ -9,18 +9,25 @@ import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const getCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
-  const customers = await DbRepo.Instance.Customer.GetAll(true);
+  const customers = await DbRepo.Customer.GetAll(true);
   if (!customers) return res.status(500).send('Unable to retrieve customers');
-  res.status(200).send(customers);
+  return res.status(200).send(customers);
 };
 
 const createCustomer = async (req: NextApiRequest, res: NextApiResponse) => {
   const body = req.body as IUpsertRequest;
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
 
-  const customer = await DbRepo.Instance.Customer.Create(body, true);
+  const customer = await DbRepo.Customer.Create(body, true);
   if (!customer) return res.status(500).send('Unable to create customer');
 
-  res.status(200).send(customer);
+  /*Revalidate.Post(
+    { secret: environment.SECRET, paths: defaultRevalidatePaths },
+    baseUrl
+  );*/
+  return res.status(200).send(customer);
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

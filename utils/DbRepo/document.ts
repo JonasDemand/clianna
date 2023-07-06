@@ -16,14 +16,11 @@ export class Document {
     googleId: true,
     name: true,
     template: true,
+    creationDate: true,
+    incrementalId: true,
   };
 
-  private UserId: string;
-  public constructor(userId: string) {
-    this.UserId = userId;
-  }
-
-  public async Create<ID extends boolean>(
+  public static async Create<ID extends boolean>(
     document: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies : IDocument> {
@@ -37,7 +34,6 @@ export class Document {
           ? { connect: { id: document.order.id } }
           : undefined,
         id: undefined,
-        user: { connect: { id: this.UserId } },
       },
       select: {
         ...Document.DefaultSelect,
@@ -50,11 +46,10 @@ export class Document {
       },
     });
   }
-  public async GetAll<ID extends boolean>(
+  public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies[] : IDocument[]> {
     return await prisma.document.findMany({
-      where: { user: { id: this.UserId } },
       select: {
         ...Document.DefaultSelect,
         order: includeDependencies
@@ -66,12 +61,12 @@ export class Document {
       },
     });
   }
-  public async GetSingle<ID extends boolean>(
+  public static async GetSingle<ID extends boolean>(
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? IDocumentWithDependencies : IDocument) | null> {
     return await prisma.document.findFirst({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: {
         ...Document.DefaultSelect,
         order: includeDependencies
@@ -83,11 +78,11 @@ export class Document {
       },
     });
   }
-  public async GetTemplates<ID extends boolean>(
+  public static async GetTemplates<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies[] : IDocument[]> {
     return await prisma.document.findMany({
-      where: { user: { id: this.UserId }, template: true },
+      where: { template: true },
       select: {
         ...Document.DefaultSelect,
         order: includeDependencies
@@ -99,13 +94,13 @@ export class Document {
       },
     });
   }
-  public async Update<ID extends boolean>(
+  public static async Update<ID extends boolean>(
     id: string,
     document: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies : IDocument> {
     await prisma.document.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: null,
     });
     return await prisma.document.update({
@@ -128,13 +123,12 @@ export class Document {
           ? { connect: { id: document.order.id } }
           : undefined,
         id: undefined,
-        user: { connect: { id: this.UserId } },
       },
     });
   }
-  public async Delete(id: string): Promise<void> {
+  public static async Delete(id: string): Promise<void> {
     await prisma.document.findFirstOrThrow({
-      where: { AND: [{ user: { id: this.UserId } }, { id }] },
+      where: { id },
       select: null,
     });
     await prisma.document.delete({

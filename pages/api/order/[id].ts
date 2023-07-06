@@ -9,47 +9,63 @@ import {
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const getOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
-  const order = await DbRepo.Instance.Order.GetSingle(id!.toString(), true);
+  const order = await DbRepo.Order.GetSingle(id!.toString(), true);
   if (!order) return res.status(404).send('Unable to retrieve order');
 
-  res.status(200).send(order);
+  return res.status(200).send(order);
 };
 
 const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
-  const customer = await DbRepo.Instance.Order.Update(
-    id!.toString(),
-    body,
-    true
-  );
+  const customer = await DbRepo.Order.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
-  res.status(200).send(body);
+
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
+  return res.status(200).send(body);
 };
 
 const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
 
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
-
-  const order = await DbRepo.Instance.Order.GetSingle(id!.toString(), true);
+  const order = await DbRepo.Order.GetSingle(id!.toString(), true);
   if (!order) return res.status(404).send('Unable to retrieve order');
 
   if (order.documents)
     await Promise.all(
       order.documents
         .filter((x) => x.googleId)
-        .map((x) => gapi.drive.files.delete({ fileId: x.googleId! }))
+        .map((x) =>
+          GapiWrapper.Instance.drive.files.delete({ fileId: x.googleId! })
+        )
     );
 
-  await DbRepo.Instance.Order.Delete(id!.toString());
+  await DbRepo.Order.Delete(id!.toString());
+
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
   return res.status(200).send('Deletion of order successful');
 };
 

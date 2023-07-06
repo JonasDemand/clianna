@@ -6,35 +6,42 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
-import { withGapi } from '@utils/api/middleware/withGapi';
+import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { replaceTextFromObject } from '@utils/templating';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 
 const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
+  const protocol = req.headers['x-forwarded-proto'] ?? 'http';
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   const { id } = req.query;
   const body = req.body as IUpsertRequest;
 
-  const documentToCopy = await DbRepo.Instance.Document.GetSingle(
-    id!.toString(),
-    false
-  );
+  const documentToCopy = await DbRepo.Document.GetSingle(id!.toString(), false);
   if (!documentToCopy) return res.status(404).send('Document not found');
 
-  const initialDocument = await DbRepo.Instance.Document.Create(body, true);
-
-  const session = await getSession({ req });
-  const gapi = new GapiWrapper(session!.user.refreshToken!);
+  const initialDocument = await DbRepo.Document.Create(
+    { ...body, incrementalId: documentToCopy.incrementalId ?? null },
+    true
+  );
+  if (documentToCopy.incrementalId)
+    await DbRepo.Document.Update(
+      documentToCopy.id!,
+      {
+        incrementalId: documentToCopy.incrementalId + 1,
+      },
+      false
+    );
 
   if (!documentToCopy.googleId) return res.status(200).send(initialDocument);
 
-  const driveCreateResponse = await gapi.drive.files.copy({
+  const driveCreateResponse = await GapiWrapper.Instance.drive.files.copy({
     fileId: documentToCopy.googleId,
     requestBody: {
       name: initialDocument.id,
-      parents: [session!.user.cliannaFolderId!],
+      parents: [environment.GOOGLE_DRIVE_ROOT_FOLDER],
     },
   });
   const driveId = driveCreateResponse.data.id;
@@ -43,25 +50,32 @@ const copyDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     documentToCopy.template &&
     (initialDocument.customer || initialDocument.order)
   )
-    await gapi.docs.documents.batchUpdate({
+    await GapiWrapper.Instance.docs.documents.batchUpdate({
       documentId: driveId,
       requestBody: {
-        requests: replaceTextFromObject(
-          initialDocument.customer ? 'customer' : 'order',
-          initialDocument.customer ?? initialDocument.order!
-        ).map(({ replaceValue, replaceTemplate }) => ({
-          replaceAllText: {
-            containsText: { matchCase: false, text: replaceTemplate },
-            replaceText: replaceValue,
-          },
-        })),
+        requests: replaceTextFromObject(initialDocument).map(
+          ({ replaceValue, replaceTemplate }) => ({
+            replaceAllText: {
+              containsText: { matchCase: false, text: replaceTemplate },
+              replaceText: replaceValue,
+            },
+          })
+        ),
       },
     });
-  const updatedDocument = await DbRepo.Instance.Document.Update(
+  const updatedDocument = await DbRepo.Document.Update(
     initialDocument.id ?? '',
     { googleId: driveId },
     false
   );
+
+  /*Revalidate.Post(
+    {
+      secret: environment.SECRET,
+      paths: defaultRevalidatePaths,
+    },
+    baseUrl
+  );*/
   return res.status(200).send(updatedDocument);
 };
 
@@ -78,6 +92,5 @@ export default withMiddleware(
   withQueryParameters([{ name: 'id', isNumber: false }]),
   withBody(),
   withAuth,
-  withGapi(true),
   handler
 );
