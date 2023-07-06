@@ -58,6 +58,10 @@ const CustomerBasedata: FC = () => {
       updateSelected('fibu', parseInt(e.target.value)),
     [updateSelected]
   );
+  const onChangeSalutation = useCallback(
+    (value: ECustomerSalutation) => updateSelected('salutation', value),
+    [updateSelected]
+  );
 
   const onFocusPhone = useCallback(
     () => setPhoneFocused(true),
@@ -98,7 +102,7 @@ const CustomerBasedata: FC = () => {
               aditionalTextFieldProps={{
                 variant: 'filled',
               }}
-              onChange={console.log}
+              onChange={onChangeSalutation}
             />
           </Grid>
           <Grid item xs={4}>

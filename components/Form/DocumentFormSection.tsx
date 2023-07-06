@@ -56,19 +56,21 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     [documents, searchText]
   );
   const withReference = useCallback(
-    (document: IDocument): IDocumentWithDependencies => ({
+    (document: IDocumentWithDependencies): IDocumentWithDependencies => ({
       ...document,
       customer: {
         id:
-          reference.customer !== EId.Copy && reference.customer !== EId.Create
+          document.customer?.id ??
+          (reference.customer !== EId.Copy && reference.customer !== EId.Create
             ? reference.customer
-            : undefined,
+            : undefined),
       },
       order: {
         id:
-          reference.order !== EId.Copy && reference.order !== EId.Create
+          document.order?.id ??
+          (reference.order !== EId.Copy && reference.order !== EId.Create
             ? reference.order
-            : undefined,
+            : undefined),
       },
     }),
     [reference.customer, reference.order]
@@ -106,9 +108,11 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       });
       return;
     }
-
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.Document.Copy(getCopyId(selected.id), selected)
+      ? await ApiClient.Document.Copy(
+          getCopyId(selected.id),
+          withReference(selected)
+        )
       : selected.id === EId.Create
       ? await ApiClient.Document.Create(withReference(selected))
       : await ApiClient.Document.Update(selected.id, selected);
