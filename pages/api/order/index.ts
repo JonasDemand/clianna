@@ -1,13 +1,10 @@
-import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/order';
-import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
-import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -26,13 +23,13 @@ const createOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const order = await DbRepo.Order.Create(body, true);
   if (!order) return res.status(500).send('Unable to create order');
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   res.status(200).send(order);
 };
 

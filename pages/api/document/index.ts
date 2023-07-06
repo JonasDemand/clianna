@@ -1,6 +1,4 @@
-import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/document';
-import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -32,13 +30,13 @@ const createDocument = async (req: NextApiRequest, res: NextApiResponse) => {
     false
   );
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   return res.status(200).send(updatedDocument);
 };
 

@@ -1,13 +1,10 @@
-import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/customer';
-import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
   withMethodGuard,
   withMiddleware,
 } from '@utils/api/middleware';
-import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -21,13 +18,13 @@ const createCustomers = async (req: NextApiRequest, res: NextApiResponse) => {
     body.map((customer) => DbRepo.Customer.Create(customer, true))
   );
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   return res.status(200).send(customers);
 };
 

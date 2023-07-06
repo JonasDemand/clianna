@@ -1,6 +1,4 @@
-import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/document';
-import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -8,7 +6,6 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
-import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -32,13 +29,13 @@ const updateDocument = async (req: NextApiRequest, res: NextApiResponse) => {
   const document = await DbRepo.Document.Update(id!.toString(), body, true);
   if (!document) return res.status(500).send('Unable to update document');
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   res.status(200).send(document);
 };
 
@@ -54,13 +51,13 @@ const deleteDocument = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await DbRepo.Document.Delete(id!.toString());
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   return res.status(200).send('Deletion of document successful');
 };
 

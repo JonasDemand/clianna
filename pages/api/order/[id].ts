@@ -1,6 +1,4 @@
-import { defaultRevalidatePaths } from '@consts/api';
 import { IUpsertRequest } from '@customTypes/messages/order';
-import { Revalidate } from '@utils/api/client/revalidate';
 import {
   withAuth,
   withBody,
@@ -8,7 +6,6 @@ import {
   withMiddleware,
   withQueryParameters,
 } from '@utils/api/middleware';
-import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
 import { GapiWrapper } from '@utils/gapi/GapiWrapper';
 import { NextApiRequest, NextApiResponse } from 'next';
@@ -32,13 +29,13 @@ const updateOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   const customer = await DbRepo.Order.Update(id!.toString(), body, true);
   if (!customer) return res.status(500).send('Unable to update customer');
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   return res.status(200).send(body);
 };
 
@@ -62,13 +59,13 @@ const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
 
   await DbRepo.Order.Delete(id!.toString());
 
-  Revalidate.Post(
+  /*Revalidate.Post(
     {
       secret: environment.SECRET,
       paths: defaultRevalidatePaths,
     },
     baseUrl
-  );
+  );*/
   return res.status(200).send('Deletion of order successful');
 };
 

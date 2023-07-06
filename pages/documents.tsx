@@ -6,7 +6,7 @@ import { ICustomer } from '@customTypes/database/customer';
 import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { IOrder } from '@customTypes/database/order';
 import { DbRepo } from '@utils/DbRepo';
-import { GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import React from 'react';
 
 type OrdersProps = {
@@ -31,14 +31,13 @@ const Documents: NextPage<OrdersProps> = ({ documents, orders, customers }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps<OrdersProps> = async () => {
+export const getServerSideProps: GetServerSideProps<OrdersProps> = async () => {
   return {
     props: {
       documents: await DbRepo.Document.GetAll(true),
       orders: await DbRepo.Order.GetAll(false),
       customers: await DbRepo.Customer.GetActive(false),
     },
-    revalidate: 60,
   };
 };
 
