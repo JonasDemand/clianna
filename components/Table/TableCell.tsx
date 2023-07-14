@@ -1,7 +1,7 @@
 import MuiTooltip from '@components/External/MuiTooltip';
 import ReactHighlighter from '@components/External/ReactHighlighter';
 import { Box, Link } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, MouseEvent, useCallback } from 'react';
 
 const isValidHttpUrl = (s: string) => {
   let url;
@@ -19,11 +19,15 @@ export type TableCellProps = {
 };
 
 const TableCell: FC<TableCellProps> = ({ search, value }) => {
+  const onClickLink = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => e.stopPropagation(),
+    []
+  );
   return (
     <MuiTooltip arrow title={value}>
       <Box component="span" sx={{ userSelect: 'text' }}>
         {isValidHttpUrl(value) ? (
-          <Link target="_blank" href={value}>
+          <Link target="_blank" href={value} onClick={onClickLink}>
             <ReactHighlighter
               searchWords={search.split(' ')}
               textToHighlight={value}
