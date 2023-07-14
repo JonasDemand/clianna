@@ -96,6 +96,5 @@ export const replaceTextFromObject = (
           replaceValue: getLabel(key, value),
         });
   });
-  console.log({ results });
   return results;
 };
