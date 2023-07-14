@@ -30,7 +30,8 @@ const customKeyActions: Record<
       replaceValue: getLabel('taxes', obj.taxes),
     });
 
-    const taxShare = obj.price * (obj.taxes == EOrderTax.Seven ? 0.07 : 0.19);
+    const tax = obj.taxes == EOrderTax.Seven ? 0.07 : 0.19;
+    const taxShare = (obj.price / (1 + tax)) * tax;
     results.push({
       replaceTemplate: `${getReplaceTemplate(prefix, 'taxShare')}}}`,
       replaceValue: getLabel('taxShare', taxShare),
