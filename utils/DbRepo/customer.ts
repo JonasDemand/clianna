@@ -91,7 +91,6 @@ export class Customer {
         ...Customer.DefaultSelect,
         orders: includeDependencies
           ? {
-              where: { pending: true },
               select: { ...Order.DefaultSelect, documents: true },
             }
           : false,

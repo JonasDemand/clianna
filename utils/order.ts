@@ -6,8 +6,10 @@ import { formatDate } from './date';
 export const getOrderLabel = (
   order: IOrderWithDependencies | IOrder | null | undefined
 ) =>
-  order
-    ? `${!order.type && !order.creationDate ? 'Auftrag ohne Infos' : ''}${
+  order?.type || order?.creationDate
+    ? `${
         order.type ? ` ${OrderTypeLabels.get(order.type)}` : 'Kein Typ'
       } - ${formatDate(order.creationDate)}`
-    : '';
+    : order
+    ? 'Auftrag ohne Infos'
+    : 'Auftrag nicht verfügbar';

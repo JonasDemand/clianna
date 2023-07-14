@@ -5,4 +5,7 @@ import {
 
 export const getDocumentLabel = (
   document: IDocument | IDocumentWithDependencies | null | undefined
-) => document?.name ?? '';
+) =>
+  document?.name ?? document
+    ? 'Dokument ohne Name'
+    : 'Dokument nicht verfügbar';
