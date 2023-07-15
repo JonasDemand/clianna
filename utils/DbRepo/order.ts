@@ -1,7 +1,7 @@
 import { IOrder, IOrderWithDependencies } from '@customTypes/database/order';
 import { IUpsertRequest } from '@customTypes/messages/order';
-import prisma from '@utils/prisma';
 
+import { DbRepo } from '.';
 import { Customer } from './customer';
 import { Document } from './document';
 
@@ -28,7 +28,7 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
-    return await prisma.order.create({
+    return await DbRepo.Client.order.create({
       data: {
         ...order,
         customer: order.customer?.id
@@ -54,7 +54,7 @@ export class Order {
   public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies[] : IOrder[]> {
-    return await prisma.order.findMany({
+    return await DbRepo.Client.order.findMany({
       select: {
         ...Order.DefaultSelect,
         customer: includeDependencies
@@ -70,7 +70,7 @@ export class Order {
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? IOrderWithDependencies : IOrder) | null> {
-    return await prisma.order.findFirst({
+    return await DbRepo.Client.order.findFirst({
       where: { id },
       select: {
         ...Order.DefaultSelect,
@@ -88,7 +88,7 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
-    return await prisma.order.update({
+    return await DbRepo.Client.order.update({
       where: { id },
       data: {
         ...order,
@@ -113,7 +113,7 @@ export class Order {
     });
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.order.delete({
+    await DbRepo.Client.order.delete({
       where: { id },
     });
   }

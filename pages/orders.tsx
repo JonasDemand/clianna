@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<OrdersProps> = async () => {
     props: {
       orders: await DbRepo.Order.GetAll(true),
       customers: await DbRepo.Customer.GetActive(false),
-      templates: await DbRepo.Document.GetTemplates(false),
+      templates: await DbRepo.Document.GetTemplates(),
     },
   };
 };

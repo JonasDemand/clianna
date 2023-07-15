@@ -3,8 +3,8 @@ import {
   ICustomerWithDependencies,
 } from '@customTypes/database/customer';
 import { IUpsertRequest } from '@customTypes/messages/customer';
-import prisma from '@utils/prisma';
 
+import { DbRepo } from '.';
 import { Document } from './document';
 import { Order } from './order';
 
@@ -32,7 +32,7 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
-    return await prisma.customer.create({
+    return await DbRepo.Client.customer.create({
       data: {
         ...customer,
         id: undefined,
@@ -55,14 +55,14 @@ export class Customer {
     });
   }
   public static async GetOnlyMeta() {
-    return await prisma.customer.findMany({
+    return await DbRepo.Client.customer.findMany({
       select: { firstname: true, lastname: true, id: true, disabled: true },
     });
   }
   public static async GetAll<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
-    return await prisma.customer.findMany({
+    return await DbRepo.Client.customer.findMany({
       select: {
         ...Customer.DefaultSelect,
         orders: includeDependencies
@@ -79,7 +79,7 @@ export class Customer {
   public static async GetActive<ID extends boolean>(
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies[] : ICustomer[]> {
-    return await prisma.customer.findMany({
+    return await DbRepo.Client.customer.findMany({
       where: { disabled: false },
       select: {
         ...Customer.DefaultSelect,
@@ -96,7 +96,7 @@ export class Customer {
     id: string,
     includeDependencies: ID
   ): Promise<(ID extends true ? ICustomerWithDependencies : ICustomer) | null> {
-    return await prisma.customer.findFirst({
+    return await DbRepo.Client.customer.findFirst({
       where: { id },
       select: {
         ...Customer.DefaultSelect,
@@ -114,7 +114,7 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
-    return await prisma.customer.update({
+    return await DbRepo.Client.customer.update({
       where: { id },
       select: {
         ...Customer.DefaultSelect,
@@ -138,7 +138,7 @@ export class Customer {
     });
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.customer.delete({
+    await DbRepo.Client.customer.delete({
       where: { id },
     });
   }

@@ -4,13 +4,14 @@ import {
 } from '@customTypes/messages/user';
 import { User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
-import prisma from '@utils/prisma';
+
+import { DbRepo } from '.';
 
 export class User {
   public static async Create(user: ICredentailsRequest): Promise<PrismaUser> {
     const salt = createSalt();
     const hashedPassword = await hashPassword(user.password, salt);
-    return await prisma.user.create({
+    return await DbRepo.Client.user.create({
       data: {
         email: user.email,
         password: hashedPassword,
@@ -21,16 +22,16 @@ export class User {
   public static async GetSingleFromEmail(
     email: string
   ): Promise<PrismaUser | null> {
-    const user = await prisma.user.findFirst({
+    const user = await DbRepo.Client.user.findFirst({
       where: { email },
     });
     return user;
   }
   public static async GetSingle(id: string): Promise<PrismaUser | null> {
-    return await prisma.user.findFirst({ where: { id } });
+    return await DbRepo.Client.user.findFirst({ where: { id } });
   }
   public static async GetAll(): Promise<PrismaUser[]> {
-    return await prisma.user.findMany();
+    return await DbRepo.Client.user.findMany();
   }
   public static async Update(
     id: string,
@@ -42,7 +43,7 @@ export class User {
       salt = createSalt();
       hashedPassword = await hashPassword(user.password, salt);
     }
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await DbRepo.Client.user.update({
       where: {
         id,
       },
@@ -58,7 +59,7 @@ export class User {
     email: string,
     password: string
   ): Promise<boolean> {
-    const user = await prisma.user.findUniqueOrThrow({
+    const user = await DbRepo.Client.user.findUniqueOrThrow({
       where: { email },
       select: { password: true, salt: true, enabled: true },
     });
@@ -69,6 +70,6 @@ export class User {
     return true;
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.user.delete({ where: { id } });
+    await DbRepo.Client.user.delete({ where: { id } });
   }
 }

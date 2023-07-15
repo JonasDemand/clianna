@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<
   return {
     props: {
       customers: await DbRepo.Customer.GetAll(true),
-      templates: await DbRepo.Document.GetTemplates(false),
+      templates: await DbRepo.Document.GetTemplates(),
     },
   };
 };

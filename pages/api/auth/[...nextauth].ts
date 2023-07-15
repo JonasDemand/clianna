@@ -1,6 +1,5 @@
 import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
-import prisma from '@utils/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
@@ -54,7 +53,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       jwt: async ({ token, user }): Promise<JWT> => {
         if (reqRefreshJwt) {
-          const prismaUser = await prisma.user.findUniqueOrThrow({
+          const prismaUser = await DbRepo.Client.user.findUniqueOrThrow({
             where: { id: token.id },
           });
           user = {
