@@ -3,12 +3,10 @@ import {
   ICustomerWithDependencies,
 } from '@customTypes/database/customer';
 import { IUpsertRequest } from '@customTypes/messages/customer';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@utils/prisma';
 
 import { Document } from './document';
 import { Order } from './order';
-
-const prisma = new PrismaClient();
 
 export class Customer {
   public static DefaultSelect = {
@@ -34,29 +32,6 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
-    const existPromises: Array<Promise<any>> = [];
-    if (customer.orders)
-      existPromises.concat(
-        customer.orders.map((x) =>
-          prisma.order.findFirstOrThrow({
-            where: {
-              id: x.id,
-            },
-            select: null,
-          })
-        )
-      );
-    if (customer.documents)
-      existPromises.concat(
-        customer.documents.map((x) =>
-          prisma.document.findFirstOrThrow({
-            where: { id: x.id },
-            select: null,
-          })
-        )
-      );
-    await Promise.all(existPromises);
-
     return await prisma.customer.create({
       data: {
         ...customer,
@@ -139,36 +114,6 @@ export class Customer {
     customer: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? ICustomerWithDependencies : ICustomer> {
-    const existPromises: Array<Promise<any>> = [
-      prisma.customer.findFirstOrThrow({
-        where: { id },
-        select: null,
-      }),
-    ];
-    if (customer.orders)
-      existPromises.concat(
-        customer.orders.map((x) =>
-          prisma.order.findFirstOrThrow({
-            where: {
-              id: x.id,
-            },
-            select: null,
-          })
-        )
-      );
-    if (customer.documents)
-      existPromises.concat(
-        customer.documents.map((x) =>
-          prisma.document.findFirstOrThrow({
-            where: {
-              AND: { id: x.id },
-            },
-            select: null,
-          })
-        )
-      );
-    await Promise.all(existPromises);
-
     return await prisma.customer.update({
       where: { id },
       select: {
@@ -193,10 +138,6 @@ export class Customer {
     });
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.customer.findFirstOrThrow({
-      where: { id },
-      select: null,
-    });
     await prisma.customer.delete({
       where: { id },
     });

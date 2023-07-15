@@ -2,10 +2,9 @@ import {
   ICredentailsRequest as ICredentailsRequest,
   IUpdateRequest,
 } from '@customTypes/messages/user';
-import { PrismaClient, User as PrismaUser } from '@prisma/client';
+import { User as PrismaUser } from '@prisma/client';
 import { createSalt, hashPassword } from '@utils/authentication';
-
-const prisma = new PrismaClient();
+import prisma from '@utils/prisma';
 
 export class User {
   public static async Create(user: ICredentailsRequest): Promise<PrismaUser> {

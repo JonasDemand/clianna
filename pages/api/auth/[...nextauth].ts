@@ -1,12 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import { environment } from '@utils/config';
 import { DbRepo } from '@utils/DbRepo';
+import prisma from '@utils/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-
-const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const reqRefreshJwt = Boolean(req.query.refreshSession);

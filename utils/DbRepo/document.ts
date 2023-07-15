@@ -3,12 +3,10 @@ import {
   IDocumentWithDependencies,
 } from '@customTypes/database/document';
 import { IUpsertRequest } from '@customTypes/messages/document';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@utils/prisma';
 
 import { Customer } from './customer';
 import { Order } from './order';
-
-const prisma = new PrismaClient();
 
 export class Document {
   public static DefaultSelect = {
@@ -99,10 +97,6 @@ export class Document {
     document: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IDocumentWithDependencies : IDocument> {
-    await prisma.document.findFirstOrThrow({
-      where: { id },
-      select: null,
-    });
     return await prisma.document.update({
       where: { id },
       select: {
@@ -127,10 +121,6 @@ export class Document {
     });
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.document.findFirstOrThrow({
-      where: { id },
-      select: null,
-    });
     await prisma.document.delete({
       where: { id },
     });

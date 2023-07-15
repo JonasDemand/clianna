@@ -1,11 +1,9 @@
 import { IOrder, IOrderWithDependencies } from '@customTypes/database/order';
 import { IUpsertRequest } from '@customTypes/messages/order';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@utils/prisma';
 
 import { Customer } from './customer';
 import { Document } from './document';
-
-const prisma = new PrismaClient();
 
 export class Order {
   public static DefaultSelect = {
@@ -30,25 +28,6 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
-    const existPromises: Array<Promise<any>> = [];
-    if (order.customer?.id)
-      existPromises.push(
-        prisma.customer.findFirstOrThrow({
-          where: { id: order.customer?.id },
-          select: null,
-        })
-      );
-    if (order.documents)
-      existPromises.concat(
-        order.documents.map((x) =>
-          prisma.document.findFirstOrThrow({
-            where: { id: x.id },
-            select: null,
-          })
-        )
-      );
-    await Promise.all(existPromises);
-
     return await prisma.order.create({
       data: {
         ...order,
@@ -109,30 +88,6 @@ export class Order {
     order: IUpsertRequest,
     includeDependencies: ID
   ): Promise<ID extends true ? IOrderWithDependencies : IOrder> {
-    const existPromises: Array<Promise<any>> = [
-      prisma.order.findFirstOrThrow({
-        where: { id },
-        select: null,
-      }),
-    ];
-    if (order.customer?.id)
-      existPromises.push(
-        prisma.customer.findFirstOrThrow({
-          where: { id: order.customer?.id },
-          select: null,
-        })
-      );
-    if (order.documents)
-      existPromises.concat(
-        order.documents.map((x) =>
-          prisma.document.findFirstOrThrow({
-            where: { id: x.id },
-            select: null,
-          })
-        )
-      );
-    await Promise.all(existPromises);
-
     return await prisma.order.update({
       where: { id },
       data: {
@@ -158,10 +113,6 @@ export class Order {
     });
   }
   public static async Delete(id: string): Promise<void> {
-    await prisma.order.findFirstOrThrow({
-      where: { id },
-      select: null,
-    });
     await prisma.order.delete({
       where: { id },
     });
