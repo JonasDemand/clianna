@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { createPrismaRedisCache } from 'prisma-redis-middleware';
 
 import { Customer } from './customer';
 import { Document } from './document';
@@ -8,7 +7,7 @@ import { User } from './user';
 
 const prisma = new PrismaClient();
 
-prisma.$use(
+/*prisma.$use(
   createPrismaRedisCache({
     storage: {
       type: 'memory',
@@ -46,7 +45,7 @@ prisma.$use(
       console.log('cache dedupe: ' + key);
     },
   })
-);
+);*/
 
 /*prisma.$use(async (params, next) => {
   if (
