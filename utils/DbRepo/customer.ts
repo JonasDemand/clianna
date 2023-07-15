@@ -27,6 +27,7 @@ export class Customer {
     disabled: true,
     fibu: true,
     salutation: true,
+    comment: true,
   };
 
   public static async Create<ID extends boolean>(

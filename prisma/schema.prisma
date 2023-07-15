@@ -33,6 +33,7 @@ model Customer {
   shoesize     Float?
   disabled     Boolean?
   fibu         Int?
+  comment      String?
   salutation   ECustomerSalutation?
   orders       Order[]
   documents    Document[]
