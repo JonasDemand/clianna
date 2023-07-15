@@ -10,24 +10,45 @@ const prisma = new PrismaClient();
 
 prisma.$use(
   createPrismaRedisCache({
-    storage: { type: 'memory', options: { invalidation: true } },
+    storage: {
+      type: 'memory',
+      options: { invalidation: true, log: console },
+    },
+    models: [
+      {
+        model: 'Customer',
+        cacheKey: 'customer',
+        invalidateRelated: ['Order', 'Document', 'Customer'],
+      },
+      {
+        model: 'Order',
+        cacheKey: 'order',
+        invalidateRelated: ['Customer', 'Document'],
+      },
+      {
+        model: 'Document',
+        cacheKey: 'document',
+        invalidateRelated: ['Customer', 'Order'],
+      },
+    ],
+    excludeModels: ['User'],
     cacheTime: 24 * 60 * 60,
-    onHit: (_) => {
-      console.log('cache hit');
+    onHit: (key) => {
+      console.log('cache hit: ' + key);
     },
-    onMiss: (_) => {
-      console.log('cache miss');
+    onMiss: (key) => {
+      console.log('cache miss: ' + key);
     },
-    onError: (_) => {
-      console.log('cache error');
+    onError: (key) => {
+      console.log('cache error: ' + key);
     },
-    onDedupe: (_) => {
-      console.log('cache dedupe');
+    onDedupe: (key) => {
+      console.log('cache dedupe: ' + key);
     },
   })
 );
 
-prisma.$use(async (params, next) => {
+/*prisma.$use(async (params, next) => {
   if (
     params.action.includes('create') ||
     params.action.includes('update') ||
@@ -37,7 +58,7 @@ prisma.$use(async (params, next) => {
   }
 
   return await next(params);
-});
+});*/
 
 export class DbRepo {
   public static Client = prisma;
