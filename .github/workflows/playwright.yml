@@ -16,3 +16,4 @@ jobs:
 
       - name: Install dependencies and run tests
         run: npm install && npm test-ct
+        working-directory: ./client
