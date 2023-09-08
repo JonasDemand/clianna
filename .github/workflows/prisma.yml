@@ -16,10 +16,10 @@ jobs:
           node-version: 16
       - name: Install packages
         run: npm install
-        working-directory: ./client
+        working-directory: ./Client
       - name: Run prisma
         run: npm run prisma-deploy
-        working-directory: ./client
+        working-directory: ./Client
         env:
           DATABASE_URL: ${{ secrets.ProdDb }}
   dev:
@@ -33,9 +33,9 @@ jobs:
           node-version: 16
       - name: Install packages
         run: npm install
-        working-directory: ./client
+        working-directory: ./Client
       - name: Run prisma
         run: npm run prisma-deploy
-        working-directory: ./client
+        working-directory: ./Client
         env:
           DATABASE_URL: ${{ secrets.DevDb }}
