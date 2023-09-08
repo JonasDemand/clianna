@@ -1,4 +1,4 @@
-﻿namespace Data.Models.Enum
+﻿namespace Data.Models.Enums
 {
     public enum OrderTax
     {

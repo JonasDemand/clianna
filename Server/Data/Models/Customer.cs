@@ -1,5 +1,5 @@
 ﻿using System.Reflection.Metadata;
-using Data.Models.Enum;
+using Data.Models.Enums;
 
 namespace Data.Models
 {
