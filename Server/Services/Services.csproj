@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Misc\" />
-    <None Remove="Messages\" />
-    <None Remove="Services\" />
+    <ProjectReference Include="..\Data\Data.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Misc\" />
-    <Folder Include="Messages\" />
-    <Folder Include="Services\" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
   </ItemGroup>
 </Project>

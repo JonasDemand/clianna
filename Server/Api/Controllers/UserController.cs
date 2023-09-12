@@ -1,5 +1,6 @@
-﻿using Data.Database;
+﻿using Data.Models.Messages;
 using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace Api.Controllers;
 
@@ -7,18 +8,23 @@ namespace Api.Controllers;
 [Route("[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly CliannaDbContext _dbContext;
+    private IUserService _userService;
 
-    public UserController(CliannaDbContext dbContext)
+    public UserController(IUserService userService)
     {
-        _dbContext = dbContext;
+        _userService = userService;
     }
 
 
-    [HttpGet(Name = "GetUsers")]
-    public IEnumerable<string> Get()
+    [HttpPost("Authenticate")]
+    public IActionResult Authenticate(AuthenticateRequest request)
     {
-        return _dbContext.Users.Select(x => x.Email);
+        var session = _userService.Authenticate(request.Username, request.Password);
+        
+        if (session == null)
+            return BadRequest(new { message = "Username or password is incorrect" });
+
+        return Ok(session);
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Data.Models
+namespace Data.Models.Database
 {
 	public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
     {

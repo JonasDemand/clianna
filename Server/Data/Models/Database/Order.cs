@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
-namespace Data.Models
+namespace Data.Models.Database
 {
     [EntityTypeConfiguration(typeof(OrderEntityTypeConfiguration))]
     public class Order
