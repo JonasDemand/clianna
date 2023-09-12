@@ -1,23 +1,23 @@
 ﻿using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Models.Misc;
 
 namespace Data.Database
 {
     public class CliannaDbContext : DbContext
     {
-        private readonly IConfiguration _configuration;
+        private readonly AppSettings _appSettings;
 
-        public CliannaDbContext(DbContextOptions<CliannaDbContext> options, IConfiguration configuration)
+        public CliannaDbContext(DbContextOptions<CliannaDbContext> options, IOptions<AppSettings> appSettings)
             : base(options)
         {
-            _configuration = configuration;
+            _appSettings = appSettings.Value;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var connectionString = _configuration.GetConnectionString("DefaultConnection") ?? Environment.GetEnvironmentVariable("CONNECTION_STRING");
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), b => b.MigrationsAssembly("Api"));
+            optionsBuilder.UseMySql(_appSettings.DbConnection, ServerVersion.AutoDetect(_appSettings.DbConnection), b => b.MigrationsAssembly("Api"));
         }
 
         public DbSet<User> Users { get; set; }
