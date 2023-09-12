@@ -26,4 +26,3 @@ namespace Data.Database
         public DbSet<Document> Documents { get; set; }
     }
 }
-

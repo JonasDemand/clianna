@@ -1,11 +1,13 @@
-﻿using System.Reflection.Metadata;
-using Data.Models.Enums;
+﻿using Data.Models.Enums;
+using Microsoft.EntityFrameworkCore;
+using Visus.Cuid;
 
 namespace Data.Models
 {
+    [EntityTypeConfiguration(typeof(CustomerEntityTypeConfiguration))]
     public class Customer
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = new Cuid2(10).ToString();
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
@@ -21,8 +23,9 @@ namespace Data.Models
         public int? Fibu { get; set; }
         public string? Comment { get; set; }
         public CustomerSalutation? Salutation { get; set; }
-        public IList<Order> Orders { get; set; }
-        public IList<Document> Documents { get; set; }
+
+        //Navigation
+        public IEnumerable<Order> Orders { get; set; } = new List<Order>();
+        public IEnumerable<Document> Documents { get; set; } = new List<Document>();
     }
 }
-

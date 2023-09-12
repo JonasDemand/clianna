@@ -1,5 +1,8 @@
-﻿namespace Data.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Data.Models
 {
+    [EntityTypeConfiguration(typeof(UserEntityTypeConfiguration))]
     public class User
     {
         public string Id { get; set; }
