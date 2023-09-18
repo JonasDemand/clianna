@@ -11,11 +11,6 @@ using Data.Models.Entities;
 using Data.Models.Services;
 using Models.Misc;
 
-public interface IUserService
-{
-    public UserSession? Authenticate(string email, string password);
-}
-
 public class UserService : IUserService
 {
     private const int keySize = 64;

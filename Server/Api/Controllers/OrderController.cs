@@ -1,10 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api.Authentication;
+using Data.Database.Repositories;
+using Data.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class OrderController : ControllerBase
+
+    [Authorize]
+    public class OrderController : DbBaseController<Order>
 	{
-	}
+        public OrderController(IOrderRepository repository) : base(repository)
+        {
+
+        }
+    }
 }

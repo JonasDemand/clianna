@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Api.Authentication;
+using Data.Database.Repositories;
+using Data.Models.Entities;
 
 namespace Api.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CustomerController : ControllerBase
-	{
-		
-	}
+    [Authorize]
+    public class CustomerController : DbBaseController<Customer>
+    {
+        public CustomerController(ICustomerRepository repository) : base(repository)
+        {
+
+        }
+    }
 }
 
