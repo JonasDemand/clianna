@@ -2,10 +2,9 @@
 using Models.Misc;
 using Microsoft.EntityFrameworkCore;
 using Services;
-using Api.Authentication;
+using Api.Middlewares;
 using Microsoft.OpenApi.Models;
 using Data.Database.Repositories;
-using Data.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,15 +15,23 @@ builder.Services.AddDbContext<CliannaDbContext>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
+builder.Services.AddScoped<IResponseFactory, ResponseFactory>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Clianna API"
+    });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
@@ -67,6 +74,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<JwtMiddleware>();
 
 app.MapControllers();

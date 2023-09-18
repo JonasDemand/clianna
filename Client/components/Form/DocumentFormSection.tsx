@@ -16,7 +16,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import ApiClient from '@utils/api/ApiClient';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
@@ -81,7 +81,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
 
   const onConfirmDeleteDialog = useCallback(async () => {
     if (!documentToDelete || !documentToDelete.id) return;
-    const { error } = await ApiClient.Document.Delete(documentToDelete.id);
+    const { error } = await ApiClient.documentDELETE(documentToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Dokument fehlgeschlagen', {
         variant: 'error',

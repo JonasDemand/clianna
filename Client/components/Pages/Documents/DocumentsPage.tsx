@@ -6,7 +6,7 @@ import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { DocumentContextType } from '@customTypes/document';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { ApiClient } from '@utils/api/ApiClient';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { isEqual } from 'lodash';

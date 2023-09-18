@@ -26,9 +26,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Authentication\" />
+    <None Remove="Attributes\" />
+    <None Remove="Middlewares\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Authentication\" />
+    <Folder Include="Attributes\" />
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 </Project>

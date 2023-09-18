@@ -1,38 +1,39 @@
 ﻿using Data.Database.Repositories;
 using Data.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Api.Authentication;
+using Api.Middlewares;
+using Services;
+using Data.Models.Messages;
+using System.Net;
 
 namespace Api.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public abstract class DbBaseController<T> : ControllerBase
+    public abstract class DbBaseController<T> : BaseController
         where T : class, IEntity
     {
-        private readonly IGenericRepository<T> _repository;
+        protected readonly IGenericRepository<T> _repository;
 
-        public DbBaseController(IGenericRepository<T> repository)
+        public DbBaseController(IResponseFactory responseFactory, IGenericRepository<T> repository) : base(responseFactory)
         {
             _repository = repository;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<T>>> Get()
+        public async Task<ActionResult<Response<List<T>>>> Get()
         {
-            return await _repository.GetAll();
+            return _responseFactory.Create(await _repository.GetAll());
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<T>> Get(string id)
+        public async Task<ActionResult<Response<T>>> Get(string id)
         {
             var entity = await _repository.Get(id);
             if (entity == null)
             {
-                return NotFound();
+                return NotFound(_responseFactory.Create(HttpStatusCode.NotFound));
             }
-            return entity;
+            return _responseFactory.Create(entity);
         }
 
         [HttpPut("{id}")]
@@ -40,28 +41,28 @@ namespace Api.Controllers
         {
             if (id != entity.Id)
             {
-                return BadRequest();
+                return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
             }
             await _repository.Update(entity);
             return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<T>> Post(T entity)
+        public async Task<ActionResult<Response<T>>> Post(T entity)
         {
             await _repository.Add(entity);
-            return CreatedAtAction("Get", new { id = entity.Id }, entity);
+            return CreatedAtAction("Get", new { id = entity.Id }, _responseFactory.Create(entity));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<T>> Delete(string id)
+        public async Task<ActionResult<Response<T>>> Delete(string id)
         {
-            var movie = await _repository.Delete(id);
-            if (movie == null)
+            var entity = await _repository.Delete(id);
+            if (entity == null)
             {
-                return NotFound();
+                return NotFound(_responseFactory.Create(HttpStatusCode.NotFound));
             }
-            return movie;
+            return _responseFactory.Create(entity);
         }
     }
 }

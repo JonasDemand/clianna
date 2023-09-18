@@ -1,7 +1,7 @@
-﻿using Api.Authentication;
+﻿using Api.Attributes;
 using Data.Database.Repositories;
 using Data.Models.Entities;
-using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace Api.Controllers
 {
@@ -9,9 +9,8 @@ namespace Api.Controllers
     [Authorize]
     public class OrderController : DbBaseController<Order>
 	{
-        public OrderController(IOrderRepository repository) : base(repository)
+        public OrderController(IResponseFactory responseFactory, IOrderRepository repository) : base(responseFactory, repository)
         {
-
         }
     }
 }

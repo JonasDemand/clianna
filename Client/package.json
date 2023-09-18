@@ -7,13 +7,11 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma-dev": "dotenv -e .env.local -- prisma migrate dev",
-    "prisma-deploy": "prisma migrate deploy",
-    "prisma-generate": "prisma generate",
     "test-ct": "playwright test -c playwright-ct.config.ts",
     "test-ct-update": "playwright test -c playwright-ct.config.ts --update-snapshots",
     "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug",
-    "convert-config": "./convert-env-to-config.sh"
+    "convert-config": "./convert-env-to-config.sh",
+    "create-api-client": "nswag openapi2tsclient /input:https://localhost:7022/swagger/v1/swagger.json /output:utils/api/generated/GENERATED_Client.ts /typeScriptTemplate fetch"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -24,15 +22,12 @@
     "@mui/lab": "^5.0.0-alpha.97",
     "@mui/material": "^5.10.3",
     "@mui/x-data-grid": "^5.17.0",
-    "@prisma/client": "^4.3.1",
     "babel-plugin-superjson-next": "^0.4.4",
     "dayjs": "^1.11.5",
-    "googleapis": "^107.0.0",
     "lodash": "^4.17.21",
     "next": "12.2.5",
-    "next-auth": "4.10.3",
     "notistack": "^2.0.5",
-    "prisma-redis-middleware": "^4.8.0",
+    "nswag": "^13.20.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-highlight-words": "^0.18.0",
@@ -55,7 +50,6 @@
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "next-router-mock": "^0.7.4",
-    "prisma": "^4.3.1",
     "typescript": "4.8.2",
     "vite-tsconfig-paths": "^3.5.1"
   }

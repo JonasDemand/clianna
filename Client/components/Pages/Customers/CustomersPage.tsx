@@ -5,7 +5,7 @@ import { CustomerContextType } from '@customTypes/customer';
 import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { ApiClient } from '@utils/api/ApiClient';
 import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';

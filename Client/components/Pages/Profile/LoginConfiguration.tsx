@@ -4,7 +4,7 @@ import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { ApiClient } from '@utils/api/ApiClient';
 import { refreshSession } from '@utils/nextauth';
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';

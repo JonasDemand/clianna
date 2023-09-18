@@ -1,7 +1,7 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { Grid } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { ApiClient } from '@utils/api/ApiClient';
 import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect } from 'react';

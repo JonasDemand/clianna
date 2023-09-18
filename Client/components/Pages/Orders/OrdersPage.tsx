@@ -9,7 +9,7 @@ import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EId } from '@customTypes/id';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import { ApiClient } from '@utils/api/client';
+import { ApiClient } from '@utils/api/ApiClient';
 import { getOrderLabel } from '@utils/order';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
