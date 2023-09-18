@@ -1,11 +1,9 @@
 import { OrderTypeLabels } from '@consts/order';
-import { IOrder, IOrderWithDependencies } from '@customTypes/database/order';
 
+import { Order } from './api/generated/GENERATED_Client';
 import { formatDate } from './date';
 
-export const getOrderLabel = (
-  order: IOrderWithDependencies | IOrder | null | undefined
-) =>
+export const getOrderLabel = (order: Order | null | undefined) =>
   order?.type || order?.creationDate
     ? `${
         order.type ? ` ${OrderTypeLabels.get(order.type)}` : 'Kein Typ'

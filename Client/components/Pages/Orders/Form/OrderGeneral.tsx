@@ -9,7 +9,6 @@ import {
   OrderTypeLabels,
 } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import { ICustomer } from '@customTypes/database/customer';
 import { OrderContextType } from '@customTypes/order';
 import {
   Autocomplete,
@@ -19,7 +18,12 @@ import {
   Grid,
   InputAdornment,
 } from '@mui/material';
-import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
+import {
+  Customer,
+  EOrderShippingType,
+  EOrderTax,
+  EOrderType,
+} from '@utils/api/generated/GENERATED_Client';
 import { getCustomerLabel } from '@utils/customer';
 import dayjs from 'dayjs';
 import React, {
@@ -44,7 +48,8 @@ const OrderGeneral: FC = () => {
     [updateSelected]
   );
   const onChangeCustomer = useCallback(
-    (_: unknown, value: ICustomer | null) => updateSelected('customer', value),
+    (_: unknown, value: Customer | null) =>
+      updateSelected('customer', value ?? undefined),
     [updateSelected]
   );
   const onChangeComment = useCallback(
@@ -57,7 +62,7 @@ const OrderGeneral: FC = () => {
     [updateSelected]
   );
   const onChangeTaxes = useCallback(
-    (value: EOrderTax | null) => updateSelected('taxes', value),
+    (value: EOrderTax) => updateSelected('taxes', value),
     [updateSelected]
   );
 

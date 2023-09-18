@@ -1,26 +1,22 @@
 import { GridColDef } from '@mui/x-data-grid';
-
-import { ICustomerWithDependencies } from './database/customer';
-import { IDocument } from './database/document';
+import { Customer, Document } from '@utils/api/generated/GENERATED_Client';
 
 export type CustomerContextType = {
-  customers: ICustomerWithDependencies[];
-  setCustomers: (customers: ICustomerWithDependencies[]) => void;
-  filteredCustomers: ICustomerWithDependencies[];
-  templates: IDocument[];
-  selected: ICustomerWithDependencies | null;
-  setSelected: (customer: ICustomerWithDependencies | null) => void;
-  updateSelected: <T extends keyof ICustomerWithDependencies>(
+  customers: Customer[];
+  setCustomers: (customers: Customer[]) => void;
+  filteredCustomers: Customer[];
+  templates: Document[];
+  selected: Customer | null;
+  setSelected: (customer: Customer | null) => void;
+  updateSelected: <T extends keyof Customer>(
     property: T,
-    value: ICustomerWithDependencies[T]
+    value: Customer[T]
   ) => void;
   showCustomers: EShowCustomer;
   setShowCustomers: (state: EShowCustomer) => void;
-  activeColumns: GridColDef<ICustomerWithDependencies>[];
-  activeVariableColumns: GridColDef<ICustomerWithDependencies>[];
-  setActiveVariableColumns: (
-    activeColumns: GridColDef<ICustomerWithDependencies>[]
-  ) => void;
+  activeColumns: GridColDef<Customer>[];
+  activeVariableColumns: GridColDef<Customer>[];
+  setActiveVariableColumns: (activeColumns: GridColDef<Customer>[]) => void;
   searchText: string;
   setSearchText: (text: string) => void;
 };

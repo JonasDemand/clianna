@@ -22,7 +22,7 @@ namespace Data.Models.Entities
         public bool? Disabled { get; set; }
         public int? Fibu { get; set; }
         public string? Comment { get; set; }
-        public CustomerSalutation? Salutation { get; set; }
+        public ECustomerSalutation? Salutation { get; set; }
 
         //Navigation
         public IEnumerable<Order> Orders { get; set; } = new List<Order>();

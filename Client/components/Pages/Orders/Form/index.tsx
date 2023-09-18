@@ -1,8 +1,8 @@
 import DocumentFormSection from '@components/Form/DocumentFormSection';
 import { OrderContext } from '@context/OrderContext';
-import { IDocument } from '@customTypes/database/document';
 import { OrderContextType } from '@customTypes/order';
 import { Grid } from '@mui/material';
+import { Document } from '@utils/api/generated/GENERATED_Client';
 import React, { FC, useCallback, useContext } from 'react';
 
 import OrderDetails from './OrderDetails';
@@ -14,7 +14,7 @@ const OrderFrom: FC = () => {
   ) as OrderContextType;
 
   const onUpdateDocuments = useCallback(
-    (documents: IDocument[]) => updateSelected('documents', documents),
+    (documents: Document[]) => updateSelected('documents', documents),
     [updateSelected]
   );
 

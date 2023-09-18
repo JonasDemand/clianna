@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-    public enum OrderTax
+    public enum EOrderTax
     {
         Nineteen,
         Seven

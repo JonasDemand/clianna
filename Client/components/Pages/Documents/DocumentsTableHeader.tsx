@@ -4,7 +4,6 @@ import EnumSelect from '@components/Form/EnumSelect';
 import { ShowDocumentLabels } from '@consts/document';
 import { variableColumns } from '@consts/document';
 import { DocumentContext } from '@context/DocumentContext';
-import { IOrderWithDependencies } from '@customTypes/database/order';
 import { DocumentContextType } from '@customTypes/document';
 import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
@@ -16,6 +15,7 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { Order } from '@utils/api/generated/GENERATED_Client';
 import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
@@ -37,18 +37,17 @@ const DocumentsTableHeader: FC = () => {
     [setSearchText]
   );
   const onChangeColumns = useCallback(
-    (_: unknown, value: GridColDef<IOrderWithDependencies>[]) =>
-      setActiveVariableColumns(value),
+    (_: unknown, value: GridColDef<Order>[]) => setActiveVariableColumns(value),
     [setActiveVariableColumns]
   );
 
   const onClickAdd = useCallback(
-    () => setSelected({ id: EId.Create }),
+    () => setSelected(Order.fromJS({ id: EId.Create })),
     [setSelected]
   );
 
   const getOptionLabelColumns = useCallback(
-    (option: GridColDef<IOrderWithDependencies>) => option.headerName ?? '',
+    (option: GridColDef<Order>) => option.headerName ?? '',
     []
   );
 
@@ -74,7 +73,7 @@ const DocumentsTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<IOrderWithDependencies>, true>
+          <Autocomplete<GridColDef<Order>, true>
             openOnFocus
             multiple
             options={variableColumns}

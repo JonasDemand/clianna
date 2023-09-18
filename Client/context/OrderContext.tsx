@@ -1,8 +1,10 @@
 import { columns, defaultVariableColumns } from '@consts/order';
-import { ICustomer } from '@customTypes/database/customer';
-import { IDocument } from '@customTypes/database/document';
-import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
+import {
+  Customer,
+  Document,
+  Order,
+} from '@utils/api/generated/GENERATED_Client';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
@@ -18,9 +20,9 @@ export const OrderContext = createContext<OrderContextType | null>(null);
 
 type OrderContextProps = {
   children: ReactNode;
-  initialCustomers: ICustomer[];
-  initialTemplates: IDocument[];
-  initialOrders: IOrderWithDependencies[];
+  initialCustomers: Customer[];
+  initialTemplates: Document[];
+  initialOrders: Order[];
 };
 
 const OrderProvider: FC<OrderContextProps> = ({
@@ -29,13 +31,13 @@ const OrderProvider: FC<OrderContextProps> = ({
   initialOrders,
   initialTemplates,
 }) => {
-  const [orders, setOrders] = useState<IOrderWithDependencies[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<IOrderWithDependencies | null>(null);
+  const [selected, setSelected] = useState<Order | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -62,12 +64,9 @@ const OrderProvider: FC<OrderContextProps> = ({
   }, []);
 
   const updateSelected = useCallback(
-    <T extends keyof IOrderWithDependencies>(
-      property: T,
-      value: IOrderWithDependencies[T]
-    ) => {
+    <T extends keyof Order>(property: T, value: Order[T]) => {
       if (!selected) return;
-      let newSelected = { ...selected };
+      let newSelected = Order.fromJS({ ...selected });
       newSelected[property] = value;
       setSelected(newSelected);
     },

@@ -3,7 +3,6 @@ import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { OrderContext } from '@context/OrderContext';
-import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -13,6 +12,7 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { Order } from '@utils/api/generated/GENERATED_Client';
 import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
@@ -34,8 +34,7 @@ const OrdersTableHeader: FC = () => {
     [setSearchText]
   );
   const onChangeColumns = useCallback(
-    (_: unknown, value: GridColDef<IOrderWithDependencies>[]) =>
-      setActiveVariableColumns(value),
+    (_: unknown, value: GridColDef<Order>[]) => setActiveVariableColumns(value),
     [setActiveVariableColumns]
   );
 
@@ -45,7 +44,7 @@ const OrdersTableHeader: FC = () => {
   );
 
   const getOptionLabelColumns = useCallback(
-    (option: GridColDef<IOrderWithDependencies>) => option.headerName ?? '',
+    (option: GridColDef<Order>) => option.headerName ?? '',
     []
   );
 
@@ -71,7 +70,7 @@ const OrdersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<IOrderWithDependencies>, true>
+          <Autocomplete<GridColDef<Order>, true>
             openOnFocus
             multiple
             options={variableColumns}

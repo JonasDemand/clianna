@@ -7,8 +7,6 @@ using System.Net;
 
 namespace Api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
 public class UserController : BaseController
 {
     private readonly IUserService _userService;
@@ -31,8 +29,8 @@ public class UserController : BaseController
     }
 
     [Authorize]
-    [HttpGet("Update")]
-    public IActionResult Update()
+    [HttpPut("Profile")]
+    public IActionResult Profile()
     {
         throw new NotImplementedException();
     }

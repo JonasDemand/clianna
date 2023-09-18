@@ -6,7 +6,7 @@ import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
 import { Email, Phone, Smartphone } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
-import { ECustomerSalutation } from '@prisma/client';
+import { ECustomerSalutation } from '@utils/api/generated/GENERATED_Client';
 import React, {
   ChangeEvent,
   FC,
@@ -25,12 +25,12 @@ const CustomerBasedata: FC = () => {
 
   const onChangeFirstname = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('firstname', e.target.value),
+      updateSelected('firstName', e.target.value),
     [updateSelected]
   );
   const onChangeLastname = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('lastname', e.target.value),
+      updateSelected('lastName', e.target.value),
     [updateSelected]
   );
   const onChangePhone = useCallback(
@@ -50,7 +50,7 @@ const CustomerBasedata: FC = () => {
   );
   const onChangeShoesize = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('shoesize', parseFloat(e.target.value)),
+      updateSelected('shoeSize', parseFloat(e.target.value)),
     [updateSelected]
   );
   const onChangeFibu = useCallback(
@@ -108,14 +108,14 @@ const CustomerBasedata: FC = () => {
           <Grid item xs={4}>
             <FormTextField
               label="Vorname"
-              value={selected.firstname}
+              value={selected.firstName}
               onChange={onChangeFirstname}
             />
           </Grid>
           <Grid item xs={6}>
             <FormTextField
               label="Nachname"
-              value={selected.lastname}
+              value={selected.lastName}
               onChange={onChangeLastname}
             />
           </Grid>
@@ -195,7 +195,7 @@ const CustomerBasedata: FC = () => {
             <FormTextField
               type="number"
               label="Schuhgröße"
-              value={selected.shoesize}
+              value={selected.shoeSize}
               inputProps={{
                 step: '.5',
               }}

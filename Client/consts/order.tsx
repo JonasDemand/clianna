@@ -1,15 +1,18 @@
-import { IDocument } from '@customTypes/database/document';
-import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import { EOrderShippingType, EOrderTax, EOrderType } from '@prisma/client';
+import {
+  EOrderShippingType,
+  EOrderTax,
+  EOrderType,
+  Order,
+} from '@utils/api/generated/GENERATED_Client';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import React from 'react';
 
-export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
+export const variableColumns: GridColDef<Order>[] = [
   { field: 'id', headerName: 'Auftrags-ID', flex: 1 },
   {
     field: 'customer',
@@ -57,7 +60,7 @@ export const variableColumns: GridColDef<IOrderWithDependencies>[] = [
     valueGetter: ({ row }) => (row.taxes ? OrderTaxLabels.get(row.taxes) : ''),
   },
 ];
-export const columns: GridColDef<IOrderWithDependencies>[] = [
+export const columns: GridColDef<Order>[] = [
   {
     field: 'pending',
     headerName: 'Ausstehend',
@@ -67,14 +70,15 @@ export const columns: GridColDef<IOrderWithDependencies>[] = [
 ];
 export const defaultVariableColumns = variableColumns.slice(1, 3);
 
-export const defaultOrder = (): IOrderWithDependencies => ({
-  id: EId.Create,
-  pending: true,
-  shippingType: EOrderShippingType.Send,
-  taxes: EOrderTax.Nineteen,
-  price: 0,
-  documents: new Array<IDocument>(),
-});
+export const defaultOrder = (): Order =>
+  Order.fromJS({
+    id: EId.Create,
+    pending: true,
+    shippingType: EOrderShippingType.Send,
+    taxes: EOrderTax.Nineteen,
+    price: 0,
+    documents: new Array<Document>(),
+  });
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([
   [EShowOrder.All, 'Alle'],

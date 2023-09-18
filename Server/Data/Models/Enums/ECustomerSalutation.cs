@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-	public enum CustomerSalutation
+	public enum ECustomerSalutation
     {
         Mr,
         Mrs,

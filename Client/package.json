@@ -11,7 +11,7 @@
     "test-ct-update": "playwright test -c playwright-ct.config.ts --update-snapshots",
     "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug",
     "convert-config": "./convert-env-to-config.sh",
-    "create-api-client": "nswag openapi2tsclient /input:https://localhost:7022/swagger/v1/swagger.json /output:utils/api/generated/GENERATED_Client.ts /typeScriptTemplate fetch"
+    "create-api-client": "nswag openapi2tsclient /input:https://localhost:7022/swagger/v1/swagger.json /output:utils/api/generated/GENERATED_Client.ts /typeScriptTemplate axios"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",

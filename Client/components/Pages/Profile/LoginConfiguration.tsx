@@ -4,21 +4,11 @@ import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
-import { ApiClient } from '@utils/api/ApiClient';
-import { refreshSession } from '@utils/nextauth';
-import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FC, useCallback, useState } from 'react';
 
 const LoginConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { data: session } = useSession();
 
   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -29,9 +19,10 @@ const LoginConfiguration: FC = () => {
   const [oldPasswordError, setOldPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  /*TODO
   useEffect(() => {
     session?.user?.email && setEmail(session.user.email);
-  }, [session?.user?.email]);
+  }, [session?.user?.email]);*/
 
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -42,6 +33,7 @@ const LoginConfiguration: FC = () => {
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
+      /*TODO
       if (email === session?.user.email && !oldPassword) {
         enqueueSnackbar('Keine Daten zum Speichern vorhanden', {
           variant: 'info',
@@ -56,7 +48,7 @@ const LoginConfiguration: FC = () => {
       }
 
       setLoading(true);
-      const { error } = await ApiClient.User.Update({
+      const { error } = await ApiClient.({
         email,
         oldPassword,
         password: newPassword,
@@ -79,16 +71,9 @@ const LoginConfiguration: FC = () => {
       setLoading(false);
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',
-      });
+      });*/
     },
-    [
-      email,
-      enqueueSnackbar,
-      newPassword,
-      oldPassword,
-      repeatPassword,
-      session?.user.email,
-    ]
+    [email, enqueueSnackbar, newPassword, oldPassword, repeatPassword]
   );
 
   return (

@@ -1,6 +1,5 @@
 import { columns, defaultVariableColumns } from '@consts/customer';
-import { ICustomerWithDependencies } from '@customTypes/database/customer';
-import { IDocument } from '@customTypes/database/document';
+import { Customer, Document } from '@utils/api/generated/GENERATED_Client';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
@@ -18,8 +17,8 @@ export const CustomerContext = createContext<CustomerContextType | null>(null);
 
 type CustomerContextProps = {
   children: ReactNode;
-  initialCustomers: ICustomerWithDependencies[];
-  initialTemplates: IDocument[];
+  initialCustomers: Customer[];
+  initialTemplates: Document[];
 };
 
 const CustomerProvider: FC<CustomerContextProps> = ({
@@ -27,15 +26,13 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   initialCustomers,
   initialTemplates,
 }) => {
-  const [customers, setCustomers] = useState<ICustomerWithDependencies[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<ICustomerWithDependencies | null>(
-    null
-  );
+  const [selected, setSelected] = useState<Customer | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -61,12 +58,9 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   useEffect(() => setCustomers(initialCustomers), []);
 
   const updateSelected = useCallback(
-    <T extends keyof ICustomerWithDependencies>(
-      property: T,
-      value: ICustomerWithDependencies[T]
-    ) => {
+    <T extends keyof Customer>(property: T, value: Customer[T]) => {
       if (!selected) return;
-      let newSelected = { ...selected };
+      let newSelected = Customer.fromJS({ ...selected });
       newSelected[property] = value;
       setSelected(newSelected);
     },

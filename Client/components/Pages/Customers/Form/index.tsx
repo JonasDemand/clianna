@@ -1,8 +1,8 @@
 import DocumentFormSection from '@components/Form/DocumentFormSection';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType } from '@customTypes/customer';
-import { IDocument } from '@customTypes/database/document';
 import { Grid } from '@mui/material';
+import { Document } from '@utils/api/generated/GENERATED_Client';
 import React, { FC, useCallback, useContext, useMemo } from 'react';
 
 import CustomerAdress from './CustomerAdress';
@@ -17,12 +17,12 @@ const CustomerForm: FC = () => {
   const documents = useMemo(
     () =>
       (selected?.documents ?? []).concat(
-        selected?.orders?.flatMap<IDocument>((x) => x.documents ?? []) ?? []
+        selected?.orders?.flatMap<Document>((x) => x.documents ?? []) ?? []
       ),
     [selected?.documents, selected?.orders]
   );
   const onUpdateDocuments = useCallback(
-    (documents: IDocument[]) => updateSelected('documents', documents),
+    (documents: Document[]) => updateSelected('documents', documents),
     [updateSelected]
   );
 

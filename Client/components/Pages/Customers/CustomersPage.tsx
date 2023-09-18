@@ -2,10 +2,10 @@ import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
 import { CustomerContextType } from '@customTypes/customer';
-import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import { ApiClient } from '@utils/api/ApiClient';
+import ApiClient from '@utils/api/ApiClient';
+import { Customer } from '@utils/api/generated/GENERATED_Client';
 import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -27,8 +27,9 @@ const CustomersPage: FC = () => {
     searchText,
   } = useContext(CustomerContext) as CustomerContextType;
 
-  const [customerToDelete, setCustomerToDelete] =
-    useState<ICustomerWithDependencies | null>(null);
+  const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
+    null
+  );
 
   const onCloseOverlay = useCallback(() => {
     if (!selected) return;
@@ -37,10 +38,10 @@ const CustomersPage: FC = () => {
     const index = newCustomers.findIndex(
       (customer) => customer.id === selected.id
     );
-    newCustomers[index] = {
+    newCustomers[index] = new Customer({
       ...newCustomers[index],
       documents: selected.documents,
-    };
+    });
     setCustomers(newCustomers);
     setSelected(null);
   }, [customers, selected, setCustomers, setSelected]);
@@ -48,7 +49,7 @@ const CustomersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
-    const { error } = await ApiClient.Customer.Delete(customerToDelete.id);
+    const { error } = await ApiClient.customerDELETE(customerToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
         variant: 'error',
@@ -78,29 +79,29 @@ const CustomersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newCustomers = [...customers];
     if (create) {
-      const { error, response } = await ApiClient.Customer.Create(selected);
-      if (error || !response) {
+      const { error, data } = await ApiClient.customerPOST(selected);
+      if (error || !data) {
         enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      newCustomers.push(response);
+      newCustomers.push(data);
     } else {
-      const { error, response } = await ApiClient.Customer.Update(
+      const { error, data } = await ApiClient.customerPUT(
         selected.id!,
         selected
       );
-      if (error || !response) {
+      if (error || !data) {
         enqueueSnackbar('Aktualisieren von Kunde fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
       const index = newCustomers.findIndex(
-        (customer) => customer.id === response!.id
+        (customer) => customer.id === data!.id
       );
-      newCustomers[index] = response;
+      newCustomers[index] = data;
     }
     setCustomers(newCustomers);
     setSelected(null);
@@ -108,7 +109,7 @@ const CustomersPage: FC = () => {
   }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
 
   const onRowClick = useCallback(
-    ({ row }: { row: ICustomerWithDependencies }) => setSelected(row),
+    ({ row }: { row: Customer }) => setSelected(row),
     [setSelected]
   );
 
@@ -118,7 +119,7 @@ const CustomersPage: FC = () => {
         height: 1,
       }}
     >
-      <MuiTable<ICustomerWithDependencies>
+      <MuiTable<Customer>
         header={<CustomersTableHeader />}
         rows={filteredCustomers}
         columns={activeColumns}

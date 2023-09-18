@@ -4,12 +4,11 @@ import SideOverlay from '@components/Modals/SideOverlay';
 import { BackdropContext } from '@context/BackdropContext';
 import { OrderContext } from '@context/OrderContext';
 import { BackdropContextType } from '@customTypes/backdrop';
-import { IDocument } from '@customTypes/database/document';
-import { IOrderWithDependencies } from '@customTypes/database/order';
 import { EId } from '@customTypes/id';
 import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import { ApiClient } from '@utils/api/ApiClient';
+import ApiClient from '@utils/api/ApiClient';
+import { Order } from '@utils/api/generated/GENERATED_Client';
 import { getOrderLabel } from '@utils/order';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -34,14 +33,16 @@ const OrdersPage: FC = () => {
     searchText,
   } = useContext(OrderContext) as OrderContextType;
 
-  const [orderToDelete, setOrderToDelete] =
-    useState<IOrderWithDependencies | null>(null);
+  const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
 
   const onCloseOverlay = useCallback(() => {
     if (!selected) return;
     let newOrders = [...orders];
     const index = newOrders.findIndex((order) => order.id === selected.id);
-    newOrders[index] = { ...newOrders[index], documents: selected.documents };
+    newOrders[index] = Order.fromJS({
+      ...newOrders[index],
+      documents: selected.documents,
+    });
     setOrders(newOrders);
     setSelected(null);
   }, [orders, selected, setOrders, setSelected]);
@@ -63,27 +64,24 @@ const OrdersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newOrders = [...orders];
     if (create) {
-      const { error, response } = await ApiClient.Order.Create(selected);
-      if (error || !response) {
+      const { error, data } = await ApiClient.orderPOST(selected);
+      if (error || !data) {
         enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      newOrders.push(response);
+      newOrders.push(data);
     } else {
-      const { error, response } = await ApiClient.Order.Update(
-        selected.id!,
-        selected
-      );
-      if (error || !response) {
+      const { error, data } = await ApiClient.orderPUT(selected.id!, selected);
+      if (error || !data) {
         enqueueSnackbar('Aktualisieren von Auftrag fehlgeschlagen', {
           variant: 'error',
         });
         return;
       }
-      const index = newOrders.findIndex((order) => order.id === response.id);
-      newOrders[index] = response;
+      const index = newOrders.findIndex((order) => order.id === data.id);
+      newOrders[index] = data;
     }
     setOrders(newOrders);
     setSelected(null);
@@ -91,15 +89,16 @@ const OrdersPage: FC = () => {
   }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
-    async (order: IOrderWithDependencies) => {
-      let documents: Array<IDocument> = [];
+    async (order: Order) => {
+      /*TODO
+      let documents: Array<Document> = [];
       if (order.documents) {
         setShowBackdrop(true);
         const createDocumentRes = await Promise.all(
           order.documents.map((document) =>
             document.id
               ? ApiClient.Document.Copy(document.id, { name: document.name })
-              : ApiClient.Document.Create({ name: document.name })
+              : ApiClient.documentPOST(Document.fromJS({ name: document.name }))
           )
         );
         setShowBackdrop(false);
@@ -116,14 +115,14 @@ const OrdersPage: FC = () => {
         id: EId.Create,
         creationDate: new Date(),
         documents,
-      });
+      });*/
     },
     [enqueueSnackbar, setSelected, setShowBackdrop]
   );
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;
-    const { error } = await ApiClient.Order.Delete(orderToDelete.id);
+    const { error } = await ApiClient.orderDELETE(orderToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',
@@ -136,7 +135,7 @@ const OrdersPage: FC = () => {
   }, [enqueueSnackbar, orderToDelete, orders, setOrders]);
 
   const onRowClick = useCallback(
-    ({ row }: { row: IOrderWithDependencies }) => setSelected(row),
+    ({ row }: { row: Order }) => setSelected(row),
     [setSelected]
   );
 
@@ -146,7 +145,7 @@ const OrdersPage: FC = () => {
         height: 1,
       }}
     >
-      <MuiTable<IOrderWithDependencies>
+      <MuiTable<Order>
         header={<OrdersTableHeader />}
         rows={filteredOrders}
         columns={activeColumns}

@@ -15,7 +15,7 @@ const CustomerGeneral: FC = () => {
     [updateSelected]
   );
   const onChangeWhatsapp = useCallback(
-    (_: unknown, checked: boolean) => updateSelected('whatsapp', checked),
+    (_: unknown, checked: boolean) => updateSelected('whatsApp', checked),
     [updateSelected]
   );
   const onChangeComment = useCallback(
@@ -37,7 +37,7 @@ const CustomerGeneral: FC = () => {
           </Grid>
           <Grid item xs={6}>
             <FormControlLabel
-              control={<Checkbox checked={selected.whatsapp ?? false} />}
+              control={<Checkbox checked={selected.whatsApp ?? false} />}
               label="WhatsApp"
               onChange={onChangeWhatsapp}
             />

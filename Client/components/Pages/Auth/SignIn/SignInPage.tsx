@@ -1,7 +1,6 @@
 import { Lock } from '@mui/icons-material';
 import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import AuthLayout from '../AuthLayout';
@@ -21,11 +20,11 @@ const SignInPage: FC = () => {
 
   const onLogin = useCallback(
     async (email: string, password: string) => {
-      signIn('credentials', {
+      /*TODOsignIn('credentials', {
         email,
         password,
         callbackUrl: router.query.callbackUrl?.toString() ?? '/',
-      });
+      });*/
     },
     [router.query.callbackUrl]
   );

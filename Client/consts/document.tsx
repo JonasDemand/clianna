@@ -1,13 +1,13 @@
-import { IDocumentWithDependencies } from '@customTypes/database/document';
 import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
+import { Document } from '@utils/api/generated/GENERATED_Client';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';
 import React from 'react';
 
-export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
+export const variableColumns: GridColDef<Document>[] = [
   { field: 'id', headerName: 'Dokumente-ID', flex: 1 },
   { field: 'name', headerName: 'Name', flex: 1 },
   {
@@ -42,7 +42,7 @@ export const variableColumns: GridColDef<IDocumentWithDependencies>[] = [
     valueGetter: ({ row }) => getOrderLabel(row.order),
   },
 ];
-export const columns: GridColDef<IDocumentWithDependencies>[] = [
+export const columns: GridColDef<Document>[] = [
   {
     field: 'template',
     headerName: 'Template',

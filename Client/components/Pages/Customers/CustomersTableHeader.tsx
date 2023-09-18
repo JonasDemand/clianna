@@ -7,7 +7,6 @@ import {
 } from '@consts/customer';
 import { CustomerContext } from '@context/CustomerContext';
 import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
-import { ICustomerWithDependencies } from '@customTypes/database/customer';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -16,6 +15,7 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
+import { Customer } from '@utils/api/generated/GENERATED_Client';
 import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
 
@@ -39,7 +39,7 @@ const CustomersTableHeader: FC = () => {
     [setSearchText]
   );
   const onChangeColumns = useCallback(
-    (_: unknown, value: GridColDef<ICustomerWithDependencies>[]) =>
+    (_: unknown, value: GridColDef<Customer>[]) =>
       setActiveVariableColumns(value),
     [setActiveVariableColumns]
   );
@@ -50,7 +50,7 @@ const CustomersTableHeader: FC = () => {
   );
 
   const getOptionLabelColumns = useCallback(
-    (option: GridColDef<ICustomerWithDependencies>) => option.headerName ?? '',
+    (option: GridColDef<Customer>) => option.headerName ?? '',
     []
   );
 
@@ -76,7 +76,7 @@ const CustomersTableHeader: FC = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <Autocomplete<GridColDef<ICustomerWithDependencies>, true>
+          <Autocomplete<GridColDef<Customer>, true>
             openOnFocus
             multiple
             options={variableColumns}

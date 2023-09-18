@@ -10,12 +10,12 @@ namespace Data.Models.Entities
         public string Id { get; set; } = new Cuid2(10).ToString();
         public DateTime CreationDate { get; set; } = DateTime.Now;
         public bool Pending { get; set; } = true;
-        public OrderShippingType? ShippingType { get; set; }
+        public EOrderShippingType? ShippingType { get; set; }
         public string? Comment { get; set; }
         public float? Price { get; set; }
-        public OrderTax? Taxes { get; set; }
+        public EOrderTax? Taxes { get; set; }
         public DateTime? DueDate { get; set; }
-        public OrderType? Type { get; set; }
+        public EOrderType? Type { get; set; }
         public string? Brand { get; set; }
         public string? Article { get; set; }
         public string? Color { get; set; }

@@ -13,7 +13,7 @@ export const DuedatePicker: FC = () => {
     (e: ChangeEvent<HTMLInputElement>) =>
       updateSelected(
         'dueDate',
-        e.target.value ? new Date(e.target.value) : null
+        e.target.value ? new Date(e.target.value) : undefined
       ),
     [updateSelected]
   );

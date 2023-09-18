@@ -141,7 +141,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    customerPUT(id: string, body: Customer | undefined): Promise<void> {
+    customerPUT(id: string, body: Customer | undefined): Promise<CustomerResponse> {
         let url_ = this.baseUrl + "/Customer/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -155,6 +155,7 @@ export class Client {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             }
         };
 
@@ -163,19 +164,22 @@ export class Client {
         });
     }
 
-    protected processCustomerPUT(response: Response): Promise<void> {
+    protected processCustomerPUT(response: Response): Promise<CustomerResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<CustomerResponse>(null as any);
     }
 
     /**
@@ -341,7 +345,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    documentPUT(id: string, body: Document | undefined): Promise<void> {
+    documentPUT(id: string, body: Document | undefined): Promise<DocumentResponse> {
         let url_ = this.baseUrl + "/Document/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -355,6 +359,7 @@ export class Client {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             }
         };
 
@@ -363,19 +368,22 @@ export class Client {
         });
     }
 
-    protected processDocumentPUT(response: Response): Promise<void> {
+    protected processDocumentPUT(response: Response): Promise<DocumentResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DocumentResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<DocumentResponse>(null as any);
     }
 
     /**
@@ -541,7 +549,7 @@ export class Client {
      * @param body (optional) 
      * @return Success
      */
-    orderPUT(id: string, body: Order | undefined): Promise<void> {
+    orderPUT(id: string, body: Order | undefined): Promise<OrderResponse> {
         let url_ = this.baseUrl + "/Order/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -555,6 +563,7 @@ export class Client {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                "Accept": "text/plain"
             }
         };
 
@@ -563,19 +572,22 @@ export class Client {
         });
     }
 
-    protected processOrderPUT(response: Response): Promise<void> {
+    protected processOrderPUT(response: Response): Promise<OrderResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OrderResponse.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<OrderResponse>(null as any);
     }
 
     /**
@@ -663,22 +675,22 @@ export class Client {
     /**
      * @return Success
      */
-    update(): Promise<void> {
-        let url_ = this.baseUrl + "/User/Update";
+    profile(): Promise<void> {
+        let url_ = this.baseUrl + "/User/Profile";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
-            method: "GET",
+            method: "PUT",
             headers: {
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processUpdate(_response);
+            return this.processProfile(_response);
         });
     }
 
-    protected processUpdate(response: Response): Promise<void> {
+    protected processProfile(response: Response): Promise<void> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -750,7 +762,7 @@ export class Customer implements ICustomer {
     disabled?: boolean | undefined;
     fibu?: number | undefined;
     comment?: string | undefined;
-    salutation?: CustomerSalutation;
+    salutation?: ECustomerSalutation;
     orders?: Order[] | undefined;
     documents?: Document[] | undefined;
 
@@ -849,7 +861,7 @@ export interface ICustomer {
     disabled?: boolean | undefined;
     fibu?: number | undefined;
     comment?: string | undefined;
-    salutation?: CustomerSalutation;
+    salutation?: ECustomerSalutation;
     orders?: Order[] | undefined;
     documents?: Document[] | undefined;
 }
@@ -940,13 +952,6 @@ export class CustomerResponse implements ICustomerResponse {
 export interface ICustomerResponse {
     data?: Customer;
     error?: ErrorDto;
-}
-
-export enum CustomerSalutation {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
 }
 
 export class Document implements IDocument {
@@ -1109,6 +1114,35 @@ export interface IDocumentResponse {
     error?: ErrorDto;
 }
 
+export enum ECustomerSalutation {
+    Mr = "Mr",
+    Mrs = "Mrs",
+    Diverse = "Diverse",
+    Company = "Company",
+}
+
+export enum EOrderShippingType {
+    Send = "Send",
+    Collect = "Collect",
+    Visit = "Visit",
+}
+
+export enum EOrderTax {
+    Nineteen = "Nineteen",
+    Seven = "Seven",
+}
+
+export enum EOrderType {
+    Einlagen = "Einlagen",
+    Einlagenarbeiten = "Einlagenarbeiten",
+    Abrolloptimierung = "Abrolloptimierung",
+    Schuharbeiten = "Schuharbeiten",
+    Massschuhleisten = "Massschuhleisten",
+    Massschuhe = "Massschuhe",
+    Schuhbestellung = "Schuhbestellung",
+    Miscellaneous = "Miscellaneous",
+}
+
 export class ErrorDto implements IErrorDto {
     statuscode?: HttpStatusCode;
     message?: string | undefined;
@@ -1150,79 +1184,79 @@ export interface IErrorDto {
 }
 
 export enum HttpStatusCode {
-    _100 = 100,
-    _101 = 101,
-    _102 = 102,
-    _103 = 103,
-    _200 = 200,
-    _201 = 201,
-    _202 = 202,
-    _203 = 203,
-    _204 = 204,
-    _205 = 205,
-    _206 = 206,
-    _207 = 207,
-    _208 = 208,
-    _226 = 226,
-    _300 = 300,
-    _301 = 301,
-    _302 = 302,
-    _303 = 303,
-    _304 = 304,
-    _305 = 305,
-    _306 = 306,
-    _307 = 307,
-    _308 = 308,
-    _400 = 400,
-    _401 = 401,
-    _402 = 402,
-    _403 = 403,
-    _404 = 404,
-    _405 = 405,
-    _406 = 406,
-    _407 = 407,
-    _408 = 408,
-    _409 = 409,
-    _410 = 410,
-    _411 = 411,
-    _412 = 412,
-    _413 = 413,
-    _414 = 414,
-    _415 = 415,
-    _416 = 416,
-    _417 = 417,
-    _421 = 421,
-    _422 = 422,
-    _423 = 423,
-    _424 = 424,
-    _426 = 426,
-    _428 = 428,
-    _429 = 429,
-    _431 = 431,
-    _451 = 451,
-    _500 = 500,
-    _501 = 501,
-    _502 = 502,
-    _503 = 503,
-    _504 = 504,
-    _505 = 505,
-    _506 = 506,
-    _507 = 507,
-    _508 = 508,
-    _510 = 510,
-    _511 = 511,
+    Continue = "Continue",
+    SwitchingProtocols = "SwitchingProtocols",
+    Processing = "Processing",
+    EarlyHints = "EarlyHints",
+    OK = "OK",
+    Created = "Created",
+    Accepted = "Accepted",
+    NonAuthoritativeInformation = "NonAuthoritativeInformation",
+    NoContent = "NoContent",
+    ResetContent = "ResetContent",
+    PartialContent = "PartialContent",
+    MultiStatus = "MultiStatus",
+    AlreadyReported = "AlreadyReported",
+    IMUsed = "IMUsed",
+    MultipleChoices = "MultipleChoices",
+    MovedPermanently = "MovedPermanently",
+    Found = "Found",
+    SeeOther = "SeeOther",
+    NotModified = "NotModified",
+    UseProxy = "UseProxy",
+    Unused = "Unused",
+    TemporaryRedirect = "TemporaryRedirect",
+    PermanentRedirect = "PermanentRedirect",
+    BadRequest = "BadRequest",
+    Unauthorized = "Unauthorized",
+    PaymentRequired = "PaymentRequired",
+    Forbidden = "Forbidden",
+    NotFound = "NotFound",
+    MethodNotAllowed = "MethodNotAllowed",
+    NotAcceptable = "NotAcceptable",
+    ProxyAuthenticationRequired = "ProxyAuthenticationRequired",
+    RequestTimeout = "RequestTimeout",
+    Conflict = "Conflict",
+    Gone = "Gone",
+    LengthRequired = "LengthRequired",
+    PreconditionFailed = "PreconditionFailed",
+    RequestEntityTooLarge = "RequestEntityTooLarge",
+    RequestUriTooLong = "RequestUriTooLong",
+    UnsupportedMediaType = "UnsupportedMediaType",
+    RequestedRangeNotSatisfiable = "RequestedRangeNotSatisfiable",
+    ExpectationFailed = "ExpectationFailed",
+    MisdirectedRequest = "MisdirectedRequest",
+    UnprocessableEntity = "UnprocessableEntity",
+    Locked = "Locked",
+    FailedDependency = "FailedDependency",
+    UpgradeRequired = "UpgradeRequired",
+    PreconditionRequired = "PreconditionRequired",
+    TooManyRequests = "TooManyRequests",
+    RequestHeaderFieldsTooLarge = "RequestHeaderFieldsTooLarge",
+    UnavailableForLegalReasons = "UnavailableForLegalReasons",
+    InternalServerError = "InternalServerError",
+    NotImplemented = "NotImplemented",
+    BadGateway = "BadGateway",
+    ServiceUnavailable = "ServiceUnavailable",
+    GatewayTimeout = "GatewayTimeout",
+    HttpVersionNotSupported = "HttpVersionNotSupported",
+    VariantAlsoNegotiates = "VariantAlsoNegotiates",
+    InsufficientStorage = "InsufficientStorage",
+    LoopDetected = "LoopDetected",
+    NotExtended = "NotExtended",
+    NetworkAuthenticationRequired = "NetworkAuthenticationRequired",
 }
 
 export class Order implements IOrder {
     id?: string | undefined;
     creationDate?: Date;
     pending?: boolean;
-    shippingType?: OrderShippingType;
+    shippingType?: EOrderShippingType;
     comment?: string | undefined;
     price?: number | undefined;
-    taxes?: OrderTax;
+    taxes?: EOrderTax;
     dueDate?: Date | undefined;
-    type?: OrderType;
+    type?: EOrderType;
     brand?: string | undefined;
     article?: string | undefined;
     color?: string | undefined;
@@ -1308,12 +1342,12 @@ export interface IOrder {
     id?: string | undefined;
     creationDate?: Date;
     pending?: boolean;
-    shippingType?: OrderShippingType;
+    shippingType?: EOrderShippingType;
     comment?: string | undefined;
     price?: number | undefined;
-    taxes?: OrderTax;
+    taxes?: EOrderTax;
     dueDate?: Date | undefined;
-    type?: OrderType;
+    type?: EOrderType;
     brand?: string | undefined;
     article?: string | undefined;
     color?: string | undefined;
@@ -1411,28 +1445,6 @@ export class OrderResponse implements IOrderResponse {
 export interface IOrderResponse {
     data?: Order;
     error?: ErrorDto;
-}
-
-export enum OrderShippingType {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-}
-
-export enum OrderTax {
-    _0 = 0,
-    _1 = 1,
-}
-
-export enum OrderType {
-    _0 = 0,
-    _1 = 1,
-    _2 = 2,
-    _3 = 3,
-    _4 = 4,
-    _5 = 5,
-    _6 = 6,
-    _7 = 7,
 }
 
 export class UserSession implements IUserSession {

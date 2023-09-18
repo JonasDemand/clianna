@@ -1,8 +1,10 @@
 import { columns, defaultVariableColumns } from '@consts/document';
-import { ICustomer } from '@customTypes/database/customer';
-import { IDocumentWithDependencies } from '@customTypes/database/document';
-import { IOrder } from '@customTypes/database/order';
 import { DocumentContextType, EShowDocument } from '@customTypes/document';
+import {
+  Customer,
+  Document,
+  Order,
+} from '@utils/api/generated/GENERATED_Client';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
@@ -18,9 +20,9 @@ export const DocumentContext = createContext<DocumentContextType | null>(null);
 
 type DocumentContextProps = {
   children: ReactNode;
-  initialCustomers: ICustomer[];
-  initialOrders: IOrder[];
-  initialDocuments: IDocumentWithDependencies[];
+  initialCustomers: Customer[];
+  initialOrders: Order[];
+  initialDocuments: Document[];
 };
 
 const DocumentProvider: FC<DocumentContextProps> = ({
@@ -29,15 +31,13 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   initialOrders,
   initialDocuments,
 }) => {
-  const [documents, setDocuments] = useState<IDocumentWithDependencies[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [showDocuments, setShowDocuments] = useState(EShowDocument.All);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
   const [searchText, setSearchText] = useState('');
-  const [selected, setSelected] = useState<IDocumentWithDependencies | null>(
-    null
-  );
+  const [selected, setSelected] = useState<Document | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -64,11 +64,11 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   }, []);
 
   const updateSelected = useCallback(
-    (updates: IDocumentWithDependencies) => {
+    (updates: Document) => {
       if (!selected) return;
-      let newSelected = { ...selected };
+      let newSelected = Document.fromJS({ ...selected });
       Object.entries(updates).forEach(([key, value]) => {
-        const parsedKey = key as keyof IDocumentWithDependencies;
+        const parsedKey = key as keyof Document;
         if (updates[parsedKey] !== undefined)
           //@ts-ignore
           newSelected[parsedKey] = value;

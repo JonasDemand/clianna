@@ -1,13 +1,8 @@
-import {
-  ICustomer,
-  ICustomerWithDependencies,
-} from '@customTypes/database/customer';
+import { Customer } from './api/generated/GENERATED_Client';
 
-export const getCustomerLabel = (
-  customer: ICustomerWithDependencies | ICustomer | null | undefined
-) =>
-  customer?.firstname || customer?.lastname
-    ? `${customer.firstname ?? ''} ${customer.lastname ?? ''}`
+export const getCustomerLabel = (customer: Customer | null | undefined) =>
+  customer?.firstName || customer?.lastName
+    ? `${customer.firstName ?? ''} ${customer.lastName ?? ''}`
     : customer
     ? 'Kunde ohne Name'
     : 'Kunde nicht verfügbar';

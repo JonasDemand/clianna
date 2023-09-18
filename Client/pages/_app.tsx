@@ -9,12 +9,9 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
 
-const MyApp = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <ProviderWrapper session={session}>
+    <ProviderWrapper>
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <title>Clianna Kundenverwaltung</title>

@@ -1,8 +1,6 @@
 import { BackdropContext } from '@context/BackdropContext';
 import { BackdropContextType } from '@customTypes/backdrop';
 import { Grid } from '@mui/material';
-import { ApiClient } from '@utils/api/ApiClient';
-import { refreshSession } from '@utils/nextauth';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect } from 'react';
 
@@ -19,8 +17,6 @@ const ProfilePage: FC = () => {
       if (!Boolean(router.query.createRootfolder)) return;
       setShowBackdrop(true);
       router.replace('/profile', undefined, { shallow: true });
-      await ApiClient.Document.CreateRootFolder();
-      await refreshSession();
       setShowBackdrop(false);
     };
 

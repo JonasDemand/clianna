@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-    public enum OrderType
+    public enum EOrderType
     {
         Einlagen,
         Einlagenarbeiten,

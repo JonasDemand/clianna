@@ -11,7 +11,7 @@ const Schuhbestellung: FC = () => {
   ) as OrderContextType;
 
   const onChangeBrand = useCallback(
-    (value: string | null) => updateSelected('brand', value),
+    (value: string) => updateSelected('brand', value),
     [updateSelected]
   );
   const onChangeArticle = useCallback(

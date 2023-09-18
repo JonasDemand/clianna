@@ -37,14 +37,14 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, T entity)
+        public async Task<ActionResult<Response<T>>> Put(string id, T entity)
         {
             if (id != entity.Id)
             {
                 return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
             }
             await _repository.Update(entity);
-            return NoContent();
+            return _responseFactory.Create(entity);
         }
 
         [HttpPost]

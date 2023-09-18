@@ -17,12 +17,12 @@ const CustomerAdress: FC = () => {
   );
   const onChangeStreetnumber = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('streetnumber', e.target.value),
+      updateSelected('streetNumber', e.target.value),
     [updateSelected]
   );
   const onChangePostalcode = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected('postalcode', e.target.value),
+      updateSelected('postalCode', e.target.value),
     [updateSelected]
   );
   const onChangeCity = useCallback(
@@ -45,14 +45,14 @@ const CustomerAdress: FC = () => {
           <Grid item xs={6}>
             <FormTextField
               label="Hausnummer"
-              value={selected.streetnumber}
+              value={selected.streetNumber}
               onChange={onChangeStreetnumber}
             />
           </Grid>
           <Grid item xs={6}>
             <FormTextField
               label="Postleitzahl"
-              value={selected.postalcode}
+              value={selected.postalCode}
               onChange={onChangePostalcode}
             />
           </Grid>

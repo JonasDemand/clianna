@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-    public enum OrderShippingType
+    public enum EOrderShippingType
     {
         Send,
         Collect,

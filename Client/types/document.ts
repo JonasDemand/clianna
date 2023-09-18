@@ -1,25 +1,24 @@
 import { GridColDef } from '@mui/x-data-grid';
-
-import { ICustomer } from './database/customer';
-import { IDocumentWithDependencies } from './database/document';
-import { IOrder } from './database/order';
+import {
+  Customer,
+  Document,
+  Order,
+} from '@utils/api/generated/GENERATED_Client';
 
 export type DocumentContextType = {
-  customers: ICustomer[];
-  orders: IOrder[];
-  documents: IDocumentWithDependencies[];
-  setDocuments: (documents: IDocumentWithDependencies[]) => void;
-  filteredDocuments: IDocumentWithDependencies[];
-  selected: IDocumentWithDependencies | null;
-  setSelected: (document: IDocumentWithDependencies | null) => void;
-  updateSelected: (updates: IDocumentWithDependencies) => void;
+  customers: Customer[];
+  orders: Order[];
+  documents: Document[];
+  setDocuments: (documents: Document[]) => void;
+  filteredDocuments: Document[];
+  selected: Document | null;
+  setSelected: (document: Document | null) => void;
+  updateSelected: (updates: Document) => void;
   showDocuments: EShowDocument;
   setShowDocuments: (state: EShowDocument) => void;
-  activeColumns: GridColDef<IDocumentWithDependencies>[];
-  activeVariableColumns: GridColDef<IDocumentWithDependencies>[];
-  setActiveVariableColumns: (
-    activeColumns: GridColDef<IDocumentWithDependencies>[]
-  ) => void;
+  activeColumns: GridColDef<Document>[];
+  activeVariableColumns: GridColDef<Document>[];
+  setActiveVariableColumns: (activeColumns: GridColDef<Document>[]) => void;
   searchText: string;
   setSearchText: (text: string) => void;
 };
