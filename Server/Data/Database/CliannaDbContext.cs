@@ -1,4 +1,4 @@
-﻿using Data.Models.Database;
+﻿using Data.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Models.Misc;

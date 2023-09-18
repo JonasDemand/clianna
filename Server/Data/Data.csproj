@@ -13,7 +13,7 @@
     <None Remove="Models\Messages\" />
     <None Remove="Models\Misc\" />
     <None Remove="Models\Services\" />
-    <None Remove="Models\Database\" />
+    <None Remove="Database\Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -22,7 +22,7 @@
     <Folder Include="Models\Messages\" />
     <Folder Include="Models\Misc\" />
     <Folder Include="Models\Services\" />
-    <Folder Include="Models\Database\" />
+    <Folder Include="Database\Repositories\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
-namespace Data.Models.Database
+namespace Data.Models.Entities
 {
     [EntityTypeConfiguration(typeof(UserEntityTypeConfiguration))]
-    public class User
+    public class User : IEntity
     {
         public string Id { get; set; } = new Cuid2(10).ToString();
         public string Email { get; set; }

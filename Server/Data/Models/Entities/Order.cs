@@ -2,10 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
-namespace Data.Models.Database
+namespace Data.Models.Entities
 {
     [EntityTypeConfiguration(typeof(OrderEntityTypeConfiguration))]
-    public class Order
+    public class Order : IEntity
     {
         public string Id { get; set; } = new Cuid2(10).ToString();
         public DateTime CreationDate { get; set; } = DateTime.Now;

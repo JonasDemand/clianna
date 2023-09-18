@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Data.Models.Database
+namespace Data.Models.Entities
 {
 	public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document>
     {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
-namespace Data.Models.Database
+namespace Data.Models.Entities
 {
     [EntityTypeConfiguration(typeof(DocumentEntityTypeConfiguration))]
-    public class Document
+    public class Document : IEntity
     {
         public string Id { get; set; } = new Cuid2(10).ToString();
         public string? GoogleId { get; set; }
