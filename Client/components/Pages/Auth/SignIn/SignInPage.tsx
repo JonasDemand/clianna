@@ -1,8 +1,9 @@
+import { LOCALSTORAGE_JWT_KEY } from '@consts/api';
 import { useApiContext } from '@context/ApiContext';
 import { Lock } from '@mui/icons-material';
 import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { FC, useCallback, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import AuthLayout from '../AuthLayout';
 import CredentialsForm from '../CredentailsForm';
@@ -13,6 +14,11 @@ const SignInPage: FC = () => {
   const { Client, setToken } = useApiContext();
 
   const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    if (localStorage.getItem(LOCALSTORAGE_JWT_KEY))
+      router.replace(router.query.callbackUrl?.toString() ?? '/');
+  }, [router]);
 
   const onLogin = useCallback(
     async (email: string, password: string) => {

@@ -1,3 +1,4 @@
+import { LOCALSTORAGE_JWT_KEY } from '@consts/api';
 import { ApiContextType, SecurityDataType } from '@customTypes/api';
 import { Client } from '@utils/api/generated/Api';
 import getConfig from 'next/config';
@@ -10,8 +11,6 @@ import React, {
   useContext,
   useMemo,
 } from 'react';
-
-const LOCALSTORAGE_KEY = 'JWT_TOKEN';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -42,21 +41,28 @@ const ApiProvider: FC<ApiContextProps> = ({ children }) => {
       },
       customFetch: async (...params) => {
         const res = await fetch(...params);
-        if (res.status === 401) router.replace('/auth/signin');
+        if (res.status === 401) {
+          localStorage.removeItem(LOCALSTORAGE_JWT_KEY);
+          router.replace('/auth/signin');
+        }
         return res;
       },
     });
-    if (typeof window !== 'undefined')
-      client.setSecurityData({ token: localStorage.getItem(LOCALSTORAGE_KEY) });
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem(LOCALSTORAGE_JWT_KEY);
+      token
+        ? client.setSecurityData({ token })
+        : router.replace('/auth/signin');
+    }
     return client;
   }, [router]);
 
   const setToken = useCallback(
-    (token?: string) => {
+    (token?: string | null) => {
       client.setSecurityData({ token });
       token
-        ? localStorage.setItem(LOCALSTORAGE_KEY, token)
-        : localStorage.removeItem(LOCALSTORAGE_KEY);
+        ? localStorage.setItem(LOCALSTORAGE_JWT_KEY, token)
+        : localStorage.removeItem(LOCALSTORAGE_JWT_KEY);
     },
     [client]
   );

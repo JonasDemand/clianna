@@ -1,1 +1,1 @@
-export const defaultRevalidatePaths = ['/customers', '/docuemnts', '/orders'];
+export const LOCALSTORAGE_JWT_KEY = 'JWT_TOKEN';
