@@ -3,7 +3,6 @@
 import { LOCALSTORAGE_JWT_KEY } from '@consts/api';
 import { ApiContextType, SecurityDataType } from '@customTypes/api';
 import { Client } from '@utils/api/generated/Api';
-import getConfig from 'next/config';
 import { useRouter } from 'next/navigation';
 import React, {
   createContext,
@@ -14,7 +13,6 @@ import React, {
   useMemo,
 } from 'react';
 
-console.log(getConfig());
 const { publicRuntimeConfig } = {
   publicRuntimeConfig: { CLIANNA_API_URL: 'https://localhost:4000' },
 }; //TODO getConfig();

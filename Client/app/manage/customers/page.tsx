@@ -1,9 +1,12 @@
 import CustomersPage from '@components/Pages/Customers/CustomersPage';
 import CustomerProvider from '@context/CustomerContext';
-import { NextPage } from 'next';
 import React from 'react';
 
-const Customers: NextPage = () => {
+const Customers = async () => {
+  /*const { Client } = useApiContext();
+
+  const { data: customers } = await Client.customer.customerList();
+  const { data: templates } = await Client.document.documentList(); //TODO*/
   return (
     <CustomerProvider initialCustomers={[]} initialTemplates={[]}>
       <CustomersPage />
