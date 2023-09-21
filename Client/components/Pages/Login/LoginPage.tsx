@@ -1,15 +1,18 @@
+'use client';
+
 import { LOCALSTORAGE_JWT_KEY } from '@consts/api';
 import { useApiContext } from '@context/ApiContext';
 import { Lock } from '@mui/icons-material';
 import { Alert } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
-import AuthLayout from '../AuthLayout';
-import CredentialsForm from '../CredentailsForm';
+import AuthLayout from './AuthLayout';
+import CredentialsForm from './CredentailsForm';
 
-const SignInPage: FC = () => {
+const LoginPage: FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { Client, setToken } = useApiContext();
 
@@ -17,8 +20,8 @@ const SignInPage: FC = () => {
 
   useEffect(() => {
     if (localStorage.getItem(LOCALSTORAGE_JWT_KEY))
-      router.replace(router.query.callbackUrl?.toString() ?? '/');
-  }, [router]);
+      router.replace(searchParams?.get('callbackUrl')?.toString() ?? '/');
+  }, [router, searchParams]);
 
   const onLogin = useCallback(
     async (email: string, password: string) => {
@@ -33,9 +36,9 @@ const SignInPage: FC = () => {
         return;
       }
       setToken(data.token);
-      router.replace(router.query.callbackUrl?.toString() ?? '/');
+      router.replace(searchParams?.get('callbackUrl')?.toString() ?? '/');
     },
-    [Client.user, router, setToken]
+    [Client.user, router, searchParams, setToken]
   );
 
   return (
@@ -50,4 +53,4 @@ const SignInPage: FC = () => {
   );
 };
 
-export default SignInPage;
+export default LoginPage;

@@ -5,7 +5,7 @@ const nextConfig = {
     CLIANNA_API_URL: process.env.CLIANNA_API_URL ?? 'https://localhost:4000',
   },
   redirects: async () => [
-    { source: '/', destination: '/customers', permanent: true },
+    { source: '/', destination: '/manage/customers', permanent: true },
   ],
 };
 

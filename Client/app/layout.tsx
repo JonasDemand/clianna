@@ -1,23 +1,28 @@
+'use client';
+
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '../styles/global.css';
 
+import MuiGlobalBackdrop from '@components/External/MuiGlobalBackdrop';
 import ProviderWrapper from '@components/Wrappers/ProviderWrapper';
-import type { AppProps } from 'next/app';
-import Head from 'next/head';
-import React from 'react';
+import React, { ReactNode, Suspense } from 'react';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ children }: { children: ReactNode }) => {
   return (
-    <ProviderWrapper>
-      <Head>
+    <html>
+      <head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <title>Clianna Kundenverwaltung</title>
-      </Head>
-      <Component {...pageProps} />
-    </ProviderWrapper>
+      </head>
+      <body>
+        <ProviderWrapper>
+          <Suspense fallback={<MuiGlobalBackdrop open />}>{children}</Suspense>
+        </ProviderWrapper>
+      </body>
+    </html>
   );
 };
 

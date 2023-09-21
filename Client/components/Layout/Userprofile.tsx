@@ -1,3 +1,5 @@
+'use client';
+
 import MuiTooltip from '@components/External/MuiTooltip';
 import { Logout, ManageAccounts } from '@mui/icons-material';
 import {
@@ -8,7 +10,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {

@@ -1,3 +1,5 @@
+'use client';
+
 import MuiButton from '@components/External/MuiButton';
 import {
   Box,

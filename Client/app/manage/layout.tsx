@@ -1,14 +1,11 @@
+'use client';
+
+import Navbar from '@components/Layout/Navbar';
+import Userprofile from '@components/Layout/Userprofile';
 import { AppBar, Box, Container, Toolbar } from '@mui/material';
-import React, { FC, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
-import Navbar from '../Layout/Navbar';
-import Userprofile from '../Layout/Userprofile';
-
-type LayoutWrapperProps = {
-  children: ReactNode;
-};
-
-const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
+const MyApp = ({ children }: { children: ReactNode }) => {
   return (
     <Box
       sx={{
@@ -30,4 +27,4 @@ const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
   );
 };
 
-export default LayoutWrapper;
+export default MyApp;

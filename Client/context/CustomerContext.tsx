@@ -1,3 +1,5 @@
+'use client';
+
 import { columns, defaultVariableColumns } from '@consts/customer';
 import { Customer, Document } from '@utils/api/generated/Api';
 import { searchArray } from '@utils/search';

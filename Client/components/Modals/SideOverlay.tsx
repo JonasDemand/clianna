@@ -1,3 +1,5 @@
+'use client';
+
 import MuiButton from '@components/External/MuiButton';
 import { Divider, Drawer, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';

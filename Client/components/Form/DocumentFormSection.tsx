@@ -1,3 +1,5 @@
+'use client';
+
 import MuiButton from '@components/External/MuiButton';
 import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';

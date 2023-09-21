@@ -1,3 +1,5 @@
+'use client';
+
 import EnumSelect from '@components/Form/EnumSelect';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';

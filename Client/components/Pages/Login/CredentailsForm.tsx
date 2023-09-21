@@ -1,3 +1,5 @@
+'use client';
+
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import { Box } from '@mui/material';

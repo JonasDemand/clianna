@@ -1,3 +1,5 @@
+'use client';
+
 import PasswordForm from '@components/Authentication/PasswordForm';
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';

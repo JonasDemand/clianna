@@ -1,3 +1,5 @@
+'use client';
+
 import { Tooltip, TooltipProps, Typography } from '@mui/material';
 import React, { FC, useCallback, useState } from 'react';
 

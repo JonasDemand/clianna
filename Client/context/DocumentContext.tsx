@@ -1,3 +1,5 @@
+'use client';
+
 import { columns, defaultVariableColumns } from '@consts/document';
 import { DocumentContextType, EShowDocument } from '@customTypes/document';
 import { Customer, Document, Order } from '@utils/api/generated/Api';

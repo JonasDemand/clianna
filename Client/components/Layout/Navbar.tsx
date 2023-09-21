@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Assignment,
   Description,
@@ -14,17 +16,19 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { FC, MouseEvent, useCallback, useState } from 'react';
 
 const pages = [
-  { label: 'Kunden', route: '/customers', icon: <People /> },
-  { label: 'Aufträge', route: '/orders', icon: <Assignment /> },
-  { label: 'Dokumente', route: '/documents', icon: <Description /> },
+  { label: 'Kunden', route: '/manage/customers', icon: <People /> },
+  { label: 'Aufträge', route: '/manage/orders', icon: <Assignment /> },
+  { label: 'Dokumente', route: '/manage/documents', icon: <Description /> },
 ];
 
 const Navbar: FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 
   const onClickOpenNavMenu = useCallback(
@@ -64,7 +68,7 @@ const Navbar: FC = () => {
               key={page.route}
               onClick={() => {
                 onCloseNavMenu();
-                page.route !== router.route && router.replace(page.route);
+                page.route !== pathname && router.replace(page.route);
               }}
             >
               {page.icon}
@@ -121,7 +125,7 @@ const Navbar: FC = () => {
         CLIANNA
       </Typography>
       <Tabs
-        value={router.route}
+        value={pathname}
         sx={{
           flexGrow: 1,
           display: { xs: 'none', md: 'flex' },
