@@ -1,13 +1,10 @@
 import FormTextField from '@components/Form/FormInput';
-import { OrderContext } from '@context/OrderContext';
-import { OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
 import dayjs from 'dayjs';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 export const DuedatePicker: FC = () => {
-  const { selected, updateSelected } = useContext(
-    OrderContext
-  ) as OrderContextType;
+  const { selected, updateSelected } = useOrderContext();
 
   const onChangeDuedate = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>

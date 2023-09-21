@@ -1,17 +1,16 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { CustomerContextType } from '@customTypes/customer';
+import { useApiContext } from '@context/ApiContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import ApiClient from '@utils/api/ApiClient';
-import { Customer } from '@utils/api/generated/GENERATED_Client';
+import { Customer } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
-import { CustomerContext } from '../../../context/CustomerContext';
+import { useCustomerContext } from '../../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
@@ -25,7 +24,8 @@ const CustomersPage: FC = () => {
     filteredCustomers,
     activeColumns,
     searchText,
-  } = useContext(CustomerContext) as CustomerContextType;
+  } = useCustomerContext();
+  const { Client } = useApiContext();
 
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
     null
@@ -38,10 +38,10 @@ const CustomersPage: FC = () => {
     const index = newCustomers.findIndex(
       (customer) => customer.id === selected.id
     );
-    newCustomers[index] = new Customer({
+    newCustomers[index] = {
       ...newCustomers[index],
       documents: selected.documents,
-    });
+    };
     setCustomers(newCustomers);
     setSelected(null);
   }, [customers, selected, setCustomers, setSelected]);
@@ -49,7 +49,7 @@ const CustomersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
-    const { error } = await ApiClient.customerDELETE(customerToDelete.id);
+    const { error } = await Client.customer.customerDelete(customerToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
         variant: 'error',
@@ -61,7 +61,13 @@ const CustomersPage: FC = () => {
     setCustomers(
       customers.filter((customer) => customer.id !== customerToDelete.id)
     );
-  }, [customerToDelete, customers, enqueueSnackbar, setCustomers]);
+  }, [
+    Client.customer,
+    customerToDelete?.id,
+    customers,
+    enqueueSnackbar,
+    setCustomers,
+  ]);
 
   const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
@@ -79,7 +85,7 @@ const CustomersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newCustomers = [...customers];
     if (create) {
-      const { error, data } = await ApiClient.customerPOST(selected);
+      const { error, data } = await Client.customer.customerCreate(selected);
       if (error || !data) {
         enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
           variant: 'error',
@@ -88,7 +94,7 @@ const CustomersPage: FC = () => {
       }
       newCustomers.push(data);
     } else {
-      const { error, data } = await ApiClient.customerPUT(
+      const { error, data } = await Client.customer.customerUpdate(
         selected.id!,
         selected
       );
@@ -106,7 +112,14 @@ const CustomersPage: FC = () => {
     setCustomers(newCustomers);
     setSelected(null);
     enqueueSnackbar('Erfolgreich Kunde erstellt', { variant: 'success' });
-  }, [customers, enqueueSnackbar, selected, setCustomers, setSelected]);
+  }, [
+    Client.customer,
+    customers,
+    enqueueSnackbar,
+    selected,
+    setCustomers,
+    setSelected,
+  ]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Customer }) => setSelected(row),

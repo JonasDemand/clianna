@@ -1,0 +1,51 @@
+
+> clianna-client@0.1.0 create-api-client
+> swagger-typescript-api -p http://localhost:4001/swagger/v1/swagger.json -o ./utils/api/generated -n Api.ts --api-class-name Client --unwrap-response-data true --disable-throw-on-error true --debug true
+
+{
+  path: 'http://localhost:4001/swagger/v1/swagger.json',
+  output: './utils/api/generated',
+  name: 'Api.ts',
+  templates: undefined,
+  defaultResponseAsSuccess: false,
+  generateResponses: false,
+  generateUnionEnums: false,
+  addReadonly: false,
+  generateRouteTypes: false,
+  client: true,
+  enumNamesAsValues: false,
+  extractRequestParams: false,
+  extractRequestBody: false,
+  extractResponseBody: false,
+  extractResponseError: false,
+  extractResponses: false,
+  modular: false,
+  toJS: false,
+  moduleNameIndex: 0,
+  moduleNameFirstTag: false,
+  disableStrictSsl: false,
+  disableProxy: false,
+  axios: false,
+  unwrapResponseData: false,
+  disableThrowOnError: false,
+  singleHttpClient: false,
+  silent: false,
+  defaultResponseType: 'void',
+  typePrefix: '',
+  typeSuffix: '',
+  cleanOutput: false,
+  apiClassName: 'Client',
+  patch: false,
+  debug: false,
+  anotherArrayType: false,
+  sortTypes: false,
+  extractEnums: false,
+  sortRoutes: false,
+  customConfig: ''
+}
+✨   swagger-typescript-api(13.0.3),npm/9.6.7 node/v18.17.1 darwin arm64 workspaces/false,debug mode DISABLED
+✨   Code generator will use the default template for "api"
+✨   Code generator will use the default template for "route types"
+✨   try to get swagger by URL "http://localhost:4001/swagger/v1/swagger.json"
+⭐   start generating your typescript api
+✅   api file "Api.ts" created in /Users/jonasdemand/Git/clianna/Client/utils/api/generated

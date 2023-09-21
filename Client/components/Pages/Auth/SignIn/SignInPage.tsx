@@ -1,7 +1,8 @@
+import { useApiContext } from '@context/ApiContext';
 import { Lock } from '@mui/icons-material';
 import { Alert } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import AuthLayout from '../AuthLayout';
 import CredentialsForm from '../CredentailsForm';
@@ -9,24 +10,26 @@ import CredentialsForm from '../CredentailsForm';
 const SignInPage: FC = () => {
   const router = useRouter();
 
-  const [error, setError] = useState<string>();
+  const { Client, setToken } = useApiContext();
 
-  useEffect(() => {
-    if (router.query.error)
-      setError(
-        'Login fehlgeschlagen. Kontaktiere einen Administrator um den Account zu aktivieren.'
-      );
-  }, [router.query.error]);
+  const [error, setError] = useState<string>();
 
   const onLogin = useCallback(
     async (email: string, password: string) => {
-      /*TODOsignIn('credentials', {
-        email,
+      const { data, error } = await Client.user.authenticateCreate({
+        username: email,
         password,
-        callbackUrl: router.query.callbackUrl?.toString() ?? '/',
-      });*/
+      });
+      if (error || !data || !data.token) {
+        setError(
+          'Login fehlgeschlagen. Kontaktiere einen Administrator um den Account zu aktivieren.'
+        );
+        return;
+      }
+      setToken(data.token);
+      router.replace(router.query.callbackUrl?.toString() ?? '/');
     },
-    [router.query.callbackUrl]
+    [Client.user, router, setToken]
   );
 
   return (

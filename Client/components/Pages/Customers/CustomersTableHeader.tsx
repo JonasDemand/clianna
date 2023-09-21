@@ -5,8 +5,8 @@ import {
   ShowCustomerLabels,
   variableColumns,
 } from '@consts/customer';
-import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType, EShowCustomer } from '@customTypes/customer';
+import { useCustomerContext } from '@context/CustomerContext';
+import { EShowCustomer } from '@customTypes/customer';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -15,9 +15,9 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Customer } from '@utils/api/generated/GENERATED_Client';
+import { Customer } from '@utils/api/generated/Api';
 import { debounce } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 import EnumSelect from '../../Form/EnumSelect';
 
@@ -29,7 +29,7 @@ const CustomersTableHeader: FC = () => {
     setSearchText,
     setActiveVariableColumns,
     setShowCustomers,
-  } = useContext(CustomerContext) as CustomerContextType;
+  } = useCustomerContext();
 
   const onChangeSearch = useCallback(
     debounce(

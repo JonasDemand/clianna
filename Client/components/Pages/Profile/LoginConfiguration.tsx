@@ -48,7 +48,7 @@ const LoginConfiguration: FC = () => {
       }
 
       setLoading(true);
-      const { error } = await ApiClient.({
+      const { error } = await Client.({
         email,
         oldPassword,
         password: newPassword,

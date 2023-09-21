@@ -7,7 +7,7 @@ export type EnumSelectProps<T> = {
   autocomplete?: boolean;
   freeSolo?: boolean;
   value?: T | '';
-  inputValue?: T | '';
+  inputValue?: T | null | '';
   label: string;
   enumToUse: any; //TODO: Replace with some kind of enum generic
   enumLabel?: Map<T, string>;

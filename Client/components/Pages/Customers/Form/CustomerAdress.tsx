@@ -1,14 +1,11 @@
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
-import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType } from '@customTypes/customer';
+import { useCustomerContext } from '@context/CustomerContext';
 import { Grid } from '@mui/material';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const CustomerAdress: FC = () => {
-  const { selected, updateSelected } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
+  const { selected, updateSelected } = useCustomerContext();
 
   const onChangeStreet = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>

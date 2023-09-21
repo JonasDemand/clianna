@@ -1,9 +1,5 @@
 import { GridColDef } from '@mui/x-data-grid';
-import {
-  Customer,
-  Document,
-  Order,
-} from '@utils/api/generated/GENERATED_Client';
+import { Customer, Document, Order } from '@utils/api/generated/Api';
 
 export type OrderContextType = {
   customers: Customer[];

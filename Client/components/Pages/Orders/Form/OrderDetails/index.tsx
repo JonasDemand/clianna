@@ -1,8 +1,7 @@
-import { OrderContext } from '@context/OrderContext';
-import { OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
 import { FormControl, FormLabel, Grid, Typography } from '@mui/material';
-import { EOrderType } from '@utils/api/generated/GENERATED_Client';
-import React, { FC, useContext } from 'react';
+import { EOrderType } from '@utils/api/generated/Api';
+import React, { FC } from 'react';
 
 import General from './General';
 import Massschuhleisten from './Massschuhleisten';
@@ -10,7 +9,7 @@ import Miscellaneous from './Miscellaneous';
 import Schuhbestellung from './Schuhbestellung';
 
 const OrderTypeFrom: FC = () => {
-  const { selected } = useContext(OrderContext) as OrderContextType;
+  const { selected } = useOrderContext();
   switch (selected?.type) {
     case EOrderType.Abrolloptimierung:
     case EOrderType.Einlagen:

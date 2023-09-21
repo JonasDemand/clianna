@@ -2,23 +2,14 @@ import EnumSelect from '@components/Form/EnumSelect';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import { CustomerSalutationLabels } from '@consts/customer';
-import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType } from '@customTypes/customer';
+import { useCustomerContext } from '@context/CustomerContext';
 import { Email, Phone, Smartphone } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
-import { ECustomerSalutation } from '@utils/api/generated/GENERATED_Client';
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import { ECustomerSalutation } from '@utils/api/generated/Api';
+import React, { ChangeEvent, FC, useCallback, useState } from 'react';
 
 const CustomerBasedata: FC = () => {
-  const { selected, updateSelected } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
+  const { selected, updateSelected } = useCustomerContext();
   const [emailFocused, setEmailFocused] = useState(false);
   const [phoneFocused, setPhoneFocused] = useState(false);
   const [mobileFocused, setMobileFocused] = useState(false);

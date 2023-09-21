@@ -2,8 +2,8 @@ import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
-import { OrderContext } from '@context/OrderContext';
-import { EShowOrder, OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
+import { EShowOrder } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -12,9 +12,9 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Order } from '@utils/api/generated/GENERATED_Client';
+import { Order } from '@utils/api/generated/Api';
 import { debounce } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const OrdersTableHeader: FC = () => {
   const {
@@ -24,7 +24,7 @@ const OrdersTableHeader: FC = () => {
     setSearchText,
     setActiveVariableColumns,
     setShowOrders,
-  } = useContext(OrderContext) as OrderContextType;
+  } = useOrderContext();
 
   const onChangeSearch = useCallback(
     debounce(

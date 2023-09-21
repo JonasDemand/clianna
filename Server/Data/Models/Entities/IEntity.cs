@@ -1,6 +1,4 @@
-﻿using Visus.Cuid;
-
-namespace Data.Models.Entities
+﻿namespace Data.Models.Entities
 {
     public interface IEntity
     {

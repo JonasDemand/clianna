@@ -1,4 +1,4 @@
-import { Customer } from './api/generated/GENERATED_Client';
+import { Customer } from './api/generated/Api';
 
 export const getCustomerLabel = (customer: Customer | null | undefined) =>
   customer?.firstName || customer?.lastName

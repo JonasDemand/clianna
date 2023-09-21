@@ -1,7 +1,7 @@
 import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Document } from '@utils/api/generated/GENERATED_Client';
+import { Document } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';

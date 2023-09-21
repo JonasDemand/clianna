@@ -1,22 +1,27 @@
 import { columns, defaultVariableColumns } from '@consts/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
-import {
-  Customer,
-  Document,
-  Order,
-} from '@utils/api/generated/GENERATED_Client';
+import { Customer, Document, Order } from '@utils/api/generated/Api';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 
-export const OrderContext = createContext<OrderContextType | null>(null);
+export const useOrderContext = () => {
+  const context = useContext(OrderContext);
+  if (!context) {
+    throw new Error('Context is null');
+  }
+  return context;
+};
+
+const OrderContext = createContext<OrderContextType | null>(null);
 
 type OrderContextProps = {
   children: ReactNode;
@@ -66,7 +71,7 @@ const OrderProvider: FC<OrderContextProps> = ({
   const updateSelected = useCallback(
     <T extends keyof Order>(property: T, value: Order[T]) => {
       if (!selected) return;
-      let newSelected = Order.fromJS({ ...selected });
+      let newSelected = { ...selected };
       newSelected[property] = value;
       setSelected(newSelected);
     },

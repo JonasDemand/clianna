@@ -1,15 +1,12 @@
 import FormTextField from '@components/Form/FormInput';
-import { OrderContext } from '@context/OrderContext';
-import { OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
 import { Grid } from '@mui/material';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 import { DuedatePicker } from './CommonInputs';
 
 const Miscellaneous: FC = () => {
-  const { selected, updateSelected } = useContext(
-    OrderContext
-  ) as OrderContextType;
+  const { selected, updateSelected } = useOrderContext();
 
   const onChangeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>

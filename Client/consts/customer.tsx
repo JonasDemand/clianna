@@ -7,7 +7,7 @@ import {
   Document,
   ECustomerSalutation,
   Order,
-} from '@utils/api/generated/GENERATED_Client';
+} from '@utils/api/generated/Api';
 import React from 'react';
 
 export const variableColumns: GridColDef<Customer>[] = [
@@ -53,14 +53,13 @@ export const columns: GridColDef<Customer>[] = [
 
 export const defaultVariableColumns = variableColumns.slice(1, 3);
 
-export const defaultCustomer = (): Customer =>
-  Customer.fromJS({
-    id: EId.Create,
-    whatsApp: false,
-    disabled: false,
-    orders: new Array<Order>(),
-    documents: new Array<Document>(),
-  });
+export const defaultCustomer = (): Customer => ({
+  id: EId.Create,
+  whatsApp: false,
+  disabled: false,
+  orders: new Array<Order>(),
+  documents: new Array<Document>(),
+});
 
 export const ShowCustomerLabels = new Map<EShowCustomer, string>([
   [EShowCustomer.All, 'Alle'],

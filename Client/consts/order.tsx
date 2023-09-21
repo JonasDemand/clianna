@@ -3,11 +3,12 @@ import { EShowOrder } from '@customTypes/order';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
 import {
+  Document,
   EOrderShippingType,
   EOrderTax,
   EOrderType,
   Order,
-} from '@utils/api/generated/GENERATED_Client';
+} from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import React from 'react';
@@ -70,15 +71,14 @@ export const columns: GridColDef<Order>[] = [
 ];
 export const defaultVariableColumns = variableColumns.slice(1, 3);
 
-export const defaultOrder = (): Order =>
-  Order.fromJS({
-    id: EId.Create,
-    pending: true,
-    shippingType: EOrderShippingType.Send,
-    taxes: EOrderTax.Nineteen,
-    price: 0,
-    documents: new Array<Document>(),
-  });
+export const defaultOrder = (): Order => ({
+  id: EId.Create,
+  pending: true,
+  shippingType: EOrderShippingType.Send,
+  taxes: EOrderTax.Nineteen,
+  price: 0,
+  documents: new Array<Document>(),
+});
 
 export const ShowOrderLabels = new Map<EShowOrder, string>([
   [EShowOrder.All, 'Alle'],

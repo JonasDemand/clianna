@@ -8,9 +8,7 @@ const AuthenticationWrapper: FC<AuthenticationWrapperProps> = ({
   children,
 }) => {
   /*TODO
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const { setShowBackdrop } = useBackdropContext();
   const { data: session, status } = useSession();
   useEffect(() => {
     if (!session && status !== 'loading') signIn();

@@ -1,16 +1,15 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { DocumentContext } from '@context/DocumentContext';
-import { DocumentContextType } from '@customTypes/document';
+import { useApiContext } from '@context/ApiContext';
+import { useDocumentContext } from '@context/DocumentContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import ApiClient from '@utils/api/ApiClient';
-import { Document } from '@utils/api/generated/GENERATED_Client';
+import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import DocumentsTableHeader from './DocumentsTableHeader';
 import DocumentForm from './Form';
@@ -26,7 +25,8 @@ const DocumentsPage: FC = () => {
     documents,
     filteredDocuments,
     setDocuments,
-  } = useContext(DocumentContext) as DocumentContextType;
+  } = useDocumentContext();
+  const { Client } = useApiContext();
 
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(
     null
@@ -51,10 +51,10 @@ const DocumentsPage: FC = () => {
 
     /*TODO
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.Document.Copy(getCopyId(selected.id), selected)
+      ? await Client.Document.Copy(getCopyId(selected.id), selected)
       : selected.id === EId.Create
-      ? await ApiClient.Document.Create(selected)
-      : await ApiClient.Document.Update(selected.id, selected);
+      ? await Client.Document.Create(selected)
+      : await Client.Document.Update(selected.id, selected);
 
     const { error, response } = res;
     if (error || !response) {
@@ -75,23 +75,21 @@ const DocumentsPage: FC = () => {
     enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
       variant: 'success',
     });
-  }, [documents, enqueueSnackbar, selected, setDocuments, setSelected]);
+  }, [documents, enqueueSnackbar, selected]);
 
   const onCopyRow = useCallback(
     async (document: Document) =>
-      setSelected(
-        Document.fromJS({
-          ...document,
-          id: `${EId.Copy}_${document.id}`,
-          name: `${document.name} - Kopie`,
-        })
-      ),
+      setSelected({
+        ...document,
+        id: `${EId.Copy}_${document.id}`,
+        name: `${document.name} - Kopie`,
+      }),
     [setSelected]
   );
 
   const onConfirmDialog = useCallback(async () => {
     if (!documentToDelete || !documentToDelete.id) return;
-    const { error } = await ApiClient.documentDELETE(documentToDelete.id);
+    const { error } = await Client.document.documentDelete(documentToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Dokument fehlgeschlagen', {
         variant: 'error',
@@ -103,7 +101,13 @@ const DocumentsPage: FC = () => {
     setDocuments(
       documents.filter((document) => document.id !== documentToDelete.id)
     );
-  }, [documentToDelete, documents, enqueueSnackbar, setDocuments]);
+  }, [
+    Client.document,
+    documentToDelete,
+    documents,
+    enqueueSnackbar,
+    setDocuments,
+  ]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Document }) => setSelected(row),

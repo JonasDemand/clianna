@@ -1,4 +1,4 @@
-import { Document } from './api/generated/GENERATED_Client';
+import { Document } from './api/generated/Api';
 import { formatDate } from './date';
 
 export const getDocumentLabel = (document: Document | null | undefined) =>

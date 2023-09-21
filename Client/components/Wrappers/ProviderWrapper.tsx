@@ -1,3 +1,4 @@
+import ApiProvider from '@context/ApiContext';
 import BackdropProvider from '@context/BackdropContext';
 import { ThemeProvider } from '@emotion/react';
 import { Slide } from '@mui/material';
@@ -20,7 +21,9 @@ const ProviderWrapper: FC<ProviderWrapperProps> = ({ children }) => {
         }}
         TransitionComponent={Slide}
       >
-        <BackdropProvider>{children}</BackdropProvider>
+        <BackdropProvider>
+          <ApiProvider>{children}</ApiProvider>
+        </BackdropProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );

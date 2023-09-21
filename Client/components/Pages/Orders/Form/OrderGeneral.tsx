@@ -8,8 +8,7 @@ import {
   OrderTaxLabels,
   OrderTypeLabels,
 } from '@consts/order';
-import { OrderContext } from '@context/OrderContext';
-import { OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
@@ -23,21 +22,13 @@ import {
   EOrderShippingType,
   EOrderTax,
   EOrderType,
-} from '@utils/api/generated/GENERATED_Client';
+} from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import dayjs from 'dayjs';
-import React, {
-  ChangeEvent,
-  FC,
-  KeyboardEvent,
-  useCallback,
-  useContext,
-} from 'react';
+import React, { ChangeEvent, FC, KeyboardEvent, useCallback } from 'react';
 
 const OrderGeneral: FC = () => {
-  const { selected, updateSelected, customers } = useContext(
-    OrderContext
-  ) as OrderContextType;
+  const { selected, updateSelected, customers } = useOrderContext();
 
   const onChangePending = useCallback(
     (_: unknown, checked: boolean) => updateSelected('pending', checked),

@@ -1,7 +1,6 @@
 ﻿using Data.Database.Repositories;
 using Data.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Api.Middlewares;
 using Services;
 using Data.Models.Messages;
 using System.Net;

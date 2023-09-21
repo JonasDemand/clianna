@@ -1,14 +1,12 @@
 import EnumSelect from '@components/Form/EnumSelect';
 import FormTextField from '@components/Form/FormInput';
-import { OrderContext } from '@context/OrderContext';
-import { EOrderBrand, OrderContextType } from '@customTypes/order';
+import { useOrderContext } from '@context/OrderContext';
+import { EOrderBrand } from '@customTypes/order';
 import { Grid } from '@mui/material';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const Schuhbestellung: FC = () => {
-  const { selected, updateSelected } = useContext(
-    OrderContext
-  ) as OrderContextType;
+  const { selected, updateSelected } = useOrderContext();
 
   const onChangeBrand = useCallback(
     (value: string) => updateSelected('brand', value),

@@ -5,11 +5,20 @@ import React, {
   createContext,
   FC,
   ReactNode,
+  useContext,
   useEffect,
   useState,
 } from 'react';
 
-export const BackdropContext = createContext<BackdropContextType | null>(null);
+export const useBackdropContext = () => {
+  const context = useContext(BackdropContext);
+  if (!context) {
+    throw new Error('Context is null');
+  }
+  return context;
+};
+
+const BackdropContext = createContext<BackdropContextType | null>(null);
 
 type BackdropContextProps = {
   children: ReactNode;

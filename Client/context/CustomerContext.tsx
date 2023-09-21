@@ -1,11 +1,12 @@
 import { columns, defaultVariableColumns } from '@consts/customer';
-import { Customer, Document } from '@utils/api/generated/GENERATED_Client';
+import { Customer, Document } from '@utils/api/generated/Api';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
@@ -13,7 +14,15 @@ import React, {
 
 import { CustomerContextType, EShowCustomer } from '../types/customer';
 
-export const CustomerContext = createContext<CustomerContextType | null>(null);
+export const useCustomerContext = () => {
+  const context = useContext(CustomerContext);
+  if (!context) {
+    throw new Error('Context is null');
+  }
+  return context;
+};
+
+const CustomerContext = createContext<CustomerContextType | null>(null);
 
 type CustomerContextProps = {
   children: ReactNode;
@@ -60,7 +69,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   const updateSelected = useCallback(
     <T extends keyof Customer>(property: T, value: Customer[T]) => {
       if (!selected) return;
-      let newSelected = Customer.fromJS({ ...selected });
+      let newSelected = { ...selected };
       newSelected[property] = value;
       setSelected(newSelected);
     },

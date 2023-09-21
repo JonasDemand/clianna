@@ -11,6 +11,8 @@ namespace Api.Controllers
         public CustomerController(IResponseFactory responseFactory, ICustomerRepository repository) : base(responseFactory, repository)
         {
         }
+
+
     }
 }
 

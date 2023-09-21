@@ -1,22 +1,27 @@
 import { columns, defaultVariableColumns } from '@consts/document';
 import { DocumentContextType, EShowDocument } from '@customTypes/document';
-import {
-  Customer,
-  Document,
-  Order,
-} from '@utils/api/generated/GENERATED_Client';
+import { Customer, Document, Order } from '@utils/api/generated/Api';
 import { searchArray } from '@utils/search';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useState,
 } from 'react';
 
-export const DocumentContext = createContext<DocumentContextType | null>(null);
+export const useDocumentContext = () => {
+  const context = useContext(DocumentContext);
+  if (!context) {
+    throw new Error('Context is null');
+  }
+  return context;
+};
+
+const DocumentContext = createContext<DocumentContextType | null>(null);
 
 type DocumentContextProps = {
   children: ReactNode;
@@ -66,7 +71,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   const updateSelected = useCallback(
     (updates: Document) => {
       if (!selected) return;
-      let newSelected = Document.fromJS({ ...selected });
+      let newSelected = { ...selected };
       Object.entries(updates).forEach(([key, value]) => {
         const parsedKey = key as keyof Document;
         if (updates[parsedKey] !== undefined)

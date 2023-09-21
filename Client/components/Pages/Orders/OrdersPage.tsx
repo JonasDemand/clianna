@@ -1,18 +1,16 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { BackdropContext } from '@context/BackdropContext';
-import { OrderContext } from '@context/OrderContext';
-import { BackdropContextType } from '@customTypes/backdrop';
+import { useApiContext } from '@context/ApiContext';
+import { useBackdropContext } from '@context/BackdropContext';
+import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
-import { OrderContextType } from '@customTypes/order';
 import { Box, Typography } from '@mui/material';
-import ApiClient from '@utils/api/ApiClient';
-import { Order } from '@utils/api/generated/GENERATED_Client';
+import { Order } from '@utils/api/generated/Api';
 import { getOrderLabel } from '@utils/order';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import OrderFrom from './Form';
 import OrdersTableHeader from './OrdersTableHeader';
@@ -20,9 +18,7 @@ import OrdersTableHeader from './OrdersTableHeader';
 const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const { setShowBackdrop } = useContext(
-    BackdropContext
-  ) as BackdropContextType;
+  const { setShowBackdrop } = useBackdropContext();
   const {
     filteredOrders,
     activeColumns,
@@ -31,7 +27,8 @@ const OrdersPage: FC = () => {
     orders,
     setOrders,
     searchText,
-  } = useContext(OrderContext) as OrderContextType;
+  } = useOrderContext();
+  const { Client } = useApiContext();
 
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
 
@@ -39,10 +36,10 @@ const OrdersPage: FC = () => {
     if (!selected) return;
     let newOrders = [...orders];
     const index = newOrders.findIndex((order) => order.id === selected.id);
-    newOrders[index] = Order.fromJS({
+    newOrders[index] = {
       ...newOrders[index],
       documents: selected.documents,
-    });
+    };
     setOrders(newOrders);
     setSelected(null);
   }, [orders, selected, setOrders, setSelected]);
@@ -64,7 +61,7 @@ const OrdersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newOrders = [...orders];
     if (create) {
-      const { error, data } = await ApiClient.orderPOST(selected);
+      const { error, data } = await Client.order.orderCreate(selected);
       if (error || !data) {
         enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
           variant: 'error',
@@ -73,7 +70,10 @@ const OrdersPage: FC = () => {
       }
       newOrders.push(data);
     } else {
-      const { error, data } = await ApiClient.orderPUT(selected.id!, selected);
+      const { error, data } = await Client.order.orderUpdate(
+        selected.id!,
+        selected
+      );
       if (error || !data) {
         enqueueSnackbar('Aktualisieren von Auftrag fehlgeschlagen', {
           variant: 'error',
@@ -86,19 +86,18 @@ const OrdersPage: FC = () => {
     setOrders(newOrders);
     setSelected(null);
     enqueueSnackbar('Erfolgreich Auftrag aktualisiert', { variant: 'success' });
-  }, [enqueueSnackbar, orders, selected, setOrders, setSelected]);
+  }, [Client.order, enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
-  const onCopyRow = useCallback(
-    async (order: Order) => {
-      /*TODO
+  const onCopyRow = useCallback(async (order: Order) => {
+    /*TODO
       let documents: Array<Document> = [];
       if (order.documents) {
         setShowBackdrop(true);
         const createDocumentRes = await Promise.all(
           order.documents.map((document) =>
             document.id
-              ? ApiClient.Document.Copy(document.id, { name: document.name })
-              : ApiClient.documentPOST(Document.fromJS({ name: document.name }))
+              ? Client.Document.Copy(document.id, { name: document.name })
+              : Client.documentPOST(({ name: document.name }))
           )
         );
         setShowBackdrop(false);
@@ -116,13 +115,11 @@ const OrdersPage: FC = () => {
         creationDate: new Date(),
         documents,
       });*/
-    },
-    [enqueueSnackbar, setSelected, setShowBackdrop]
-  );
+  }, []);
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;
-    const { error } = await ApiClient.orderDELETE(orderToDelete.id);
+    const { error } = await Client.order.orderDelete(orderToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',
@@ -132,7 +129,7 @@ const OrdersPage: FC = () => {
     enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     setOrderToDelete(null);
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
-  }, [enqueueSnackbar, orderToDelete, orders, setOrders]);
+  }, [Client.order, enqueueSnackbar, orderToDelete?.id, orders, setOrders]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Order }) => setSelected(row),

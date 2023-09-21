@@ -3,6 +3,7 @@ import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import { defaultVariableColumns } from '@consts/document';
+import { useApiContext } from '@context/ApiContext';
 import { EId } from '@customTypes/id';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -12,12 +13,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import ApiClient from '@utils/api/ApiClient';
-import {
-  Customer,
-  Document,
-  Order,
-} from '@utils/api/generated/GENERATED_Client';
+import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
@@ -31,7 +27,7 @@ type DocumentFormProps = {
   documents: Document[];
   templates: Document[];
   onUpdate: (documents: Document[]) => void;
-  reference: { customer?: string; order?: string };
+  reference: { customer?: string | null; order?: string | null };
 };
 
 const DocumentFormSection: FC<DocumentFormProps> = ({
@@ -41,6 +37,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   reference,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { Client } = useApiContext();
 
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(
     null
@@ -57,25 +54,23 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     [documents, searchText]
   );
   const withReference = useCallback(
-    (document: Document): Document =>
-      Document.fromJS({
-        ...document,
-        customer: new Customer({
-          id:
-            document.customer?.id ??
-            (reference.customer !== EId.Copy &&
-            reference.customer !== EId.Create
-              ? reference.customer
-              : undefined),
-        }),
-        order: Order.fromJS({
-          id:
-            document.order?.id ??
-            (reference.order !== EId.Copy && reference.order !== EId.Create
-              ? reference.order
-              : undefined),
-        }),
-      }),
+    (document: Document): Document => ({
+      ...document,
+      customer: {
+        id:
+          document.customer?.id ??
+          (reference.customer !== EId.Copy && reference.customer !== EId.Create
+            ? reference.customer
+            : undefined),
+      },
+      order: {
+        id:
+          document.order?.id ??
+          (reference.order !== EId.Copy && reference.order !== EId.Create
+            ? reference.order
+            : undefined),
+      },
+    }),
     [reference.customer, reference.order]
   );
 
@@ -84,7 +79,9 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
 
   const onConfirmDeleteDialog = useCallback(async () => {
     if (!documentToDelete || !documentToDelete.id) return;
-    const { error } = await ApiClient.documentDELETE(documentToDelete.id);
+    const { error } = await Client.document.documentDelete(
+      documentToDelete.id!
+    );
     if (error) {
       enqueueSnackbar('Löschen von Dokument fehlgeschlagen', {
         variant: 'error',
@@ -97,7 +94,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     enqueueSnackbar('Erfolgreich Dokument gelöscht', {
       variant: 'success',
     });
-  }, [documentToDelete, documents, enqueueSnackbar, onUpdate]);
+  }, [Client.document, documentToDelete, documents, enqueueSnackbar, onUpdate]);
   const onConfirmSelectedDialog = useCallback(async () => {
     if (!selected || !selected.id) return;
     if (
@@ -114,13 +111,13 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
 
     /*TODO
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.documentCOPY(
+      ? await Client.documentCOPY(
           getCopyId(selected.id),
           withReference(selected)
         )
       : selected.id === EId.Create
-      ? await ApiClient.documentPOST(withReference(selected))
-      : await ApiClient.documentPUT(selected.id, selected);
+      ? await Client.documentPOST(withReference(selected))
+      : await Client.documentPUT(selected.id, selected);
 
     const { error, response } = res;
     if (error || !response) {
@@ -141,24 +138,19 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
       variant: 'success',
     });
-  }, [documents, enqueueSnackbar, onUpdate, selected, withReference]);
+  }, [documents, enqueueSnackbar, selected]);
 
   const onCopyDocument = useCallback(
     (document: Document) =>
-      setSelected(
-        Document.fromJS({
-          ...document,
-          id: `${EId.Copy}_${document.id}`,
-          name: `${document.name} - Kopie`,
-        })
-      ),
+      setSelected({
+        ...document,
+        id: `${EId.Copy}_${document.id}`,
+        name: `${document.name} - Kopie`,
+      }),
     []
   );
 
-  const onClickAdd = useCallback(
-    () => setSelected(Document.fromJS({ id: EId.Create })),
-    []
-  );
+  const onClickAdd = useCallback(() => setSelected({ id: EId.Create }), []);
 
   const onRowClick = useCallback(
     ({ row }: { row: Document }) => setSelected(row),
@@ -171,13 +163,11 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   );
   const onChangeTemplate = useCallback(
     (_: unknown, value: Document | null) =>
-      setSelected(
-        Document.fromJS({
-          ...selected,
-          id: value ? `${EId.Copy}_${value.id}` : EId.Create,
-          name: selected?.name ?? value?.name,
-        })
-      ),
+      setSelected({
+        ...selected,
+        id: value ? `${EId.Copy}_${value.id}` : EId.Create,
+        name: selected?.name ?? value?.name,
+      }),
     [selected]
   );
 
@@ -255,12 +245,10 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
               label="Name"
               value={selected?.name}
               onChange={(e) =>
-                setSelected(
-                  Document.fromJS({
-                    ...selected,
-                    name: e.target.value,
-                  })
-                )
+                setSelected({
+                  ...selected,
+                  name: e.target.value,
+                })
               }
             />
           </Grid>

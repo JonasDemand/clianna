@@ -3,8 +3,7 @@ import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { ShowDocumentLabels } from '@consts/document';
 import { variableColumns } from '@consts/document';
-import { DocumentContext } from '@context/DocumentContext';
-import { DocumentContextType } from '@customTypes/document';
+import { useDocumentContext } from '@context/DocumentContext';
 import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
@@ -15,9 +14,9 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Order } from '@utils/api/generated/GENERATED_Client';
+import { Order } from '@utils/api/generated/Api';
 import { debounce } from 'lodash';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const DocumentsTableHeader: FC = () => {
   const {
@@ -27,7 +26,7 @@ const DocumentsTableHeader: FC = () => {
     setSelected,
     setSearchText,
     setActiveVariableColumns,
-  } = useContext(DocumentContext) as DocumentContextType;
+  } = useDocumentContext();
 
   const onChangeSearch = useCallback(
     debounce(
@@ -42,7 +41,7 @@ const DocumentsTableHeader: FC = () => {
   );
 
   const onClickAdd = useCallback(
-    () => setSelected(Order.fromJS({ id: EId.Create })),
+    () => setSelected({ id: EId.Create }),
     [setSelected]
   );
 

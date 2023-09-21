@@ -68,6 +68,8 @@ builder.Services.AddSwaggerGen(c => {
     });
 });
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 //Migrate DB
@@ -82,6 +84,11 @@ app.UseSwaggerUI();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<JwtMiddleware>();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.MapControllers();
 

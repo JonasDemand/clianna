@@ -1,8 +1,7 @@
 import MuiTextField from '@components/External/MuiTextField';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
-import { DocumentContext } from '@context/DocumentContext';
-import { DocumentContextType } from '@customTypes/document';
+import { useDocumentContext } from '@context/DocumentContext';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
@@ -11,19 +10,13 @@ import {
   FormControlLabel,
   Grid,
 } from '@mui/material';
-import {
-  Customer,
-  Document,
-  Order,
-} from '@utils/api/generated/GENERATED_Client';
+import { Customer, Order } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { getOrderLabel } from '@utils/order';
-import React, { ChangeEvent, FC, useCallback, useContext } from 'react';
+import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const DocumentGeneral: FC = () => {
-  const { selected, updateSelected, customers, orders } = useContext(
-    DocumentContext
-  ) as DocumentContextType;
+  const { selected, updateSelected, customers, orders } = useDocumentContext();
 
   const isCustomer = useCallback(
     (obj?: object | null) => customers.findIndex((x) => x === obj) !== -1,
@@ -31,22 +24,21 @@ const DocumentGeneral: FC = () => {
   );
 
   const onChangeTemplate = useCallback(
-    (_: unknown, checked: boolean) =>
-      updateSelected(Document.fromJS({ template: checked })),
+    (_: unknown, checked: boolean) => updateSelected({ template: checked }),
     [updateSelected]
   );
   const onChangeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
-      updateSelected(Document.fromJS({ name: e.target.value })),
+      updateSelected({ name: e.target.value }),
     [updateSelected]
   );
   const onChangeReference = useCallback(
     (_: unknown, value: Customer | Order | null) => {
       if (isCustomer(value)) {
-        updateSelected(Document.fromJS({ customer: value, order: null }));
+        updateSelected({ customer: value ?? undefined, order: undefined });
         return;
       }
-      updateSelected(Document.fromJS({ order: value, customer: null }));
+      updateSelected({ order: value ?? undefined, customer: undefined });
     },
     [isCustomer, updateSelected]
   );
@@ -54,9 +46,7 @@ const DocumentGeneral: FC = () => {
     (e: ChangeEvent<HTMLInputElement>) => {
       const regex = /^[0-9\b]+$/;
       if (e.target.value === '' || regex.test(e.target.value)) {
-        updateSelected(
-          Document.fromJS({ incrementalId: parseInt(e.target.value) })
-        );
+        updateSelected({ incrementalId: parseInt(e.target.value) });
       }
     },
     [updateSelected]

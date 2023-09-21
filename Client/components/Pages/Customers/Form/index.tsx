@@ -1,18 +1,15 @@
 import DocumentFormSection from '@components/Form/DocumentFormSection';
-import { CustomerContext } from '@context/CustomerContext';
-import { CustomerContextType } from '@customTypes/customer';
+import { useCustomerContext } from '@context/CustomerContext';
 import { Grid } from '@mui/material';
-import { Document } from '@utils/api/generated/GENERATED_Client';
-import React, { FC, useCallback, useContext, useMemo } from 'react';
+import { Document } from '@utils/api/generated/Api';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import CustomerAdress from './CustomerAdress';
 import CustomerBasedata from './CustomerBasedata';
 import CustomerGeneral from './CustomerGeneral';
 
 const CustomerForm: FC = () => {
-  const { selected, updateSelected, templates } = useContext(
-    CustomerContext
-  ) as CustomerContextType;
+  const { selected, updateSelected, templates } = useCustomerContext();
 
   const documents = useMemo(
     () =>
