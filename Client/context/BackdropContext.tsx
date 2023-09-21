@@ -29,6 +29,7 @@ const BackdropProvider: FC<BackdropContextProps> = ({ children }) => {
   const [showBackdrop, setShowBackdrop] = useState(false);
 
   useEffect(() => {
+    /*TODO find a fix
     router.events.on(
       'routeChangeStart',
       (_, { shallow }) => !shallow && setShowBackdrop(true)
@@ -36,7 +37,7 @@ const BackdropProvider: FC<BackdropContextProps> = ({ children }) => {
     router.events.on(
       'routeChangeComplete',
       (_, { shallow }) => !shallow && setShowBackdrop(false)
-    );
+    );*/
   }, [router.events]);
 
   return (
