@@ -6,5 +6,4 @@ export type SecurityDataType = {
 
 export type ApiContextType = {
   Client: Client<SecurityDataType>;
-  setToken: (token: string) => void;
 };

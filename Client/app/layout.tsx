@@ -1,5 +1,3 @@
-'use client';
-
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -10,7 +8,7 @@ import MuiGlobalBackdrop from '@components/External/MuiGlobalBackdrop';
 import ProviderWrapper from '@components/Wrappers/ProviderWrapper';
 import React, { ReactNode, Suspense } from 'react';
 
-const MyApp = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <html>
       <head>
@@ -26,4 +24,4 @@ const MyApp = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default MyApp;
+export default Layout;

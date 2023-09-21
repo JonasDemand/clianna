@@ -1,9 +1,14 @@
-import NextApiClient from '@utils/api/NextApiClient';
-import NextAuth, { Session } from 'next-auth';
+import { Client } from '@utils/api/generated/Api';
+import { environment } from '@utils/config';
+import NextAuth, { AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const handler = NextAuth({
+const ApiClient = new Client({
+  baseUrl: environment.NEXT_PUBLIC_CLIANNA_API_URL,
+});
+
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -11,15 +16,13 @@ const handler = NextAuth({
         email: { label: 'E-mail', type: 'email' },
         password: { label: 'Passwort', type: 'password' },
       },
-      async authorize(credentials) {
+      authorize: async (credentials) => {
         try {
           if (!credentials?.email || !credentials?.password) return null;
-          console.log(credentials);
-          const { data, error } = await NextApiClient.user.authenticateCreate({
+          const { data, error } = await ApiClient.user.authenticateCreate({
             username: credentials.email,
             password: credentials.password,
           });
-          console.log(data);
           if (error || !data || !data.email || !data.id || !data.token) {
             return null;
           }
@@ -61,6 +64,8 @@ const handler = NextAuth({
   },
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

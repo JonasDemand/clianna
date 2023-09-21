@@ -1,11 +1,9 @@
-'use client';
-
 import Navbar from '@components/Layout/Navbar';
 import Userprofile from '@components/Layout/Userprofile';
 import { AppBar, Box, Container, Toolbar } from '@mui/material';
 import React, { ReactNode } from 'react';
 
-const MyApp = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <Box
       sx={{
@@ -27,4 +25,4 @@ const MyApp = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default MyApp;
+export default Layout;

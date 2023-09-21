@@ -1,15 +1,14 @@
 'use client';
 
-import { LOCALSTORAGE_JWT_KEY } from '@consts/api';
 import { ApiContextType, SecurityDataType } from '@customTypes/api';
 import { Client } from '@utils/api/generated/Api';
-import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import React, {
   createContext,
   FC,
   ReactNode,
-  useCallback,
   useContext,
+  useEffect,
   useMemo,
 } from 'react';
 
@@ -31,7 +30,7 @@ type ApiContextProps = {
   children: ReactNode;
 };
 const ApiProvider: FC<ApiContextProps> = ({ children }) => {
-  const router = useRouter();
+  const { data: session } = useSession();
 
   const client = useMemo(() => {
     const client = new Client<SecurityDataType>({
@@ -42,26 +41,16 @@ const ApiProvider: FC<ApiContextProps> = ({ children }) => {
             headers: { Authorization: `Bearer ${securityData.token}` },
           };
       },
-      customFetch: async (...params) => {
-        const res = await fetch(...params);
-        return res;
-      },
     });
     return client;
   }, []);
 
-  const setToken = useCallback(
-    (token?: string | null) => {
-      client.setSecurityData({ token });
-      token
-        ? localStorage.setItem(LOCALSTORAGE_JWT_KEY, token)
-        : localStorage.removeItem(LOCALSTORAGE_JWT_KEY);
-    },
-    [client]
-  );
+  useEffect(() => {
+    client.setSecurityData({ token: session?.user.token });
+  }, [client, session?.user.token]);
 
   return (
-    <ApiContext.Provider value={{ Client: client, setToken }}>
+    <ApiContext.Provider value={{ Client: client }}>
       {children}
     </ApiContext.Provider>
   );

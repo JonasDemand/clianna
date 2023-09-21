@@ -1,3 +1,5 @@
+'use client';
+
 import { Backdrop, BackdropProps, CircularProgress } from '@mui/material';
 import React, { FC } from 'react';
 
