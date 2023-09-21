@@ -44,19 +44,11 @@ const ApiProvider: FC<ApiContextProps> = ({ children }) => {
       },
       customFetch: async (...params) => {
         const res = await fetch(...params);
-        if (res.status === 401) {
-          localStorage.removeItem(LOCALSTORAGE_JWT_KEY);
-          router.replace('/login');
-        }
         return res;
       },
     });
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem(LOCALSTORAGE_JWT_KEY);
-      token ? client.setSecurityData({ token }) : router.replace('/login');
-    }
     return client;
-  }, [router]);
+  }, []);
 
   const setToken = useCallback(
     (token?: string | null) => {

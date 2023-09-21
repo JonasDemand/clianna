@@ -12,21 +12,26 @@ const handler = NextAuth({
         password: { label: 'Passwort', type: 'password' },
       },
       async authorize(credentials) {
-        if (typeof credentials === 'undefined') return null;
-        console.log(credentials);
-        const { data, error } = await NextApiClient.user.authenticateCreate({
-          username: credentials.email,
-          password: credentials.password,
-        });
-        console.log(data);
-        if (error || !data || !data.email || !data.id || !data.token) {
+        try {
+          if (!credentials?.email || !credentials?.password) return null;
+          console.log(credentials);
+          const { data, error } = await NextApiClient.user.authenticateCreate({
+            username: credentials.email,
+            password: credentials.password,
+          });
+          console.log(data);
+          if (error || !data || !data.email || !data.id || !data.token) {
+            return null;
+          }
+          return {
+            id: data.id,
+            email: data.email,
+            token: data.token,
+          };
+        } catch (e) {
+          console.error(e);
           return null;
         }
-        return {
-          id: data.id,
-          email: data.email,
-          token: data.token,
-        };
       },
     }),
   ],
@@ -54,10 +59,8 @@ const handler = NextAuth({
       return token;
     },
   },
-  //pages: { signIn: '/login' },
-  secret: process.env.SECRET,
+  pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
-  debug: true,
 });
 
 export { handler as GET, handler as POST };

@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {
@@ -30,7 +31,7 @@ const Userprofile: FC = () => {
         label: 'Logout',
         icon: <Logout />,
         onClick: () => {
-          //TODO signOut();
+          signOut();
         },
       },
     ],
