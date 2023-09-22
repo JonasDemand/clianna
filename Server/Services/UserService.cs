@@ -13,7 +13,7 @@ using Models.Misc;
 
 public class UserService : IUserService
 {
-    private const int keySize = 64;
+    private const int keySize = 128;
     private const int iterations = 350000;
     private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
