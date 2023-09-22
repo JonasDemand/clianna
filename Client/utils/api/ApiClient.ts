@@ -1,5 +1,6 @@
 import { SecurityDataType } from '@customTypes/api';
 import { environment } from '@utils/config';
+import { signOut } from 'next-auth/react';
 
 import { ApiConfig, Client } from './generated/Api';
 
@@ -14,6 +15,11 @@ export const getApiClient = (
         return {
           headers: { Authorization: `Bearer ${securityData.token}` },
         };
+    },
+    customFetch: async (...params) => {
+      const res = await fetch(...params);
+      if (res.status === 401) signOut();
+      return res;
     },
     ...config,
   });

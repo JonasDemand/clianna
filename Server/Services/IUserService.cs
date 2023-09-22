@@ -3,5 +3,5 @@ using Data.Models.Services;
 
 public interface IUserService
 {
-    public UserSession? Authenticate(string email, string password);
+    public Task<UserSession?> Authenticate(string email, string password);
 }

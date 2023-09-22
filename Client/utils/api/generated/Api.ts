@@ -10,10 +10,8 @@
  */
 
 export interface AuthenticateRequest {
-  /** @minLength 1 */
-  username: string;
-  /** @minLength 1 */
-  password: string;
+  username?: string | null;
+  password?: string | null;
 }
 
 export interface Customer {
@@ -31,8 +29,6 @@ export interface Customer {
   /** @format float */
   shoeSize?: number | null;
   disabled?: boolean | null;
-  /** @format int32 */
-  fibu?: number | null;
   comment?: string | null;
   salutation?: ECustomerSalutation;
   orders?: Order[] | null;

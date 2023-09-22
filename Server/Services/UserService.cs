@@ -6,10 +6,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Data.Database;
 using Data.Models.Entities;
 using Data.Models.Services;
 using Models.Misc;
+using Data.Database.Repositories;
 
 public class UserService : IUserService
 {
@@ -18,30 +18,29 @@ public class UserService : IUserService
     private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
     private readonly AppSettings _appSettings;
-    private readonly CliannaDbContext _dbContext;
+    private readonly IUserRepository _userRepository;
 
-    public UserService(IOptions<AppSettings> appSettings, CliannaDbContext dbContext)
+    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository)
     {
         _appSettings = appSettings.Value;
-        _dbContext = dbContext;
+        _userRepository = userRepository;
     }
 
 
-    public UserSession? Authenticate(string email, string password)
+    public async Task<UserSession?> Authenticate(string email, string password)
     {
-        var user = _dbContext.Users.SingleOrDefault(x => x.Email == email);
+        var user = await _userRepository.GetFirstOrDefault(x => x.Email == email);
 
         if (user is { Enabled: false }) return null;
 
         if (user == null)
         {
-            _dbContext.Users.Add(new User
+            await _userRepository.Add(new User
             {
                 Email = email,
                 Password = HashPasword(password, out var salt),
                 Salt = salt
             });
-            _dbContext.SaveChanges();
 
             return null;
         }

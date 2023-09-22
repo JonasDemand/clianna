@@ -17,7 +17,6 @@ namespace Api.Controllers
             _repository = repository;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<Response<List<T>>>> Get()
         {
@@ -42,6 +41,7 @@ namespace Api.Controllers
             {
                 return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
             }
+            entity.SetDefault(false);
             await _repository.Update(entity);
             return _responseFactory.Create(entity);
         }
@@ -49,6 +49,7 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Response<T>>> Post(T entity)
         {
+            entity.SetDefault(true);
             await _repository.Add(entity);
             return CreatedAtAction("Get", new { id = entity.Id }, _responseFactory.Create(entity));
         }
