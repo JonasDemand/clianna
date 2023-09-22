@@ -5,7 +5,6 @@ import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import { defaultVariableColumns } from '@consts/document';
-import { useApiContext } from '@context/ApiContext';
 import { EId } from '@customTypes/id';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -19,6 +18,7 @@ import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
+import { useApiContext } from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';

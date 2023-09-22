@@ -3,12 +3,12 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { useApiContext } from '@context/ApiContext';
 import { useDocumentContext } from '@context/DocumentContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
+import { useApiContext } from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';

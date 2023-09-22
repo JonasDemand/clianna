@@ -1,1 +1,0 @@
-export const LOCALSTORAGE_JWT_KEY = 'JWT_TOKEN';

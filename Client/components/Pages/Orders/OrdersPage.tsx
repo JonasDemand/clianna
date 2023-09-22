@@ -3,13 +3,13 @@
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
-import { useApiContext } from '@context/ApiContext';
 import { useBackdropContext } from '@context/BackdropContext';
 import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Order } from '@utils/api/generated/Api';
 import { getOrderLabel } from '@utils/order';
+import { useApiContext } from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
