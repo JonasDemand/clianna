@@ -1,23 +1,26 @@
 import CustomersPage from '@components/Pages/Customers/CustomersPage';
 import CustomerProvider from '@context/CustomerContext';
-import { getApiClient } from '@utils/api/ApiClient';
-import { authOptions } from 'app/api/auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth';
+import { Customer, Document } from '@utils/api/generated/Api';
+import useApiClientServer from 'hooks/useApiClientServer';
 import React from 'react';
 
-const ApiClient = getApiClient();
-
 const Customers = async () => {
-  const session = await getServerSession(authOptions);
+  const ApiClient = await useApiClientServer();
 
-  ApiClient.setSecurityData({ token: session?.user.token });
+  const responses = await Promise.all([
+    ApiClient.customer.customerList(),
+    ApiClient.document.documentList(),
+  ]);
 
-  const { data: customers } = await ApiClient.customer.customerList();
-  const { data: templates } = await ApiClient.document.documentList();
+  if (responses.some((res) => res.error || !res.data))
+    throw new Error('Failed to fetch');
+
+  const [customers, templates] = responses.map((res) => res.data);
+
   return (
     <CustomerProvider
-      initialCustomers={customers ?? []}
-      initialTemplates={templates ?? []}
+      initialCustomers={customers as Customer[]}
+      initialTemplates={templates as Document[]}
     >
       <CustomersPage />
     </CustomerProvider>

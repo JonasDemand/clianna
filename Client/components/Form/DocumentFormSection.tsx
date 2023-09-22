@@ -18,7 +18,7 @@ import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
-import { useApiContext } from 'hooks/useApiClient';
+import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
@@ -39,7 +39,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   reference,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { Client } = useApiContext();
+  const ApiClient = useApiClient();
 
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(
     null
@@ -81,7 +81,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
 
   const onConfirmDeleteDialog = useCallback(async () => {
     if (!documentToDelete || !documentToDelete.id) return;
-    const { error } = await Client.document.documentDelete(
+    const { error } = await ApiClient.document.documentDelete(
       documentToDelete.id!
     );
     if (error) {
@@ -96,7 +96,13 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     enqueueSnackbar('Erfolgreich Dokument gelöscht', {
       variant: 'success',
     });
-  }, [Client.document, documentToDelete, documents, enqueueSnackbar, onUpdate]);
+  }, [
+    ApiClient.document,
+    documentToDelete,
+    documents,
+    enqueueSnackbar,
+    onUpdate,
+  ]);
   const onConfirmSelectedDialog = useCallback(async () => {
     if (!selected || !selected.id) return;
     if (

@@ -8,7 +8,7 @@ import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
-import { useApiContext } from 'hooks/useApiClient';
+import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
@@ -28,7 +28,7 @@ const DocumentsPage: FC = () => {
     filteredDocuments,
     setDocuments,
   } = useDocumentContext();
-  const { Client } = useApiContext();
+  const ApiClient = useApiClient();
 
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(
     null
@@ -91,7 +91,9 @@ const DocumentsPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!documentToDelete || !documentToDelete.id) return;
-    const { error } = await Client.document.documentDelete(documentToDelete.id);
+    const { error } = await ApiClient.document.documentDelete(
+      documentToDelete.id
+    );
     if (error) {
       enqueueSnackbar('Löschen von Dokument fehlgeschlagen', {
         variant: 'error',
@@ -104,7 +106,7 @@ const DocumentsPage: FC = () => {
       documents.filter((document) => document.id !== documentToDelete.id)
     );
   }, [
-    Client.document,
+    ApiClient.document,
     documentToDelete,
     documents,
     enqueueSnackbar,

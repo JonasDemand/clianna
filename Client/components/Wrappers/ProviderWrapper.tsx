@@ -4,7 +4,6 @@ import BackdropProvider from '@context/BackdropContext';
 import { ThemeProvider } from '@emotion/react';
 import { Slide } from '@mui/material';
 import theme from '@utils/theme';
-import ApiProvider from 'hooks/useApiClient';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import { SnackbarProvider } from 'notistack';
@@ -27,9 +26,7 @@ const ProviderWrapper: FC<ProviderWrapperProps> = ({ session, children }) => {
           }}
           TransitionComponent={Slide}
         >
-          <BackdropProvider>
-            <ApiProvider>{children}</ApiProvider>
-          </BackdropProvider>
+          <BackdropProvider>{children}</BackdropProvider>
         </SnackbarProvider>
       </SessionProvider>
     </ThemeProvider>

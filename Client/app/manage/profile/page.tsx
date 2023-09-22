@@ -1,6 +1,5 @@
 import ProfilePage from '@components/Pages/Profile/ProfilePage';
-import { NextPage } from 'next';
 import React from 'react';
 
-const Profile: NextPage = () => <ProfilePage />;
+const Profile = () => <ProfilePage />;
 export default Profile;

@@ -7,7 +7,7 @@ import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Customer } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
-import { useApiContext } from 'hooks/useApiClient';
+import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
@@ -27,7 +27,7 @@ const CustomersPage: FC = () => {
     activeColumns,
     searchText,
   } = useCustomerContext();
-  const { Client } = useApiContext();
+  const ApiClient = useApiClient();
 
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
     null
@@ -51,7 +51,9 @@ const CustomersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
-    const { error } = await Client.customer.customerDelete(customerToDelete.id);
+    const { error } = await ApiClient.customer.customerDelete(
+      customerToDelete.id
+    );
     if (error) {
       enqueueSnackbar('Löschen von Kunde fehlgeschlagen', {
         variant: 'error',
@@ -64,7 +66,7 @@ const CustomersPage: FC = () => {
       customers.filter((customer) => customer.id !== customerToDelete.id)
     );
   }, [
-    Client.customer,
+    ApiClient.customer,
     customerToDelete?.id,
     customers,
     enqueueSnackbar,
@@ -87,7 +89,7 @@ const CustomersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newCustomers = [...customers];
     if (create) {
-      const { error, data } = await Client.customer.customerCreate(selected);
+      const { error, data } = await ApiClient.customer.customerCreate(selected);
       if (error || !data) {
         enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
           variant: 'error',
@@ -96,7 +98,7 @@ const CustomersPage: FC = () => {
       }
       newCustomers.push(data);
     } else {
-      const { error, data } = await Client.customer.customerUpdate(
+      const { error, data } = await ApiClient.customer.customerUpdate(
         selected.id!,
         selected
       );
@@ -115,7 +117,7 @@ const CustomersPage: FC = () => {
     setSelected(null);
     enqueueSnackbar('Erfolgreich Kunde erstellt', { variant: 'success' });
   }, [
-    Client.customer,
+    ApiClient.customer,
     customers,
     enqueueSnackbar,
     selected,

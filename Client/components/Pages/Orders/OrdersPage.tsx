@@ -9,7 +9,7 @@ import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Order } from '@utils/api/generated/Api';
 import { getOrderLabel } from '@utils/order';
-import { useApiContext } from 'hooks/useApiClient';
+import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
@@ -30,7 +30,7 @@ const OrdersPage: FC = () => {
     setOrders,
     searchText,
   } = useOrderContext();
-  const { Client } = useApiContext();
+  const ApiClient = useApiClient();
 
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
 
@@ -63,7 +63,7 @@ const OrdersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newOrders = [...orders];
     if (create) {
-      const { error, data } = await Client.order.orderCreate(selected);
+      const { error, data } = await ApiClient.order.orderCreate(selected);
       if (error || !data) {
         enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
           variant: 'error',
@@ -72,7 +72,7 @@ const OrdersPage: FC = () => {
       }
       newOrders.push(data);
     } else {
-      const { error, data } = await Client.order.orderUpdate(
+      const { error, data } = await ApiClient.order.orderUpdate(
         selected.id!,
         selected
       );
@@ -88,7 +88,14 @@ const OrdersPage: FC = () => {
     setOrders(newOrders);
     setSelected(null);
     enqueueSnackbar('Erfolgreich Auftrag aktualisiert', { variant: 'success' });
-  }, [Client.order, enqueueSnackbar, orders, selected, setOrders, setSelected]);
+  }, [
+    ApiClient.order,
+    enqueueSnackbar,
+    orders,
+    selected,
+    setOrders,
+    setSelected,
+  ]);
 
   const onCopyRow = useCallback(async (order: Order) => {
     /*TODO
@@ -121,7 +128,7 @@ const OrdersPage: FC = () => {
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;
-    const { error } = await Client.order.orderDelete(orderToDelete.id);
+    const { error } = await ApiClient.order.orderDelete(orderToDelete.id);
     if (error) {
       enqueueSnackbar('Löschen von Auftrag fehlgeschlagen', {
         variant: 'error',
@@ -131,7 +138,7 @@ const OrdersPage: FC = () => {
     enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     setOrderToDelete(null);
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
-  }, [Client.order, enqueueSnackbar, orderToDelete?.id, orders, setOrders]);
+  }, [ApiClient.order, enqueueSnackbar, orderToDelete?.id, orders, setOrders]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Order }) => setSelected(row),

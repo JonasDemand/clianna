@@ -1,12 +1,11 @@
-'use client';
-
 import { SecurityDataType } from '@customTypes/api';
 import { getApiClient } from '@utils/api/ApiClient';
 import { ApiConfig } from '@utils/api/generated/Api';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
 
-export const useApiClient = (
+//TODO use singleton
+const useApiClient = (
   config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
 ) => {
   const { data: session } = useSession();
