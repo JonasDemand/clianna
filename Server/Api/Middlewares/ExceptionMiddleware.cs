@@ -26,9 +26,9 @@ namespace Api.Middlewares
             {
                 await _next(context);
             }
-            catch(Exception e)
+            catch(Exception exception)
             {
-                _logger.LogError("Exception in Controller Method: ", e);
+                _logger.LogError(exception, exception.Message);
 
                 var response = context.Response;
                 response.ContentType = "application/json";
