@@ -51,15 +51,20 @@ const DocumentsPage: FC = () => {
       return;
     }
 
-    /*TODO
+    /*TODO Add copy
     const res = selected.id.includes(EId.Copy)
       ? await Client.Document.Copy(getCopyId(selected.id), selected)
       : selected.id === EId.Create
       ? await Client.Document.Create(selected)
-      : await Client.Document.Update(selected.id, selected);
+      : await Client.Document.Update(selected.id, selected);*/
 
-    const { error, response } = res;
-    if (error || !response) {
+    const res =
+      selected.id === EId.Create
+        ? await ApiClient.document.documentCreate(selected)
+        : await ApiClient.document.documentUpdate(selected.id, selected);
+
+    const { error, data } = res;
+    if (error || !data) {
       enqueueSnackbar('Erstellen von Dokument fehlgeschlagen', {
         variant: 'error',
       });
@@ -67,17 +72,22 @@ const DocumentsPage: FC = () => {
     }
 
     let newDocuments = [...documents];
-    const index = newDocuments.findIndex((x) => x.id === response.id);
-    index === -1
-      ? newDocuments.push(response)
-      : (newDocuments[index] = response);
+    const index = newDocuments.findIndex((x) => x.id === data.id);
+    index === -1 ? newDocuments.push(data) : (newDocuments[index] = data);
     setDocuments(newDocuments);
-    setSelected(null);*/
+    setSelected(null);
 
     enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
       variant: 'success',
     });
-  }, [documents, enqueueSnackbar, selected]);
+  }, [
+    ApiClient.document,
+    documents,
+    enqueueSnackbar,
+    selected,
+    setDocuments,
+    setSelected,
+  ]);
 
   const onCopyRow = useCallback(
     async (document: Document) =>

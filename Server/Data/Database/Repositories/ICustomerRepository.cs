@@ -1,9 +1,7 @@
 ﻿using Data.Models.Entities;
 
-namespace Data.Database.Repositories
-{
-	public interface ICustomerRepository : IGenericRepository<Customer>
-	{
-	}
-}
+namespace Data.Database.Repositories;
 
+public interface ICustomerRepository : IGenericRepository<Customer>
+{
+}

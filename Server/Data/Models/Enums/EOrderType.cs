@@ -1,14 +1,13 @@
-﻿namespace Data.Models.Enums
+﻿namespace Data.Models.Enums;
+
+public enum EOrderType
 {
-    public enum EOrderType
-    {
-        Einlagen,
-        Einlagenarbeiten,
-        Abrolloptimierung,
-        Schuharbeiten,
-        Massschuhleisten,
-        Massschuhe,
-        Schuhbestellung,
-        Miscellaneous
-    }
+    Einlagen,
+    Einlagenarbeiten,
+    Abrolloptimierung,
+    Schuharbeiten,
+    Massschuhleisten,
+    Massschuhe,
+    Schuhbestellung,
+    Miscellaneous
 }

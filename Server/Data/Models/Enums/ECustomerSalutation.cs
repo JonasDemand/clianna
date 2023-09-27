@@ -1,10 +1,9 @@
-﻿namespace Data.Models.Enums
+﻿namespace Data.Models.Enums;
+
+public enum ECustomerSalutation
 {
-	public enum ECustomerSalutation
-    {
-        Mr,
-        Mrs,
-        Diverse,
-        Company
-    }
+    Mr,
+    Mrs,
+    Diverse,
+    Company
 }

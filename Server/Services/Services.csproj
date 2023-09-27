@@ -1,15 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Data\Data.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0"/>
+        <PackageReference Include="Google.Apis.Docs.v1" Version="1.62.0.2979"/>
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.62.0.3155"/>
+        <PackageReference Include="Google.Apis.Auth" Version="1.62.1"/>
+    </ItemGroup>
 </Project>

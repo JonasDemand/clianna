@@ -1,28 +1,29 @@
-﻿namespace Services;
-
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Data.Models.Entities;
-using Data.Models.Services;
-using Models.Misc;
-using Data.Database.Repositories;
-using Data.Models.Messages;
 using AutoMapper;
+using Data.Database.Repositories;
+using Data.Models.Entities;
+using Data.Models.Messages;
+using Data.Models.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Models.Misc;
+
+namespace Services;
 
 public class UserService : BaseEntityService<User, UpsertUser>, IUserService
 {
     private const int keySize = 128;
     private const int iterations = 350000;
-    private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
     private readonly AppSettings _appSettings;
     private readonly IUserRepository _userRepository;
+    private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
-    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper) : base(userRepository, mapper)
+    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper) : base(
+        userRepository, mapper)
     {
         _appSettings = appSettings.Value;
         _userRepository = userRepository;
@@ -68,9 +69,11 @@ public class UserService : BaseEntityService<User, UpsertUser>, IUserService
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("email", user.Email.ToString()) }),
+            Subject = new ClaimsIdentity(new[]
+                { new Claim("id", user.Id), new Claim("email", user.Email) }),
             Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
@@ -91,7 +94,8 @@ public class UserService : BaseEntityService<User, UpsertUser>, IUserService
 
     private bool VerifyPassword(string password, string hash, string salt)
     {
-        var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), iterations, hashAlgorithm, keySize);
+        var hashToCompare =
+            Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), iterations, hashAlgorithm, keySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
 }

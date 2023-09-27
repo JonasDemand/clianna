@@ -2,14 +2,37 @@
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Microsoft.Extensions.Options;
+using Models.Misc;
+using File = Google.Apis.Drive.v3.Data.File;
 
-namespace Services
+namespace Services;
+
+public class DocumentService : BaseEntityService<Document, UpsertDocument>, IDocumentService
 {
-    public class OrderService : BaseEntityService<Order, UpsertOrder>, IOrderService
+    private readonly AppSettings _appSettings;
+    private readonly IGoogleService _googleService;
+
+    public DocumentService(IDocumentRepository documentRepository, IMapper mapper, IGoogleService googleService,
+        IOptions<AppSettings> appSettings) :
+        base(documentRepository, mapper)
     {
-        public OrderService(IOrderRepository orderRepository, IMapper mapper) : base(orderRepository, mapper)
+        _googleService = googleService;
+        _appSettings = appSettings.Value;
+    }
+
+    public new async Task<Document> Create(UpsertDocument document)
+    {
+        var documentEntry = _mapper.Map<Document>(document);
+
+        var googleResponse = await _googleService.Drive.Files.Create(new File
         {
-        }
+            Name = documentEntry.Id,
+            MimeType = "application/vnd.google-apps.document",
+            Parents = new[] { _appSettings.GoogleOptions.RootFolderId }
+        }).ExecuteAsync();
+        documentEntry.GoogleId = googleResponse.Id;
+
+        return await _repository.Add(documentEntry);
     }
 }
-

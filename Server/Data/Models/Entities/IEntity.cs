@@ -1,7 +1,6 @@
-﻿namespace Data.Models.Entities
+﻿namespace Data.Models.Entities;
+
+public interface IEntity
 {
-    public interface IEntity
-    {
-        public string Id { get; set; }
-    }
+    public string Id { get; set; }
 }

@@ -1,13 +1,13 @@
-﻿using Data.Database;
-using Models.Misc;
-using Microsoft.EntityFrameworkCore;
-using Services;
+﻿using System.Text.Json.Serialization;
 using Api.Middlewares;
-using Microsoft.OpenApi.Models;
+using Data.Database;
 using Data.Database.Repositories;
-using System.Text.Json.Serialization;
-using Data.Models.Messages;
 using Data.Models.Entities;
+using Data.Models.Messages;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Models.Misc;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +30,8 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
 builder.Services.AddScoped<IResponseFactory, ResponseFactory>();
+builder.Services.AddScoped<IGoogleService, GoogleService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -38,13 +40,11 @@ builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 builder.Services.AddControllers();
 builder.Services.AddMvc()
-    .AddJsonOptions(opts =>
-    {
-        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+    .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c => {
+builder.Services.AddSwaggerGen(c =>
+{
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
@@ -53,14 +53,14 @@ builder.Services.AddSwaggerGen(c => {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
-        "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+            "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -72,8 +72,7 @@ builder.Services.AddSwaggerGen(c => {
                 },
                 Scheme = "oauth2",
                 Name = "Bearer",
-                In = ParameterLocation.Header,
-
+                In = ParameterLocation.Header
             },
             new List<string>()
         }
@@ -105,4 +104,3 @@ app.UseCors(x => x
 app.MapControllers();
 
 app.Run();
-

@@ -3,14 +3,13 @@ using Data.Models.Entities;
 using Data.Models.Messages;
 using Services;
 
-namespace Api.Controllers
+namespace Api.Controllers;
+
+[Authorize]
+public class CustomerController : EntityBaseController<Customer, UpsertCustomer>
 {
-    [Authorize]
-    public class CustomerController : EntityBaseController<Customer, UpsertCustomer>
+    public CustomerController(IResponseFactory responseFactory, ICustomerService service) : base(responseFactory,
+        service)
     {
-        public CustomerController(IResponseFactory responseFactory, ICustomerService service) : base(responseFactory, service)
-        {
-        }
     }
 }
-

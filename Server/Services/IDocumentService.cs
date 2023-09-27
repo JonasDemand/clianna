@@ -1,9 +1,8 @@
 ﻿using Data.Models.Entities;
 using Data.Models.Messages;
 
-namespace Services
+namespace Services;
+
+public interface IDocumentService : IBaseEntityService<Document, UpsertDocument>
 {
-    public interface IDocumentService : IBaseEntityService<Document, UpsertDocument>
-    {
-    }
 }

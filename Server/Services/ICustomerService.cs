@@ -1,9 +1,8 @@
 ﻿using Data.Models.Entities;
 using Data.Models.Messages;
 
-namespace Services
+namespace Services;
+
+public interface ICustomerService : IBaseEntityService<Customer, UpsertCustomer>
 {
-	public interface ICustomerService : IBaseEntityService<Customer, UpsertCustomer>
-	{
-	}
 }

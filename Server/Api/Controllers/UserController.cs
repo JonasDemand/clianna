@@ -1,9 +1,9 @@
-﻿using Api.Attributes;
+﻿using System.Net;
+using Api.Attributes;
 using Data.Models.Messages;
+using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-using Data.Models.Services;
-using System.Net;
 
 namespace Api.Controllers;
 
@@ -18,10 +18,10 @@ public class UserController : BaseController
 
 
     [HttpPost("Authenticate")]
-    public ActionResult<Response<UserSession>> Authenticate(AuthenticateRequest request)
+    public async Task<ActionResult<Response<UserSession>>> Authenticate(AuthenticateRequest request)
     {
-        var session = _userService.Authenticate(request.Username, request.Password);
-        
+        var session = await _userService.Authenticate(request.Username, request.Password);
+
         if (session == null)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
 
@@ -35,4 +35,3 @@ public class UserController : BaseController
         throw new NotImplementedException();
     }
 }
-

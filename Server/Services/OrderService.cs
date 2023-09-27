@@ -3,13 +3,11 @@ using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
 
-namespace Services
+namespace Services;
+
+public class OrderService : BaseEntityService<Order, UpsertOrder>, IOrderService
 {
-    public class DocumentService : BaseEntityService<Document, UpsertDocument>, IDocumentService
+    public OrderService(IOrderRepository orderRepository, IMapper mapper) : base(orderRepository, mapper)
     {
-        public DocumentService(IDocumentRepository documentRepository, IMapper mapper) : base(documentRepository, mapper)
-        {
-        }
     }
 }
-
