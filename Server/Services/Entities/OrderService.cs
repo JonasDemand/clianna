@@ -3,7 +3,7 @@ using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
 
-namespace Services;
+namespace Services.Entities;
 
 public class OrderService : BaseEntityService<Order, UpsertOrder>, IOrderService
 {

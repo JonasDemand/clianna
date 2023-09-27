@@ -1,7 +1,7 @@
 ﻿using Data.Models.Entities;
+using Data.Models.Misc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Models.Misc;
 
 namespace Data.Database;
 

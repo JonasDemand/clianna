@@ -2,9 +2,10 @@
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Microsoft.AspNetCore.Mvc;
-using Services;
+using Services.Api;
+using Services.Entities;
 
-namespace Api.Controllers;
+namespace Api.Controllers.Base;
 
 public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     where TEntity : class, IEntity

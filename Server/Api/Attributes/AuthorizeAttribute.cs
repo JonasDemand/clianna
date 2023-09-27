@@ -3,6 +3,7 @@ using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Services;
+using Services.Api;
 
 namespace Api.Attributes;
 

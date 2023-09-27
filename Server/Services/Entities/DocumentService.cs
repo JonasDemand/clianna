@@ -2,11 +2,12 @@
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Data.Models.Misc;
 using Microsoft.Extensions.Options;
-using Models.Misc;
+using Services.ExternalApis;
 using File = Google.Apis.Drive.v3.Data.File;
 
-namespace Services;
+namespace Services.Entities;
 
 public class DocumentService : BaseEntityService<Document, UpsertDocument>, IDocumentService
 {

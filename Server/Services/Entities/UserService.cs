@@ -6,12 +6,12 @@ using AutoMapper;
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Data.Models.Misc;
 using Data.Models.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Models.Misc;
 
-namespace Services;
+namespace Services.Entities;
 
 public class UserService : BaseEntityService<User, UpsertUser>, IUserService
 {

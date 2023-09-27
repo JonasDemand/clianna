@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using Services;
+using Services.Api;
 
 namespace Api.Middlewares;
 

@@ -2,7 +2,7 @@
 using Data.Models.Messages;
 using Data.Models.Services;
 
-namespace Services;
+namespace Services.Entities;
 
 public interface IUserService : IBaseEntityService<User, UpsertUser>
 {

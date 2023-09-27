@@ -2,7 +2,7 @@
 using Data.Database.Repositories;
 using Data.Models.Entities;
 
-namespace Services;
+namespace Services.Entities;
 
 public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, TUpsert>
     where TEntity : class, IEntity

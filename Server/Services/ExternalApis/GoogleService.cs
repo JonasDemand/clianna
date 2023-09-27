@@ -1,12 +1,12 @@
 ﻿using System.Text.Json;
+using Data.Models.Misc;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Docs.v1;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Microsoft.Extensions.Options;
-using Models.Misc;
 
-namespace Services;
+namespace Services.ExternalApis;
 
 public class GoogleService : IGoogleService
 {

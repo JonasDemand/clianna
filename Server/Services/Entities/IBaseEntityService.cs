@@ -1,6 +1,6 @@
 ﻿using Data.Models.Entities;
 
-namespace Services;
+namespace Services.Entities;
 
 public interface IBaseEntityService<TEntity, TUpsert>
     where TEntity : class, IEntity

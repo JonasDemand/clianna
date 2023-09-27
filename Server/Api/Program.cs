@@ -4,10 +4,13 @@ using Data.Database;
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Data.Models.Misc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Models.Misc;
 using Services;
+using Services.Api;
+using Services.Entities;
+using Services.ExternalApis;
 
 var builder = WebApplication.CreateBuilder(args);
 

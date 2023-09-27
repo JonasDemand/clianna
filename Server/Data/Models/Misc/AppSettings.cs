@@ -1,4 +1,4 @@
-﻿namespace Models.Misc;
+﻿namespace Data.Models.Misc;
 
 public class GoogleOptions
 {

@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Data.Models.Messages;
 
-namespace Services;
+namespace Services.Api;
 
 public interface IResponseFactory
 {

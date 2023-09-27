@@ -1,10 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Data.Models.Misc;
 using Data.Models.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Models.Misc;
 using Services;
+using Services.Entities;
 
 namespace Api.Middlewares;
 
