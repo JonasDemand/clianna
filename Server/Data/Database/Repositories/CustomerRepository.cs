@@ -1,10 +1,11 @@
-﻿using Data.Models.Entities;
+﻿using AutoMapper;
+using Data.Models.Entities;
 
 namespace Data.Database.Repositories
 {
     public class CustomerRepository : GenericDbRepository<Customer>, ICustomerRepository
     {
-        public CustomerRepository(CliannaDbContext dbContext) : base(dbContext)
+        public CustomerRepository(CliannaDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
 
         }

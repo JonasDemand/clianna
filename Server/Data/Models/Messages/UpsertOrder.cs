@@ -1,14 +1,9 @@
 ﻿using Data.Models.Enums;
-using Microsoft.EntityFrameworkCore;
-using Visus.Cuid;
 
-namespace Data.Models.Entities
+namespace Data.Models.Messages
 {
-    [EntityTypeConfiguration(typeof(OrderEntityTypeConfiguration))]
-    public class Order : IEntity
+	public class UpsertOrder
     {
-        public string Id { get; set; } = new Cuid2(10).ToString();
-        public DateTime CreationDate { get; set; } = DateTime.Now;
         public bool Pending { get; set; }
         public EOrderShippingType? ShippingType { get; set; }
         public string? Comment { get; set; }
@@ -22,12 +17,6 @@ namespace Data.Models.Entities
         public string? Dealer { get; set; }
         public float? Size { get; set; }
         public string? Name { get; set; }
-
-        //FK
-        public string? CustomerId { get; set; }
-
-        //Navigation
-        public IEnumerable<Document> Documents { get; set; } = new List<Document>();
-        public Customer? Customer { get; set; }
     }
 }
+

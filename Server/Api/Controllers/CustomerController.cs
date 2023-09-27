@@ -1,16 +1,14 @@
 ﻿using Api.Attributes;
-using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
-using Microsoft.AspNetCore.Mvc;
 using Services;
 
 namespace Api.Controllers
 {
     [Authorize]
-    public class CustomerController : DbBaseController<Customer>
+    public class CustomerController : EntityBaseController<Customer, UpsertCustomer>
     {
-        public CustomerController(IResponseFactory responseFactory, ICustomerRepository repository) : base(responseFactory, repository)
+        public CustomerController(IResponseFactory responseFactory, ICustomerService service) : base(responseFactory, service)
         {
         }
     }

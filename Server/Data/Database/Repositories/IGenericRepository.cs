@@ -11,9 +11,13 @@ namespace Data.Database.Repositories
         Task<List<T>> Get(Expression<Func<T, bool>> predicate);
         Task<T> GetFirstOrDefault(Expression<Func<T, bool>> predicate);
         Task<T> Add(T entity, bool save = true);
+        Task<List<T>> Add(IEnumerable<T> entities, bool save = true);
         Task<T> Update(T entity, bool save = true);
-        Task<T> Delete(string id, bool save = true);
-        Task<T> Delete(Expression<Func<T, bool>> predicate, bool save = true);
+        Task<List<T>> Update(IEnumerable<T> entities, bool save = true);
+        Task Delete(string id, bool save = true);
+        Task Delete(Expression<Func<T, bool>> predicate, bool save = true);
+        Task Delete(T entity, bool save = true);
+        Task Delete(IEnumerable<T> entities, bool save = true);
         Task SaveChanges();
         IDbContextTransaction BeginTransaction();
     }

@@ -10,8 +10,10 @@ using Data.Models.Entities;
 using Data.Models.Services;
 using Models.Misc;
 using Data.Database.Repositories;
+using Data.Models.Messages;
+using AutoMapper;
 
-public class UserService : IUserService
+public class UserService : BaseEntityService<User, UpsertUser>, IUserService
 {
     private const int keySize = 128;
     private const int iterations = 350000;
@@ -20,7 +22,7 @@ public class UserService : IUserService
     private readonly AppSettings _appSettings;
     private readonly IUserRepository _userRepository;
 
-    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository)
+    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper) : base(userRepository, mapper)
     {
         _appSettings = appSettings.Value;
         _userRepository = userRepository;
@@ -30,13 +32,13 @@ public class UserService : IUserService
     public async Task<UserSession?> Authenticate(string email, string password)
     {
         var user = await _userRepository.GetFirstOrDefault(x => x.Email == email);
-
         if (user is { Enabled: false }) return null;
 
         if (user == null)
         {
             await _userRepository.Add(new User
             {
+                Enabled = false,
                 Email = email,
                 Password = HashPasword(password, out var salt),
                 Salt = salt

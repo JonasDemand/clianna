@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using AutoMapper;
 using Data.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,18 +10,28 @@ namespace Data.Database.Repositories
     public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : class, IEntity
     {
         protected readonly CliannaDbContext _dbContext;
+        protected readonly IMapper _mapper;
 
-        protected GenericDbRepository(CliannaDbContext dbContext)
+        protected GenericDbRepository(CliannaDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public async Task<T> Add(T entity, bool save = true)
         {
-            _dbContext.Set<T>().Add(entity);
+            await _dbContext.Set<T>().AddAsync(entity);
             if (save)
                 await _dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<T>> Add(IEnumerable<T> entities, bool save = true)
+        {
+            await _dbContext.Set<T>().AddRangeAsync(entities);
+            if (save)
+                await _dbContext.SaveChangesAsync();
+            return entities.ToList();
         }
 
         public IDbContextTransaction BeginTransaction()
@@ -28,34 +39,36 @@ namespace Data.Database.Repositories
             return _dbContext.Database.BeginTransaction();
         }
 
-        public async Task<T> Delete(string id, bool save = true)
+        public async Task Delete(string id, bool save = true)
         {
             var entity = await _dbContext.Set<T>().FindAsync(id);
-            if (entity == null)
-            {
-                return entity;
-            }
 
             _dbContext.Set<T>().Remove(entity);
             if (save)
                 await _dbContext.SaveChangesAsync();
-
-            return entity;
         }
 
-        public async Task<T> Delete(Expression<Func<T, bool>> predicate, bool save = true)
+        public async Task Delete(Expression<Func<T, bool>> predicate, bool save = true)
         {
-            var entity = await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
-            if (entity == null)
-            {
-                return entity;
-            }
+            var entities = await _dbContext.Set<T>().Where(predicate).ToListAsync();
 
+            _dbContext.Set<T>().RemoveRange(entities);
+            if (save)
+                await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task Delete(T entity, bool save = true)
+        {
             _dbContext.Set<T>().Remove(entity);
             if (save)
                 await _dbContext.SaveChangesAsync();
+        }
 
-            return entity;
+        public async Task Delete(IEnumerable<T> entities, bool save = true)
+        {
+            _dbContext.Set<T>().RemoveRange(entities);
+            if (save)
+                await _dbContext.SaveChangesAsync();
         }
 
         public async Task<T> Get(string id)
@@ -85,10 +98,18 @@ namespace Data.Database.Repositories
 
         public async Task<T> Update(T entity, bool save = true)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            _dbContext.Set<T>().Update(entity);
             if (save)
                 await _dbContext.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<T>> Update(IEnumerable<T> entities, bool save = true)
+        {
+            _dbContext.Set<T>().UpdateRange(entities);
+            if (save)
+                await _dbContext.SaveChangesAsync();
+            return entities.ToList();
         }
     }
 }

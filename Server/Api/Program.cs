@@ -6,6 +6,8 @@ using Api.Middlewares;
 using Microsoft.OpenApi.Models;
 using Data.Database.Repositories;
 using System.Text.Json.Serialization;
+using Data.Models.Messages;
+using Data.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,16 +15,26 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddDbContext<CliannaDbContext>();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.CreateMap<UpsertCustomer, Customer>();
+    cfg.CreateMap<UpsertDocument, Document>();
+    cfg.CreateMap<UpsertOrder, Order>();
+});
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-
-builder.Services.AddScoped<IResponseFactory, ResponseFactory>();
-builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+
+builder.Services.AddScoped<IResponseFactory, ResponseFactory>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddMvc()
