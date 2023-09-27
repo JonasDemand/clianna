@@ -17,6 +17,8 @@ public class GoogleService : IGoogleService
         {
             stream = new MemoryStream();
             JsonSerializer.Serialize(stream, appSettings.Value.GoogleOptions.ServiceAccountCredentials);
+
+            stream.Position = 0; //Somehow this is needed to read the stream afterwards
         }
         else
         {
