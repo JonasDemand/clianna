@@ -27,19 +27,18 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
-
-builder.Services.AddScoped<IResponseFactory, ResponseFactory>();
-builder.Services.AddScoped<IGoogleService, GoogleService>();
+builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
+builder.Services.AddSingleton<IGoogleService, GoogleService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddMvc()
