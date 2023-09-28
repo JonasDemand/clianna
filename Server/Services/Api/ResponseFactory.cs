@@ -5,6 +5,11 @@ namespace Services.Api;
 
 public class ResponseFactory : IResponseFactory
 {
+    public Response Create()
+    {
+        return new Response();
+    }
+
     public Response<T> Create<T>(T data)
     {
         return new Response<T>

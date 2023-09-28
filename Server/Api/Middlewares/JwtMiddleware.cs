@@ -4,7 +4,6 @@ using Data.Models.Misc;
 using Data.Models.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Services;
 using Services.Entities;
 
 namespace Api.Middlewares;
@@ -25,12 +24,12 @@ public class JwtMiddleware
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
         if (token != null)
-            AttachUserToContext(context, userService, token);
+            AttachUserToContext(context, token);
 
         await _next(context);
     }
 
-    private void AttachUserToContext(HttpContext context, IUserService userService, string token)
+    private void AttachUserToContext(HttpContext context, string token)
     {
         try
         {

@@ -22,7 +22,7 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     [HttpGet]
     public async Task<ActionResult<Response<List<TEntity>>>> Get()
     {
-        return _responseFactory.Create(await _service.GetAll());
+        return Ok(_responseFactory.Create(await _service.GetAll()));
     }
 
     [HttpGet("{id}")]
@@ -31,13 +31,13 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
         var entity = await _service.GetById(id);
         if (entity == null) return NotFound(_responseFactory.Create(HttpStatusCode.NotFound));
 
-        return _responseFactory.Create(entity);
+        return Ok(_responseFactory.Create(entity));
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<Response<TEntity>>> Put(string id, TUpsert entity)
     {
-        return _responseFactory.Create(await _service.Update(id, entity));
+        return Ok(_responseFactory.Create(await _service.Update(id, entity)));
     }
 
     [HttpPost]
@@ -51,6 +51,6 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     public async Task<ActionResult<Response>> Delete(string id)
     {
         await _service.Delete(id);
-        return _responseFactory.Create(HttpStatusCode.OK);
+        return Ok(_responseFactory.Create());
     }
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable */
 /* tslint:disable */
 /*
@@ -15,7 +16,6 @@ export interface AuthenticateRequest {
 }
 
 export interface Customer {
-  id?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   email?: string | null;
@@ -33,6 +33,7 @@ export interface Customer {
   salutation?: ECustomerSalutation;
   orders?: Order[] | null;
   documents?: Document[] | null;
+  id?: string | null;
 }
 
 export interface CustomerListResponse {
@@ -46,7 +47,6 @@ export interface CustomerResponse {
 }
 
 export interface Document {
-  id?: string | null;
   googleId?: string | null;
   name?: string | null;
   /** @format date-time */
@@ -58,6 +58,7 @@ export interface Document {
   customerId?: string | null;
   order?: Order;
   customer?: Customer;
+  id?: string | null;
 }
 
 export interface DocumentListResponse {
@@ -169,7 +170,6 @@ export enum HttpStatusCode {
 }
 
 export interface Order {
-  id?: string | null;
   /** @format date-time */
   creationDate?: Date;
   pending?: boolean;
@@ -191,6 +191,7 @@ export interface Order {
   customerId?: string | null;
   documents?: Document[] | null;
   customer?: Customer;
+  id?: string | null;
 }
 
 export interface OrderListResponse {
@@ -201,6 +202,61 @@ export interface OrderListResponse {
 export interface OrderResponse {
   data?: Order;
   error?: Error;
+}
+
+export interface Response {
+  data?: any;
+  error?: Error;
+}
+
+export interface UpdateProfileRequest {
+  email?: string | null;
+  password?: string | null;
+  oldPassword?: string | null;
+}
+
+export interface UpsertCustomerRequest {
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  street?: string | null;
+  streetNumber?: string | null;
+  city?: string | null;
+  postalCode?: string | null;
+  phone?: string | null;
+  mobile?: string | null;
+  whatsApp?: boolean | null;
+  /** @format float */
+  shoeSize?: number | null;
+  disabled?: boolean | null;
+  comment?: string | null;
+  salutation?: ECustomerSalutation;
+}
+
+export interface UpsertDocumentReqeust {
+  name?: string | null;
+  template?: boolean;
+  /** @format int32 */
+  incrementalId?: number | null;
+}
+
+export interface UpsertOrderRequest {
+  pending?: boolean;
+  shippingType?: EOrderShippingType;
+  comment?: string | null;
+  /** @format float */
+  price?: number | null;
+  taxes?: EOrderTax;
+  /** @format date-time */
+  dueDate?: Date | null;
+  type?: EOrderType;
+  brand?: string | null;
+  article?: string | null;
+  color?: string | null;
+  dealer?: string | null;
+  /** @format float */
+  size?: number | null;
+  name?: string | null;
 }
 
 export interface UserSession {
@@ -453,7 +509,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request POST:/Customer
      * @secure
      */
-    customerCreate: (data: Customer, params: RequestParams = {}) =>
+    customerCreate: (data: UpsertCustomerRequest, params: RequestParams = {}) =>
       this.request<CustomerResponse, any>({
         path: `/Customer`,
         method: "POST",
@@ -489,7 +545,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request PUT:/Customer/{id}
      * @secure
      */
-    customerUpdate: (id: string, data: Customer, params: RequestParams = {}) =>
+    customerUpdate: (id: string, data: UpsertCustomerRequest, params: RequestParams = {}) =>
       this.request<CustomerResponse, any>({
         path: `/Customer/${id}`,
         method: "PUT",
@@ -509,7 +565,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @secure
      */
     customerDelete: (id: string, params: RequestParams = {}) =>
-      this.request<CustomerResponse, any>({
+      this.request<Response, any>({
         path: `/Customer/${id}`,
         method: "DELETE",
         secure: true,
@@ -543,7 +599,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request POST:/Document
      * @secure
      */
-    documentCreate: (data: Document, params: RequestParams = {}) =>
+    documentCreate: (data: UpsertDocumentReqeust, params: RequestParams = {}) =>
       this.request<DocumentResponse, any>({
         path: `/Document`,
         method: "POST",
@@ -579,7 +635,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request PUT:/Document/{id}
      * @secure
      */
-    documentUpdate: (id: string, data: Document, params: RequestParams = {}) =>
+    documentUpdate: (id: string, data: UpsertDocumentReqeust, params: RequestParams = {}) =>
       this.request<DocumentResponse, any>({
         path: `/Document/${id}`,
         method: "PUT",
@@ -599,7 +655,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @secure
      */
     documentDelete: (id: string, params: RequestParams = {}) =>
-      this.request<DocumentResponse, any>({
+      this.request<Response, any>({
         path: `/Document/${id}`,
         method: "DELETE",
         secure: true,
@@ -633,7 +689,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request POST:/Order
      * @secure
      */
-    orderCreate: (data: Order, params: RequestParams = {}) =>
+    orderCreate: (data: UpsertOrderRequest, params: RequestParams = {}) =>
       this.request<OrderResponse, any>({
         path: `/Order`,
         method: "POST",
@@ -669,7 +725,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request PUT:/Order/{id}
      * @secure
      */
-    orderUpdate: (id: string, data: Order, params: RequestParams = {}) =>
+    orderUpdate: (id: string, data: UpsertOrderRequest, params: RequestParams = {}) =>
       this.request<OrderResponse, any>({
         path: `/Order/${id}`,
         method: "PUT",
@@ -689,7 +745,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @secure
      */
     orderDelete: (id: string, params: RequestParams = {}) =>
-      this.request<OrderResponse, any>({
+      this.request<Response, any>({
         path: `/Order/${id}`,
         method: "DELETE",
         secure: true,
@@ -725,11 +781,31 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request PUT:/User/Profile
      * @secure
      */
-    profileUpdate: (params: RequestParams = {}) =>
-      this.request<void, any>({
+    profileUpdate: (data: UpdateProfileRequest, params: RequestParams = {}) =>
+      this.request<Response, any>({
         path: `/User/Profile`,
         method: "PUT",
+        body: data,
         secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name SessionList
+     * @request GET:/User/Session
+     * @secure
+     */
+    sessionList: (params: RequestParams = {}) =>
+      this.request<UserSessionResponse, any>({
+        path: `/User/Session`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };

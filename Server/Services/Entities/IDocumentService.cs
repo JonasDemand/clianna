@@ -3,6 +3,6 @@ using Data.Models.Messages;
 
 namespace Services.Entities;
 
-public interface IDocumentService : IBaseEntityService<Document, UpsertDocument>
+public interface IDocumentService : IBaseEntityService<Document, UpsertDocumentReqeust>
 {
 }

@@ -4,7 +4,6 @@ using Api.Controllers.Base;
 using Data.Models.Messages;
 using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
-using Services;
 using Services.Api;
 using Services.Entities;
 
@@ -13,6 +12,7 @@ namespace Api.Controllers;
 public class UserController : BaseController
 {
     private readonly IUserService _userService;
+
 
     public UserController(IUserService userService, IResponseFactory responseFactory) : base(responseFactory)
     {
@@ -33,8 +33,34 @@ public class UserController : BaseController
 
     [Authorize]
     [HttpPut("Profile")]
-    public IActionResult Profile()
+    public async Task<ActionResult<Response>> Profile(UpdateProfileRequest request)
     {
-        throw new NotImplementedException();
+        if (HttpContext.Items["User"] is not UserSession userSession)
+            return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
+
+        if (!string.IsNullOrEmpty(request.Password))
+        {
+            var session = await _userService.Authenticate(userSession.Email, request.OldPassword);
+
+            if (session == null)
+                return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
+        }
+
+        var updatedUser = await _userService.UpdateProfile(userSession.Id, request);
+
+        userSession.Id = updatedUser.Id;
+        userSession.Email = updatedUser.Email;
+
+        return Ok(_responseFactory.Create());
+    }
+
+    [Authorize]
+    [HttpGet("Session")]
+    public async Task<ActionResult<Response<UserSession>>> Session()
+    {
+        if (HttpContext.Items["User"] is not UserSession userSession)
+            return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
+
+        return Ok(_responseFactory.Create(await _userService.GetSession(userSession.Id)));
     }
 }

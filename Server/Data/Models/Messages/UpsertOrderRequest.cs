@@ -2,7 +2,7 @@
 
 namespace Data.Models.Messages;
 
-public class UpsertOrder
+public class UpsertOrderRequest
 {
     public bool Pending { get; set; }
     public EOrderShippingType? ShippingType { get; set; }

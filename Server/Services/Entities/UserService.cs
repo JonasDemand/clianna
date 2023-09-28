@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Services.Entities;
 
-public class UserService : BaseEntityService<User, UpsertUser>, IUserService
+public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserService
 {
     private const int keySize = 128;
     private const int iterations = 350000;
@@ -50,6 +50,32 @@ public class UserService : BaseEntityService<User, UpsertUser>, IUserService
 
         if (!VerifyPassword(password, user.Password, user.Salt)) return null;
 
+        var token = GenerateJwtToken(user);
+
+        return new UserSession
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Token = token
+        };
+    }
+
+    public async Task<User> UpdateProfile(string id, UpsertUserRequest user)
+    {
+        var entry = await _repository.Get(id);
+        entry.Email = user.Email;
+        if (!string.IsNullOrEmpty(user.Password))
+        {
+            entry.Password = HashPasword(user.Password, out var salt);
+            entry.Salt = salt;
+        }
+
+        return await _repository.Update(entry);
+    }
+
+    public async Task<UserSession> GetSession(string id)
+    {
+        var user = await _userRepository.Get(id);
         var token = GenerateJwtToken(user);
 
         return new UserSession

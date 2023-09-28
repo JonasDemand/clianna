@@ -5,7 +5,7 @@ using Data.Models.Messages;
 
 namespace Services.Entities;
 
-public class OrderService : BaseEntityService<Order, UpsertOrder>, IOrderService
+public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrderService
 {
     public OrderService(IOrderRepository orderRepository, IMapper mapper) : base(orderRepository, mapper)
     {

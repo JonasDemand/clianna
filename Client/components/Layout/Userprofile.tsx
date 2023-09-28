@@ -24,7 +24,7 @@ const Userprofile: FC = () => {
         label: 'Profil',
         icon: <ManageAccounts />,
         onClick: () => {
-          router.replace('/profile');
+          router.replace('/manage/profile');
         },
       },
       {

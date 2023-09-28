@@ -2,7 +2,7 @@
 
 namespace Data.Models.Messages;
 
-public class UpsertCustomer
+public class UpsertCustomerRequest
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

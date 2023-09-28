@@ -5,6 +5,7 @@ namespace Services.Api;
 
 public interface IResponseFactory
 {
+    public Response Create();
     public Response<T> Create<T>(T data);
     public Response Create(Error error);
     public Response Create(HttpStatusCode statusCode);

@@ -11,7 +11,7 @@
     "test-ct-update": "playwright test -c playwright-ct.config.ts --update-snapshots",
     "test-ct-debug": "playwright test -c playwright-ct.config.ts --debug",
     "convert-config": "./convert-env-to-config.sh",
-    "create-api-client": "swagger-typescript-api -p http://localhost:4001/swagger/v1/swagger.json -o ./utils/api/generated -n Api.ts -t ./utils/api/templates --api-class-name Client --unwrap-response-data --disable-throw-on-error --custom-config ./utils/api/customConfig.js"
+    "create-api-client": "swagger-typescript-api -p http://localhost:4001/swagger/v1/swagger.json -o ./utils/api/generated/temp -n Api.ts -t ./utils/api/templates --api-class-name Client --unwrap-response-data --disable-throw-on-error --custom-config ./utils/api/customConfig.js && echo '// @ts-nocheck' | cat - ./utils/api/generated/temp/Api.ts > ./utils/api/generated/Api.ts && rm -rf ./utils/api/generated/temp"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",

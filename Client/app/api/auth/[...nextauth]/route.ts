@@ -1,12 +1,15 @@
-import { Client } from '@utils/api/generated/Api';
+import { getApiClient } from '@utils/api/ApiClient';
 import { environment } from '@utils/config';
+import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { AuthOptions, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const ApiClient = new Client({
+const ApiClient = getApiClient({
   baseUrl: environment.NEXT_PUBLIC_CLIANNA_API_URL,
 });
+
+var reqRefreshSession: boolean = false;
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -51,6 +54,18 @@ export const authOptions: AuthOptions = {
       };
     },
     jwt: async ({ token, user }): Promise<JWT> => {
+      if (reqRefreshSession) {
+        const { error, data } = await ApiClient.user.sessionList({
+          headers: { Authorization: `Bearer ${token?.token ?? user?.token}` },
+        });
+        if (error || !data || !data.id || !data.email || !data.token)
+          throw new Error('Failed to retrieve session');
+        user = {
+          id: data.id,
+          email: data.email,
+          token: data.token,
+        };
+      }
       if (user) {
         return {
           ...token,
@@ -66,6 +81,11 @@ export const authOptions: AuthOptions = {
   session: { strategy: 'jwt' },
 };
 
-const handler = NextAuth(authOptions);
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  reqRefreshSession = !!req.url?.endsWith('?refreshSession=true');
+  delete req.query?.refreshSession;
+
+  return NextAuth(req, res, authOptions);
+};
 
 export { handler as GET, handler as POST };

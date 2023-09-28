@@ -3,6 +3,6 @@ using Data.Models.Messages;
 
 namespace Services.Entities;
 
-public interface ICustomerService : IBaseEntityService<Customer, UpsertCustomer>
+public interface ICustomerService : IBaseEntityService<Customer, UpsertCustomerRequest>
 {
 }

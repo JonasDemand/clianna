@@ -6,11 +6,24 @@ import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
+import { HttpStatusCode } from '@utils/api/generated/Api';
+import { refreshSession } from '@utils/nextauth';
+import useApiClient from 'hooks/useApiClient';
+import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
-import React, { ChangeEvent, FC, useCallback, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 const LoginConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
+
+  const ApiClient = useApiClient();
 
   const [email, setEmail] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -21,10 +34,9 @@ const LoginConfiguration: FC = () => {
   const [oldPasswordError, setOldPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  /*TODO
   useEffect(() => {
     session?.user?.email && setEmail(session.user.email);
-  }, [session?.user?.email]);*/
+  }, [session?.user?.email]);
 
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -35,7 +47,6 @@ const LoginConfiguration: FC = () => {
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      /*TODO
       if (email === session?.user.email && !oldPassword) {
         enqueueSnackbar('Keine Daten zum Speichern vorhanden', {
           variant: 'info',
@@ -50,14 +61,14 @@ const LoginConfiguration: FC = () => {
       }
 
       setLoading(true);
-      const { error } = await Client.({
+      const { error } = await ApiClient.user.profileUpdate({
         email,
         oldPassword,
         password: newPassword,
       });
       if (error) {
         setLoading(false);
-        if (error.status === 403) {
+        if (error.statuscode === HttpStatusCode.BadRequest) {
           setOldPasswordError(true);
           enqueueSnackbar('Altes Passwort ist nicht korrekt', {
             variant: 'error',
@@ -73,9 +84,17 @@ const LoginConfiguration: FC = () => {
       setLoading(false);
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',
-      });*/
+      });
     },
-    [email, enqueueSnackbar, newPassword, oldPassword, repeatPassword]
+    [
+      ApiClient.user,
+      email,
+      enqueueSnackbar,
+      newPassword,
+      oldPassword,
+      repeatPassword,
+      session?.user.email,
+    ]
   );
 
   return (

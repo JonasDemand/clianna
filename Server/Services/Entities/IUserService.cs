@@ -4,7 +4,9 @@ using Data.Models.Services;
 
 namespace Services.Entities;
 
-public interface IUserService : IBaseEntityService<User, UpsertUser>
+public interface IUserService : IBaseEntityService<User, UpsertUserRequest>
 {
     public Task<UserSession?> Authenticate(string email, string password);
+    public Task<User> UpdateProfile(string id, UpsertUserRequest user);
+    public Task<UserSession> GetSession(string id);
 }

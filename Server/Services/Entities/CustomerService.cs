@@ -5,7 +5,7 @@ using Data.Models.Messages;
 
 namespace Services.Entities;
 
-public class CustomerService : BaseEntityService<Customer, UpsertCustomer>, ICustomerService
+public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest>, ICustomerService
 {
     public CustomerService(ICustomerRepository customerRepository, IMapper mapper) : base(customerRepository,
         mapper)

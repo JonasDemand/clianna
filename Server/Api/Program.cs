@@ -7,7 +7,6 @@ using Data.Models.Messages;
 using Data.Models.Misc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Services;
 using Services.Api;
 using Services.Entities;
 using Services.ExternalApis;
@@ -20,9 +19,10 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContext<CliannaDbContext>();
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.CreateMap<UpsertCustomer, Customer>();
-    cfg.CreateMap<UpsertDocument, Document>();
-    cfg.CreateMap<UpsertOrder, Order>();
+    cfg.CreateMap<UpsertCustomerRequest, Customer>();
+    cfg.CreateMap<UpsertDocumentReqeust, Document>();
+    cfg.CreateMap<UpsertOrderRequest, Order>();
+    cfg.CreateMap<UpsertUserRequest, User>();
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
