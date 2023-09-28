@@ -1,7 +1,5 @@
 ﻿namespace Data.Models.Messages;
 
-public class AuthenticateRequest
+public class AuthenticateRequest : UpsertUserRequest
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
 }

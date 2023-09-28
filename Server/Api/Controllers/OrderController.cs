@@ -10,7 +10,8 @@ namespace Api.Controllers;
 [Authorize]
 public class OrderController : EntityBaseController<Order, UpsertOrderRequest>
 {
-    public OrderController(IResponseFactory responseFactory, IOrderService service) : base(responseFactory, service)
+    public OrderController(IResponseFactory responseFactory, IOrderService orderService) : base(responseFactory,
+        orderService)
     {
     }
 }

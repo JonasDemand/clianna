@@ -11,7 +11,7 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     where TEntity : class, IEntity
     where TUpsert : class
 {
-    protected readonly IBaseEntityService<TEntity, TUpsert> _service;
+    private readonly IBaseEntityService<TEntity, TUpsert> _service;
 
     protected EntityBaseController(IResponseFactory responseFactory, IBaseEntityService<TEntity, TUpsert> service) :
         base(responseFactory)

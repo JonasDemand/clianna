@@ -20,10 +20,12 @@ public class Customer : IEntity
     public float? ShoeSize { get; set; }
     public bool? Disabled { get; set; }
     public string? Comment { get; set; }
+
     public ECustomerSalutation? Salutation { get; set; }
 
     //Navigation
-    public IEnumerable<Order> Orders { get; set; } = new List<Order>();
-    public IEnumerable<Document> Documents { get; set; } = new List<Document>();
+    public IEnumerable<Order>? Orders { get; set; }
+    public IEnumerable<Document>? Documents { get; set; }
+
     public string Id { get; set; } = new Cuid2(10).ToString();
 }

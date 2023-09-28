@@ -15,12 +15,12 @@ namespace Services.Entities;
 
 public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserService
 {
-    private const int keySize = 128;
-    private const int iterations = 350000;
+    private const int KeySize = 128;
+    private const int Iterations = 350000;
 
     private readonly AppSettings _appSettings;
+    private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
     private readonly IUserRepository _userRepository;
-    private readonly HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
 
     public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper) : base(
         userRepository, mapper)
@@ -41,7 +41,7 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
             {
                 Enabled = false,
                 Email = email,
-                Password = HashPasword(password, out var salt),
+                Password = HashPassword(password, out var salt),
                 Salt = salt
             });
 
@@ -62,15 +62,15 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
 
     public async Task<User> UpdateProfile(string id, UpsertUserRequest user)
     {
-        var entry = await _repository.Get(id);
+        var entry = await _userRepository.Get(id);
         entry.Email = user.Email;
         if (!string.IsNullOrEmpty(user.Password))
         {
-            entry.Password = HashPasword(user.Password, out var salt);
+            entry.Password = HashPassword(user.Password, out var salt);
             entry.Salt = salt;
         }
 
-        return await _repository.Update(entry);
+        return await _userRepository.Update(entry);
     }
 
     public async Task<UserSession> GetSession(string id)
@@ -105,15 +105,15 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
         return tokenHandler.WriteToken(token);
     }
 
-    private string HashPasword(string password, out string salt)
+    private string HashPassword(string password, out string salt)
     {
-        var byteSalt = RandomNumberGenerator.GetBytes(keySize);
+        var byteSalt = RandomNumberGenerator.GetBytes(KeySize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
             Encoding.UTF8.GetBytes(password),
             byteSalt,
-            iterations,
-            hashAlgorithm,
-            keySize);
+            Iterations,
+            _hashAlgorithm,
+            KeySize);
         salt = Convert.ToHexString(byteSalt);
         return Convert.ToHexString(hash);
     }
@@ -121,7 +121,7 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
     private bool VerifyPassword(string password, string hash, string salt)
     {
         var hashToCompare =
-            Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), iterations, hashAlgorithm, keySize);
+            Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), Iterations, _hashAlgorithm, KeySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
     }
 }

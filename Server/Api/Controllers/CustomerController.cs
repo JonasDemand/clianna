@@ -10,8 +10,9 @@ namespace Api.Controllers;
 [Authorize]
 public class CustomerController : EntityBaseController<Customer, UpsertCustomerRequest>
 {
-    public CustomerController(IResponseFactory responseFactory, ICustomerService service) : base(responseFactory,
-        service)
+    public CustomerController(IResponseFactory responseFactory, ICustomerService customerService) : base(
+        responseFactory,
+        customerService)
     {
     }
 }

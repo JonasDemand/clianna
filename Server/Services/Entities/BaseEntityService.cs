@@ -9,7 +9,7 @@ public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, T
     where TUpsert : class
 {
     protected readonly IMapper _mapper;
-    protected readonly IGenericRepository<TEntity> _repository;
+    private readonly IGenericRepository<TEntity> _repository;
 
     protected BaseEntityService(IGenericRepository<TEntity> repository, IMapper mapper)
     {

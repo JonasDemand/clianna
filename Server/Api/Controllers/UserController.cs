@@ -23,7 +23,7 @@ public class UserController : BaseController
     [HttpPost("Authenticate")]
     public async Task<ActionResult<Response<UserSession>>> Authenticate(AuthenticateRequest request)
     {
-        var session = await _userService.Authenticate(request.Username, request.Password);
+        var session = await _userService.Authenticate(request.Email, request.Password);
 
         if (session == null)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));

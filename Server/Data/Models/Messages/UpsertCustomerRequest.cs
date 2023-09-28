@@ -18,4 +18,7 @@ public class UpsertCustomerRequest
     public bool? Disabled { get; set; }
     public string? Comment { get; set; }
     public ECustomerSalutation? Salutation { get; set; }
+
+    public IEnumerable<string>? Orders { get; set; }
+    public IEnumerable<string>? Documents { get; set; }
 }

@@ -5,4 +5,5 @@ namespace Services.Entities;
 
 public interface IDocumentService : IBaseEntityService<Document, UpsertDocumentReqeust>
 {
+    public Task<Document> Copy(string id, CopyDocumentRequest document);
 }

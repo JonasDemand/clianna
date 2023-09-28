@@ -2,6 +2,7 @@
 using AutoMapper;
 using Data.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Data.Database.Repositories;
@@ -36,6 +37,11 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
     public IDbContextTransaction BeginTransaction()
     {
         return _dbContext.Database.BeginTransaction();
+    }
+
+    public EntityEntry<T> GetEntry(T entity)
+    {
+        return _dbContext.Entry(entity);
     }
 
     public async Task Delete(string id, bool save = true)
@@ -73,6 +79,11 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
     public async Task<T> Get(string id)
     {
         return await _dbContext.Set<T>().FindAsync(id);
+    }
+
+    public async Task<List<T>> Get(IEnumerable<string> ids)
+    {
+        return await _dbContext.Set<T>().Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 
     public async Task<List<T>> Get(Expression<Func<T, bool>> predicate)

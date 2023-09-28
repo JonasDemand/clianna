@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Services.Api;
 using Services.Entities;
 using Services.ExternalApis;
+using Services.Logic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,16 +20,22 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.AddDbContext<CliannaDbContext>();
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.CreateMap<UpsertCustomerRequest, Customer>();
-    cfg.CreateMap<UpsertDocumentReqeust, Document>();
-    cfg.CreateMap<UpsertOrderRequest, Order>();
     cfg.CreateMap<UpsertUserRequest, User>();
+    cfg.CreateMap<UpsertCustomerRequest, Customer>().ForMember(x => x.Documents, opts => opts.Ignore())
+        .ForMember(x => x.Orders, opts => opts.Ignore());
+    cfg.CreateMap<UpsertDocumentReqeust, Document>().ForMember(x => x.Order, opts => opts.Ignore())
+        .ForMember(x => x.Customer, opts => opts.Ignore());
+    cfg.CreateMap<UpsertOrderRequest, Order>().ForMember(x => x.Documents, opts => opts.Ignore())
+        .ForMember(x => x.Customer, opts => opts.Ignore());
+    cfg.CreateMap<CopyDocumentRequest, Document>().ForMember(x => x.Order, opts => opts.Ignore())
+        .ForMember(x => x.Customer, opts => opts.Ignore());
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
 builder.Services.AddSingleton<IGoogleService, GoogleService>();
+builder.Services.AddSingleton<ITemplatingService, TemplatingService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -40,9 +47,12 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 
-builder.Services.AddControllers();
-builder.Services.AddMvc()
-    .AddJsonOptions(opts => { opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+builder.Services.AddMvc();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>

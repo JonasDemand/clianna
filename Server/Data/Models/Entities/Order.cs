@@ -1,4 +1,5 @@
-﻿using Data.Models.Enums;
+﻿using System.Text.Json.Serialization;
+using Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
@@ -23,10 +24,11 @@ public class Order : IEntity
     public string? Name { get; set; }
 
     //FK
-    public string? CustomerId { get; set; }
+    [JsonIgnore] public string? CustomerId { get; set; }
 
     //Navigation
-    public IEnumerable<Document> Documents { get; set; } = new List<Document>();
+    public IEnumerable<Document>? Documents { get; set; }
     public Customer? Customer { get; set; }
+
     public string Id { get; set; } = new Cuid2(10).ToString();
 }

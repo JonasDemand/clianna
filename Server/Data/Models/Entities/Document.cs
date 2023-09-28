@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
 namespace Data.Models.Entities;
@@ -13,11 +14,13 @@ public class Document : IEntity
     public int? IncrementalId { get; set; }
 
     //FK
-    public string? OrderId { get; set; }
-    public string? CustomerId { get; set; }
+    [JsonIgnore] public string? OrderId { get; set; }
+
+    [JsonIgnore] public string? CustomerId { get; set; }
 
     //Navigation
     public Order? Order { get; set; }
     public Customer? Customer { get; set; }
+
     public string Id { get; set; } = new Cuid2(10).ToString();
 }

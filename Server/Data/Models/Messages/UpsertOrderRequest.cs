@@ -17,4 +17,7 @@ public class UpsertOrderRequest
     public string? Dealer { get; set; }
     public float? Size { get; set; }
     public string? Name { get; set; }
+
+    public string? Customer { get; set; }
+    public IEnumerable<string>? Documents { get; set; }
 }
