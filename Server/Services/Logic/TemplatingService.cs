@@ -104,7 +104,7 @@ public class TemplatingService : ITemplatingService
                 continue;
             }
 
-            if (value != null && !value?.GetType().IsPrimitive && value is not DateTime)
+            if (value != null && !value?.GetType().IsPrimitive && value is not DateTime && value is not string)
             {
                 results.AddRange(ReplaceTextFromObject(value, replaceTemplate));
                 continue;
@@ -138,7 +138,7 @@ public class TemplatingService : ITemplatingService
             DateTime dateValue => dateValue.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture),
             decimal decimalValue => decimalValue.ToString("0.00").Replace('.', ','),
             IFormattable formattableValue => formattableValue.ToString(null, CultureInfo.InvariantCulture),
-            _ => ""
+            _ => value
         };
     }
 }

@@ -24,8 +24,8 @@ public class Customer : IEntity
     public ECustomerSalutation? Salutation { get; set; }
 
     //Navigation
-    public IEnumerable<Order>? Orders { get; set; }
-    public IEnumerable<Document>? Documents { get; set; }
+    public virtual IEnumerable<Order> Orders { get; set; }
+    public virtual IEnumerable<Document> Documents { get; set; }
 
     public string Id { get; set; } = new Cuid2(10).ToString();
 }

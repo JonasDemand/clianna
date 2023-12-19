@@ -27,10 +27,7 @@ public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest
             entry.Orders = await _orderRepository.Get(customer.Orders);
         if (customer.Documents != null && customer.Documents.Any())
             entry.Documents = await _documentRepository.Get(customer.Documents);
-        await _customerRepository.Add(entry);
-        entry.Documents = null;
-        entry.Orders = null;
-        return entry;
+        return await _customerRepository.Add(entry);
     }
 
     public new async Task<Customer> Update(string id, UpsertCustomerRequest customer)
@@ -41,9 +38,6 @@ public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest
             entry.Orders = await _orderRepository.Get(customer.Orders);
         if (customer.Documents != null && customer.Documents.Any())
             entry.Documents = await _documentRepository.Get(customer.Documents);
-        await _customerRepository.Update(entry);
-        entry.Documents = null;
-        entry.Orders = null;
-        return entry;
+        return await _customerRepository.Update(entry);
     }
 }

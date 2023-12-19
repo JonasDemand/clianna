@@ -23,7 +23,7 @@ export const authOptions: AuthOptions = {
         try {
           if (!credentials?.email || !credentials?.password) return null;
           const { data, error } = await ApiClient.user.authenticateCreate({
-            username: credentials.email,
+            email: credentials.email,
             password: credentials.password,
           });
           if (error || !data || !data.email || !data.id || !data.token) {

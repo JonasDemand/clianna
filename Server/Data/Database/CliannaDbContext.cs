@@ -22,7 +22,8 @@ public class CliannaDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySql(_appSettings.DbConnection, ServerVersion.AutoDetect(_appSettings.DbConnection),
+        optionsBuilder.UseLazyLoadingProxies().UseMySql(_appSettings.DbConnection,
+            ServerVersion.AutoDetect(_appSettings.DbConnection),
             b => b.MigrationsAssembly("Api"));
     }
 }

@@ -11,8 +11,14 @@
  */
 
 export interface AuthenticateRequest {
-  username?: string | null;
+  email?: string | null;
   password?: string | null;
+}
+
+export interface CopyDocumentRequest {
+  name?: string | null;
+  order?: string | null;
+  customer?: string | null;
 }
 
 export interface Customer {
@@ -54,8 +60,6 @@ export interface Document {
   template?: boolean;
   /** @format int32 */
   incrementalId?: number | null;
-  orderId?: string | null;
-  customerId?: string | null;
   order?: Order;
   customer?: Customer;
   id?: string | null;
@@ -188,7 +192,6 @@ export interface Order {
   /** @format float */
   size?: number | null;
   name?: string | null;
-  customerId?: string | null;
   documents?: Document[] | null;
   customer?: Customer;
   id?: string | null;
@@ -231,6 +234,8 @@ export interface UpsertCustomerRequest {
   disabled?: boolean | null;
   comment?: string | null;
   salutation?: ECustomerSalutation;
+  orders?: string[] | null;
+  documents?: string[] | null;
 }
 
 export interface UpsertDocumentReqeust {
@@ -238,6 +243,8 @@ export interface UpsertDocumentReqeust {
   template?: boolean;
   /** @format int32 */
   incrementalId?: number | null;
+  order?: string | null;
+  customer?: string | null;
 }
 
 export interface UpsertOrderRequest {
@@ -257,6 +264,8 @@ export interface UpsertOrderRequest {
   /** @format float */
   size?: number | null;
   name?: string | null;
+  customer?: string | null;
+  documents?: string[] | null;
 }
 
 export interface UserSession {
@@ -574,6 +583,25 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
       }),
   };
   document = {
+    /**
+     * No description
+     *
+     * @tags Document
+     * @name CopyCreate
+     * @request POST:/Document/{id}/copy
+     * @secure
+     */
+    copyCreate: (id: string, data: CopyDocumentRequest, params: RequestParams = {}) =>
+      this.request<DocumentResponse, any>({
+        path: `/Document/${id}/copy`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *

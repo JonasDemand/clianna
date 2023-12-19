@@ -51,10 +51,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         }).ExecuteAsync();
         entry.GoogleId = googleResponse.Id;
 
-        await _documentRepository.Add(entry);
-        entry.Order = null;
-        entry.Customer = null;
-        return entry;
+        return await _documentRepository.Add(entry);
     }
 
     public new async Task<Document> Update(string id, UpsertDocumentReqeust document)
@@ -67,10 +64,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         if (!string.IsNullOrEmpty(document.Customer))
             entry.Customer = await _customerRepository.Get(document.Customer);
 
-        await _documentRepository.Update(entry);
-        entry.Order = null;
-        entry.Customer = null;
-        return entry;
+        return await _documentRepository.Update(entry);
     }
 
     public new async Task Delete(string id)
@@ -127,9 +121,6 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
             }
         }
 
-        await _documentRepository.Add(newDocument);
-        newDocument.Order = null;
-        newDocument.Customer = null;
-        return newDocument;
+        return await _documentRepository.Add(newDocument);
     }
 }

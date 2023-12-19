@@ -27,10 +27,7 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
             entry.Customer = await _customerRepository.Get(order.Customer);
         if (order.Documents != null && order.Documents.Any())
             entry.Documents = await _documentRepository.Get(order.Documents);
-        await _orderRepository.Add(entry);
-        entry.Customer = null;
-        entry.Documents = null;
-        return entry;
+        return await _orderRepository.Add(entry);
     }
 
     public new async Task<Order> Update(string id, UpsertOrderRequest order)
@@ -41,9 +38,6 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
             entry.Customer = await _customerRepository.Get(order.Customer);
         if (order.Documents != null && order.Documents.Any())
             entry.Documents = await _documentRepository.Get(order.Documents);
-        await _orderRepository.Update(entry);
-        entry.Customer = null;
-        entry.Documents = null;
-        return entry;
+        return await _orderRepository.Update(entry);
     }
 }
