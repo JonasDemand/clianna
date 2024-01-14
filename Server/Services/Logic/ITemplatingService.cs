@@ -2,7 +2,7 @@ namespace Services.Logic;
 
 public interface ITemplatingService
 {
-    public IEnumerable<Replacement> ReplaceTextFromObject(dynamic obj, string prefix = "");
+    public IEnumerable<Replacement> ReplaceTextFromObject(dynamic obj);
 
     public class Replacement
     {

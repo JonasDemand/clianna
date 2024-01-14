@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.Json;
 using Data.Models.Enums;
 
 namespace Services.Logic;
@@ -87,7 +88,31 @@ public class TemplatingService : ITemplatingService
             }
         };
 
-    public IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(dynamic obj, string prefix = "")
+    public IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(object obj)
+    {
+        return ReplaceTextFromObject(JsonSerializer.Deserialize<object>(JsonSerializer.Serialize(obj)), "");
+    }
+
+    private static string GetReplaceTemplate(string prefix, string key)
+    {
+        return $"{(!prefix.StartsWith("{{") ? "{{" : "")}{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ".")}{key}";
+    }
+
+    private static string GetLabel(string key, dynamic value)
+    {
+        if (value == null) return "";
+        if (CustomLabels.TryGetValue(key, out var labelFunc)) return labelFunc(value);
+        return value switch
+        {
+            bool booleanValue => booleanValue ? "Ja" : "Nein",
+            DateTime dateValue => dateValue.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture),
+            decimal decimalValue => decimalValue.ToString("0.00").Replace('.', ','),
+            IFormattable formattableValue => formattableValue.ToString(null, CultureInfo.InvariantCulture),
+            _ => value
+        };
+    }
+
+    private IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(object obj, string prefix)
     {
         var results = new List<ITemplatingService.Replacement>();
         foreach (var property in obj.GetType().GetProperties())
@@ -121,24 +146,5 @@ public class TemplatingService : ITemplatingService
         }
 
         return results;
-    }
-
-    private static string GetReplaceTemplate(string prefix, string key)
-    {
-        return $"{(!prefix.StartsWith("{{") ? "{{" : "")}{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ".")}{key}";
-    }
-
-    private static string GetLabel(string key, dynamic value)
-    {
-        if (value == null) return "";
-        if (CustomLabels.TryGetValue(key, out var labelFunc)) return labelFunc(value);
-        return value switch
-        {
-            bool booleanValue => booleanValue ? "Ja" : "Nein",
-            DateTime dateValue => dateValue.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture),
-            decimal decimalValue => decimalValue.ToString("0.00").Replace('.', ','),
-            IFormattable formattableValue => formattableValue.ToString(null, CultureInfo.InvariantCulture),
-            _ => value
-        };
     }
 }
