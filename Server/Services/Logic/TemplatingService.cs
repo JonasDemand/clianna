@@ -1,5 +1,6 @@
 using System.Globalization;
-using System.Text.Json;
+using System.Reflection;
+using Data.Models.Entities;
 using Data.Models.Enums;
 
 namespace Services.Logic;
@@ -41,56 +42,107 @@ public class TemplatingService : ITemplatingService
 
     private static readonly Dictionary<string, Func<dynamic, string>> CustomLabels = new()
     {
-        { "taxes", value => OrderTaxLabels.ContainsKey(value) ? OrderTaxLabels[value] : "" },
-        { "shippingType", value => OrderShippingTypeLabels.ContainsKey(value) ? OrderShippingTypeLabels[value] : "" },
-        { "type", value => OrderTypeLabels.ContainsKey(value) ? OrderTypeLabels[value] : "" },
+        { "Taxes", value => OrderTaxLabels.ContainsKey(value) ? OrderTaxLabels[value] : "" },
+        { "ShippingType", value => OrderShippingTypeLabels.ContainsKey(value) ? OrderShippingTypeLabels[value] : "" },
+        { "Type", value => OrderTypeLabels.ContainsKey(value) ? OrderTypeLabels[value] : "" },
         {
-            "salutation",
+            "Salutation",
             value => SalutationLabels.ContainsKey((ECustomerSalutation)value)
                 ? SalutationLabels[(ECustomerSalutation)value]
                 : ""
         },
-        { "incrementalId", value => value?.ToString().PadLeft(4, '0') ?? "" }
+        { "IncrementalId", value => value?.ToString().PadLeft(4, '0') ?? "" }
     };
 
     private static readonly Dictionary<string, Func<string, dynamic, List<ITemplatingService.Replacement>>>
         CustomKeyActions = new()
         {
             {
-                "taxes",
+                "Taxes",
                 (prefix, obj) =>
                 {
-                    var results = new List<ITemplatingService.Replacement>();
-                    results.Add(new ITemplatingService.Replacement
+                    EOrderTax taxes = obj.Taxes;
+                    double price = obj.Price;
+                    var taxRate = taxes == EOrderTax.Seven ? 0.07 : 0.19;
+                    var taxShare = price / (1 + taxRate) * taxRate;
+                    var netPrice = price - taxShare;
+                    return new List<ITemplatingService.Replacement>
                     {
-                        ReplaceTemplate = $"{GetReplaceTemplate(prefix, "taxes")}}}",
-                        ReplaceValue = GetLabel("taxes", obj)
-                    });
-
-                    var tax = (EOrderTax)obj;
-                    var taxRate = tax == EOrderTax.Seven ? 0.07m : 0.19m;
-                    var taxShare = (decimal)obj.price / (1 + taxRate) * taxRate;
-                    results.Add(new ITemplatingService.Replacement
-                    {
-                        ReplaceTemplate = $"{GetReplaceTemplate(prefix, "taxShare")}}}",
-                        ReplaceValue = GetLabel("taxShare", taxShare)
-                    });
-
-                    var netPrice = (decimal)obj.price - taxShare;
-                    results.Add(new ITemplatingService.Replacement
-                    {
-                        ReplaceTemplate = $"{GetReplaceTemplate(prefix, "netPrice")}}}",
-                        ReplaceValue = GetLabel("netPrice", netPrice)
-                    });
-
-                    return results;
+                        new()
+                        {
+                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "Taxes")}}}}}",
+                            ReplaceValue = GetLabel("Taxes", taxes)
+                        },
+                        new()
+                        {
+                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "TaxShare")}}}}}",
+                            ReplaceValue = GetLabel("TaxShare", taxShare)
+                        },
+                        new()
+                        {
+                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "NetPrice")}}}}}",
+                            ReplaceValue = GetLabel("NetPrice", netPrice)
+                        }
+                    };
                 }
             }
         };
 
-    public IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(object obj)
+    public IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(dynamic obj, string prefix = "",
+        int depth = 0)
     {
-        return ReplaceTextFromObject(JsonSerializer.Deserialize<object>(JsonSerializer.Serialize(obj)), "");
+        var results = new List<ITemplatingService.Replacement>();
+        PropertyInfo[] properties;
+
+        if (depth > 2) return results;
+
+        switch (obj)
+        {
+            case Document:
+                properties = typeof(Document).GetProperties();
+                break;
+            case Order:
+                properties = typeof(Order).GetProperties();
+                break;
+            case Customer:
+                properties = typeof(Customer).GetProperties();
+                break;
+            default:
+                return results;
+        }
+
+        foreach (var property in properties)
+        {
+            var key = property.Name;
+            var value = property.GetValue(obj, null);
+
+            var replaceTemplate = GetReplaceTemplate(prefix, key);
+
+            if (value is IEnumerable<dynamic> listValue)
+            {
+                for (var i = 0; i < listValue.Count(); i++)
+                    results.AddRange(
+                        ReplaceTextFromObject(listValue.ElementAt(i), $"{replaceTemplate}[{i}]", depth + 1));
+                continue;
+            }
+
+            if (value != null && value is IEntity)
+            {
+                results.AddRange(ReplaceTextFromObject(value, replaceTemplate, depth + 1));
+                continue;
+            }
+
+            if (CustomKeyActions.TryGetValue(key, out var action))
+                results.AddRange(action(prefix, obj));
+            else
+                results.Add(new ITemplatingService.Replacement
+                {
+                    ReplaceTemplate = $"{replaceTemplate}}}}}",
+                    ReplaceValue = GetLabel(key, value)
+                });
+        }
+
+        return results;
     }
 
     private static string GetReplaceTemplate(string prefix, string key)
@@ -106,45 +158,9 @@ public class TemplatingService : ITemplatingService
         {
             bool booleanValue => booleanValue ? "Ja" : "Nein",
             DateTime dateValue => dateValue.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture),
-            decimal decimalValue => decimalValue.ToString("0.00").Replace('.', ','),
+            double doubleValue => doubleValue.ToString("0.00").Replace('.', ','),
             IFormattable formattableValue => formattableValue.ToString(null, CultureInfo.InvariantCulture),
             _ => value
         };
-    }
-
-    private IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(object obj, string prefix)
-    {
-        var results = new List<ITemplatingService.Replacement>();
-        foreach (var property in obj.GetType().GetProperties())
-        {
-            var key = property.Name;
-            var value = property.GetValue(obj, null);
-
-            var replaceTemplate = GetReplaceTemplate(prefix, key);
-
-            if (value is Array arrayValue)
-            {
-                for (var i = 0; i < arrayValue.Length; i++)
-                    results.AddRange(ReplaceTextFromObject(arrayValue.GetValue(i), $"{replaceTemplate}[{i}]"));
-                continue;
-            }
-
-            if (value != null && !value?.GetType().IsPrimitive && value is not DateTime && value is not string)
-            {
-                results.AddRange(ReplaceTextFromObject(value, replaceTemplate));
-                continue;
-            }
-
-            if (CustomKeyActions.ContainsKey(key))
-                results.AddRange(CustomKeyActions[key](replaceTemplate, obj));
-            else
-                results.Add(new ITemplatingService.Replacement
-                {
-                    ReplaceTemplate = $"{replaceTemplate}}}",
-                    ReplaceValue = GetLabel(key, value)
-                });
-        }
-
-        return results;
     }
 }
