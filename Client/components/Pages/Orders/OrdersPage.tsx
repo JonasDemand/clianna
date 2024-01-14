@@ -8,7 +8,7 @@ import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Order } from '@utils/api/generated/Api';
-import { getOrderLabel } from '@utils/order';
+import { getOrderLabel, toOrderUpsertRequest } from '@utils/order';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -63,7 +63,9 @@ const OrdersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newOrders = [...orders];
     if (create) {
-      const { error, data } = await ApiClient.order.orderCreate(selected);
+      const { error, data } = await ApiClient.order.orderCreate(
+        toOrderUpsertRequest(selected)
+      );
       if (error || !data) {
         enqueueSnackbar('Erstellen von Auftrag fehlgeschlagen', {
           variant: 'error',
@@ -74,7 +76,7 @@ const OrdersPage: FC = () => {
     } else {
       const { error, data } = await ApiClient.order.orderUpdate(
         selected.id!,
-        selected
+        toOrderUpsertRequest(selected)
       );
       if (error || !data) {
         enqueueSnackbar('Aktualisieren von Auftrag fehlgeschlagen', {

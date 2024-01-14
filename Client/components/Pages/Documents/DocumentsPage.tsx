@@ -7,7 +7,7 @@ import { useDocumentContext } from '@context/DocumentContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Document } from '@utils/api/generated/Api';
-import { getDocumentLabel } from '@utils/document';
+import { getDocumentLabel, toDocumentUpsertRequest } from '@utils/document';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -60,8 +60,13 @@ const DocumentsPage: FC = () => {
 
     const res =
       selected.id === EId.Create
-        ? await ApiClient.document.documentCreate(selected)
-        : await ApiClient.document.documentUpdate(selected.id, selected);
+        ? await ApiClient.document.documentCreate(
+            toDocumentUpsertRequest(selected)
+          )
+        : await ApiClient.document.documentUpdate(
+            selected.id,
+            toDocumentUpsertRequest(selected)
+          );
 
     const { error, data } = res;
     if (error || !data) {

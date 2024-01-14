@@ -6,7 +6,7 @@ import SideOverlay from '@components/Modals/SideOverlay';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Customer } from '@utils/api/generated/Api';
-import { getCustomerLabel } from '@utils/customer';
+import { getCustomerLabel, toCustomerUpsertRequest } from '@utils/customer';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -89,7 +89,9 @@ const CustomersPage: FC = () => {
     let create = selected.id === EId.Create;
     let newCustomers = [...customers];
     if (create) {
-      const { error, data } = await ApiClient.customer.customerCreate(selected);
+      const { error, data } = await ApiClient.customer.customerCreate(
+        toCustomerUpsertRequest(selected)
+      );
       if (error || !data) {
         enqueueSnackbar('Erstellen von Kunde fehlgeschlagen', {
           variant: 'error',
@@ -100,7 +102,7 @@ const CustomersPage: FC = () => {
     } else {
       const { error, data } = await ApiClient.customer.customerUpdate(
         selected.id!,
-        selected
+        toCustomerUpsertRequest(selected)
       );
       if (error || !data) {
         enqueueSnackbar('Aktualisieren von Kunde fehlgeschlagen', {

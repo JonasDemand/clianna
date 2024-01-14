@@ -84,7 +84,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         newDocument.IncrementalId = documentToCopy.IncrementalId;
         if (!string.IsNullOrEmpty(document.Order))
             newDocument.Order = await _orderRepository.Get(document.Order);
-        if (!string.IsNullOrEmpty(document.Customer))
+        else if (!string.IsNullOrEmpty(document.Customer))
             newDocument.Customer = await _customerRepository.Get(document.Customer);
 
         var driveResponse = await _googleService.Drive.Files.Copy(new File
@@ -122,5 +122,30 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         }
 
         return await _documentRepository.Add(newDocument);
+    }
+
+    private async Task AssignDependencies(Document entry, UpsertDocumentReqeust document)
+    {
+        if (string.IsNullOrEmpty(document.Customer))
+        {
+            entry.Customer = null;
+            entry.CustomerId = null;
+        }
+        else
+        {
+            entry.Customer = await _customerRepository.Get(document.Customer);
+            entry.CustomerId = entry.Customer.Id;
+        }
+
+        if (string.IsNullOrEmpty(document.Order))
+        {
+            entry.Order = null;
+            entry.Order = null;
+        }
+        else
+        {
+            entry.Order = await _orderRepository.Get(document.Order);
+            entry.OrderId = entry.Order.Id;
+        }
     }
 }

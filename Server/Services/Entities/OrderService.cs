@@ -23,10 +23,7 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
     public new async Task<Order> Create(UpsertOrderRequest order)
     {
         var entry = _mapper.Map<Order>(order);
-        if (!string.IsNullOrEmpty(order.Customer))
-            entry.Customer = await _customerRepository.Get(order.Customer);
-        if (order.Documents != null && order.Documents.Any())
-            entry.Documents = await _documentRepository.Get(order.Documents);
+        await AssignDependencies(entry, order);
         return await _orderRepository.Add(entry);
     }
 
@@ -34,10 +31,25 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
     {
         var entry = await _orderRepository.Get(id);
         _mapper.Map(order, entry);
-        if (!string.IsNullOrEmpty(order.Customer))
-            entry.Customer = await _customerRepository.Get(order.Customer);
-        if (order.Documents != null && order.Documents.Any())
-            entry.Documents = await _documentRepository.Get(order.Documents);
+        await AssignDependencies(entry, order);
         return await _orderRepository.Update(entry);
+    }
+
+    private async Task AssignDependencies(Order entry, UpsertOrderRequest order)
+    {
+        if (string.IsNullOrEmpty(order.Customer))
+        {
+            entry.Customer = null;
+            entry.CustomerId = null;
+        }
+        else
+        {
+            entry.Customer = await _customerRepository.Get(order.Customer);
+            entry.CustomerId = entry.Customer.Id;
+        }
+
+        entry.Documents = order.Documents == null || order.Documents.Any()
+            ? new List<Document>()
+            : await _documentRepository.Get(order.Documents);
     }
 }

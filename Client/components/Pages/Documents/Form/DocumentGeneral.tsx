@@ -19,7 +19,8 @@ const DocumentGeneral: FC = () => {
   const { selected, updateSelected, customers, orders } = useDocumentContext();
 
   const isCustomer = useCallback(
-    (obj?: object | null) => customers.findIndex((x) => x === obj) !== -1,
+    (obj?: Customer | Order | null) =>
+      customers.findIndex((x) => x === obj) !== -1,
     [customers]
   );
 

@@ -1,4 +1,4 @@
-import { Customer } from './api/generated/Api';
+import { Customer, UpsertCustomerRequest } from './api/generated/Api';
 
 export const getCustomerLabel = (customer: Customer | null | undefined) =>
   customer?.firstName || customer?.lastName
@@ -6,3 +6,11 @@ export const getCustomerLabel = (customer: Customer | null | undefined) =>
     : customer
     ? 'Kunde ohne Name'
     : 'Kunde nicht verfügbar';
+
+export const toCustomerUpsertRequest = (
+  customer: Customer
+): UpsertCustomerRequest => ({
+  ...customer,
+  orders: customer.orders?.map((x) => x.id!),
+  documents: customer.documents?.map((x) => x.id!),
+});

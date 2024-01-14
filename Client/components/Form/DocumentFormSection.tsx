@@ -14,7 +14,7 @@ import {
   Grid,
   Typography,
 } from '@mui/material';
-import { Document } from '@utils/api/generated/Api';
+import { Document, UpsertDocumentReqeust } from '@utils/api/generated/Api';
 import { getDocumentLabel } from '@utils/document';
 import { getCopyId } from '@utils/id';
 import { searchArray } from '@utils/search';
@@ -56,22 +56,18 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     [documents, searchText]
   );
   const withReference = useCallback(
-    (document: Document): Document => ({
+    (document: Document): UpsertDocumentReqeust => ({
       ...document,
-      customer: {
-        id:
-          document.customer?.id ??
-          (reference.customer !== EId.Copy && reference.customer !== EId.Create
-            ? reference.customer
-            : undefined),
-      },
-      order: {
-        id:
-          document.order?.id ??
-          (reference.order !== EId.Copy && reference.order !== EId.Create
-            ? reference.order
-            : undefined),
-      },
+      customer:
+        document.customer?.id ??
+        (reference.customer !== EId.Copy && reference.customer !== EId.Create
+          ? reference.customer
+          : undefined),
+      order:
+        document.order?.id ??
+        (reference.order !== EId.Copy && reference.order !== EId.Create
+          ? reference.order
+          : undefined),
     }),
     [reference.customer, reference.order]
   );
@@ -117,18 +113,21 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       return;
     }
 
-    /*TODO
+    console.log(selected);
     const res = selected.id.includes(EId.Copy)
-      ? await Client.documentCOPY(
+      ? await ApiClient.document.copyCreate(
           getCopyId(selected.id),
           withReference(selected)
         )
       : selected.id === EId.Create
-      ? await Client.documentPOST(withReference(selected))
-      : await Client.documentPUT(selected.id, selected);
+      ? await ApiClient.document.documentCreate(withReference(selected))
+      : await ApiClient.document.documentUpdate(
+          selected.id,
+          withReference(selected)
+        );
 
-    const { error, response } = res;
-    if (error || !response) {
+    const { error, data } = res;
+    if (error || !data) {
       enqueueSnackbar('Erstellen von Dokument fehlgeschlagen', {
         variant: 'error',
       });
@@ -136,17 +135,22 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     }
 
     let newDocuments = [...documents];
-    const index = newDocuments.findIndex((x) => x.id === response.id);
-    index === -1
-      ? newDocuments.push(response)
-      : (newDocuments[index] = response);
+    const index = newDocuments.findIndex((x) => x.id === data.id);
+    index === -1 ? newDocuments.push(data) : (newDocuments[index] = data);
     onUpdate(newDocuments);
-    setSelected(null);*/
+    setSelected(null);
 
     enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
       variant: 'success',
     });
-  }, [documents, enqueueSnackbar, selected]);
+  }, [
+    ApiClient.document,
+    documents,
+    enqueueSnackbar,
+    onUpdate,
+    selected,
+    withReference,
+  ]);
 
   const onCopyDocument = useCallback(
     (document: Document) =>

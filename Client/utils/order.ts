@@ -1,6 +1,6 @@
 import { OrderTypeLabels } from '@consts/order';
 
-import { Order } from './api/generated/Api';
+import { Order, UpsertOrderRequest } from './api/generated/Api';
 import { formatDate } from './date';
 
 export const getOrderLabel = (order: Order | null | undefined) =>
@@ -11,3 +11,9 @@ export const getOrderLabel = (order: Order | null | undefined) =>
     : order
     ? 'Auftrag ohne Infos'
     : 'Auftrag nicht verfügbar';
+
+export const toOrderUpsertRequest = (order: Order): UpsertOrderRequest => ({
+  ...order,
+  customer: order.customer?.id ?? null,
+  documents: order.documents?.map((x) => x.id!),
+});
