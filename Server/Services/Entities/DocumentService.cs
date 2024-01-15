@@ -37,11 +37,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
     public new async Task<Document> Create(UpsertDocumentReqeust document)
     {
         var entry = _mapper.Map<Document>(document);
-
-        if (!string.IsNullOrEmpty(document.Order))
-            entry.Order = await _orderRepository.Get(document.Order);
-        if (!string.IsNullOrEmpty(document.Customer))
-            entry.Customer = await _customerRepository.Get(document.Customer);
+        await AssignDependencies(entry, document);
 
         var googleResponse = await _googleService.Drive.Files.Create(new File
         {
@@ -58,12 +54,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
     {
         var entry = await _documentRepository.Get(id);
         _mapper.Map(document, entry);
-
-        if (!string.IsNullOrEmpty(document.Order))
-            entry.Order = await _orderRepository.Get(document.Order);
-        if (!string.IsNullOrEmpty(document.Customer))
-            entry.Customer = await _customerRepository.Get(document.Customer);
-
+        await AssignDependencies(entry, document);
         return await _documentRepository.Update(entry);
     }
 
@@ -77,7 +68,6 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
     public async Task<Document> Copy(string id, CopyDocumentRequest document)
     {
         var documentToCopy = await _documentRepository.Get(id);
-
         if (documentToCopy == null) throw new Exception("Document not found");
 
         var newDocument = _mapper.Map<Document>(document);
@@ -86,6 +76,8 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
             newDocument.Order = await _orderRepository.Get(document.Order);
         else if (!string.IsNullOrEmpty(document.Customer))
             newDocument.Customer = await _customerRepository.Get(document.Customer);
+        else
+            newDocument.Template = documentToCopy.Template;
 
         var driveResponse = await _googleService.Drive.Files.Copy(new File
         {
@@ -95,7 +87,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         }, documentToCopy.GoogleId).ExecuteAsync();
         newDocument.GoogleId = driveResponse.Id;
 
-        if (documentToCopy.Template)
+        if (documentToCopy.Template && (newDocument.Order != null || newDocument.Customer != null))
         {
             await _googleService.Docs.Documents
                 .BatchUpdate(new BatchUpdateDocumentRequest

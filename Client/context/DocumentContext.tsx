@@ -74,12 +74,11 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     (updates: Document) => {
       if (!selected) return;
       let newSelected = { ...selected };
-      Object.entries(updates).forEach(([key, value]) => {
-        const parsedKey = key as keyof Document;
-        if (updates[parsedKey] !== undefined)
+      Object.entries(updates).forEach(
+        ([key, value]) =>
           //@ts-ignore
-          newSelected[parsedKey] = value;
-      });
+          (newSelected[key] = value)
+      );
       setSelected(newSelected);
     },
     [selected]

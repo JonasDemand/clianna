@@ -2,6 +2,7 @@
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using OnixLabs.Core.Linq;
 
 namespace Services.Entities;
 
@@ -37,10 +38,10 @@ public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest
 
     private async Task AssignDependencies(Customer entry, UpsertCustomerRequest customer)
     {
-        entry.Documents = customer.Documents == null || customer.Documents.Any()
+        entry.Documents = customer.Documents == null || customer.Documents.IsEmpty()
             ? new List<Document>()
             : await _documentRepository.Get(customer.Documents);
-        entry.Orders = customer.Orders == null || customer.Orders.Any()
+        entry.Orders = customer.Orders == null || customer.Orders.IsEmpty()
             ? new List<Order>()
             : await _orderRepository.Get(customer.Orders);
     }

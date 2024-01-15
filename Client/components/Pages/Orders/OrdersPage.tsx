@@ -7,7 +7,7 @@ import { useBackdropContext } from '@context/BackdropContext';
 import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
-import { Order } from '@utils/api/generated/Api';
+import { Document, Order } from '@utils/api/generated/Api';
 import { getOrderLabel, toOrderUpsertRequest } from '@utils/order';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
@@ -99,34 +99,38 @@ const OrdersPage: FC = () => {
     setSelected,
   ]);
 
-  const onCopyRow = useCallback(async (order: Order) => {
-    /*TODO
+  const onCopyRow = useCallback(
+    async (order: Order) => {
       let documents: Array<Document> = [];
       if (order.documents) {
         setShowBackdrop(true);
         const createDocumentRes = await Promise.all(
           order.documents.map((document) =>
             document.id
-              ? Client.Document.Copy(document.id, { name: document.name })
-              : Client.documentPOST(({ name: document.name }))
+              ? ApiClient.document.copyCreate(document.id, {
+                  name: document.name,
+                })
+              : ApiClient.document.documentCreate({ name: document.name })
           )
         );
         setShowBackdrop(false);
-        if (createDocumentRes.some((res) => res.error || !res.response)) {
+        if (createDocumentRes.some((res) => res.error || !res.data)) {
           enqueueSnackbar('Kopieren von Dokumenten fehlgeschlagen', {
             variant: 'error',
           });
           return;
         }
-        documents = createDocumentRes.map((res) => res.response!);
+        documents = createDocumentRes.map((res) => res.data!);
       }
       setSelected({
         ...order,
         id: EId.Create,
         creationDate: new Date(),
         documents,
-      });*/
-  }, []);
+      });
+    },
+    [ApiClient.document, enqueueSnackbar, setSelected, setShowBackdrop]
+  );
 
   const onConfirmDialog = useCallback(async () => {
     if (!orderToDelete?.id) return;

@@ -2,6 +2,7 @@
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using OnixLabs.Core.Linq;
 
 namespace Services.Entities;
 
@@ -48,7 +49,7 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
             entry.CustomerId = entry.Customer.Id;
         }
 
-        entry.Documents = order.Documents == null || order.Documents.Any()
+        entry.Documents = order.Documents == null || order.Documents.IsEmpty()
             ? new List<Document>()
             : await _documentRepository.Get(order.Documents);
     }

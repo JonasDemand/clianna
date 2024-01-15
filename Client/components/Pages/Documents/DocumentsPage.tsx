@@ -8,6 +8,7 @@ import { EId } from '@customTypes/id';
 import { Box, Typography } from '@mui/material';
 import { Document } from '@utils/api/generated/Api';
 import { getDocumentLabel, toDocumentUpsertRequest } from '@utils/document';
+import { getCopyId } from '@utils/id';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -51,22 +52,19 @@ const DocumentsPage: FC = () => {
       return;
     }
 
-    /*TODO Add copy
     const res = selected.id.includes(EId.Copy)
-      ? await Client.Document.Copy(getCopyId(selected.id), selected)
+      ? await ApiClient.document.copyCreate(
+          getCopyId(selected.id),
+          toDocumentUpsertRequest(selected)
+        )
       : selected.id === EId.Create
-      ? await Client.Document.Create(selected)
-      : await Client.Document.Update(selected.id, selected);*/
-
-    const res =
-      selected.id === EId.Create
-        ? await ApiClient.document.documentCreate(
-            toDocumentUpsertRequest(selected)
-          )
-        : await ApiClient.document.documentUpdate(
-            selected.id,
-            toDocumentUpsertRequest(selected)
-          );
+      ? await ApiClient.document.documentCreate(
+          toDocumentUpsertRequest(selected)
+        )
+      : await ApiClient.document.documentUpdate(
+          selected.id,
+          toDocumentUpsertRequest(selected)
+        );
 
     const { error, data } = res;
     if (error || !data) {
