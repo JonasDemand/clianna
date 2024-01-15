@@ -49,7 +49,7 @@ public class MigrationService : IMigrationService
             Email = ConvertFromDbVal<string?>(customer["email"]),
             Mobile = ConvertFromDbVal<string?>(customer["mobile"]),
             Phone = ConvertFromDbVal<string?>(customer["phone"]),
-            Salutation = MapSalutation(ConvertFromDbVal<string?>(customer["phone"])),
+            Salutation = MapSalutation(ConvertFromDbVal<string?>(customer["salutation"])),
             Street = ConvertFromDbVal<string?>(customer["street"]),
             PostalCode = ConvertFromDbVal<string?>(customer["postalcode"]),
             ShoeSize = ConvertFromDbVal<double?>(customer["shoesize"]),
