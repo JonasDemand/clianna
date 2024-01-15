@@ -10,6 +10,8 @@ namespace Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("SET FOREIGN_KEY_CHECKS = 0;");
+            
             migrationBuilder.AlterColumn<string>(
                 name: "Id",
                 table: "Users",
@@ -93,11 +95,15 @@ namespace Api.Migrations
                 oldType: "varchar(10)")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
+            
+            migrationBuilder.Sql("SET FOREIGN_KEY_CHECKS = 1;");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("SET FOREIGN_KEY_CHECKS = 0;");
+            
             migrationBuilder.AlterColumn<string>(
                 name: "Id",
                 table: "Users",
@@ -181,6 +187,8 @@ namespace Api.Migrations
                 oldType: "varchar(255)")
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
+            
+            migrationBuilder.Sql("SET FOREIGN_KEY_CHECKS = 1;");
         }
     }
 }
