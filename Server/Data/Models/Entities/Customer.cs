@@ -17,8 +17,8 @@ public class Customer : IEntity
     public string? Phone { get; set; }
     public string? Mobile { get; set; }
     public bool? WhatsApp { get; set; }
-    public float? ShoeSize { get; set; }
-    public bool? Disabled { get; set; }
+    public double? ShoeSize { get; set; }
+    public bool Disabled { get; set; }
     public string? Comment { get; set; }
 
     public ECustomerSalutation? Salutation { get; set; }
@@ -27,5 +27,5 @@ public class Customer : IEntity
     public virtual IEnumerable<Order> Orders { get; set; }
     public virtual IEnumerable<Document> Documents { get; set; }
 
-    public string Id { get; set; } = new Cuid2(10).ToString();
+    public string Id { get; set; } = new Cuid2().ToString();
 }

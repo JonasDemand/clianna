@@ -11,5 +11,5 @@ public class User : IEntity
     public string Salt { get; set; }
     public bool Enabled { get; set; }
 
-    public string Id { get; set; } = new Cuid2(10).ToString();
+    public string Id { get; set; } = new Cuid2().ToString();
 }

@@ -46,10 +46,11 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
             .HasColumnType("tinyint(1)");
         builder
             .Property(e => e.ShoeSize)
-            .HasColumnType("float");
+            .HasColumnType("double");
         builder
             .Property(e => e.Disabled)
-            .HasColumnType("tinyint(1)");
+            .HasColumnType("tinyint(1)")
+            .IsRequired();
         builder
             .Property(e => e.Comment)
             .HasColumnType("longtext");

@@ -29,4 +29,5 @@ public class AppSettings
     public string DbConnection { get; set; }
 
     public GoogleOptions GoogleOptions { get; set; }
+    public bool DevMode { get; set; }
 }

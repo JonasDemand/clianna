@@ -11,6 +11,7 @@ using Services.Api;
 using Services.Entities;
 using Services.ExternalApis;
 using Services.Logic;
+using Services.Maintenance;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
 builder.Services.AddSingleton<IGoogleService, GoogleService>();
 builder.Services.AddSingleton<ITemplatingService, TemplatingService>();
+builder.Services.AddScoped<IMigrationService, MigrationService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();

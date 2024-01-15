@@ -20,7 +20,7 @@ public class DocumentController : EntityBaseController<Document, UpsertDocumentR
         _documentService = documentService;
     }
 
-    [HttpPost("{id}/copy")]
+    [HttpPost("{id}/Copy")]
     public async Task<ActionResult<Response<Document>>> Put(string id, CopyDocumentRequest document)
     {
         return Ok(_responseFactory.Create(await _documentService.Copy(id, document)));

@@ -3,6 +3,7 @@ using System;
 using Data.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.Migrations
 {
     [DbContext(typeof(CliannaDbContext))]
-    partial class CliannaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240115212757_FloatToDouble")]
+    partial class FloatToDouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,7 +36,7 @@ namespace Api.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("Disabled")
+                    b.Property<bool?>("Disabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Email")

@@ -12,7 +12,7 @@ public class Order : IEntity
     public bool Pending { get; set; }
     public EOrderShippingType? ShippingType { get; set; }
     public string? Comment { get; set; }
-    public float? Price { get; set; }
+    public double? Price { get; set; }
     public EOrderTax? Taxes { get; set; }
     public DateTime? DueDate { get; set; }
     public EOrderType? Type { get; set; }
@@ -20,7 +20,7 @@ public class Order : IEntity
     public string? Article { get; set; }
     public string? Color { get; set; }
     public string? Dealer { get; set; }
-    public float? Size { get; set; }
+    public double? Size { get; set; }
     public string? Name { get; set; }
 
     //FK
@@ -30,5 +30,5 @@ public class Order : IEntity
     public virtual IEnumerable<Document> Documents { get; set; }
     public virtual Customer? Customer { get; set; }
 
-    public string Id { get; set; } = new Cuid2(10).ToString();
+    public string Id { get; set; } = new Cuid2().ToString();
 }

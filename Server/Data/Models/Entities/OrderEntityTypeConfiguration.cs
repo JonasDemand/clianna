@@ -31,7 +31,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("longtext");
         builder
             .Property(e => e.Price)
-            .HasColumnType("float");
+            .HasColumnType("double");
         builder
             .Property(e => e.Taxes)
             .HasColumnType("int");
@@ -55,7 +55,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("varchar(255)");
         builder
             .Property(e => e.Size)
-            .HasColumnType("float");
+            .HasColumnType("double");
         //FK
         builder
             .Property(e => e.CustomerId)

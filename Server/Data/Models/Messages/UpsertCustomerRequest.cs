@@ -14,7 +14,7 @@ public class UpsertCustomerRequest
     public string? Phone { get; set; }
     public string? Mobile { get; set; }
     public bool? WhatsApp { get; set; }
-    public float? ShoeSize { get; set; }
+    public double? ShoeSize { get; set; }
     public bool? Disabled { get; set; }
     public string? Comment { get; set; }
     public ECustomerSalutation? Salutation { get; set; }

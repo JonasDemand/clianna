@@ -22,5 +22,5 @@ public class Document : IEntity
     public virtual Order? Order { get; set; }
     public virtual Customer? Customer { get; set; }
 
-    public string Id { get; set; } = new Cuid2(10).ToString();
+    public string Id { get; set; } = new Cuid2().ToString();
 }

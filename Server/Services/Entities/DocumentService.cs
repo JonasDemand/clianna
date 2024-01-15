@@ -106,11 +106,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
                         })
                         .ToList()
                 }, newDocument.GoogleId).ExecuteAsync();
-            if (documentToCopy.IncrementalId != null)
-            {
-                newDocument.IncrementalId = null;
-                documentToCopy.IncrementalId++;
-            }
+            if (documentToCopy.IncrementalId != null) documentToCopy.IncrementalId++;
         }
 
         return await _documentRepository.Add(newDocument);
