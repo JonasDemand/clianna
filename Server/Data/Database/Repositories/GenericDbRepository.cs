@@ -11,11 +11,28 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
 {
     protected readonly CliannaDbContext _dbContext;
     protected readonly IMapper _mapper;
+    private readonly IEnumerable<Expression<Func<T, object>>> _references = new List<Expression<Func<T, object>>>();
 
     protected GenericDbRepository(CliannaDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
         _mapper = mapper;
+    }
+
+    protected GenericDbRepository(CliannaDbContext dbContext, IMapper mapper,
+        IEnumerable<Expression<Func<T, object>>> references) : this(
+        dbContext, mapper)
+    {
+        _references = references;
+    }
+
+    protected virtual IQueryable<T> Query
+    {
+        get
+        {
+            var query = _dbContext.Set<T>() as IQueryable<T>;
+            return _references.Aggregate(query, (current, property) => current.Include(property));
+        }
     }
 
     public async Task<T> Add(T entity, bool save = true)
@@ -55,7 +72,7 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
 
     public async Task Delete(Expression<Func<T, bool>> predicate, bool save = true)
     {
-        var entities = await _dbContext.Set<T>().Where(predicate).ToListAsync();
+        var entities = await Query.Where(predicate).ToListAsync();
 
         _dbContext.Set<T>().RemoveRange(entities);
         if (save)
@@ -78,27 +95,27 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
 
     public async Task<T> Get(string id)
     {
-        return await _dbContext.Set<T>().FindAsync(id);
+        return await Query.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<List<T>> Get(IEnumerable<string> ids)
     {
-        return await _dbContext.Set<T>().Where(x => ids.Contains(x.Id)).ToListAsync();
+        return await Query.Where(x => ids.Contains(x.Id)).ToListAsync();
     }
 
     public async Task<List<T>> Get(Expression<Func<T, bool>> predicate)
     {
-        return await _dbContext.Set<T>().Where(predicate).ToListAsync();
+        return await Query.Where(predicate).ToListAsync();
     }
 
     public async Task<List<T>> GetAll()
     {
-        return await _dbContext.Set<T>().ToListAsync();
+        return await Query.ToListAsync();
     }
 
     public async Task<T> GetFirstOrDefault(Expression<Func<T, bool>> predicate)
     {
-        return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+        return await Query.FirstOrDefaultAsync(predicate);
     }
 
     public async Task SaveChanges()
