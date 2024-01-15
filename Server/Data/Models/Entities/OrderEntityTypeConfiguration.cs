@@ -13,7 +13,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
 
         builder
             .Property(e => e.Id)
-            .HasColumnType("varchar(10)")
+            .HasColumnType("varchar(255)")
             .IsRequired();
         builder
             .Property(e => e.CreationDate)
@@ -59,7 +59,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
         //FK
         builder
             .Property(e => e.CustomerId)
-            .HasColumnType("varchar(10)");
+            .HasColumnType("varchar(255)");
         builder.HasOne(e => e.Customer)
             .WithMany(e => e.Orders)
             .HasForeignKey(e => e.CustomerId);

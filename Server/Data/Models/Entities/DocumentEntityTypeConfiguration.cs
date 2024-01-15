@@ -14,7 +14,7 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
 
         builder
             .Property(e => e.Id)
-            .HasColumnType("varchar(10)")
+            .HasColumnType("varchar(255)")
             .IsRequired();
         builder
             .Property(e => e.CreationDate)
@@ -22,7 +22,7 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
             .IsRequired();
         builder
             .Property(e => e.GoogleId)
-            .HasColumnType("varchar(44)");
+            .HasColumnType("varchar(255)");
         builder
             .Property(e => e.Name)
             .HasColumnType("varchar(255)");
@@ -36,10 +36,10 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
         //FK
         builder
             .Property(e => e.CustomerId)
-            .HasColumnType("varchar(10)");
+            .HasColumnType("varchar(255)");
         builder
             .Property(e => e.OrderId)
-            .HasColumnType("varchar(10)");
+            .HasColumnType("varchar(255)");
         builder.HasOne(e => e.Customer)
             .WithMany(e => e.Documents)
             .HasForeignKey(e => e.CustomerId);

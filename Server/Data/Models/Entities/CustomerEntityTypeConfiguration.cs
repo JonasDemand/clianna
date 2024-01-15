@@ -12,7 +12,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
 
         builder
             .Property(e => e.Id)
-            .HasColumnType("varchar(10)")
+            .HasColumnType("varchar(255)")
             .IsRequired();
         builder
             .Property(e => e.FirstName)
