@@ -13,8 +13,7 @@ public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest
     private readonly IOrderRepository _orderRepository;
 
     public CustomerService(ICustomerRepository customerRepository, IOrderRepository orderRepository,
-        IDocumentRepository documentRepository, IMapper mapper) : base(customerRepository,
-        mapper)
+        IDocumentRepository documentRepository, IMapper mapper) : base(customerRepository, mapper)
     {
         _orderRepository = orderRepository;
         _documentRepository = documentRepository;

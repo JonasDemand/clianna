@@ -10,5 +10,5 @@ public class DocumentRepository : GenericDbRepository<Document>, IDocumentReposi
     {
     }
 
-    protected override IQueryable<Document> Query => base.Query.Include(e => e.Order).ThenInclude(e => e.Customer);
+    public override IQueryable<Document> Query => base.Query.Include(e => e.Order).ThenInclude(e => e.Customer);
 }

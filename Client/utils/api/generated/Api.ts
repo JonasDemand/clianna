@@ -15,6 +15,16 @@ export interface AuthenticateRequest {
   password?: string | null;
 }
 
+export interface ColumnFilter {
+  name?: string | null;
+  value?: string | null;
+}
+
+export interface ColumnSorting {
+  name?: string | null;
+  desc?: boolean;
+}
+
 export interface CopyDocumentRequest {
   name?: string | null;
   order?: string | null;
@@ -32,9 +42,9 @@ export interface Customer {
   phone?: string | null;
   mobile?: string | null;
   whatsApp?: boolean | null;
-  /** @format float */
+  /** @format double */
   shoeSize?: number | null;
-  disabled?: boolean | null;
+  disabled?: boolean;
   comment?: string | null;
   salutation?: ECustomerSalutation;
   orders?: Order[] | null;
@@ -42,7 +52,7 @@ export interface Customer {
   id?: string | null;
 }
 
-export interface CustomerListResponse {
+export interface CustomerPagedListResponse {
   data?: Customer[] | null;
   error?: Error;
 }
@@ -65,7 +75,7 @@ export interface Document {
   id?: string | null;
 }
 
-export interface DocumentListResponse {
+export interface DocumentPagedListResponse {
   data?: Document[] | null;
   error?: Error;
 }
@@ -179,7 +189,7 @@ export interface Order {
   pending?: boolean;
   shippingType?: EOrderShippingType;
   comment?: string | null;
-  /** @format float */
+  /** @format double */
   price?: number | null;
   taxes?: EOrderTax;
   /** @format date-time */
@@ -189,7 +199,7 @@ export interface Order {
   article?: string | null;
   color?: string | null;
   dealer?: string | null;
-  /** @format float */
+  /** @format double */
   size?: number | null;
   name?: string | null;
   documents?: Document[] | null;
@@ -197,7 +207,7 @@ export interface Order {
   id?: string | null;
 }
 
-export interface OrderListResponse {
+export interface OrderPagedListResponse {
   data?: Order[] | null;
   error?: Error;
 }
@@ -229,7 +239,7 @@ export interface UpsertCustomerRequest {
   phone?: string | null;
   mobile?: string | null;
   whatsApp?: boolean | null;
-  /** @format float */
+  /** @format double */
   shoeSize?: number | null;
   disabled?: boolean | null;
   comment?: string | null;
@@ -251,7 +261,7 @@ export interface UpsertOrderRequest {
   pending?: boolean;
   shippingType?: EOrderShippingType;
   comment?: string | null;
-  /** @format float */
+  /** @format double */
   price?: number | null;
   taxes?: EOrderTax;
   /** @format date-time */
@@ -261,7 +271,7 @@ export interface UpsertOrderRequest {
   article?: string | null;
   color?: string | null;
   dealer?: string | null;
-  /** @format float */
+  /** @format double */
   size?: number | null;
   name?: string | null;
   customer?: string | null;
@@ -492,6 +502,30 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version v1
  */
 export class Client<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  admin = {
+    /**
+     * No description
+     *
+     * @tags Admin
+     * @name MigrateDbCreate
+     * @request POST:/Admin/MigrateDb
+     * @secure
+     */
+    migrateDbCreate: (
+      query?: {
+        dbName?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<Response, any>({
+        path: `/Admin/MigrateDb`,
+        method: "POST",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
   customer = {
     /**
      * No description
@@ -501,10 +535,22 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request GET:/Customer
      * @secure
      */
-    customerList: (params: RequestParams = {}) =>
-      this.request<CustomerListResponse, any>({
+    customerList: (
+      query?: {
+        ColumnSorting?: string;
+        SearchTerm?: string;
+        ColumnFilters?: string;
+        /** @format int32 */
+        PageNumber?: number;
+        /** @format int32 */
+        PageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<CustomerPagedListResponse, any>({
         path: `/Customer`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -588,12 +634,12 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      *
      * @tags Document
      * @name CopyCreate
-     * @request POST:/Document/{id}/copy
+     * @request POST:/Document/{id}/Copy
      * @secure
      */
     copyCreate: (id: string, data: CopyDocumentRequest, params: RequestParams = {}) =>
       this.request<DocumentResponse, any>({
-        path: `/Document/${id}/copy`,
+        path: `/Document/${id}/Copy`,
         method: "POST",
         body: data,
         secure: true,
@@ -610,10 +656,22 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request GET:/Document
      * @secure
      */
-    documentList: (params: RequestParams = {}) =>
-      this.request<DocumentListResponse, any>({
+    documentList: (
+      query?: {
+        ColumnSorting?: string;
+        SearchTerm?: string;
+        ColumnFilters?: string;
+        /** @format int32 */
+        PageNumber?: number;
+        /** @format int32 */
+        PageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<DocumentPagedListResponse, any>({
         path: `/Document`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
@@ -700,10 +758,22 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @request GET:/Order
      * @secure
      */
-    orderList: (params: RequestParams = {}) =>
-      this.request<OrderListResponse, any>({
+    orderList: (
+      query?: {
+        ColumnSorting?: string;
+        SearchTerm?: string;
+        ColumnFilters?: string;
+        /** @format int32 */
+        PageNumber?: number;
+        /** @format int32 */
+        PageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<OrderPagedListResponse, any>({
         path: `/Order`,
         method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

@@ -21,11 +21,11 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
         builder
             .Property(e => e.Password)
-            .HasColumnType("longtext")
+            .HasColumnType("varchar(1000)")
             .IsRequired();
         builder
             .Property(e => e.Salt)
-            .HasColumnType("longtext")
+            .HasColumnType("varchar(1000)")
             .IsRequired();
         builder
             .Property(e => e.Enabled)

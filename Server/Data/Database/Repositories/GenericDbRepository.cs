@@ -26,7 +26,7 @@ public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : c
         _references = references;
     }
 
-    protected virtual IQueryable<T> Query
+    public virtual IQueryable<T> Query
     {
         get
         {

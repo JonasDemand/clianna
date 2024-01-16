@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Data.Database.Repositories;
 using Data.Models.Entities;
+using Data.Models.Messages.Filtering;
+using Shared.Extensions;
 
 namespace Services.Entities;
 
@@ -33,15 +35,23 @@ public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, T
         return await _repository.Get(id);
     }
 
-    public async Task<List<TEntity>> GetAll()
-    {
-        return await _repository.GetAll();
-    }
-
     public async Task<TEntity> Update(string id, TUpsert entity)
     {
         var entry = await _repository.Get(id);
         _mapper.Map(entity, entry);
         return await _repository.Update(entry);
+    }
+
+    public PagedList<TEntity> GetAll(string searchTerm, IEnumerable<ColumnFilter> columnFilters,
+        IEnumerable<ColumnSorting> columnSorting, PaginationParams paginationParams)
+    {
+        var query = _repository.Query.ApplyFilters(columnFilters, searchTerm).OrderBy(columnSorting);
+        var count = query.Count();
+        var filteredData = query.CustomPagination(paginationParams.PageNumber, paginationParams.PageSize).ToList();
+
+        var pagedList =
+            new PagedList<TEntity>(filteredData, count, paginationParams.PageNumber, paginationParams.PageSize);
+
+        return pagedList;
     }
 }

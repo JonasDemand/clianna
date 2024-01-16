@@ -22,9 +22,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
 
     public DocumentService(IDocumentRepository documentRepository, ICustomerRepository customerRepository,
         IOrderRepository orderRepository, IMapper mapper, IGoogleService googleService,
-        ITemplatingService templatingService,
-        IOptions<AppSettings> appSettings) :
-        base(documentRepository, mapper)
+        ITemplatingService templatingService, IOptions<AppSettings> appSettings) : base(documentRepository, mapper)
     {
         _googleService = googleService;
         _appSettings = appSettings.Value;

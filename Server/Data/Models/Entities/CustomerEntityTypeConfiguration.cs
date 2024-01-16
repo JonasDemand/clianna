@@ -53,7 +53,7 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
             .IsRequired();
         builder
             .Property(e => e.Comment)
-            .HasColumnType("longtext");
+            .HasColumnType("varchar(10000)");
         builder
             .Property(e => e.Salutation)
             .HasColumnType("int");

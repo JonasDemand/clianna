@@ -1,5 +1,6 @@
 import DocumentsPage from '@components/Pages/Documents/DocumentsPage';
 import DocumentProvider from '@context/DocumentContext';
+import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import { Customer, Document, Order } from '@utils/api/generated/Api';
 import useApiClientServer from 'hooks/useApiClientServer';
 import React from 'react';
@@ -8,15 +9,26 @@ const Documents = async () => {
   const ApiClient = await useApiClientServer();
 
   const responses = await Promise.all([
-    ApiClient.customer.customerList(),
-    ApiClient.order.orderList(),
-    ApiClient.document.documentList(),
+    ApiClient.document.documentList({
+      ColumnSorting: withColumnSorting([{ name: 'CreationDate', desc: true }]),
+      PageSize: 100,
+      PageNumber: 1,
+    }),
+    ApiClient.customer.customerList({
+      ColumnFilters: withColumnFilters([{ name: 'Disabled', value: 'false' }]),
+      ColumnSorting: withColumnSorting([{ name: 'LastName' }]),
+      PageSize: 500, //TODO: add pagination
+    }),
+    ApiClient.order.orderList({
+      ColumnSorting: withColumnSorting([{ name: 'CreationDate', desc: true }]),
+      PageSize: 500, //TODO: add pagination
+    }),
   ]);
 
   if (responses.some((res) => res.error || !res.data))
     throw new Error('Failed to fetch');
 
-  const [customers, orders, documents] = responses.map((res) => res.data);
+  const [documents, customers, orders] = responses.map((res) => res.data);
 
   return (
     <DocumentProvider

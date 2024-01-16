@@ -7,6 +7,7 @@ namespace Data.Database.Repositories;
 
 public interface IGenericRepository<T> where T : class, IEntity
 {
+    IQueryable<T> Query { get; }
     Task<List<T>> GetAll();
     Task<T> Get(string id);
     Task<List<T>> Get(IEnumerable<string> ids);

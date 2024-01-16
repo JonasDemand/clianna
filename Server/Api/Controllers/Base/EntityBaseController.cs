@@ -1,9 +1,13 @@
 ﻿using System.Net;
+using System.Text.Json;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Data.Models.Messages.Filtering;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Services.Api;
 using Services.Entities;
+using Shared.Extensions;
 
 namespace Api.Controllers.Base;
 
@@ -11,18 +15,48 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     where TEntity : class, IEntity
     where TUpsert : class
 {
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly IBaseEntityService<TEntity, TUpsert> _service;
 
-    protected EntityBaseController(IResponseFactory responseFactory, IBaseEntityService<TEntity, TUpsert> service) :
+    protected EntityBaseController(IResponseFactory responseFactory, IBaseEntityService<TEntity, TUpsert> service,
+        IOptions<JsonOptions> jsonOptions) :
         base(responseFactory)
     {
         _service = service;
+        _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
     }
 
     [HttpGet]
-    public async Task<ActionResult<Response<List<TEntity>>>> Get()
+    public ActionResult<Response<PagedList<TEntity>>> Get([FromQuery] SearchParams searchParams)
     {
-        return Ok(_responseFactory.Create(await _service.GetAll()));
+        var columnFilters = new List<ColumnFilter>();
+        if (!string.IsNullOrEmpty(searchParams.ColumnFilters))
+            try
+            {
+                columnFilters.AddRange(
+                    JsonSerializer.Deserialize<List<ColumnFilter>>(searchParams.ColumnFilters, _jsonSerializerOptions));
+            }
+            catch (Exception)
+            {
+                BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest, "Invalid ColumnFIlters Json"));
+            }
+
+        var columnSorting = new List<ColumnSorting>();
+        if (!string.IsNullOrEmpty(searchParams.ColumnSorting))
+            try
+            {
+                columnSorting.AddRange(
+                    JsonSerializer.Deserialize<List<ColumnSorting>>(searchParams.ColumnSorting,
+                        _jsonSerializerOptions));
+            }
+            catch (Exception)
+            {
+                BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest, "Invalid OrderBy Json"));
+            }
+
+        var pagedList = _service.GetAll(searchParams.SearchTerm, columnFilters, columnSorting, searchParams);
+        Response.AddPaginationHeader(pagedList.MetaData, _jsonSerializerOptions);
+        return Ok(_responseFactory.Create(pagedList));
     }
 
     [HttpGet("{id}")]

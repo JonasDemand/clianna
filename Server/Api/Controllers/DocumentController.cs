@@ -3,6 +3,7 @@ using Api.Controllers.Base;
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Services.Api;
 using Services.Entities;
 
@@ -13,9 +14,8 @@ public class DocumentController : EntityBaseController<Document, UpsertDocumentR
 {
     private readonly IDocumentService _documentService;
 
-    public DocumentController(IResponseFactory responseFactory, IDocumentService documentService) : base(
-        responseFactory,
-        documentService)
+    public DocumentController(IResponseFactory responseFactory, IDocumentService documentService,
+        IOptions<JsonOptions> jsonOptions) : base(responseFactory, documentService, jsonOptions)
     {
         _documentService = documentService;
     }

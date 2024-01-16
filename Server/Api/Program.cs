@@ -1,9 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using Api.Config;
 using Api.Middlewares;
 using Data.Database;
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Data.Models.Messages.Filtering;
 using Data.Models.Misc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -91,6 +93,9 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
+
+    c.DocumentFilter<CustomModelDocumentFilter<ColumnFilter>>();
+    c.DocumentFilter<CustomModelDocumentFilter<ColumnSorting>>();
 });
 
 builder.Services.AddCors();

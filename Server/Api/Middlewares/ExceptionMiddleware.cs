@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text.Json;
 using Services.Api;
 
 namespace Api.Middlewares;
@@ -29,9 +28,7 @@ public class ExceptionMiddleware
             response.ContentType = "application/json";
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var errorJson = JsonSerializer.Serialize(responseFactory.Create(HttpStatusCode.InternalServerError));
-
-            await response.WriteAsync(errorJson);
+            await response.WriteAsJsonAsync(responseFactory.Create(HttpStatusCode.InternalServerError));
         }
     }
 }

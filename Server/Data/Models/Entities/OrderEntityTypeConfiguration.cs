@@ -28,7 +28,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("int");
         builder
             .Property(e => e.Comment)
-            .HasColumnType("longtext");
+            .HasColumnType("varchar(10000)");
         builder
             .Property(e => e.Price)
             .HasColumnType("double");
