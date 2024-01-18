@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import React, { FC } from 'react';
-import Highlighter, { HighlighterProps } from 'react-highlight-words';
+import { HighlighterProps } from 'react-highlight-words';
 
 const ReactHighlighter: FC<HighlighterProps> = (props) => (
   <Box
@@ -11,10 +11,12 @@ const ReactHighlighter: FC<HighlighterProps> = (props) => (
       },
     }}
   >
+    {/*TODO: add highlighter again
     <Highlighter
       {...props}
       textToHighlight={props.textToHighlight?.toString() ?? ''}
-    />
+    />*/
+    props.textToHighlight?.toString()}
   </Box>
 );
 
