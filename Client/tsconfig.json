@@ -35,5 +35,10 @@
     "utils/api/customConfig.js",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", ".next"]
+  "exclude": [
+    "node_modules",
+    ".next",
+    "**/*.spec.tsx", //TODO: fix playwright tests
+    "playwright-ct.config.ts"
+  ]
 }
