@@ -103,8 +103,15 @@ const DocumentGeneral: FC = () => {
                   ? getCustomerLabel(option)
                   : getOrderLabel(option)
               }
-              renderInput={renderInputReference}
               isOptionEqualToValue={(option, value) => option?.id === value?.id}
+              renderInput={renderInputReference}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  {isCustomer(option)
+                    ? getCustomerLabel(option)
+                    : getOrderLabel(option)}
+                </li>
+              )}
             />
           </Grid>
         </Grid>

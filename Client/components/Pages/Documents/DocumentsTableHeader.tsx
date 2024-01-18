@@ -10,6 +10,7 @@ import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
   AutocompleteRenderInputParams,
+  Chip,
   Divider,
   Grid,
 } from '@mui/material';
@@ -81,6 +82,20 @@ const DocumentsTableHeader: FC = () => {
             limitTags={2}
             getOptionLabel={getOptionLabelColumns}
             renderInput={renderInputColumns}
+            renderOption={(props, option) => (
+              <li {...props} key={option.field}>
+                {getOptionLabelColumns(option)}
+              </li>
+            )}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip
+                  {...getTagProps({ index })}
+                  key={option.field}
+                  label={getOptionLabelColumns(option)}
+                />
+              ))
+            }
           />
         </Grid>
       </Grid>

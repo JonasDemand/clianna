@@ -275,6 +275,11 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
                 onChange={onChangeTemplate}
                 getOptionLabel={getOptionLabelTemplate}
                 renderInput={renderInputTemplate}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {getOptionLabelTemplate(option)}
+                  </li>
+                )}
               />
             </Grid>
           )}

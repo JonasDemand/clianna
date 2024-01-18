@@ -71,6 +71,11 @@ const EnumSelect = <T = string | number,>({
       renderInput={(params) => (
         <MuiTextField {...params} label={label} {...aditionalTextFieldProps} />
       )}
+      renderOption={(props, option) => (
+        <li {...props} key={option}>
+          {enumLabel?.get(option) ?? value?.toString()}
+        </li>
+      )}
     />
   ) : (
     <MuiTextField

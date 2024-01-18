@@ -124,6 +124,11 @@ const OrderGeneral: FC = () => {
               getOptionLabel={getCustomerLabel}
               renderInput={renderInputCustomer}
               isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option) => (
+                <li {...props} key={option.id}>
+                  {getCustomerLabel(option)}
+                </li>
+              )}
             />
           </Grid>
           <Grid item xs={6}>
