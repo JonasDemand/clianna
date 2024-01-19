@@ -27,7 +27,7 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     }
 
     [HttpGet]
-    public ActionResult<Response<PagedList<TEntity>>> Get([FromQuery] SearchParams searchParams)
+    public ActionResult<Response<PagedListResponse<TEntity>>> Get([FromQuery] SearchParams searchParams)
     {
         var columnFilters = new List<ColumnFilter>();
         if (!string.IsNullOrEmpty(searchParams.ColumnFilters))
@@ -54,9 +54,7 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
                 BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest, "Invalid OrderBy Json"));
             }
 
-        var pagedList = _service.GetAll(searchParams.SearchTerm, columnFilters, columnSorting, searchParams);
-        Response.AddPaginationHeader(pagedList.MetaData, _jsonSerializerOptions);
-        return Ok(_responseFactory.Create(pagedList));
+        return Ok(_responseFactory.Create(_service.GetAll(searchParams.SearchTerm, columnFilters, columnSorting, searchParams)));
     }
 
     [HttpGet("{id}")]

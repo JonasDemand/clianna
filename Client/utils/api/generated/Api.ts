@@ -53,7 +53,12 @@ export interface Customer {
 }
 
 export interface CustomerPagedListResponse {
-  data?: Customer[] | null;
+  metaData?: PaginationMetaData;
+  list?: Customer[] | null;
+}
+
+export interface CustomerPagedListResponseResponse {
+  data?: CustomerPagedListResponse;
   error?: Error;
 }
 
@@ -76,7 +81,12 @@ export interface Document {
 }
 
 export interface DocumentPagedListResponse {
-  data?: Document[] | null;
+  metaData?: PaginationMetaData;
+  list?: Document[] | null;
+}
+
+export interface DocumentPagedListResponseResponse {
+  data?: DocumentPagedListResponse;
   error?: Error;
 }
 
@@ -208,13 +218,29 @@ export interface Order {
 }
 
 export interface OrderPagedListResponse {
-  data?: Order[] | null;
+  metaData?: PaginationMetaData;
+  list?: Order[] | null;
+}
+
+export interface OrderPagedListResponseResponse {
+  data?: OrderPagedListResponse;
   error?: Error;
 }
 
 export interface OrderResponse {
   data?: Order;
   error?: Error;
+}
+
+export interface PaginationMetaData {
+  /** @format int32 */
+  currentPage?: number;
+  /** @format int32 */
+  totalPages?: number;
+  /** @format int32 */
+  pageSize?: number;
+  /** @format int32 */
+  totalCount?: number;
 }
 
 export interface Response {
@@ -547,7 +573,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
       },
       params: RequestParams = {},
     ) =>
-      this.request<CustomerPagedListResponse, any>({
+      this.request<CustomerPagedListResponseResponse, any>({
         path: `/Customer`,
         method: "GET",
         query: query,
@@ -668,7 +694,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
       },
       params: RequestParams = {},
     ) =>
-      this.request<DocumentPagedListResponse, any>({
+      this.request<DocumentPagedListResponseResponse, any>({
         path: `/Document`,
         method: "GET",
         query: query,
@@ -770,7 +796,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
       },
       params: RequestParams = {},
     ) =>
-      this.request<OrderPagedListResponse, any>({
+      this.request<OrderPagedListResponseResponse, any>({
         path: `/Order`,
         method: "GET",
         query: query,

@@ -18,15 +18,8 @@ import CustomerForm from './Form';
 
 const CustomersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const {
-    customers,
-    setCustomers,
-    selected,
-    setSelected,
-    filteredCustomers,
-    activeColumns,
-    searchText,
-  } = useCustomerContext();
+  const { customers, setCustomers, selected, setSelected, activeColumns } =
+    useCustomerContext();
   const ApiClient = useApiClient();
 
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
@@ -140,11 +133,10 @@ const CustomersPage: FC = () => {
     >
       <MuiTable<Customer>
         header={<CustomersTableHeader />}
-        rows={filteredCustomers}
+        rows={customers}
         columns={activeColumns}
         onRowClick={onRowClick}
         onDelete={setCustomerToDelete}
-        searchText={searchText}
       />
       <SideOverlay
         heading="Kunde bearbeiten"

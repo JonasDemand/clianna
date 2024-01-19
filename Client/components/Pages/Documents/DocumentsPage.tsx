@@ -144,7 +144,6 @@ const DocumentsPage: FC = () => {
         onRowClick={onRowClick}
         onCopy={onCopyRow}
         onDelete={setDocumentToDelete}
-        searchText={searchText}
       />
       <SideOverlay
         heading="Dokument bearbeiten"

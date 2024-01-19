@@ -68,3 +68,11 @@ export const getActionColumn = <T extends GridValidRowModel>({
     ),
   };
 };
+
+export const mapColumns = <T extends GridValidRowModel>(
+  cols: GridColDef<T>[]
+): GridColDef<T>[] =>
+  cols.map((col) => ({
+    sortComparator: () => 0,
+    ...col,
+  }));

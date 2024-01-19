@@ -1,20 +1,24 @@
 'use client';
 
 import { columns, defaultVariableColumns } from '@consts/customer';
-import { Customer, Document } from '@utils/api/generated/Api';
-import { searchArray } from '@utils/search';
+import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
+import { ColumnFilter, Customer, Document } from '@utils/api/generated/Api';
+import useApiClient from 'hooks/useApiClient';
+import useDebounce from 'hooks/useDebounce';
+import useDidMountEffect from 'hooks/useDidMountEffect';
+import { useSnackbar } from 'notistack';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
 
 import { CustomerContextType, EShowCustomer } from '../types/customer';
+import { usePaginationContext } from './PaginationContext';
 
 export const useCustomerContext = () => {
   const context = useContext(CustomerContext);
@@ -37,12 +41,21 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   initialCustomers,
   initialTemplates,
 }) => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const ApiClient = useApiClient();
+  const {
+    currentPage,
+    gridSortModel,
+    searchText,
+    setCurrentPage,
+    setRowCount,
+  } = usePaginationContext();
+
+  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
-  const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<Customer | null>(null);
 
   const activeColumns = useMemo(
@@ -50,23 +63,42 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     [activeVariableColumns]
   );
 
-  /*TODO: Improve search to only search in keys
-  const searchKeys = useMemo(
-    () => activeColumns.map((x) => x.field),
-    [activeColumns]
-  );*/
-  const filteredCustomers = useMemo(() => {
-    const pendingValue = showCustomers === EShowCustomer.Disabled;
-    const customersToSearch =
-      showCustomers === EShowCustomer.All
-        ? customers
-        : customers.filter((customer) => customer.disabled === pendingValue);
-
-    return searchArray(customersToSearch, searchText);
-  }, [searchText, showCustomers, customers]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setCustomers(initialCustomers), []);
+  const fetchCustomers = useDebounce(async () => {
+    const columnFilters = new Array<ColumnFilter>();
+    if (showCustomers !== EShowCustomer.All)
+      columnFilters.push({
+        name: 'Disabled',
+        value: (showCustomers === EShowCustomer.Disabled).toString(),
+      });
+    const { data, error } = await ApiClient.customer.customerList({
+      ColumnFilters: withColumnFilters(columnFilters),
+      ColumnSorting: withColumnSorting(
+        gridSortModel.map((x) => ({
+          name: x.field[0].toUpperCase().concat(x.field.slice(1)),
+          desc: x.sort === 'desc',
+        }))
+      ),
+      SearchTerm: searchText,
+      PageNumber: currentPage + 1,
+      PageSize: 100,
+    });
+    if (error || !data?.list || !data.metaData) {
+      enqueueSnackbar('Unbekannter Fehler', {
+        variant: 'error',
+      });
+      return;
+    }
+    setCurrentPage(data.metaData.currentPage! - 1);
+    setRowCount(data.metaData.totalCount!);
+    setCustomers(data.list);
+  }, 750);
+  useDidMountEffect(
+    () => {
+      fetchCustomers();
+    },
+    2,
+    [searchText, showCustomers, gridSortModel, currentPage]
+  );
 
   const updateSelected = useCallback(
     <T extends keyof Customer>(property: T, value: Customer[T]) => {
@@ -83,7 +115,6 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       value={{
         customers,
         setCustomers,
-        filteredCustomers,
         templates: initialTemplates,
         selected,
         setSelected,
@@ -93,8 +124,6 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         activeColumns,
         activeVariableColumns,
         setActiveVariableColumns,
-        searchText,
-        setSearchText,
       }}
     >
       {children}

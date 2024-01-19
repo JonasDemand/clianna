@@ -7,7 +7,7 @@ public interface IBaseEntityService<TEntity, TUpsert>
     where TEntity : class, IEntity
     where TUpsert : class
 {
-    PagedList<TEntity> GetAll(string? searchTerm, IEnumerable<ColumnFilter> columnFilters,
+    PagedListResponse<TEntity> GetAll(string? searchTerm, IEnumerable<ColumnFilter> columnFilters,
         IEnumerable<ColumnSorting> columnSorting, PaginationParams paginationParams);
 
     Task<TEntity> GetById(string id);

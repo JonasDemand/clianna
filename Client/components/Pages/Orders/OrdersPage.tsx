@@ -21,15 +21,8 @@ const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { setShowBackdrop } = useBackdropContext();
-  const {
-    filteredOrders,
-    activeColumns,
-    selected,
-    setSelected,
-    orders,
-    setOrders,
-    searchText,
-  } = useOrderContext();
+  const { activeColumns, selected, setSelected, orders, setOrders } =
+    useOrderContext();
   const ApiClient = useApiClient();
 
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
@@ -159,12 +152,11 @@ const OrdersPage: FC = () => {
     >
       <MuiTable<Order>
         header={<OrdersTableHeader />}
-        rows={filteredOrders}
+        rows={orders}
         columns={activeColumns}
         onRowClick={onRowClick}
         onCopy={onCopyRow}
         onDelete={setOrderToDelete}
-        searchText={searchText}
       />
       <SideOverlay
         heading="Auftrag bearbeiten"

@@ -6,6 +6,7 @@ import {
   variableColumns,
 } from '@consts/customer';
 import { useCustomerContext } from '@context/CustomerContext';
+import { usePaginationContext } from '@context/PaginationContext';
 import { EShowCustomer } from '@customTypes/customer';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -17,7 +18,6 @@ import {
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Customer } from '@utils/api/generated/Api';
-import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 import EnumSelect from '../../Form/EnumSelect';
@@ -27,16 +27,13 @@ const CustomersTableHeader: FC = () => {
     showCustomers,
     activeVariableColumns,
     setSelected,
-    setSearchText,
     setActiveVariableColumns,
     setShowCustomers,
   } = useCustomerContext();
+  const { setSearchText } = usePaginationContext();
 
   const onChangeSearch = useCallback(
-    debounce(
-      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
-      500
-    ),
+    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
     [setSearchText]
   );
   const onChangeColumns = useCallback(

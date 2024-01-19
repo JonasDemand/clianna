@@ -16,11 +16,8 @@ export type ProviderWrapperProps = {
 
 const ProviderWrapper: FC<ProviderWrapperProps> = ({ session, children }) => {
   return (
-    //@ts-ignore
     <ThemeProvider theme={theme}>
-      {/* @ts-ignore*/}
       <SessionProvider session={session}>
-        {/* @ts-ignore*/}
         <SnackbarProvider
           maxSnack={3}
           anchorOrigin={{
@@ -29,7 +26,6 @@ const ProviderWrapper: FC<ProviderWrapperProps> = ({ session, children }) => {
           }}
           TransitionComponent={Slide}
         >
-          {/* @ts-ignore*/}
           <BackdropProvider>{children}</BackdropProvider>
         </SnackbarProvider>
       </SessionProvider>

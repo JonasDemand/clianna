@@ -1,4 +1,5 @@
 import { getActionColumn, GetActiveColumnProps } from '@consts/table';
+import { usePaginationContext } from '@context/PaginationContext';
 import { Box } from '@mui/system';
 import {
   DataGrid,
@@ -14,17 +15,24 @@ import TableCell from '../Table/TableCell';
 type MuiTableProps<T extends GridValidRowModel> = DataGridProps<T> &
   GetActiveColumnProps<T> & {
     header: ReactNode;
-    searchText: string;
   };
 
 const MuiTable = <T extends GridValidRowModel>({
   header,
-  searchText,
   onCopy,
   onDelete,
   onEdit,
   ...gridProps
 }: MuiTableProps<T>) => {
+  const {
+    currentPage,
+    gridSortModel,
+    rowCount,
+    searchText,
+    setCurrentPage,
+    setGridSortModel,
+  } = usePaginationContext();
+
   const actionColumn = useMemo(
     () => getActionColumn({ onCopy, onDelete, onEdit }),
     [onCopy, onDelete, onEdit]
@@ -50,10 +58,19 @@ const MuiTable = <T extends GridValidRowModel>({
           '.MuiDataGrid-row': {
             cursor: gridProps ? 'pointer' : 'unset',
           },
+          '.MuiTablePagination-actions': {
+            pointerEvents: 'none', //TODO: implement pagination
+          },
         }}
         localeText={deDE.components.MuiDataGrid.defaultProps.localeText}
+        rowsPerPageOptions={[100]}
         disableColumnMenu
         disableSelectionOnClick
+        sortModel={gridSortModel}
+        onSortModelChange={(model) => setGridSortModel(model)}
+        page={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+        rowCount={rowCount}
         {...gridProps}
         columns={gridProps.columns
           .map<GridColDef<T>>((column) => ({

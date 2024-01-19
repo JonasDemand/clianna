@@ -7,7 +7,9 @@ import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';
 import React from 'react';
 
-export const variableColumns: GridColDef<Document>[] = [
+import { mapColumns } from './table';
+
+export const variableColumns: GridColDef<Document>[] = mapColumns([
   { field: 'id', headerName: 'Dokumente-ID', flex: 1 },
   { field: 'name', headerName: 'Name', flex: 1 },
   {
@@ -41,15 +43,15 @@ export const variableColumns: GridColDef<Document>[] = [
     flex: 1,
     valueGetter: ({ row }) => getOrderLabel(row.order),
   },
-];
-export const columns: GridColDef<Document>[] = [
+]);
+export const columns: GridColDef<Document>[] = mapColumns([
   {
     field: 'template',
     headerName: 'Template',
     width: 80,
     renderCell: ({ row }) => (row.template ? <Check /> : <Close />),
   },
-];
+]);
 
 export const defaultVariableColumns = variableColumns.slice(1, 4);
 

@@ -1,23 +1,25 @@
 namespace Data.Models.Messages.Filtering;
 
-public class PagedList<T> : List<T>
+public class PagedListResponse<T>
 {
-    public PagedList(IEnumerable<T> items, int count, int pageNumber, int pageSize)
+    public PaginationMetaData MetaData { get; set; }
+    public IEnumerable<T> List { get; set; }
+    
+    public PagedListResponse(IEnumerable<T> items, int count, int pageNumber, int pageSize)
     {
-        MetaData = new MetaData
+        MetaData = new PaginationMetaData
         {
             TotalCount = count,
             PageSize = pageSize,
             CurrentPage = pageNumber,
             TotalPages = (int)Math.Ceiling(count / (double)pageSize)
         };
-        AddRange(items);
+        List = items;
     }
 
-    public MetaData MetaData { get; set; }
 }
 
-public class MetaData
+public class PaginationMetaData
 {
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }

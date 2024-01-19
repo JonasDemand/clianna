@@ -10,18 +10,48 @@ import {
 } from '@utils/api/generated/Api';
 import React from 'react';
 
-export const variableColumns: GridColDef<Customer>[] = [
+import { mapColumns } from './table';
+
+export const variableColumns: GridColDef<Customer>[] = mapColumns([
   { field: 'id', headerName: 'Kunden-ID', flex: 1 },
-  { field: 'firstName', headerName: 'Vorname', flex: 1 },
-  { field: 'lastName', headerName: 'Nachname', flex: 1 },
+  {
+    field: 'firstName',
+    headerName: 'Vorname',
+    flex: 1,
+  },
+  {
+    field: 'lastName',
+    headerName: 'Nachname',
+    flex: 1,
+  },
   { field: 'email', headerName: 'E-Mail', flex: 1 },
   { field: 'street', headerName: 'Straße', flex: 1 },
-  { field: 'streetNumber', headerName: 'Hausnummer', flex: 1 },
+  {
+    field: 'streetNumber',
+    headerName: 'Hausnummer',
+    flex: 1,
+  },
   { field: 'city', headerName: 'Stadt', flex: 1 },
-  { field: 'postalCode', headerName: 'Postleitzahl', flex: 1 },
-  { field: 'phone', headerName: 'Festnetztelefon', flex: 1 },
-  { field: 'mobile', headerName: 'Mobiltelefon', flex: 1 },
-  { field: 'shoeSize', headerName: 'Schuhgröße', flex: 1 },
+  {
+    field: 'postalCode',
+    headerName: 'Postleitzahl',
+    flex: 1,
+  },
+  {
+    field: 'phone',
+    headerName: 'Festnetztelefon',
+    flex: 1,
+  },
+  {
+    field: 'mobile',
+    headerName: 'Mobiltelefon',
+    flex: 1,
+  },
+  {
+    field: 'shoeSize',
+    headerName: 'Schuhgröße',
+    flex: 1,
+  },
   {
     field: 'whatsApp',
     headerName: 'WhatsApp',
@@ -41,15 +71,15 @@ export const variableColumns: GridColDef<Customer>[] = [
     flex: 1,
     valueGetter: ({ row }) => row.orders?.filter((x) => x.pending).length ?? 0,
   },
-];
-export const columns: GridColDef<Customer>[] = [
+]);
+export const columns: GridColDef<Customer>[] = mapColumns([
   {
     field: 'disabled',
     headerName: 'Aktiv',
     width: 60,
     renderCell: ({ row }) => (row.disabled ? <Close /> : <Check />),
   },
-];
+]);
 
 export const defaultVariableColumns = variableColumns.slice(1, 3);
 

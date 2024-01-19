@@ -42,7 +42,7 @@ public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, T
         return await _repository.Update(entry);
     }
 
-    public PagedList<TEntity> GetAll(string searchTerm, IEnumerable<ColumnFilter> columnFilters,
+    public PagedListResponse<TEntity> GetAll(string searchTerm, IEnumerable<ColumnFilter> columnFilters,
         IEnumerable<ColumnSorting> columnSorting, PaginationParams paginationParams)
     {
         var query = _repository.Query.ApplyFilters(columnFilters, searchTerm).OrderBy(columnSorting);
@@ -50,7 +50,7 @@ public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, T
         var filteredData = query.CustomPagination(paginationParams.PageNumber, paginationParams.PageSize).ToList();
 
         var pagedList =
-            new PagedList<TEntity>(filteredData, count, paginationParams.PageNumber, paginationParams.PageSize);
+            new PagedListResponse<TEntity>(filteredData, count, paginationParams.PageNumber, paginationParams.PageSize);
 
         return pagedList;
     }

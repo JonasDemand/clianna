@@ -1,5 +1,6 @@
 import OrdersPage from '@components/Pages/Orders/OrdersPage';
 import OrderProvider from '@context/OrderContext';
+import PaginationProvider from '@context/PaginationContext';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import { Customer, Document, Order } from '@utils/api/generated/Api';
 import useApiClientServer from 'hooks/useApiClientServer';
@@ -18,27 +19,40 @@ const Orders = async () => {
     ApiClient.customer.customerList({
       ColumnFilters: withColumnFilters([{ name: 'Disabled', value: 'false' }]),
       ColumnSorting: withColumnSorting([{ name: 'LastName' }]),
-      PageSize: 500, //TODO: add pagination
+      PageSize: 1000, //TODO: add pagination
     }),
     ApiClient.document.documentList({
       ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
-      PageSize: 500, //TODO: add pagination
+      ColumnSorting: withColumnSorting([{ name: 'CreationDate', desc: true }]),
+      PageSize: 1000, //TODO: add pagination
     }),
   ]);
 
-  if (responses.some((res) => res.error || !res.data))
+  if (
+    responses.some((res) => res.error || !res.data?.list || !res.data.metaData)
+  )
     throw new Error('Failed to fetch');
 
-  const [orders, customers, templates] = responses.map((res) => res.data);
+  const [orders, customers, templates] = responses.map((res) => res.data!);
 
   return (
-    <OrderProvider
-      initialCustomers={customers as Customer[]}
-      initialOrders={orders as Order[]}
-      initialTemplates={templates as Document[]}
+    <PaginationProvider
+      initialRowsCount={orders.metaData!.totalCount!}
+      initalSortModel={[
+        {
+          field: 'creationDate',
+          sort: 'desc',
+        },
+      ]}
     >
-      <OrdersPage />
-    </OrderProvider>
+      <OrderProvider
+        initialCustomers={customers.list as Customer[]}
+        initialOrders={orders.list as Order[]}
+        initialTemplates={templates.list as Document[]}
+      >
+        <OrdersPage />
+      </OrderProvider>
+    </PaginationProvider>
   );
 };
 

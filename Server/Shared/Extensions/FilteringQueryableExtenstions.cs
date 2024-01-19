@@ -91,12 +91,13 @@ public static class FilteringQueryableExtenstions
 
                 searchTermExpression = searchTermExpression == null
                     ? comparison
-                    : Expression.OrElse(searchTermExpression, comparison);
+                    : Expression.OrElse(comparison,searchTermExpression);
+                
             }
 
             filterExpression = filterExpression == null
                 ? searchTermExpression
-                : Expression.And(filterExpression, searchTermExpression);
+                : Expression.AndAlso(filterExpression, searchTermExpression);
         }
         catch
         {

@@ -17,18 +17,18 @@ const Documents = async () => {
     ApiClient.customer.customerList({
       ColumnFilters: withColumnFilters([{ name: 'Disabled', value: 'false' }]),
       ColumnSorting: withColumnSorting([{ name: 'LastName' }]),
-      PageSize: 500, //TODO: add pagination
+      PageSize: 1000, //TODO: add pagination
     }),
     ApiClient.order.orderList({
       ColumnSorting: withColumnSorting([{ name: 'CreationDate', desc: true }]),
-      PageSize: 500, //TODO: add pagination
+      PageSize: 1000, //TODO: add pagination
     }),
   ]);
 
-  if (responses.some((res) => res.error || !res.data))
+  if (responses.some((res) => res.error || !res.data?.list))
     throw new Error('Failed to fetch');
 
-  const [documents, customers, orders] = responses.map((res) => res.data);
+  const [documents, customers, orders] = responses.map((res) => res.data!.list);
 
   return (
     <DocumentProvider

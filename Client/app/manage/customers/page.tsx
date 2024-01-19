@@ -1,5 +1,6 @@
 import CustomersPage from '@components/Pages/Customers/CustomersPage';
 import CustomerProvider from '@context/CustomerContext';
+import PaginationProvider from '@context/PaginationContext';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import { Customer, Document } from '@utils/api/generated/Api';
 import useApiClientServer from 'hooks/useApiClientServer';
@@ -16,22 +17,30 @@ const Customers = async () => {
     }),
     ApiClient.document.documentList({
       ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
-      PageSize: 500, //TODO: add pagination
+      ColumnSorting: withColumnSorting([{ name: 'CreationDate', desc: true }]),
+      PageSize: 1000, //TODO: add pagination
     }),
   ]);
 
-  if (responses.some((res) => res.error || !res.data))
+  if (
+    responses.some((res) => res.error || !res.data?.list || !res.data.metaData)
+  )
     throw new Error('Failed to fetch');
 
-  const [customers, templates] = responses.map((res) => res.data);
+  const [customers, templates] = responses.map((res) => res.data!);
 
   return (
-    <CustomerProvider
-      initialCustomers={customers as Customer[]}
-      initialTemplates={templates as Document[]}
+    <PaginationProvider
+      initialRowsCount={customers.metaData!.totalCount!}
+      initalSortModel={[{ field: 'lastName', sort: 'asc' }]}
     >
-      <CustomersPage />
-    </CustomerProvider>
+      <CustomerProvider
+        initialCustomers={customers.list as Customer[]}
+        initialTemplates={templates.list as Document[]}
+      >
+        <CustomersPage />
+      </CustomerProvider>
+    </PaginationProvider>
   );
 };
 

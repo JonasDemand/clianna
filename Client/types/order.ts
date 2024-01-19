@@ -6,7 +6,6 @@ export type OrderContextType = {
   templates: Document[];
   orders: Order[];
   setOrders: (orders: Order[]) => void;
-  filteredOrders: Order[];
   selected: Order | null;
   setSelected: (order: Order | null) => void;
   updateSelected: <T extends keyof Order>(property: T, value: Order[T]) => void;
@@ -15,8 +14,6 @@ export type OrderContextType = {
   activeColumns: GridColDef<Order>[];
   activeVariableColumns: GridColDef<Order>[];
   setActiveVariableColumns: (activeColumns: GridColDef<Order>[]) => void;
-  searchText: string;
-  setSearchText: (text: string) => void;
 };
 
 export enum EShowOrder {

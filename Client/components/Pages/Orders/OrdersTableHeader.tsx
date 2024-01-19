@@ -3,6 +3,7 @@ import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import { defaultOrder, ShowOrderLabels, variableColumns } from '@consts/order';
 import { useOrderContext } from '@context/OrderContext';
+import { usePaginationContext } from '@context/PaginationContext';
 import { EShowOrder } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -14,7 +15,6 @@ import {
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Order } from '@utils/api/generated/Api';
-import { debounce } from 'lodash';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const OrdersTableHeader: FC = () => {
@@ -22,16 +22,13 @@ const OrdersTableHeader: FC = () => {
     showOrders,
     activeVariableColumns,
     setSelected,
-    setSearchText,
     setActiveVariableColumns,
     setShowOrders,
   } = useOrderContext();
+  const { setSearchText } = usePaginationContext();
 
   const onChangeSearch = useCallback(
-    debounce(
-      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
-      500
-    ),
+    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
     [setSearchText]
   );
   const onChangeColumns = useCallback(

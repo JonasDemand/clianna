@@ -13,13 +13,14 @@ import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import React from 'react';
 
-export const variableColumns: GridColDef<Order>[] = [
+import { mapColumns } from './table';
+
+export const variableColumns: GridColDef<Order>[] = mapColumns([
   { field: 'id', headerName: 'Auftrags-ID', flex: 1 },
   {
     field: 'customer',
     headerName: 'Kunde',
     flex: 1,
-
     valueGetter: ({ row }) => getCustomerLabel(row.customer),
   },
   {
@@ -60,15 +61,15 @@ export const variableColumns: GridColDef<Order>[] = [
     flex: 1,
     valueGetter: ({ row }) => (row.taxes ? OrderTaxLabels.get(row.taxes) : ''),
   },
-];
-export const columns: GridColDef<Order>[] = [
+]);
+export const columns: GridColDef<Order>[] = mapColumns([
   {
     field: 'pending',
     headerName: 'Ausstehend',
     width: 100,
     renderCell: ({ row }) => (row.pending ? <Check /> : <Close />),
   },
-];
+]);
 export const defaultVariableColumns = variableColumns.slice(1, 3);
 
 export const defaultOrder = (): Order => ({

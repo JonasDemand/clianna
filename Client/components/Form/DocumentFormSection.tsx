@@ -5,6 +5,7 @@ import MuiTable from '@components/External/MuiTable';
 import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import { defaultVariableColumns } from '@consts/document';
+import PaginationProvider from '@context/PaginationContext';
 import { EId } from '@customTypes/id';
 import { Add, Search } from '@mui/icons-material';
 import {
@@ -113,7 +114,6 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       return;
     }
 
-    console.log(selected);
     const res = selected.id.includes(EId.Copy)
       ? await ApiClient.document.copyCreate(
           getCopyId(selected.id),
@@ -199,46 +199,47 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     <>
       <FormSection label="Dokumente">
         <Box sx={{ height: '500px' }}>
-          <MuiTable
-            header={
-              <Grid
-                container
-                spacing={1}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Grid item xs={12} md={8}>
-                  <MuiTextField
-                    fullWidth
-                    type="text"
-                    label="Suche"
-                    value={searchText}
-                    onChange={onChangeSearch}
-                    InputProps={{
-                      endAdornment: <Search />,
-                    }}
-                  />
+          <PaginationProvider initialRowsCount={documents.length}>
+            <MuiTable
+              header={
+                <Grid
+                  container
+                  spacing={1}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Grid item xs={12} md={8}>
+                    <MuiTextField
+                      fullWidth
+                      type="text"
+                      label="Suche"
+                      value={searchText}
+                      onChange={onChangeSearch}
+                      InputProps={{
+                        endAdornment: <Search />,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <MuiButton
+                      variant="contained"
+                      color="success"
+                      fullWidth
+                      startIcon={<Add />}
+                      onClick={onClickAdd}
+                    >
+                      Hinzufügen
+                    </MuiButton>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={4}>
-                  <MuiButton
-                    variant="contained"
-                    color="success"
-                    fullWidth
-                    startIcon={<Add />}
-                    onClick={onClickAdd}
-                  >
-                    Hinzufügen
-                  </MuiButton>
-                </Grid>
-              </Grid>
-            }
-            searchText={searchText}
-            columns={defaultVariableColumns}
-            rows={filteredDocuments}
-            onRowClick={onRowClick}
-            onCopy={onCopyDocument}
-            onDelete={setDocumentToDelete}
-          />
+              }
+              columns={defaultVariableColumns}
+              rows={filteredDocuments}
+              onRowClick={onRowClick}
+              onCopy={onCopyDocument}
+              onDelete={setDocumentToDelete}
+            />
+          </PaginationProvider>
         </Box>
       </FormSection>
 

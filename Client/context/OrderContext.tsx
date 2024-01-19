@@ -2,18 +2,28 @@
 
 import { columns, defaultVariableColumns } from '@consts/order';
 import { EShowOrder, OrderContextType } from '@customTypes/order';
-import { Customer, Document, Order } from '@utils/api/generated/Api';
-import { searchArray } from '@utils/search';
+import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
+import {
+  ColumnFilter,
+  Customer,
+  Document,
+  Order,
+} from '@utils/api/generated/Api';
+import useApiClient from 'hooks/useApiClient';
+import useDebounce from 'hooks/useDebounce';
+import useDidMountEffect from 'hooks/useDidMountEffect';
+import { useSnackbar } from 'notistack';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
+
+import { usePaginationContext } from './PaginationContext';
 
 export const useOrderContext = () => {
   const context = useContext(OrderContext);
@@ -38,37 +48,64 @@ const OrderProvider: FC<OrderContextProps> = ({
   initialOrders,
   initialTemplates,
 }) => {
-  const [orders, setOrders] = useState<Order[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const ApiClient = useApiClient();
+  const {
+    currentPage,
+    gridSortModel,
+    searchText,
+    setCurrentPage,
+    setRowCount,
+  } = usePaginationContext();
+
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
-  const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<Order | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
     [activeVariableColumns]
   );
-  /*TODO: Improve search to only search in keys
-  const searchKeys = useMemo(
-    () => activeColumns.map((x) => x.field),
-    [activeColumns]
-  );*/
-  const filteredOrders = useMemo(() => {
-    const pendingValue = showOrders === EShowOrder.Pending;
-    const ordersToSearch =
-      showOrders === EShowOrder.All
-        ? orders
-        : orders.filter((order) => order.pending === pendingValue);
 
-    return searchArray(ordersToSearch, searchText);
-  }, [orders, searchText, showOrders]);
-
-  useEffect(() => {
-    setOrders(initialOrders);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const fetchOrders = useDebounce(async () => {
+    const columnFilters = new Array<ColumnFilter>();
+    if (showOrders !== EShowOrder.All)
+      columnFilters.push({
+        name: 'Pending',
+        value: (showOrders === EShowOrder.Pending).toString(),
+      });
+    const { data, error } = await ApiClient.order.orderList({
+      ColumnFilters: withColumnFilters(columnFilters),
+      ColumnSorting: withColumnSorting(
+        gridSortModel.map((x) => ({
+          name: x.field[0].toUpperCase().concat(x.field.slice(1)),
+          desc: x.sort === 'desc',
+        }))
+      ),
+      SearchTerm: searchText,
+      PageNumber: currentPage + 1,
+      PageSize: 100,
+    });
+    if (error || !data?.list || !data.metaData) {
+      enqueueSnackbar('Unbekannter Fehler', {
+        variant: 'error',
+      });
+      return;
+    }
+    setCurrentPage(data.metaData.currentPage! - 1);
+    setRowCount(data.metaData.totalCount!);
+    setOrders(data.list);
+  }, 750);
+  useDidMountEffect(
+    () => {
+      fetchOrders();
+    },
+    4, //TODO: debug why its not taking the value
+    [searchText, showOrders, gridSortModel, currentPage]
+  );
 
   const updateSelected = useCallback(
     <T extends keyof Order>(property: T, value: Order[T]) => {
@@ -87,7 +124,6 @@ const OrderProvider: FC<OrderContextProps> = ({
         templates: initialTemplates,
         orders,
         setOrders,
-        filteredOrders,
         selected,
         setSelected,
         updateSelected,
@@ -96,8 +132,6 @@ const OrderProvider: FC<OrderContextProps> = ({
         activeColumns,
         activeVariableColumns,
         setActiveVariableColumns,
-        searchText,
-        setSearchText,
       }}
     >
       {children}
