@@ -1,5 +1,6 @@
 import DocumentsPage from '@components/Pages/Documents/DocumentsPage';
 import DocumentProvider from '@context/DocumentContext';
+import PaginationProvider from '@context/PaginationContext';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import { Customer, Document, Order } from '@utils/api/generated/Api';
 import useApiClientServer from 'hooks/useApiClientServer';
@@ -25,19 +26,26 @@ const Documents = async () => {
     }),
   ]);
 
-  if (responses.some((res) => res.error || !res.data?.list))
+  if (
+    responses.some((res) => res.error || !res.data?.list || !res.data.metaData)
+  )
     throw new Error('Failed to fetch');
 
-  const [documents, customers, orders] = responses.map((res) => res.data!.list);
+  const [documents, customers, orders] = responses.map((res) => res.data);
 
   return (
-    <DocumentProvider
-      initialCustomers={customers as Customer[]}
-      initialOrders={orders as Order[]}
-      initialDocuments={documents as Document[]}
+    <PaginationProvider
+      initialRowsCount={documents!.metaData!.totalCount}
+      initalSortModel={[{ field: 'creationDate', sort: 'desc' }]}
     >
-      <DocumentsPage />
-    </DocumentProvider>
+      <DocumentProvider
+        initialCustomers={customers!.list as Customer[]}
+        initialOrders={orders!.list as Order[]}
+        initialDocuments={documents!.list as Document[]}
+      >
+        <DocumentsPage />
+      </DocumentProvider>
+    </PaginationProvider>
   );
 };
 

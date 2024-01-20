@@ -22,14 +22,14 @@ const PaginationContext = createContext<PaginationContextType | null>(null);
 
 type PaginationContextProps = {
   children: ReactNode;
-  initialRowsCount: number;
-  initalSortModel: GridSortModel;
+  initialRowsCount?: number;
+  initalSortModel?: GridSortModel;
 };
 
 const PaginationProvider: FC<PaginationContextProps> = ({
   children,
-  initialRowsCount,
-  initalSortModel,
+  initialRowsCount = 0,
+  initalSortModel = [],
 }) => {
   const [searchText, setSearchText] = useState('');
   const [gridSortModel, setGridSortModel] =

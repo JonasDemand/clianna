@@ -20,15 +20,8 @@ import DocumentForm from './Form';
 const DocumentsPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    activeColumns,
-    selected,
-    setSelected,
-    searchText,
-    documents,
-    filteredDocuments,
-    setDocuments,
-  } = useDocumentContext();
+  const { activeColumns, selected, setSelected, documents, setDocuments } =
+    useDocumentContext();
   const ApiClient = useApiClient();
 
   const [documentToDelete, setDocumentToDelete] = useState<Document | null>(
@@ -139,7 +132,7 @@ const DocumentsPage: FC = () => {
     >
       <MuiTable<Document>
         header={<DocumentsTableHeader />}
-        rows={filteredDocuments}
+        rows={documents}
         columns={activeColumns}
         onRowClick={onRowClick}
         onCopy={onCopyRow}

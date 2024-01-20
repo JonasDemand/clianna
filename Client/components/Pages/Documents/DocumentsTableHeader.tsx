@@ -4,6 +4,7 @@ import EnumSelect from '@components/Form/EnumSelect';
 import { ShowDocumentLabels } from '@consts/document';
 import { variableColumns } from '@consts/document';
 import { useDocumentContext } from '@context/DocumentContext';
+import { usePaginationContext } from '@context/PaginationContext';
 import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
 import { Add, Search } from '@mui/icons-material';
@@ -15,9 +16,10 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Order } from '@utils/api/generated/Api';
-import { debounce } from 'lodash';
+import { Customer, Order } from '@utils/api/generated/Api';
 import React, { ChangeEvent, FC, useCallback } from 'react';
+
+import ReferenceInput from './common/ReferenceInput';
 
 const DocumentsTableHeader: FC = () => {
   const {
@@ -25,15 +27,14 @@ const DocumentsTableHeader: FC = () => {
     setShowDocuments,
     activeVariableColumns,
     setSelected,
-    setSearchText,
     setActiveVariableColumns,
+    filterReference,
+    setFilterReference,
   } = useDocumentContext();
+  const { setSearchText } = usePaginationContext();
 
   const onChangeSearch = useCallback(
-    debounce(
-      (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
-      500
-    ),
+    (e: ChangeEvent<HTMLInputElement>) => setSearchText(e.target.value),
     [setSearchText]
   );
   const onChangeColumns = useCallback(
@@ -106,14 +107,28 @@ const DocumentsTableHeader: FC = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Grid item xs={12} md={2}>
-          <EnumSelect
-            label="Typ"
-            value={showDocuments}
-            enumToUse={EShowOrder}
-            enumLabel={ShowDocumentLabels}
-            onChange={setShowDocuments}
-          />
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <EnumSelect
+                label="Typ"
+                value={showDocuments}
+                enumToUse={EShowOrder}
+                enumLabel={ShowDocumentLabels}
+                onChange={setShowDocuments}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <ReferenceInput
+                variant="outlined"
+                value={filterReference}
+                onChange={
+                  ((_: unknown, value: Customer | Order | null) =>
+                    setFilterReference(value)) as any /*TODO: improve typing*/
+                }
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12} md={2}>
           <MuiButton

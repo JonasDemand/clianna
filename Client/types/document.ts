@@ -6,7 +6,6 @@ export type DocumentContextType = {
   orders: Order[];
   documents: Document[];
   setDocuments: (documents: Document[]) => void;
-  filteredDocuments: Document[];
   selected: Document | null;
   setSelected: (document: Document | null) => void;
   updateSelected: (updates: Document) => void;
@@ -15,8 +14,8 @@ export type DocumentContextType = {
   activeColumns: GridColDef<Document>[];
   activeVariableColumns: GridColDef<Document>[];
   setActiveVariableColumns: (activeColumns: GridColDef<Document>[]) => void;
-  searchText: string;
-  setSearchText: (text: string) => void;
+  filterReference: Customer | Order | null;
+  setFilterReference: (value: Customer | Order | null) => void;
 };
 
 export enum EShowDocument {

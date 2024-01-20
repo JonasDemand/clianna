@@ -1,22 +1,14 @@
-import MuiTextField from '@components/External/MuiTextField';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import { useDocumentContext } from '@context/DocumentContext';
-import {
-  Autocomplete,
-  AutocompleteRenderInputParams,
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-} from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { Customer, Order } from '@utils/api/generated/Api';
-import { getCustomerLabel } from '@utils/customer';
-import { getOrderLabel } from '@utils/order';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
+import ReferenceInput from '../common/ReferenceInput';
+
 const DocumentGeneral: FC = () => {
-  const { selected, updateSelected, customers, orders } = useDocumentContext();
+  const { selected, updateSelected, customers } = useDocumentContext();
 
   const isCustomer = useCallback(
     (obj?: Customer | Order | null) =>
@@ -53,13 +45,6 @@ const DocumentGeneral: FC = () => {
     [updateSelected]
   );
 
-  const renderInputReference = useCallback(
-    (params: AutocompleteRenderInputParams) => (
-      <MuiTextField {...params} variant="filled" label="Referenz" />
-    ),
-    []
-  );
-
   return (
     <FormSection label="Allgemein">
       {selected && (
@@ -91,27 +76,10 @@ const DocumentGeneral: FC = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <Autocomplete
-              openOnFocus
+            <ReferenceInput
               disabled={selected.template}
-              options={customers.concat(orders) as (Customer | Order)[]}
-              groupBy={(option) => (isCustomer(option) ? 'Kunden' : 'Aufträge')}
               value={selected.customer ?? selected.order}
-              onChange={onChangeReference}
-              getOptionLabel={(option) =>
-                isCustomer(option)
-                  ? getCustomerLabel(option)
-                  : getOrderLabel(option)
-              }
-              isOptionEqualToValue={(option, value) => option?.id === value?.id}
-              renderInput={renderInputReference}
-              renderOption={(props, option) => (
-                <li {...props} key={option.id}>
-                  {isCustomer(option)
-                    ? getCustomerLabel(option)
-                    : getOrderLabel(option)}
-                </li>
-              )}
+              onChange={onChangeReference as any /*TODO: improve typing*/}
             />
           </Grid>
         </Grid>

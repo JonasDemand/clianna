@@ -2,18 +2,28 @@
 
 import { columns, defaultVariableColumns } from '@consts/document';
 import { DocumentContextType, EShowDocument } from '@customTypes/document';
-import { Customer, Document, Order } from '@utils/api/generated/Api';
-import { searchArray } from '@utils/search';
+import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
+import {
+  ColumnFilter,
+  Customer,
+  Document,
+  Order,
+} from '@utils/api/generated/Api';
+import useApiClient from 'hooks/useApiClient';
+import useDebounce from 'hooks/useDebounce';
+import useDidMountEffect from 'hooks/useDidMountEffect';
+import { useSnackbar } from 'notistack';
 import React, {
   createContext,
   FC,
   ReactNode,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
+
+import { usePaginationContext } from './PaginationContext';
 
 export const useDocumentContext = () => {
   const context = useContext(DocumentContext);
@@ -38,37 +48,72 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   initialOrders,
   initialDocuments,
 }) => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const { enqueueSnackbar } = useSnackbar();
+  const ApiClient = useApiClient();
+  const {
+    currentPage,
+    gridSortModel,
+    searchText,
+    setCurrentPage,
+    setRowCount,
+  } = usePaginationContext();
+
+  const [documents, setDocuments] = useState<Document[]>(initialDocuments);
   const [showDocuments, setShowDocuments] = useState(EShowDocument.All);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
-  const [searchText, setSearchText] = useState('');
   const [selected, setSelected] = useState<Document | null>(null);
+  const [filterReference, setFilterReference] = useState<
+    Customer | Order | null
+  >(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
     [activeVariableColumns]
   );
-  /*TODO: Improve search to only search in keys
-  const searchKeys = useMemo(
-    () => activeColumns.map((x) => x.field),
-    [activeColumns]
-  );*/
-  const filteredDocuments = useMemo(() => {
-    const templateValue = showDocuments === EShowDocument.Template;
-    const documentsToSearch =
-      showDocuments === EShowDocument.All
-        ? documents
-        : documents.filter((document) => document.template === templateValue);
 
-    return searchArray(documentsToSearch, searchText);
-  }, [documents, searchText, showDocuments]);
-
-  useEffect(() => {
-    setDocuments(initialDocuments);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const fetchDocuments = useDebounce(async () => {
+    const columnFilters = new Array<ColumnFilter>();
+    if (showDocuments !== EShowDocument.All)
+      columnFilters.push({
+        name: 'Template',
+        value: (showDocuments === EShowDocument.Template).toString(),
+      });
+    if (filterReference)
+      columnFilters.push({
+        name: isCustomer(filterReference) ? 'CustomerId' : 'OrderId',
+        value: filterReference.id,
+      });
+    const { data, error } = await ApiClient.document.documentList({
+      ColumnFilters: withColumnFilters(columnFilters),
+      ColumnSorting: withColumnSorting(
+        gridSortModel.map((x) => ({
+          name: x.field[0].toUpperCase().concat(x.field.slice(1)),
+          desc: x.sort === 'desc',
+        }))
+      ),
+      SearchTerm: searchText,
+      PageNumber: currentPage + 1,
+      PageSize: 100,
+    });
+    if (error || !data?.list || !data.metaData) {
+      enqueueSnackbar('Unbekannter Fehler', {
+        variant: 'error',
+      });
+      return;
+    }
+    setCurrentPage(data.metaData.currentPage! - 1);
+    setRowCount(data.metaData.totalCount!);
+    setDocuments(data.list);
+  }, 750);
+  useDidMountEffect(
+    () => {
+      fetchDocuments();
+    },
+    2,
+    [searchText, showDocuments, gridSortModel, currentPage, filterReference]
+  );
 
   const updateSelected = useCallback(
     (updates: Document) => {
@@ -84,6 +129,11 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     [selected]
   );
 
+  const isCustomer = useCallback(
+    (obj?: any | null) => initialCustomers.findIndex((x) => x === obj) !== -1,
+    [initialCustomers]
+  );
+
   return (
     <DocumentContext.Provider
       value={{
@@ -91,7 +141,6 @@ const DocumentProvider: FC<DocumentContextProps> = ({
         orders: initialOrders,
         documents,
         setDocuments,
-        filteredDocuments,
         setShowDocuments,
         showDocuments,
         selected,
@@ -100,8 +149,8 @@ const DocumentProvider: FC<DocumentContextProps> = ({
         activeColumns,
         activeVariableColumns,
         setActiveVariableColumns,
-        searchText,
-        setSearchText,
+        filterReference,
+        setFilterReference,
       }}
     >
       {children}
