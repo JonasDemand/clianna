@@ -26,6 +26,7 @@ type PaginationContextProps = {
   initalSortModel?: GridSortModel;
 };
 
+//TODO: improve handling of deleting/creating new entries
 const PaginationProvider: FC<PaginationContextProps> = ({
   children,
   initialRowsCount = 0,

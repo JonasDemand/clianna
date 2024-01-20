@@ -69,7 +69,7 @@ const DocumentsPage: FC = () => {
 
     let newDocuments = [...documents];
     const index = newDocuments.findIndex((x) => x.id === data.id);
-    index === -1 ? newDocuments.push(data) : (newDocuments[index] = data);
+    index === -1 ? newDocuments.unshift(data) : (newDocuments[index] = data);
     setDocuments(newDocuments);
     setSelected(null);
 

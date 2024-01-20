@@ -65,7 +65,7 @@ const OrdersPage: FC = () => {
         });
         return;
       }
-      newOrders.push(data);
+      newOrders.unshift(data);
     } else {
       const { error, data } = await ApiClient.order.orderUpdate(
         selected.id!,

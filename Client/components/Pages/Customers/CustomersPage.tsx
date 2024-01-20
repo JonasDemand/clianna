@@ -91,7 +91,7 @@ const CustomersPage: FC = () => {
         });
         return;
       }
-      newCustomers.push(data);
+      newCustomers.unshift(data);
     } else {
       const { error, data } = await ApiClient.customer.customerUpdate(
         selected.id!,
