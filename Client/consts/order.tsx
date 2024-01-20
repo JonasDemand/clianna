@@ -29,13 +29,13 @@ export const variableColumns: GridColDef<Order>[] = mapColumns([
     flex: 1,
     valueGetter: ({ row }) => (row.type ? OrderTypeLabels.get(row.type) : ''),
   },
-  { field: 'comment', headerName: 'Kommentar', flex: 1 },
   {
     field: 'creationDate',
     headerName: 'Erstellungsdatum',
     flex: 1,
     renderCell: ({ row }) => formatDate(row.creationDate),
   },
+  { field: 'comment', headerName: 'Kommentar', flex: 1 },
   {
     field: 'dueDate',
     headerName: 'Fertigstellungsdatum',
@@ -70,7 +70,7 @@ export const columns: GridColDef<Order>[] = mapColumns([
     renderCell: ({ row }) => (row.pending ? <Check /> : <Close />),
   },
 ]);
-export const defaultVariableColumns = variableColumns.slice(1, 3);
+export const defaultVariableColumns = variableColumns.slice(1, 4);
 
 export const defaultOrder = (): Order => ({
   id: EId.Create,

@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Order } from '@utils/api/generated/Api';
+import { getCustomerLabel } from '@utils/customer';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const OrdersTableHeader: FC = () => {
@@ -24,6 +25,9 @@ const OrdersTableHeader: FC = () => {
     setSelected,
     setActiveVariableColumns,
     setShowOrders,
+    customers,
+    filterCustomer,
+    setFilterCustomer,
   } = useOrderContext();
   const { setSearchText } = usePaginationContext();
 
@@ -49,6 +53,13 @@ const OrdersTableHeader: FC = () => {
   const renderInputColumns = useCallback(
     (params: AutocompleteRenderInputParams) => (
       <MuiTextField {...params} label="Spalten" />
+    ),
+    []
+  );
+
+  const renderInputCustomer = useCallback(
+    (params: AutocompleteRenderInputParams) => (
+      <MuiTextField {...params} variant="outlined" label="Kunde" />
     ),
     []
   );
@@ -101,14 +112,34 @@ const OrdersTableHeader: FC = () => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Grid item xs={12} md={2}>
-          <EnumSelect
-            label="Status"
-            value={showOrders}
-            enumToUse={EShowOrder}
-            enumLabel={ShowOrderLabels}
-            onChange={setShowOrders}
-          />
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <EnumSelect
+                label="Status"
+                value={showOrders}
+                enumToUse={EShowOrder}
+                enumLabel={ShowOrderLabels}
+                onChange={setShowOrders}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Autocomplete
+                openOnFocus
+                options={customers}
+                value={filterCustomer}
+                onChange={(_, value) => setFilterCustomer(value)}
+                getOptionLabel={getCustomerLabel}
+                renderInput={renderInputCustomer}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option) => (
+                  <li {...props} key={option.id}>
+                    {getCustomerLabel(option)}
+                  </li>
+                )}
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12} md={2}>
           <MuiButton

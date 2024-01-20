@@ -64,6 +64,7 @@ const OrderProvider: FC<OrderContextProps> = ({
     defaultVariableColumns
   );
   const [selected, setSelected] = useState<Order | null>(null);
+  const [filterCustomer, setFilterCustomer] = useState<Customer | null>(null);
 
   const activeColumns = useMemo(
     () => columns.concat(activeVariableColumns),
@@ -76,6 +77,11 @@ const OrderProvider: FC<OrderContextProps> = ({
       columnFilters.push({
         name: 'Pending',
         value: (showOrders === EShowOrder.Pending).toString(),
+      });
+    if (filterCustomer)
+      columnFilters.push({
+        name: 'CustomerId',
+        value: filterCustomer.id,
       });
     const { data, error } = await ApiClient.order.orderList({
       ColumnFilters: withColumnFilters(columnFilters),
@@ -103,8 +109,8 @@ const OrderProvider: FC<OrderContextProps> = ({
     () => {
       fetchOrders();
     },
-    4, //TODO: debug why its not taking the value
-    [searchText, showOrders, gridSortModel, currentPage]
+    2,
+    [searchText, showOrders, gridSortModel, currentPage, filterCustomer]
   );
 
   const updateSelected = useCallback(
@@ -132,6 +138,8 @@ const OrderProvider: FC<OrderContextProps> = ({
         activeColumns,
         activeVariableColumns,
         setActiveVariableColumns,
+        filterCustomer,
+        setFilterCustomer,
       }}
     >
       {children}

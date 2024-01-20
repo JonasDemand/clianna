@@ -14,6 +14,8 @@ export type OrderContextType = {
   activeColumns: GridColDef<Order>[];
   activeVariableColumns: GridColDef<Order>[];
   setActiveVariableColumns: (activeColumns: GridColDef<Order>[]) => void;
+  filterCustomer: Customer | null;
+  setFilterCustomer: (value: Customer | null) => void;
 };
 
 export enum EShowOrder {
