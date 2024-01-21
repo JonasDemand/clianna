@@ -3,14 +3,22 @@ WORKDIR /App
 
 # Copy everything
 COPY . ./
+
+# Change the working directory to /App/Api
+WORKDIR /App/Api
+
 # Restore as distinct layers
 RUN dotnet restore
+
 # Build and publish a release
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /App
-COPY --from=build-env /App/out .
+
+# Copy the published output from the build stage
+COPY --from=build-env /App/Api/out .
+
 EXPOSE 80
 ENTRYPOINT ["dotnet", "Api.dll"]
