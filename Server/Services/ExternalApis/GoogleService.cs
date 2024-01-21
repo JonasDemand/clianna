@@ -11,7 +11,7 @@ namespace Services.ExternalApis;
 
 public class GoogleService : IGoogleService
 {
-    public GoogleService(IOptions<AppSettings> appSettings, ILogger<GoogleService> logger)
+    public GoogleService(IOptions<AppSettings> appSettings)
     {
         GoogleCredential serviceAccountCredential = null;
         if (string.IsNullOrEmpty(appSettings.Value.GoogleOptions.DEV_ServiceAccountJson))
