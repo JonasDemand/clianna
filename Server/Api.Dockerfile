@@ -1,24 +1,20 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
-WORKDIR /App
+﻿# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /source
 
-# Copy everything
-COPY . ./
-
-# Change the working directory to /App/Api
-WORKDIR /App/Api
-
-# Restore as distinct layers
+# copy csproj and restore as distinct layers
+COPY *.sln .
+COPY Api/*.csproj ./Api/
 RUN dotnet restore
 
-# Build and publish a release
-RUN dotnet publish -c Release -o out
+# copy everything else and build app
+COPY Api/. ./Api/
+WORKDIR /source/Api
+RUN dotnet publish -c release -o /app --no-restore
 
-# Build runtime image
+# final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
-WORKDIR /App
-
-# Copy the published output from the build stage
-COPY --from=build-env /App/Api/out .
-
+WORKDIR /app
+COPY --from=build /app ./
 EXPOSE 80
-ENTRYPOINT ["dotnet", "Api.dll"]
+ENTRYPOINT ["dotnet", "aspnetapp.dll"]
