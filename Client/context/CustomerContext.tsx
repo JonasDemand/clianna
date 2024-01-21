@@ -6,6 +6,8 @@ import { ColumnFilter, Customer, Document } from '@utils/api/generated/Api';
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
+import useEffectOnce from 'hooks/useEffectOnce';
+import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, {
   createContext,
@@ -33,15 +35,14 @@ const CustomerContext = createContext<CustomerContextType | null>(null);
 type CustomerContextProps = {
   children: ReactNode;
   initialCustomers: Customer[];
-  initialTemplates: Document[];
 };
 
 const CustomerProvider: FC<CustomerContextProps> = ({
   children,
   initialCustomers,
-  initialTemplates,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
   const ApiClient = useApiClient();
   const {
     currentPage,
@@ -52,6 +53,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   } = usePaginationContext();
 
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  const [templates, setTemplates] = useState<Document[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
@@ -62,6 +64,30 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     () => columns.concat(activeVariableColumns),
     [activeVariableColumns]
   );
+
+  useEffectOnce(() => {
+    const fetchTemplates = async () => {
+      const { data, error } = await ApiClient.document.documentList({
+        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnSorting: withColumnSorting([
+          { name: 'CreationDate', desc: true },
+        ]),
+        PageSize: 1000, //TODO: add pagination
+      });
+      if (error || !data?.list || !data.metaData) {
+        enqueueSnackbar('Unbekannter Fehler', {
+          variant: 'error',
+        });
+        return;
+      }
+      setTemplates(data.list);
+    };
+    if (session?.user.token) {
+      fetchTemplates();
+      return true;
+    }
+    return false;
+  }, [ApiClient.document, enqueueSnackbar, session?.user.token]);
 
   const fetchCustomers = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
@@ -115,7 +141,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       value={{
         customers,
         setCustomers,
-        templates: initialTemplates,
+        templates,
         selected,
         setSelected,
         updateSelected,

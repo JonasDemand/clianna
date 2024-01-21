@@ -12,6 +12,8 @@ import {
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
+import useEffectOnce from 'hooks/useEffectOnce';
+import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, {
   createContext,
@@ -37,18 +39,12 @@ const OrderContext = createContext<OrderContextType | null>(null);
 
 type OrderContextProps = {
   children: ReactNode;
-  initialCustomers: Customer[];
-  initialTemplates: Document[];
   initialOrders: Order[];
 };
 
-const OrderProvider: FC<OrderContextProps> = ({
-  children,
-  initialCustomers,
-  initialOrders,
-  initialTemplates,
-}) => {
+const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const { data: session } = useSession();
   const ApiClient = useApiClient();
   const {
     currentPage,
@@ -59,6 +55,8 @@ const OrderProvider: FC<OrderContextProps> = ({
   } = usePaginationContext();
 
   const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [templates, setTemplates] = useState<Document[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
@@ -70,6 +68,47 @@ const OrderProvider: FC<OrderContextProps> = ({
     () => columns.concat(activeVariableColumns),
     [activeVariableColumns]
   );
+
+  useEffectOnce(() => {
+    const fetchTemplates = async () => {
+      const { data, error } = await ApiClient.document.documentList({
+        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnSorting: withColumnSorting([
+          { name: 'CreationDate', desc: true },
+        ]),
+        PageSize: 1000, //TODO: add pagination
+      });
+      if (error || !data?.list || !data.metaData) {
+        enqueueSnackbar('Unbekannter Fehler', {
+          variant: 'error',
+        });
+        return;
+      }
+      setTemplates(data.list);
+    };
+    const fetchCustomers = async () => {
+      const { data, error } = await ApiClient.customer.customerList({
+        ColumnFilters: withColumnFilters([
+          { name: 'Disabled', value: 'false' },
+        ]),
+        ColumnSorting: withColumnSorting([{ name: 'LastName' }]),
+        PageSize: 1000, //TODO: add pagination
+      });
+      if (error || !data?.list || !data.metaData) {
+        enqueueSnackbar('Unbekannter Fehler', {
+          variant: 'error',
+        });
+        return;
+      }
+      setCustomers(data.list);
+    };
+    if (session?.user.token) {
+      fetchTemplates();
+      fetchCustomers();
+      return true;
+    }
+    return false;
+  }, [ApiClient.document, enqueueSnackbar, session?.user.token]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
@@ -126,8 +165,8 @@ const OrderProvider: FC<OrderContextProps> = ({
   return (
     <OrderContext.Provider
       value={{
-        customers: initialCustomers,
-        templates: initialTemplates,
+        customers,
+        templates,
         orders,
         setOrders,
         selected,
