@@ -10,7 +10,7 @@ import {
 import { Customer, Order } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { getOrderLabel } from '@utils/order';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 const ReferenceInput = <
   Multiple extends boolean | undefined,
@@ -31,8 +31,8 @@ const ReferenceInput = <
   const { customers, orders } = useDocumentContext();
 
   const isCustomer = useCallback(
-    (obj?: any | null) => customers.findIndex((x) => x === obj) !== -1,
-    [customers]
+    (obj?: any | null) => obj.firstName !== undefined,
+    []
   );
 
   const renderInputReference = useCallback(
@@ -42,11 +42,13 @@ const ReferenceInput = <
     [props.variant]
   );
 
+  const options = useMemo(() => orders.concat(customers), [customers, orders]);
+
   return (
     <Autocomplete
       {...props}
       openOnFocus
-      options={customers.concat(orders) as (Customer | Order)[]}
+      options={options}
       groupBy={(option) => (isCustomer(option) ? 'Kunden' : 'Aufträge')}
       getOptionLabel={(option) =>
         isCustomer(option)

@@ -75,12 +75,12 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   );
 
   useEffectOnce(() => {
-    const fetchTemplates = async () => {
-      const { data, error } = await ApiClient.document.documentList({
-        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
-        ColumnSorting: withColumnSorting([
-          { name: 'CreationDate', desc: true },
+    const fetchCustomers = async () => {
+      const { data, error } = await ApiClient.customer.customerList({
+        ColumnFilters: withColumnFilters([
+          { name: 'Disabled', value: 'false' },
         ]),
+        ColumnSorting: withColumnSorting([{ name: 'LastName' }]),
         PageSize: 1000, //TODO: add pagination
       });
       if (error || !data?.list || !data.metaData) {
@@ -89,7 +89,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
         });
         return;
       }
-      setOrders(data.list);
+      setCustomers(data.list);
     };
     const fetchOrders = async () => {
       const { data, error } = await ApiClient.order.orderList({
@@ -104,10 +104,10 @@ const DocumentProvider: FC<DocumentContextProps> = ({
         });
         return;
       }
-      setCustomers(data.list);
+      setOrders(data.list);
     };
     if (session?.user.token) {
-      fetchTemplates();
+      fetchCustomers();
       fetchOrders();
       return true;
     }
@@ -171,8 +171,8 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   );
 
   const isCustomer = useCallback(
-    (obj?: any | null) => customers.findIndex((x) => x === obj) !== -1,
-    [customers]
+    (obj?: any | null) => obj.firstName !== undefined,
+    []
   );
 
   return (

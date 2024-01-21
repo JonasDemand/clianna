@@ -11,9 +11,8 @@ const DocumentGeneral: FC = () => {
   const { selected, updateSelected, customers } = useDocumentContext();
 
   const isCustomer = useCallback(
-    (obj?: Customer | Order | null) =>
-      customers.findIndex((x) => x === obj) !== -1,
-    [customers]
+    (obj?: any | null) => obj.firstName !== undefined,
+    []
   );
 
   const onChangeTemplate = useCallback(
