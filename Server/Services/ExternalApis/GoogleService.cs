@@ -13,24 +13,17 @@ public class GoogleService : IGoogleService
 {
     public GoogleService(IOptions<AppSettings> appSettings, ILogger<GoogleService> logger)
     {
-        Stream stream;
+        GoogleCredential serviceAccountCredential = null;
         if (string.IsNullOrEmpty(appSettings.Value.GoogleOptions.DEV_ServiceAccountJson))
         {
-            stream = new MemoryStream();
-            JsonSerializer.Serialize(stream, appSettings.Value.GoogleOptions.ServiceAccountCredentials);
-            logger.LogInformation(JsonSerializer.Serialize(appSettings.Value.GoogleOptions.ServiceAccountCredentials)); //TODO: remove
-            stream.Position = 0; //Somehow this is needed to read the stream afterwards
+            serviceAccountCredential = GoogleCredential.FromJson(JsonSerializer.Serialize(appSettings.Value.GoogleOptions.ServiceAccountCredentials))
+                .CreateScoped(DriveService.Scope.Drive, DocsService.Scope.Documents);
         }
         else
         {
-            stream = new FileStream(appSettings.Value.GoogleOptions.DEV_ServiceAccountJson, FileMode.Open,
-                FileAccess.Read);
+            serviceAccountCredential = GoogleCredential.FromFile(appSettings.Value.GoogleOptions.DEV_ServiceAccountJson)
+                .CreateScoped(DriveService.Scope.Drive, DocsService.Scope.Documents);
         }
-
-        var serviceAccountCredential = GoogleCredential.FromStream(stream)
-            .CreateScoped(DriveService.Scope.Drive, DocsService.Scope.Documents)
-            .UnderlyingCredential;
-        stream.Dispose();
 
         Docs = new DocsService(new BaseClientService.Initializer
         {
