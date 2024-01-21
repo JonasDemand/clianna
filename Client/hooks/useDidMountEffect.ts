@@ -8,8 +8,11 @@ const useDidMountEffect = (
   const timesCalled = useRef(0);
 
   useEffect(() => {
-    console.log(timesCalled, deps);
-    if (timesCalled.current >= skipCalls) effect();
+    if (
+      timesCalled.current >=
+      (process.env.NODE_ENV === 'development' ? skipCalls + 1 : skipCalls)
+    )
+      effect();
     else timesCalled.current = timesCalled.current + 1;
   }, deps);
 };
