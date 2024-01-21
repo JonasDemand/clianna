@@ -53,13 +53,10 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
 
     public new async Task<Document> Update(string id, UpsertDocumentReqeust document)
     {
-        var transaction = _documentRepository.BeginTransaction();
         var entry = await _documentRepository.Get(id);
         _mapper.Map(document, entry);
         await AssignDependencies(entry, document);
-        await _documentRepository.Update(entry);
-        await transaction.CommitAsync();
-        return entry;
+        return await _documentRepository.Update(entry);
     }
 
     public new async Task Delete(string id)
