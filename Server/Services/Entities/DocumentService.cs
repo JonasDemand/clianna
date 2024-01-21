@@ -34,6 +34,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
 
     public new async Task<Document> Create(UpsertDocumentReqeust document)
     {
+        var transaction = _documentRepository.BeginTransaction();
         var entry = _mapper.Map<Document>(document);
         await AssignDependencies(entry, document);
 
@@ -45,26 +46,34 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         }).ExecuteAsync();
         entry.GoogleId = googleResponse.Id;
 
-        return await _documentRepository.Add(entry);
+        await _documentRepository.Add(entry);
+        await transaction.CommitAsync();
+        return entry;
     }
 
     public new async Task<Document> Update(string id, UpsertDocumentReqeust document)
     {
+        var transaction = _documentRepository.BeginTransaction();
         var entry = await _documentRepository.Get(id);
         _mapper.Map(document, entry);
         await AssignDependencies(entry, document);
-        return await _documentRepository.Update(entry);
+        await _documentRepository.Update(entry);
+        await transaction.CommitAsync();
+        return entry;
     }
 
     public new async Task Delete(string id)
     {
+        var transaction = _documentRepository.BeginTransaction();
         var document = await _documentRepository.Get(id);
         await _googleService.Drive.Files.Delete(document.GoogleId).ExecuteAsync();
         await _documentRepository.Delete(document);
+        await transaction.CommitAsync();
     }
 
     public async Task<Document> Copy(string id, CopyDocumentRequest document)
     {
+        var transaction = _documentRepository.BeginTransaction();
         var documentToCopy = await _documentRepository.Get(id);
         if (documentToCopy == null) throw new Exception("Document not found");
 
@@ -106,8 +115,10 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
                 }, newDocument.GoogleId).ExecuteAsync();
             if (documentToCopy.IncrementalId != null) documentToCopy.IncrementalId++;
         }
-
-        return await _documentRepository.Add(newDocument);
+        await _documentRepository.Add(newDocument);
+        
+        await transaction.CommitAsync();
+        return newDocument;
     }
 
     private async Task AssignDependencies(Document entry, UpsertDocumentReqeust document)
