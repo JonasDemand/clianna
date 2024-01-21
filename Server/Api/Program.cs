@@ -37,7 +37,7 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
-builder.Services.AddTransient<IGoogleService, GoogleService>();
+builder.Services.AddSingleton<IGoogleService, GoogleService>();
 builder.Services.AddSingleton<ITemplatingService, TemplatingService>();
 builder.Services.AddScoped<IMigrationService, MigrationService>();
 
