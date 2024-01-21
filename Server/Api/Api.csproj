@@ -34,9 +34,4 @@
         <Folder Include="Attributes\"/>
         <Folder Include="Middlewares\"/>
     </ItemGroup>
-    <ItemGroup>
-      <Content Include="..\Api.Dockerfile">
-        <Link>Api.Dockerfile</Link>
-      </Content>
-    </ItemGroup>
 </Project>

@@ -20,5 +20,5 @@ WORKDIR /App
 # Copy the published output from the build stage
 COPY --from=build-env /App/Api/out .
 
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "Api.dll"]
