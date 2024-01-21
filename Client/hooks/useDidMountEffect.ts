@@ -8,6 +8,7 @@ const useDidMountEffect = (
   const timesCalled = useRef(0);
 
   useEffect(() => {
+    console.log(timesCalled, deps);
     if (timesCalled.current >= skipCalls) effect();
     else timesCalled.current = timesCalled.current + 1;
   }, deps);

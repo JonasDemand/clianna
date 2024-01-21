@@ -152,7 +152,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     () => {
       fetchDocuments();
     },
-    2,
+    1,
     [searchText, showDocuments, gridSortModel, currentPage, filterReference]
   );
 

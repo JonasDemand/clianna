@@ -122,7 +122,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     () => {
       fetchCustomers();
     },
-    2,
+    1,
     [searchText, showCustomers, gridSortModel, currentPage]
   );
 

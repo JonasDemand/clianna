@@ -148,7 +148,7 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
     () => {
       fetchOrders();
     },
-    2,
+    1,
     [searchText, showOrders, gridSortModel, currentPage, filterCustomer]
   );
 
