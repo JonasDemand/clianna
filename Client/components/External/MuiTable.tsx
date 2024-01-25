@@ -1,5 +1,6 @@
-import { getActionColumn, GetActiveColumnProps } from '@consts/table';
+import { ColumnAction, getActionColumn } from '@consts/table';
 import { usePaginationContext } from '@context/PaginationContext';
+import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import {
   DataGrid,
@@ -12,16 +13,21 @@ import React, { ReactNode, useMemo } from 'react';
 
 import TableCell from '../Table/TableCell';
 
-type MuiTableProps<T extends GridValidRowModel> = DataGridProps<T> &
-  GetActiveColumnProps<T> & {
-    header: ReactNode;
-  };
+type ColumnEvent<T extends GridValidRowModel> = (row: T) => void;
+type MuiTableProps<T extends GridValidRowModel> = DataGridProps<T> & {
+  header: ReactNode;
+  onEdit?: ColumnEvent<T>;
+  onCopy?: ColumnEvent<T>;
+  onDelete?: ColumnEvent<T>;
+  customActions?: ColumnAction<T>[];
+};
 
 const MuiTable = <T extends GridValidRowModel>({
   header,
   onCopy,
   onDelete,
   onEdit,
+  customActions,
   ...gridProps
 }: MuiTableProps<T>) => {
   const {
@@ -33,10 +39,30 @@ const MuiTable = <T extends GridValidRowModel>({
     setGridSortModel,
   } = usePaginationContext();
 
-  const actionColumn = useMemo(
-    () => getActionColumn({ onCopy, onDelete, onEdit }),
-    [onCopy, onDelete, onEdit]
-  );
+  const actionColumn = useMemo(() => {
+    const actions: ColumnAction<T>[] = [];
+    if (onEdit)
+      actions.push({
+        icon: <Edit />,
+        tooltip: 'Bearbeiten',
+        onClick: onEdit,
+      });
+    if (onCopy)
+      actions.push({
+        icon: <ContentCopy />,
+        tooltip: 'Kopieren',
+        onClick: onCopy,
+      });
+    if (onDelete)
+      actions.push({
+        icon: <Delete />,
+        tooltip: 'Löschen',
+        onClick: onDelete,
+      });
+    return getActionColumn(
+      customActions ? actions.concat(customActions) : actions
+    );
+  }, [customActions, onCopy, onDelete, onEdit]);
 
   return (
     <Box

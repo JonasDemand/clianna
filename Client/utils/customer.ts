@@ -14,3 +14,15 @@ export const toCustomerUpsertRequest = (
   orders: customer.orders?.map((x) => x.id!),
   documents: customer.documents?.map((x) => x.id!),
 });
+
+export const generateDHLPollingClientCSV = (
+  customer: Customer,
+  weight: number
+) =>
+  `${customer.id};${customer.firstName} ${customer.lastName};${
+    customer.postalCode
+  };${customer.city};${customer.street} ${customer.streetNumber};${
+    '' /*Phone*/
+  };${'' /*E-Mail*/};;;;${weight.toLocaleString('de-DE')};;;;${
+    customer.street
+  };${customer.streetNumber};D;DEUTSCHLAND`;

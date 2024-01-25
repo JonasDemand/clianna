@@ -1,26 +1,20 @@
 import MuiTooltip from '@components/External/MuiTooltip';
-import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { GridColDef, GridValidRowModel } from '@mui/x-data-grid';
 import React from 'react';
 
-type ColumnEvent<T extends GridValidRowModel> = (row: T) => void;
-
-export type GetActiveColumnProps<T extends GridValidRowModel> = {
-  onEdit?: ColumnEvent<T>;
-  onCopy?: ColumnEvent<T>;
-  onDelete?: ColumnEvent<T>;
+export type ColumnAction<T extends GridValidRowModel> = {
+  tooltip: string;
+  key?: string;
+  disabled?: boolean;
+  onClick?: (row: T) => void;
+  icon: React.ReactNode | React.ReactNode[];
 };
 
-export const getActionColumn = <T extends GridValidRowModel>({
-  onEdit,
-  onCopy,
-  onDelete,
-}: GetActiveColumnProps<T>): GridColDef<T> => {
-  let width = 20;
-  if (onEdit) width += 40;
-  if (onCopy) width += 40;
-  if (onDelete) width += 40;
+export const getActionColumn = <T extends GridValidRowModel>(
+  actions: ColumnAction<T>[]
+): GridColDef<T> => {
+  let width = 20 + actions.length * 40;
   return {
     field: '',
     headerName: '',
@@ -28,42 +22,18 @@ export const getActionColumn = <T extends GridValidRowModel>({
     width,
     renderCell: ({ row }) => (
       <>
-        {onEdit && (
-          <MuiTooltip title="Bearbeiten">
+        {actions.map((action) => (
+          <MuiTooltip title={action.tooltip} key={action.key ?? action.tooltip}>
             <IconButton
               onClick={(e) => {
                 e.stopPropagation();
-                onEdit!(row);
+                action.onClick!(row);
               }}
             >
-              <Edit />
+              {action.icon}
             </IconButton>
           </MuiTooltip>
-        )}
-        {onCopy && (
-          <MuiTooltip title="Kopieren">
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                onCopy!(row);
-              }}
-            >
-              <ContentCopy />
-            </IconButton>
-          </MuiTooltip>
-        )}
-        {onDelete && (
-          <MuiTooltip title="Löschen">
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete!(row);
-              }}
-            >
-              <Delete />
-            </IconButton>
-          </MuiTooltip>
-        )}
+        ))}
       </>
     ),
   };

@@ -1,12 +1,19 @@
 'use client';
 
 import MuiTable from '@components/External/MuiTable';
+import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
 import { EId } from '@customTypes/id';
-import { Box, Typography } from '@mui/material';
+import { LocalShipping } from '@mui/icons-material';
+import { Box, Grid, Typography } from '@mui/material';
 import { Customer } from '@utils/api/generated/Api';
-import { getCustomerLabel, toCustomerUpsertRequest } from '@utils/customer';
+import {
+  generateDHLPollingClientCSV,
+  getCustomerLabel,
+  toCustomerUpsertRequest,
+} from '@utils/customer';
+import { formatDate } from '@utils/date';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
@@ -25,6 +32,8 @@ const CustomersPage: FC = () => {
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
     null
   );
+  const [dhlCustomer, setDhlCustomer] = useState<Customer | null>(null);
+  const [dhlWeight, setDhlWeight] = useState<number>(1);
 
   const onCloseOverlay = useCallback(() => {
     if (!selected) return;
@@ -40,9 +49,10 @@ const CustomersPage: FC = () => {
     setCustomers(newCustomers);
     setSelected(null);
   }, [customers, selected, setCustomers, setSelected]);
-  const onCloseDialog = useCallback(() => setCustomerToDelete(null), []);
+  const onCloseDeleteDialog = useCallback(() => setCustomerToDelete(null), []);
+  const onCloseDHLDialog = useCallback(() => setDhlCustomer(null), []);
 
-  const onConfirmDialog = useCallback(async () => {
+  const onConfirmDeleteDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
     const { error } = await ApiClient.customer.customerDelete(
       customerToDelete.id
@@ -65,6 +75,23 @@ const CustomersPage: FC = () => {
     enqueueSnackbar,
     setCustomers,
   ]);
+  const onConfirmDHLDialog = useCallback(() => {
+    const dhlFile = generateDHLPollingClientCSV(dhlCustomer!, dhlWeight);
+    // Create blob link to download
+    const url = window.URL.createObjectURL(new Blob([dhlFile]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `${dhlCustomer!.id}-${formatDate(new Date())}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setDhlCustomer(null);
+    setDhlWeight(1);
+  }, [dhlCustomer, dhlWeight]);
 
   const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
@@ -124,6 +151,9 @@ const CustomersPage: FC = () => {
     ({ row }: { row: Customer }) => setSelected(row),
     [setSelected]
   );
+  const onDHLClick = useCallback((customer: Customer) => {
+    setDhlCustomer(customer);
+  }, []);
 
   return (
     <Box
@@ -137,6 +167,13 @@ const CustomersPage: FC = () => {
         columns={activeColumns}
         onRowClick={onRowClick}
         onDelete={setCustomerToDelete}
+        customActions={[
+          {
+            tooltip: 'DHL-Pollingclient Download',
+            icon: <LocalShipping />,
+            onClick: onDHLClick,
+          },
+        ]}
       />
       <SideOverlay
         heading="Kunde bearbeiten"
@@ -149,8 +186,8 @@ const CustomersPage: FC = () => {
       <ConfirmDialog
         open={!!customerToDelete}
         title="Kunde löschen"
-        onClose={onCloseDialog}
-        onConfirm={onConfirmDialog}
+        onClose={onCloseDeleteDialog}
+        onConfirm={onConfirmDeleteDialog}
       >
         <Typography mb={2}>
           Bist Du dir sicher, dass Du diesen Kunden löschen willst?
@@ -158,6 +195,33 @@ const CustomersPage: FC = () => {
         <Typography fontWeight="bold">
           {getCustomerLabel(customerToDelete)}
         </Typography>
+      </ConfirmDialog>
+      <ConfirmDialog
+        open={!!dhlCustomer}
+        title="DHL-Pollingclient Download"
+        onClose={onCloseDHLDialog}
+        onConfirm={onConfirmDHLDialog}
+        abortLabel="Abbrechen"
+        confirmLabel="Download"
+      >
+        <Typography>Paket für Kunde</Typography>
+        <Typography fontWeight="bold" mb={2}>
+          {getCustomerLabel(dhlCustomer)}
+        </Typography>
+        <Grid container justifyContent="center">
+          <Grid item xs={6}>
+            <MuiTextField
+              required
+              label="Gewicht"
+              type="number"
+              inputProps={{
+                step: '.5',
+              }}
+              value={dhlWeight.toFixed(1)}
+              onChange={(e) => setDhlWeight(parseFloat(e.target.value))}
+            />
+          </Grid>
+        </Grid>
       </ConfirmDialog>
     </Box>
   );
