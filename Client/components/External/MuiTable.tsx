@@ -1,6 +1,6 @@
 import { ColumnAction, getActionColumn } from '@consts/table';
 import { usePaginationContext } from '@context/PaginationContext';
-import { ContentCopy, Delete, Edit } from '@mui/icons-material';
+import { ContentCopy, Delete } from '@mui/icons-material';
 import { Box } from '@mui/system';
 import {
   DataGrid,
@@ -16,7 +16,6 @@ import TableCell from '../Table/TableCell';
 type ColumnEvent<T extends GridValidRowModel> = (row: T) => void;
 type MuiTableProps<T extends GridValidRowModel> = DataGridProps<T> & {
   header: ReactNode;
-  onEdit?: ColumnEvent<T>;
   onCopy?: ColumnEvent<T>;
   onDelete?: ColumnEvent<T>;
   customActions?: ColumnAction<T>[];
@@ -26,7 +25,6 @@ const MuiTable = <T extends GridValidRowModel>({
   header,
   onCopy,
   onDelete,
-  onEdit,
   customActions,
   ...gridProps
 }: MuiTableProps<T>) => {
@@ -41,11 +39,11 @@ const MuiTable = <T extends GridValidRowModel>({
 
   const actionColumn = useMemo(() => {
     const actions: ColumnAction<T>[] = [];
-    if (onEdit)
+    if (onDelete)
       actions.push({
-        icon: <Edit />,
-        tooltip: 'Bearbeiten',
-        onClick: onEdit,
+        icon: <Delete />,
+        tooltip: 'Löschen',
+        onClick: onDelete,
       });
     if (onCopy)
       actions.push({
@@ -53,16 +51,10 @@ const MuiTable = <T extends GridValidRowModel>({
         tooltip: 'Kopieren',
         onClick: onCopy,
       });
-    if (onDelete)
-      actions.push({
-        icon: <Delete />,
-        tooltip: 'Löschen',
-        onClick: onDelete,
-      });
     return getActionColumn(
       customActions ? actions.concat(customActions) : actions
     );
-  }, [customActions, onCopy, onDelete, onEdit]);
+  }, [customActions, onCopy, onDelete]);
 
   return (
     <Box
@@ -98,14 +90,14 @@ const MuiTable = <T extends GridValidRowModel>({
         onPageChange={(page) => setCurrentPage(page)}
         rowCount={rowCount}
         {...gridProps}
-        columns={gridProps.columns
-          .map<GridColDef<T>>((column) => ({
+        columns={[actionColumn].concat(
+          gridProps.columns.map<GridColDef<T>>((column) => ({
             renderCell: ({ value }) => (
               <TableCell search={searchText} value={value} />
             ),
             ...column,
           }))
-          .concat(actionColumn)}
+        )}
       />
     </Box>
   );
