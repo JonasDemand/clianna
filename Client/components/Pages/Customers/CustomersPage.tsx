@@ -235,7 +235,7 @@ const CustomersPage: FC = () => {
               inputProps={{
                 step: '.5',
               }}
-              value={dhlWeight.toFixed(1)}
+              defaultValue="1.0"
               onChange={(e) => setDhlWeight(parseFloat(e.target.value))}
             />
           </Grid>
