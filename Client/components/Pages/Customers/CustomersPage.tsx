@@ -77,8 +77,9 @@ const CustomersPage: FC = () => {
   ]);
   const onConfirmDHLDialog = useCallback(() => {
     const dhlFile = generateDHLPollingClientCSV(dhlCustomer!, dhlWeight);
-    // Create blob link to download
-    const url = window.URL.createObjectURL(new Blob([dhlFile]));
+    const url = window.URL.createObjectURL(
+      new Blob([dhlFile], { type: 'text/csv;charset=asni' })
+    );
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute(
