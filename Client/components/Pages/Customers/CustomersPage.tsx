@@ -18,6 +18,7 @@ import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
+import { TextEncoder } from 'text-encoding';
 
 import { useCustomerContext } from '../../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
