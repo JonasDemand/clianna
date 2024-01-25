@@ -96,7 +96,7 @@ const CustomersPage: FC = () => {
     link.href = url;
     link.setAttribute(
       'download',
-      `${dhlCustomer!.id}-${formatDate(new Date())}.csv`
+      `${dhlCustomer!.id}-${formatDate(new Date())}.clianna.dhl`
     );
 
     // Trigger download
