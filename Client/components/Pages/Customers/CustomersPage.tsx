@@ -77,18 +77,32 @@ const CustomersPage: FC = () => {
   ]);
   const onConfirmDHLDialog = useCallback(() => {
     const dhlFile = generateDHLPollingClientCSV(dhlCustomer!, dhlWeight);
-    const url = window.URL.createObjectURL(
-      new Blob([dhlFile], { type: 'text/csv;charset=asni' })
-    );
+    // Convert the content to Uint8Array with ANSI encoding
+    //@ts-ignore
+    const encoder = new TextEncoder('windows-1252');
+    const encodedData = encoder.encode(dhlFile);
+
+    // Create a Blob with the encoded data
+    const blob = new Blob([encodedData], {
+      type: 'text/csv;charset=windows-1252',
+    });
+
+    // Create download link
+    const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute(
       'download',
       `${dhlCustomer!.id}-${formatDate(new Date())}.csv`
     );
+
+    // Trigger download
     document.body.appendChild(link);
     link.click();
+
+    // Clean up
     document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
 
     setDhlCustomer(null);
     setDhlWeight(1);
