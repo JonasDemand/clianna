@@ -79,8 +79,10 @@ const CustomersPage: FC = () => {
   const onConfirmDHLDialog = useCallback(() => {
     const dhlFile = generateDHLPollingClientCSV(dhlCustomer!, dhlWeight);
     // Convert the content to Uint8Array with ANSI encoding
-    //@ts-ignore
-    const encoder = new TextEncoder('windows-1252');
+    const encoder = new TextEncoder('windows-1252', {
+      NONSTANDARD_allowLegacyEncoding: true,
+    });
+
     const encodedData = encoder.encode(dhlFile);
 
     // Create a Blob with the encoded data
