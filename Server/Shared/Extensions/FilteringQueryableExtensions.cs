@@ -10,7 +10,7 @@ public static class FilteringQueryableExtensions
         where T : class
     {
         Expression<Func<T, bool>>? filters;
-        var parameter = Expression.Parameter(typeof(T), typeof(T).Name);
+        var parameter = Expression.Parameter(typeof(T));
         Expression? filterExpression = null;
 
         try
@@ -20,32 +20,9 @@ public static class FilteringQueryableExtensions
             foreach (var filter in columnFilters)
             {
                 var property = Expression.Property(parameter, filter.Name);
-                Expression comparison;
+                var comparison = GenerateComparison(property, filter.Value.Trim());
 
-                if (property.Type == typeof(string))
-                {
-                    var constant = Expression.Constant(filter.Value);
-                    comparison = Expression.Call(property, "Contains", Type.EmptyTypes, constant);
-                }
-                else if (property.Type == typeof(double))
-                {
-                    var constant = Expression.Constant(Convert.ToDouble(filter.Value));
-                    comparison = Expression.Equal(property, constant);
-                }
-                else if (property.Type == typeof(bool))
-                {
-                    var constant = Expression.Constant(Convert.ToBoolean(filter.Value));
-                    comparison = Expression.Equal(property, constant);
-                }
-                else if (property.Type == typeof(int))
-                {
-                    var constant = Expression.Constant(Convert.ToInt32(filter.Value));
-                    comparison = Expression.Equal(property, constant);
-                }
-                else
-                {
-                    continue;
-                }
+                if (comparison == null) continue;
 
                 columnFilterExpression = columnFilterExpression == null
                     ? comparison
@@ -61,32 +38,15 @@ public static class FilteringQueryableExtensions
 
         try
         {
-            if (string.IsNullOrEmpty(searchTerm)) throw new Exception("searchTerm is empty");
+            var processedSearchTerm = searchTerm.Split(" ").Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s));
+            if (!processedSearchTerm.Any()) throw new Exception("searchTerm is empty");
             Expression? searchTermExpression = null;
             foreach (var prop in typeof(T).GetProperties())
             {
-                Expression comparison;
                 var property = Expression.Property(parameter, prop);
+                var comparison = GenerateComparison(property, processedSearchTerm);
 
-                if (property.Type == typeof(string))
-                {
-                    var constant = Expression.Constant(searchTerm);
-                    comparison = Expression.Call(property, "Contains", Type.EmptyTypes, constant);
-                }
-                else if (property.Type == typeof(double))
-                {
-                    var constant = Expression.Constant(Convert.ToDouble(searchTerm));
-                    comparison = Expression.Equal(property, constant);
-                }
-                else if (property.Type == typeof(int))
-                {
-                    var constant = Expression.Constant(Convert.ToInt32(searchTerm));
-                    comparison = Expression.Equal(property, constant);
-                }
-                else
-                {
-                    continue;
-                }
+                if (comparison == null) continue;
 
                 searchTermExpression = searchTermExpression == null
                     ? comparison
@@ -140,5 +100,69 @@ public static class FilteringQueryableExtensions
         if (page != null) query = query.Skip(((int)page - 1) * pageSize);
         query = query.Take(pageSize);
         return query;
+    }
+
+    private static Expression? GenerateComparison(MemberExpression property, string searchValue)
+    {
+        try
+        {
+            var type = Nullable.GetUnderlyingType(property.Type) ??
+                       property.Type ?? throw new Exception("Invalid Type");
+            if (type == typeof(string))
+            {
+                var constant = Expression.Constant(searchValue);
+                return Expression.Call(property, "Contains", Type.EmptyTypes, constant);
+            }
+
+            if (type == typeof(double))
+            {
+                var constant = Expression.Constant(Convert.ToDouble(searchValue));
+                return Expression.Equal(property, constant);
+            }
+
+            if (type == typeof(bool))
+            {
+                var constant = Expression.Constant(Convert.ToBoolean(searchValue));
+                return Expression.Equal(property, constant);
+            }
+
+            if (type == typeof(int))
+            {
+                var constant = Expression.Constant(Convert.ToInt32(searchValue));
+                return Expression.Equal(property, constant);
+            }
+
+            if (type.IsEnum)
+            {
+                foreach (var value in Enum.GetValues(type))
+                    if (!(value as Enum).GetDescription().Contains(searchValue))
+                        continue;
+                //TODO: implement enum filtering
+                return null;
+            }
+        }
+        catch
+        {
+            return null;
+        }
+
+        return null;
+    }
+
+    private static Expression? GenerateComparison(MemberExpression property, IEnumerable<string> searchValues)
+    {
+        Expression? filterExpression = null;
+        foreach (var searchValue in searchValues)
+        {
+            var comparison = GenerateComparison(property, searchValue);
+
+            if (comparison == null) continue;
+
+            filterExpression = filterExpression == null
+                ? comparison
+                : Expression.OrElse(filterExpression, comparison);
+        }
+
+        return filterExpression;
     }
 }
