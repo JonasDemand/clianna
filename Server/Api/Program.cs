@@ -15,6 +15,9 @@ using Services.ExternalApis;
 using Services.Logic;
 using Services.Maintenance;
 
+// Needed for google apis to work with .net8
+AppContext.SetSwitch("System.Net.SocketsHttpHandler.Http3Support", false);
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddEnvironmentVariables();
