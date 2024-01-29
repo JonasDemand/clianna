@@ -13,31 +13,24 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Services.Entities;
 
-public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserService
+public class UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper)
+    : BaseEntityService<User, UpsertUserRequest>(userRepository, mapper), IUserService
 {
     private const int KeySize = 128;
     private const int Iterations = 350000;
 
-    private readonly AppSettings _appSettings;
+    private readonly AppSettings _appSettings = appSettings.Value;
     private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper) : base(
-        userRepository, mapper)
-    {
-        _appSettings = appSettings.Value;
-        _userRepository = userRepository;
-    }
 
 
     public async Task<UserSession?> Authenticate(string email, string password)
     {
-        var user = await _userRepository.GetFirstOrDefault(x => x.Email == email);
+        var user = await userRepository.GetFirstOrDefault(x => x.Email == email);
         if (user is { Enabled: false }) return null;
 
         if (user == null)
         {
-            await _userRepository.Add(new User
+            await userRepository.Add(new User
             {
                 Enabled = false,
                 Email = email,
@@ -62,7 +55,7 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
 
     public async Task<User> UpdateProfile(string id, UpsertUserRequest user)
     {
-        var entry = await _userRepository.Get(id);
+        var entry = await userRepository.Get(id);
         entry.Email = user.Email;
         if (!string.IsNullOrEmpty(user.Password))
         {
@@ -70,12 +63,12 @@ public class UserService : BaseEntityService<User, UpsertUserRequest>, IUserServ
             entry.Salt = salt;
         }
 
-        return await _userRepository.Update(entry);
+        return await userRepository.Update(entry);
     }
 
     public async Task<UserSession> GetSession(string id)
     {
-        var user = await _userRepository.Get(id);
+        var user = await userRepository.Get(id);
         var token = GenerateJwtToken(user);
 
         return new UserSession

@@ -4,11 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.Database.Repositories;
 
-public class DocumentRepository : GenericDbRepository<Document>, IDocumentRepository
+public class DocumentRepository(CliannaDbContext dbContext, IMapper mapper)
+    : GenericDbRepository<Document>(dbContext, mapper), IDocumentRepository
 {
-    public DocumentRepository(CliannaDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
-    {
-    }
-
     public override IQueryable<Document> Query => base.Query.Include(e => e.Order).ThenInclude(e => e.Customer);
 }

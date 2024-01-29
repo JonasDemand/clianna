@@ -3,7 +3,7 @@ using Data.Models.Messages.Filtering;
 
 namespace Services.Entities;
 
-public interface IBaseEntityService<TEntity, TUpsert>
+public interface IBaseEntityService<TEntity, in TUpsert>
     where TEntity : class, IEntity
     where TUpsert : class
 {

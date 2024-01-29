@@ -1,10 +1,9 @@
 using System.Linq.Expressions;
 using Data.Models.Messages.Filtering;
-using OnixLabs.Core.Linq;
 
 namespace Shared.Extensions;
 
-public static class FilteringQueryableExtenstions
+public static class FilteringQueryableExtensions
 {
     public static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, IEnumerable<ColumnFilter> columnFilters,
         string? searchTerm)
@@ -16,7 +15,7 @@ public static class FilteringQueryableExtenstions
 
         try
         {
-            if (columnFilters.IsEmpty()) throw new Exception("columnFilters are empty");
+            if (!columnFilters.Any()) throw new Exception("columnFilters are empty");
             Expression? columnFilterExpression = null;
             foreach (var filter in columnFilters)
             {
@@ -91,8 +90,7 @@ public static class FilteringQueryableExtenstions
 
                 searchTermExpression = searchTermExpression == null
                     ? comparison
-                    : Expression.OrElse(comparison,searchTermExpression);
-                
+                    : Expression.OrElse(comparison, searchTermExpression);
             }
 
             filterExpression = filterExpression == null

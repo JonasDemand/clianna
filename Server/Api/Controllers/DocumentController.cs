@@ -10,19 +10,15 @@ using Services.Entities;
 namespace Api.Controllers;
 
 [Authorize]
-public class DocumentController : EntityBaseController<Document, UpsertDocumentReqeust>
+public class DocumentController(
+    IResponseFactory responseFactory,
+    IDocumentService documentService,
+    IOptions<JsonOptions> jsonOptions)
+    : EntityBaseController<Document, UpsertDocumentReqeust>(responseFactory, documentService, jsonOptions)
 {
-    private readonly IDocumentService _documentService;
-
-    public DocumentController(IResponseFactory responseFactory, IDocumentService documentService,
-        IOptions<JsonOptions> jsonOptions) : base(responseFactory, documentService, jsonOptions)
-    {
-        _documentService = documentService;
-    }
-
     [HttpPost("{id}/Copy")]
     public async Task<ActionResult<Response<Document>>> Put(string id, CopyDocumentRequest document)
     {
-        return Ok(_responseFactory.Create(await _documentService.Copy(id, document)));
+        return Ok(_responseFactory.Create(await documentService.Copy(id, document)));
     }
 }

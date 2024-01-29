@@ -9,21 +9,13 @@ using Services.Entities;
 
 namespace Api.Controllers;
 
-public class UserController : BaseController
+public class UserController(IUserService userService, IResponseFactory responseFactory)
+    : BaseController(responseFactory)
 {
-    private readonly IUserService _userService;
-
-
-    public UserController(IUserService userService, IResponseFactory responseFactory) : base(responseFactory)
-    {
-        _userService = userService;
-    }
-
-
     [HttpPost("Authenticate")]
     public async Task<ActionResult<Response<UserSession>>> Authenticate(AuthenticateRequest request)
     {
-        var session = await _userService.Authenticate(request.Email, request.Password);
+        var session = await userService.Authenticate(request.Email, request.Password);
 
         if (session == null)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
@@ -40,13 +32,13 @@ public class UserController : BaseController
 
         if (!string.IsNullOrEmpty(request.Password))
         {
-            var session = await _userService.Authenticate(userSession.Email, request.OldPassword);
+            var session = await userService.Authenticate(userSession.Email, request.OldPassword);
 
             if (session == null)
                 return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
         }
 
-        var updatedUser = await _userService.UpdateProfile(userSession.Id, request);
+        var updatedUser = await userService.UpdateProfile(userSession.Id, request);
 
         userSession.Id = updatedUser.Id;
         userSession.Email = updatedUser.Email;
@@ -61,6 +53,6 @@ public class UserController : BaseController
         if (HttpContext.Items["User"] is not UserSession userSession)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
 
-        return Ok(_responseFactory.Create(await _userService.GetSession(userSession.Id)));
+        return Ok(_responseFactory.Create(await userService.GetSession(userSession.Id)));
     }
 }

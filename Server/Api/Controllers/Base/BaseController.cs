@@ -5,12 +5,7 @@ namespace Api.Controllers.Base;
 
 [Route("[controller]")]
 [ApiController]
-public class BaseController : ControllerBase
+public class BaseController(IResponseFactory responseFactory) : ControllerBase
 {
-    protected readonly IResponseFactory _responseFactory;
-
-    public BaseController(IResponseFactory responseFactory)
-    {
-        _responseFactory = responseFactory;
-    }
+    protected readonly IResponseFactory _responseFactory = responseFactory;
 }

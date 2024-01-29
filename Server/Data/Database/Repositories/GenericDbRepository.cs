@@ -7,17 +7,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Data.Database.Repositories;
 
-public abstract class GenericDbRepository<T> : IGenericRepository<T> where T : class, IEntity
+public abstract class GenericDbRepository<T>(CliannaDbContext dbContext, IMapper mapper) : IGenericRepository<T>
+    where T : class, IEntity
 {
-    protected readonly CliannaDbContext _dbContext;
-    protected readonly IMapper _mapper;
+    protected readonly CliannaDbContext _dbContext = dbContext;
+    protected readonly IMapper _mapper = mapper;
     private readonly IEnumerable<Expression<Func<T, object>>> _references = new List<Expression<Func<T, object>>>();
-
-    protected GenericDbRepository(CliannaDbContext dbContext, IMapper mapper)
-    {
-        _dbContext = dbContext;
-        _mapper = mapper;
-    }
 
     protected GenericDbRepository(CliannaDbContext dbContext, IMapper mapper,
         IEnumerable<Expression<Func<T, object>>> references) : this(

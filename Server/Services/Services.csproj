@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latestmajor</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,9 +12,9 @@
         <ProjectReference Include="..\Shared\Shared.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0"/>
-        <PackageReference Include="Google.Apis.Docs.v1" Version="1.62.0.2979"/>
-        <PackageReference Include="Google.Apis.Drive.v3" Version="1.62.0.3155"/>
-        <PackageReference Include="Google.Apis.Auth" Version="1.62.1"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0"/>
+        <PackageReference Include="Google.Apis.Docs.v1" Version="1.66.0.3193"/>
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.66.0.3309"/>
+        <PackageReference Include="Google.Apis.Auth" Version="1.67.0-beta01"/>
     </ItemGroup>
 </Project>

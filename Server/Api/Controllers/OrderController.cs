@@ -10,10 +10,8 @@ using Services.Entities;
 namespace Api.Controllers;
 
 [Authorize]
-public class OrderController : EntityBaseController<Order, UpsertOrderRequest>
-{
-    public OrderController(IResponseFactory responseFactory, IOrderService orderService,
-        IOptions<JsonOptions> jsonOptions) : base(responseFactory, orderService, jsonOptions)
-    {
-    }
-}
+public class OrderController(
+    IResponseFactory responseFactory,
+    IOrderService orderService,
+    IOptions<JsonOptions> jsonOptions)
+    : EntityBaseController<Order, UpsertOrderRequest>(responseFactory, orderService, jsonOptions);

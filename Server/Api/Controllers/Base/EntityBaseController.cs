@@ -7,24 +7,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Services.Api;
 using Services.Entities;
-using Shared.Extensions;
 
 namespace Api.Controllers.Base;
 
-public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
+public abstract class EntityBaseController<TEntity, TUpsert>(
+    IResponseFactory responseFactory,
+    IBaseEntityService<TEntity, TUpsert> service,
+    IOptions<JsonOptions> jsonOptions)
+    : BaseController(responseFactory)
     where TEntity : class, IEntity
     where TUpsert : class
 {
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private readonly IBaseEntityService<TEntity, TUpsert> _service;
-
-    protected EntityBaseController(IResponseFactory responseFactory, IBaseEntityService<TEntity, TUpsert> service,
-        IOptions<JsonOptions> jsonOptions) :
-        base(responseFactory)
-    {
-        _service = service;
-        _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
-    }
+    private readonly JsonSerializerOptions _jsonSerializerOptions = jsonOptions.Value.JsonSerializerOptions;
 
     [HttpGet]
     public ActionResult<Response<PagedListResponse<TEntity>>> Get([FromQuery] SearchParams searchParams)
@@ -54,13 +48,14 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
                 BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest, "Invalid OrderBy Json"));
             }
 
-        return Ok(_responseFactory.Create(_service.GetAll(searchParams.SearchTerm, columnFilters, columnSorting, searchParams)));
+        return Ok(_responseFactory.Create(service.GetAll(searchParams.SearchTerm, columnFilters, columnSorting,
+            searchParams)));
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Response<TEntity>>> Get(string id)
     {
-        var entity = await _service.GetById(id);
+        var entity = await service.GetById(id);
         if (entity == null) return NotFound(_responseFactory.Create(HttpStatusCode.NotFound));
 
         return Ok(_responseFactory.Create(entity));
@@ -69,20 +64,20 @@ public abstract class EntityBaseController<TEntity, TUpsert> : BaseController
     [HttpPut("{id}")]
     public async Task<ActionResult<Response<TEntity>>> Put(string id, TUpsert entity)
     {
-        return Ok(_responseFactory.Create(await _service.Update(id, entity)));
+        return Ok(_responseFactory.Create(await service.Update(id, entity)));
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<TEntity>>> Post(TUpsert entity)
     {
-        var entry = await _service.Create(entity);
+        var entry = await service.Create(entity);
         return CreatedAtAction("Get", new { id = entry.Id }, _responseFactory.Create(entry));
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult<Response>> Delete(string id)
     {
-        await _service.Delete(id);
+        await service.Delete(id);
         return Ok(_responseFactory.Create());
     }
 }

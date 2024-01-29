@@ -4,10 +4,5 @@ using Data.Models.Entities;
 
 namespace Data.Database.Repositories;
 
-public class OrderRepository : GenericDbRepository<Order>, IOrderRepository
-{
-    public OrderRepository(CliannaDbContext dbContext, IMapper mapper) : base(dbContext, mapper,
-        new List<Expression<Func<Order, object>>> { e => e.Customer, e => e.Documents })
-    {
-    }
-}
+public class OrderRepository(CliannaDbContext dbContext, IMapper mapper) : GenericDbRepository<Order>(dbContext, mapper,
+    new List<Expression<Func<Order, object>>> { e => e.Customer, e => e.Documents }), IOrderRepository;

@@ -8,16 +8,9 @@ using Services.Entities;
 
 namespace Api.Middlewares;
 
-public class JwtMiddleware
+public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
 {
-    private readonly AppSettings _appSettings;
-    private readonly RequestDelegate _next;
-
-    public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
-    {
-        _next = next;
-        _appSettings = appSettings.Value;
-    }
+    private readonly AppSettings _appSettings = appSettings.Value;
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
@@ -26,7 +19,7 @@ public class JwtMiddleware
         if (token != null)
             AttachUserToContext(context, token);
 
-        await _next(context);
+        await next(context);
     }
 
     private void AttachUserToContext(HttpContext context, string token)

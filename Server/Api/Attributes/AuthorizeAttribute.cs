@@ -2,7 +2,6 @@
 using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Services;
 using Services.Api;
 
 namespace Api.Attributes;
@@ -12,13 +11,11 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        if (context.HttpContext.Items["User"] is not UserSession)
-        {
-            var responseFactory = context.HttpContext.RequestServices.GetService<IResponseFactory>()!;
+        if (context.HttpContext.Items["User"] is UserSession) return;
 
-            context.Result =
-                new JsonResult(responseFactory.Create(HttpStatusCode.Unauthorized, "You are not authorized!"))
-                    { StatusCode = (int)HttpStatusCode.Unauthorized };
-        }
+        var responseFactory = context.HttpContext.RequestServices.GetService<IResponseFactory>()!;
+        context.Result =
+            new JsonResult(responseFactory.Create(HttpStatusCode.Unauthorized, "You are not authorized!"))
+                { StatusCode = (int)HttpStatusCode.Unauthorized };
     }
 }

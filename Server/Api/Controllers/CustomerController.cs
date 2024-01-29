@@ -10,10 +10,8 @@ using Services.Entities;
 namespace Api.Controllers;
 
 [Authorize]
-public class CustomerController : EntityBaseController<Customer, UpsertCustomerRequest>
-{
-    public CustomerController(IResponseFactory responseFactory, ICustomerService customerService,
-        IOptions<JsonOptions> jsonOptions) : base(responseFactory, customerService, jsonOptions)
-    {
-    }
-}
+public class CustomerController(
+    IResponseFactory responseFactory,
+    ICustomerService customerService,
+    IOptions<JsonOptions> jsonOptions)
+    : EntityBaseController<Customer, UpsertCustomerRequest>(responseFactory, customerService, jsonOptions);

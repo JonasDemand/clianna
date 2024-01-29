@@ -10,33 +10,25 @@ using Microsoft.Extensions.Options;
 
 namespace Services.Maintenance;
 
-public class MigrationService : IMigrationService
+public class MigrationService(
+    ICustomerRepository customerRepository,
+    IOrderRepository orderRepository,
+    IDocumentRepository documentRepository,
+    CliannaDbContext dbContext,
+    IOptions<AppSettings> appSettings)
+    : IMigrationService
 {
-    private readonly AppSettings _appSettings;
-    private readonly ICustomerRepository _customerRepository;
-    private readonly CliannaDbContext _dbContext;
-    private readonly IDocumentRepository _documentRepository;
-    private readonly IOrderRepository _orderRepository;
-
-    public MigrationService(ICustomerRepository customerRepository, IOrderRepository orderRepository,
-        IDocumentRepository documentRepository, CliannaDbContext dbContext, IOptions<AppSettings> appSettings)
-    {
-        _appSettings = appSettings.Value;
-        _orderRepository = orderRepository;
-        _documentRepository = documentRepository;
-        _customerRepository = customerRepository;
-        _dbContext = dbContext;
-    }
+    private readonly AppSettings _appSettings = appSettings.Value;
 
     public async Task MigrateLegacyDb(string dbName)
     {
         if (!_appSettings.DevMode) throw new Exception("AppSetting DevMode required for this operation");
-        var connection = _dbContext.Database.GetDbConnection();
+        var connection = dbContext.Database.GetDbConnection();
         var legacyCustomers = await ExecuteCommand(connection, $"SELECT * FROM {dbName}.Customer");
         var legacyOrders = await ExecuteCommand(connection, $"SELECT * FROM {dbName}.Order");
         var legacyDocuments = await ExecuteCommand(connection, $"SELECT * FROM {dbName}.Document");
 
-        var transaction = await _dbContext.Database.BeginTransactionAsync();
+        var transaction = await dbContext.Database.BeginTransactionAsync();
 
         var customers = Enumerable.Select(legacyCustomers.AsEnumerable(), customer => new Customer
         {
@@ -56,7 +48,7 @@ public class MigrationService : IMigrationService
             StreetNumber = ConvertFromDbVal<string?>(customer["streetnumber"]),
             WhatsApp = ConvertFromDbVal<bool?>(customer["whatsapp"])
         });
-        await _customerRepository.Add(customers);
+        await customerRepository.Add(customers);
 
         var orders = legacyOrders.AsEnumerable().Select(async order => new Order
         {
@@ -75,9 +67,9 @@ public class MigrationService : IMigrationService
             CreationDate = ConvertFromDbVal<DateTime>(order["creationDate"]),
             DueDate = ConvertFromDbVal<DateTime?>(order["dueDate"]),
             ShippingType = MapShippingType(ConvertFromDbVal<string?>(order["shippingType"])),
-            Customer = await _customerRepository.Get(ConvertFromDbVal<string?>(order["customerId"]))
+            Customer = await customerRepository.Get(ConvertFromDbVal<string?>(order["customerId"]))
         }).Select(t => t.Result);
-        await _orderRepository.Add(orders);
+        await orderRepository.Add(orders);
 
         var documents = legacyDocuments.AsEnumerable().Select(async order => new Document
         {
@@ -87,10 +79,10 @@ public class MigrationService : IMigrationService
             Template = ConvertFromDbVal<bool>(order["template"]),
             GoogleId = ConvertFromDbVal<string?>(order["googleId"]),
             IncrementalId = ConvertFromDbVal<int?>(order["incrementalId"]),
-            Customer = await _customerRepository.Get(ConvertFromDbVal<string?>(order["customerId"])),
-            Order = await _orderRepository.Get(ConvertFromDbVal<string?>(order["orderId"]))
+            Customer = await customerRepository.Get(ConvertFromDbVal<string?>(order["customerId"])),
+            Order = await orderRepository.Get(ConvertFromDbVal<string?>(order["orderId"]))
         }).Select(t => t.Result);
-        await _documentRepository.Add(documents);
+        await documentRepository.Add(documents);
 
 
         await transaction.CommitAsync();
