@@ -7,6 +7,9 @@ COPY . ./
 # Change the working directory to /App/Api
 WORKDIR /App/Api
 
+# Needed for google api to work
+ENV DOTNET_SYSTEM_NET_HTTP_SOCKETSHTTPHANDLER_HTTP3SUPPORT=true
+
 # Restore as distinct layers
 RUN dotnet restore
 
