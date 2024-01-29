@@ -1,7 +1,9 @@
-﻿namespace Data.Models.Enums;
+﻿using System.ComponentModel;
+
+namespace Data.Models.Enums;
 
 public enum EOrderTax
 {
-    Nineteen,
-    Seven
+    [Description("19%")] Nineteen,
+    [Description("7%")] Seven
 }

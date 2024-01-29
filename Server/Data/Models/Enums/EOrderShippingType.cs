@@ -1,8 +1,10 @@
-﻿namespace Data.Models.Enums;
+﻿using System.ComponentModel;
+
+namespace Data.Models.Enums;
 
 public enum EOrderShippingType
 {
-    Send,
-    Collect,
-    Visit
+    [Description("Versand")] Send,
+    [Description("Abholung")] Collect,
+    [Description("Hausbesuch")] Visit
 }
