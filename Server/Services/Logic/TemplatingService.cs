@@ -9,6 +9,18 @@ public class TemplatingService : ITemplatingService
 {
     private static readonly Dictionary<string, Func<dynamic, string>> CustomLabels = new()
     {
+        {
+            "Salutation", value =>
+            {
+                return (value as ECustomerSalutation?) switch
+                {
+                    ECustomerSalutation.Mr => "Sehr geehrter Herr",
+                    ECustomerSalutation.Mrs => "Sehr geehrte Frau",
+                    ECustomerSalutation.Diverse => "Sehr geehrte*r Herr/Frau",
+                    _ => "Sehr geehrte Damen und Herren"
+                };
+            }
+        },
         { "IncrementalId", value => value?.ToString().PadLeft(4, '0') ?? string.Empty }
     };
 

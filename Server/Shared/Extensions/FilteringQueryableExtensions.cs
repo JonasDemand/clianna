@@ -133,13 +133,14 @@ public static class FilteringQueryableExtensions
             }
 
             if (type.IsEnum)
-            {
                 foreach (var value in Enum.GetValues(type))
-                    if (!(value as Enum).GetDescription().Contains(searchValue))
+                {
+                    if (!(value as Enum ?? throw new InvalidOperationException()).GetDescription()
+                        .Contains(searchValue, StringComparison.OrdinalIgnoreCase))
                         continue;
-                //TODO: implement enum filtering
-                return null;
-            }
+                    var constant = Expression.Constant(value, property.Type);
+                    return Expression.Equal(property, constant);
+                }
         }
         catch
         {
