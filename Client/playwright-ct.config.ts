@@ -30,7 +30,7 @@ const config: PlaywrightTestConfig = {
     ctPort: 3100,
 
     ctViteConfig: {
-      plugins: [tsconfigPaths()],
+      plugins: [tsconfigPaths() as any], //TODO: maybe there is an issue here after updating packages
       resolve: {
         alias: [
           { find: 'next/router', replacement: 'next-router-mock' },
