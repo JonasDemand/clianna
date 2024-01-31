@@ -83,14 +83,13 @@ public class UserService(IOptions<AppSettings> appSettings, IUserRepository user
 
     private string GenerateJwtToken(User user)
     {
-        // generate token that is valid for 7 days
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
                 { new Claim("id", user.Id), new Claim("email", user.Email) }),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Expires = DateTime.UtcNow.AddMonths(12), //TODO: reduce token lifetime by adding refresh tokens
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };

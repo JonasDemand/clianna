@@ -78,7 +78,7 @@ export const authOptions: AuthOptions = {
     },
   },
   pages: { signIn: '/login' },
-  session: { strategy: 'jwt' },
+  session: { strategy: 'jwt', maxAge: 12 * 30 * 24 * 60 * 60 },
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

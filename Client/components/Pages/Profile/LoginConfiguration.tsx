@@ -7,7 +7,7 @@ import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { HttpStatusCode } from '@utils/api/generated/Api';
-import { refreshSession } from '@utils/nextauth';
+import { refreshSession } from '@utils/auth';
 import useApiClient from 'hooks/useApiClient';
 import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';

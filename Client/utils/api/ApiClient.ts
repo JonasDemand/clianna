@@ -1,5 +1,6 @@
 import { SecurityDataType } from '@customTypes/api';
 import { environment } from '@utils/config';
+import { redirect } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 import { ApiConfig, Client } from './generated/Api';
@@ -18,7 +19,13 @@ export const getApiClient = (
     },
     customFetch: async (...params) => {
       const res = await fetch(...params);
-      if (res.status === 401) signOut();
+      if (res.status === 401) {
+        try {
+          await signOut();
+        } catch {
+          redirect('/login');
+        }
+      }
       return res;
     },
     ...config,

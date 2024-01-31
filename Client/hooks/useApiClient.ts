@@ -4,7 +4,6 @@ import { ApiConfig } from '@utils/api/generated/Api';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo } from 'react';
 
-//TODO use singleton
 const useApiClient = (
   config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
 ) => {
