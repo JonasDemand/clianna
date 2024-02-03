@@ -82,12 +82,12 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       }
       setTemplates(data.list);
     };
-    if (session?.user.token) {
+    if (session?.user.accessToken) {
       fetchTemplates();
       return true;
     }
     return false;
-  }, [ApiClient.document, enqueueSnackbar, session?.user.token]);
+  }, [ApiClient.document, enqueueSnackbar, session?.user.accessToken]);
 
   const fetchCustomers = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

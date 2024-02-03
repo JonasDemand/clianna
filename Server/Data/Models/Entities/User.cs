@@ -11,5 +11,8 @@ public class User : IEntity
     public string Salt { get; set; }
     public bool Enabled { get; set; }
 
+    //Navigation
+    public IEnumerable<RefreshToken> RefreshTokens { get; set; }
+
     public string Id { get; set; } = new Cuid2().ToString();
 }

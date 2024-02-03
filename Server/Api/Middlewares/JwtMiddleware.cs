@@ -14,7 +14,7 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var token = context.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
 
         if (token != null)
             AttachUserToContext(context, token);
@@ -32,7 +32,7 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
+                ValidateIssuer = false, //TODO: validate
                 ValidateAudience = false,
                 // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
                 ClockSkew = TimeSpan.Zero
@@ -46,8 +46,7 @@ public class JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettin
             context.Items["User"] = new UserSession
             {
                 Id = userId,
-                Email = userEmail,
-                Token = token
+                Email = userEmail
             };
         }
         catch

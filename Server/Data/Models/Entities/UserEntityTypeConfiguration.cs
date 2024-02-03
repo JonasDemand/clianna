@@ -31,5 +31,8 @@ public class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             .Property(e => e.Enabled)
             .HasColumnType("tinyint(1)")
             .IsRequired();
+
+        //Navigation
+        builder.Navigation(e => e.RefreshTokens);
     }
 }

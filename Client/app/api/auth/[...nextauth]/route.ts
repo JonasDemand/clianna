@@ -1,7 +1,7 @@
 import { getApiClient } from '@utils/api/ApiClient';
 import { environment } from '@utils/config';
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { AuthOptions, Session } from 'next-auth';
+import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
@@ -26,14 +26,17 @@ export const authOptions: AuthOptions = {
             email: credentials.email,
             password: credentials.password,
           });
-          if (error || !data || !data.email || !data.id || !data.token) {
+          if (
+            error ||
+            !data ||
+            !data.id ||
+            !data.email ||
+            !data.accessToken ||
+            !data.refreshToken
+          )
             return null;
-          }
-          return {
-            id: data.id,
-            email: data.email,
-            token: data.token,
-          };
+
+          return data as User;
         } catch (e) {
           console.error(e);
           return null;
@@ -49,36 +52,32 @@ export const authOptions: AuthOptions = {
           ...user,
           id: token.id,
           email: token.email,
-          token: token.token,
+          accessToken: token.accessToken,
+          refreshToken: token.refreshToken,
         },
       };
     },
     jwt: async ({ token, user }): Promise<JWT> => {
       if (reqRefreshSession) {
-        const { error, data } = await ApiClient.user.sessionList({
-          headers: { Authorization: `Bearer ${token?.token ?? user?.token}` },
+        const { error, data } = await ApiClient.user.profileList({
+          headers: {
+            Authorization: `Bearer ${token.accessToken}`,
+          },
         });
-        if (error || !data || !data.id || !data.email || !data.token)
+        if (error || !data || !data.id || !data.email)
           throw new Error('Failed to retrieve session');
-        user = {
-          id: data.id,
-          email: data.email,
-          token: data.token,
-        };
-      }
-      if (user) {
         return {
           ...token,
-          id: user.id,
-          email: user.email,
-          token: user.token,
+          ...user,
+          id: data.id,
+          email: data.email,
         };
       }
-      return token;
+      return { ...token, ...user };
     },
   },
   pages: { signIn: '/login' },
-  session: { strategy: 'jwt', maxAge: 12 * 30 * 24 * 60 * 60 },
+  session: { strategy: 'jwt', maxAge: 15 * 60 },
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

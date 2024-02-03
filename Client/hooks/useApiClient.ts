@@ -12,8 +12,8 @@ const useApiClient = (
   const client = useMemo(() => getApiClient(config), [config]);
 
   useEffect(() => {
-    client.setSecurityData({ token: session?.user.token });
-  }, [client, session?.user.token]);
+    client.setSecurityData({ accessToken: session?.user.accessToken });
+  }, [client, session?.user.accessToken]);
 
   return client;
 };

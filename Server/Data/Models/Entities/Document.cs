@@ -19,8 +19,8 @@ public class Document : IEntity
     [JsonIgnore] public string? CustomerId { get; set; }
 
     //Navigation
-    public virtual Order? Order { get; set; }
-    public virtual Customer? Customer { get; set; }
+    public Order? Order { get; set; }
+    public Customer? Customer { get; set; }
 
     public string Id { get; set; } = new Cuid2().ToString();
 }

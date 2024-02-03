@@ -10,7 +10,7 @@ const useApiClientServer = async (
   const session = await getServerSession(authOptions);
 
   const client = getApiClient(config);
-  client.setSecurityData({ token: session?.user.token });
+  client.setSecurityData({ accessToken: session?.user.accessToken });
 
   return client;
 };

@@ -248,6 +248,18 @@ export interface Response {
   error?: Error;
 }
 
+export interface TokenResponse {
+  id?: string | null;
+  email?: string | null;
+  accessToken?: string | null;
+  refreshToken?: string | null;
+}
+
+export interface TokenResponseResponse {
+  data?: TokenResponse;
+  error?: Error;
+}
+
 export interface UpdateProfileRequest {
   email?: string | null;
   password?: string | null;
@@ -305,7 +317,6 @@ export interface UpsertOrderRequest {
 }
 
 export interface UserSession {
-  token?: string | null;
   id?: string | null;
   email?: string | null;
 }
@@ -887,7 +898,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * @secure
      */
     authenticateCreate: (data: AuthenticateRequest, params: RequestParams = {}) =>
-      this.request<UserSessionResponse, any>({
+      this.request<TokenResponseResponse, any>({
         path: `/User/Authenticate`,
         method: "POST",
         body: data,
@@ -920,13 +931,13 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * No description
      *
      * @tags User
-     * @name SessionList
-     * @request GET:/User/Session
+     * @name ProfileList
+     * @request GET:/User/Profile
      * @secure
      */
-    sessionList: (params: RequestParams = {}) =>
+    profileList: (params: RequestParams = {}) =>
       this.request<UserSessionResponse, any>({
-        path: `/User/Session`,
+        path: `/User/Profile`,
         method: "GET",
         secure: true,
         format: "json",

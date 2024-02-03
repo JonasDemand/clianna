@@ -7,6 +7,7 @@ using Data.Models.Entities;
 using Data.Models.Messages;
 using Data.Models.Messages.Filtering;
 using Data.Models.Misc;
+using Data.Models.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Services.Api;
@@ -27,6 +28,7 @@ builder.Services.AddDbContext<CliannaDbContext>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.CreateMap<UpsertUserRequest, User>();
+    cfg.CreateMap<User, UserSession>();
     cfg.CreateMap<UpsertCustomerRequest, Customer>().ForMember(x => x.Documents, opts => opts.Ignore())
         .ForMember(x => x.Orders, opts => opts.Ignore());
     cfg.CreateMap<UpsertDocumentReqeust, Document>().ForMember(x => x.Order, opts => opts.Ignore())
@@ -53,6 +55,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

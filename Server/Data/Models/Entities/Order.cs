@@ -27,8 +27,8 @@ public class Order : IEntity
     [JsonIgnore] public string? CustomerId { get; set; }
 
     //Navigation
-    public virtual IEnumerable<Document> Documents { get; set; }
-    public virtual Customer? Customer { get; set; }
+    public IEnumerable<Document> Documents { get; set; }
+    public Customer? Customer { get; set; }
 
     public string Id { get; set; } = new Cuid2().ToString();
 }

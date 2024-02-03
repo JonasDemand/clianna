@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using AutoMapper;
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Data.Models.Messages.Filtering;
@@ -12,9 +13,10 @@ namespace Api.Controllers.Base;
 
 public abstract class EntityBaseController<TEntity, TUpsert>(
     IResponseFactory responseFactory,
+    IMapper mapper,
     IBaseEntityService<TEntity, TUpsert> service,
     IOptions<JsonOptions> jsonOptions)
-    : BaseController(responseFactory)
+    : BaseController(responseFactory, mapper)
     where TEntity : class, IEntity
     where TUpsert : class
 {

@@ -1,3 +1,3 @@
 export type SecurityDataType = {
-  token?: string | null;
+  accessToken?: string | null;
 };

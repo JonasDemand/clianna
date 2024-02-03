@@ -12,9 +12,9 @@ export const getApiClient = (
     baseUrl: environment.NEXT_PUBLIC_CLIANNA_API_URL,
     baseApiParams: { cache: 'no-cache' },
     securityWorker: (securityData) => {
-      if (securityData?.token)
+      if (securityData?.accessToken)
         return {
-          headers: { Authorization: `Bearer ${securityData.token}` },
+          headers: { Authorization: `Bearer ${securityData.accessToken}` },
         };
     },
     customFetch: async (...params) => {

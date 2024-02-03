@@ -1,5 +1,6 @@
 ﻿using Api.Attributes;
 using Api.Controllers.Base;
+using AutoMapper;
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace Api.Controllers;
 [Authorize]
 public class OrderController(
     IResponseFactory responseFactory,
+    IMapper mapper,
     IOrderService orderService,
     IOptions<JsonOptions> jsonOptions)
-    : EntityBaseController<Order, UpsertOrderRequest>(responseFactory, orderService, jsonOptions);
+    : EntityBaseController<Order, UpsertOrderRequest>(responseFactory, mapper, orderService, jsonOptions);

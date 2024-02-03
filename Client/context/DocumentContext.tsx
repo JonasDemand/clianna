@@ -106,13 +106,13 @@ const DocumentProvider: FC<DocumentContextProps> = ({
       }
       setOrders(data.list);
     };
-    if (session?.user.token) {
+    if (session?.user.accessToken) {
       fetchCustomers();
       fetchOrders();
       return true;
     }
     return false;
-  }, [ApiClient.document, enqueueSnackbar, session?.user.token]);
+  }, [ApiClient.document, enqueueSnackbar, session?.user.accessToken]);
 
   const fetchDocuments = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

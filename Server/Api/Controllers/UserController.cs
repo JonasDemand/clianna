@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Api.Attributes;
 using Api.Controllers.Base;
+using AutoMapper;
 using Data.Models.Messages;
 using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,18 +10,34 @@ using Services.Entities;
 
 namespace Api.Controllers;
 
-public class UserController(IUserService userService, IResponseFactory responseFactory)
-    : BaseController(responseFactory)
+public class UserController(IUserService userService, IResponseFactory responseFactory, IMapper mapper)
+    : BaseController(responseFactory, mapper)
 {
     [HttpPost("Authenticate")]
-    public async Task<ActionResult<Response<UserSession>>> Authenticate(AuthenticateRequest request)
+    public async Task<ActionResult<Response<TokenResponse>>> Authenticate(AuthenticateRequest request)
     {
-        var session = await userService.Authenticate(request.Email, request.Password);
+        var tokenResponse = await userService.Authenticate(request.Email, request.Password);
 
-        if (session == null)
+        if (tokenResponse == null)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
 
-        return Ok(_responseFactory.Create(session));
+        return Ok(_responseFactory.Create(tokenResponse));
+    }
+
+    [Authorize]
+    [HttpPost("Refresh")]
+    public async Task<ActionResult<Response<TokenResponse>>> Refresh(string refreshToken)
+    {
+        var oldJwt = HttpContext.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
+        if (oldJwt == null)
+            return Unauthorized(_responseFactory.Create(HttpStatusCode.Unauthorized, "You are not authorized!"));
+
+        var tokenResponse = await userService.Refresh(oldJwt, refreshToken);
+
+        if (tokenResponse == null)
+            return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
+
+        return Ok(_responseFactory.Create(tokenResponse));
     }
 
     [Authorize]
@@ -47,12 +64,12 @@ public class UserController(IUserService userService, IResponseFactory responseF
     }
 
     [Authorize]
-    [HttpGet("Session")]
-    public async Task<ActionResult<Response<UserSession>>> Session()
+    [HttpGet("Profile")]
+    public async Task<ActionResult<Response<UserSession>>> Profile()
     {
         if (HttpContext.Items["User"] is not UserSession userSession)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));
-
-        return Ok(_responseFactory.Create(await userService.GetSession(userSession.Id)));
+        var session = _mapper.Map<UserSession>(await userService.GetById(userSession.Id));
+        return Ok(_responseFactory.Create(session));
     }
 }

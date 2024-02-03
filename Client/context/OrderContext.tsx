@@ -102,13 +102,13 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
       }
       setCustomers(data.list);
     };
-    if (session?.user.token) {
+    if (session?.user.accessToken) {
       fetchTemplates();
       fetchCustomers();
       return true;
     }
     return false;
-  }, [ApiClient.document, enqueueSnackbar, session?.user.token]);
+  }, [ApiClient.document, enqueueSnackbar, session?.user.accessToken]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

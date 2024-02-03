@@ -7,13 +7,16 @@ using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Data.Models.Misc;
-using Data.Models.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Services.Entities;
 
-public class UserService(IOptions<AppSettings> appSettings, IUserRepository userRepository, IMapper mapper)
+public class UserService(
+    IOptions<AppSettings> appSettings,
+    IUserRepository userRepository,
+    IMapper mapper,
+    IRefreshTokenRepository refreshTokenRepository)
     : BaseEntityService<User, UpsertUserRequest>(userRepository, mapper), IUserService
 {
     private const int KeySize = 128;
@@ -23,7 +26,7 @@ public class UserService(IOptions<AppSettings> appSettings, IUserRepository user
     private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
 
 
-    public async Task<UserSession?> Authenticate(string email, string password)
+    public async Task<TokenResponse?> Authenticate(string email, string password)
     {
         var user = await userRepository.GetFirstOrDefault(x => x.Email == email);
         if (user is { Enabled: false }) return null;
@@ -43,14 +46,24 @@ public class UserService(IOptions<AppSettings> appSettings, IUserRepository user
 
         if (!VerifyPassword(password, user.Password, user.Salt)) return null;
 
-        var token = GenerateJwtToken(user);
-
-        return new UserSession
+        var accessToken = GenerateJwtToken(user);
+        var refreshToken = await refreshTokenRepository.Add(new RefreshToken
         {
+            Token = GenerateRefreshToken(), User = user
+        });
+
+        return new TokenResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken.Token,
             Id = user.Id,
-            Email = user.Email,
-            Token = token
+            Email = user.Email
         };
+    }
+
+    public Task<TokenResponse?> Refresh(string oldJwt, string refreshToken)
+    {
+        refreshTokenRepository.Get()
     }
 
     public async Task<User> UpdateProfile(string id, UpsertUserRequest user)
@@ -66,19 +79,6 @@ public class UserService(IOptions<AppSettings> appSettings, IUserRepository user
         return await userRepository.Update(entry);
     }
 
-    public async Task<UserSession> GetSession(string id)
-    {
-        var user = await userRepository.Get(id);
-        var token = GenerateJwtToken(user);
-
-        return new UserSession
-        {
-            Id = user.Id,
-            Email = user.Email,
-            Token = token
-        };
-    }
-
     // helper methods
 
     private string GenerateJwtToken(User user)
@@ -89,12 +89,20 @@ public class UserService(IOptions<AppSettings> appSettings, IUserRepository user
         {
             Subject = new ClaimsIdentity(new[]
                 { new Claim("id", user.Id), new Claim("email", user.Email) }),
-            Expires = DateTime.UtcNow.AddMonths(12), //TODO: reduce token lifetime by adding refresh tokens
+            Expires = DateTime.UtcNow.AddMinutes(15),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    private string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 
     private string HashPassword(string password, out string salt)

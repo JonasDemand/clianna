@@ -1,11 +1,13 @@
 /* eslint-disable unused-imports/no-unused-imports */
+import { TokenResponse } from '@utils/api/generated/Api';
 import NextAuth from 'next-auth';
 import NextAuthJwt from 'next-auth/jwt';
 
 interface ISession {
   id: string;
   email: string;
-  token: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 declare module 'next-auth' {
