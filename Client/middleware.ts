@@ -1,5 +1,5 @@
-export { default } from 'next-auth/middleware';
+export { auth as default } from './config/auth';
 
 export const config = {
-  matcher: '/manage/:path*',
+  matcher: '/wip_manage/:path*',
 };

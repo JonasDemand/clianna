@@ -3,16 +3,14 @@ import CustomerProvider from '@context/CustomerContext';
 import CustomSessionProvider from '@context/CustomSessionContext';
 import PaginationProvider from '@context/PaginationContext';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
-import { authOptions } from 'app/api/auth/[...nextauth]/route';
 import useApiClientServer from 'hooks/useApiClientServer';
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
 import React from 'react';
 
+import { auth } from '../../../config/auth';
+
 const Customers = async () => {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect('/login');
-  console.log(session);
+  const session = await auth();
+  if (!session) throw new Error('Session is null');
   const ApiClient = await useApiClientServer(null, session);
 
   const { data, error } = await ApiClient.customer.customerList({
