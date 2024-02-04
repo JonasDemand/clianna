@@ -10,7 +10,6 @@ namespace Data.Database.Repositories;
 public abstract class GenericDbRepository<T>(CliannaDbContext dbContext, IMapper mapper) : IGenericRepository<T>
     where T : class, IEntity
 {
-    protected readonly CliannaDbContext _dbContext = dbContext;
     protected readonly IMapper _mapper = mapper;
     private readonly IEnumerable<Expression<Func<T, object>>> _references = new List<Expression<Func<T, object>>>();
 
@@ -25,67 +24,67 @@ public abstract class GenericDbRepository<T>(CliannaDbContext dbContext, IMapper
     {
         get
         {
-            var query = _dbContext.Set<T>() as IQueryable<T>;
+            var query = dbContext.Set<T>() as IQueryable<T>;
             return _references.Aggregate(query, (current, property) => current.Include(property));
         }
     }
 
     public async Task<T> Add(T entity, bool save = true)
     {
-        await _dbContext.Set<T>().AddAsync(entity);
+        await dbContext.Set<T>().AddAsync(entity);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<List<T>> Add(IEnumerable<T> entities, bool save = true)
     {
-        await _dbContext.Set<T>().AddRangeAsync(entities);
+        await dbContext.Set<T>().AddRangeAsync(entities);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         return entities.ToList();
     }
 
     public IDbContextTransaction BeginTransaction()
     {
-        return _dbContext.Database.BeginTransaction();
+        return dbContext.Database.BeginTransaction();
     }
 
     public EntityEntry<T> GetEntry(T entity)
     {
-        return _dbContext.Entry(entity);
+        return dbContext.Entry(entity);
     }
 
     public async Task Delete(string id, bool save = true)
     {
-        var entity = await _dbContext.Set<T>().FindAsync(id);
+        var entity = await dbContext.Set<T>().FindAsync(id);
 
-        _dbContext.Set<T>().Remove(entity);
+        dbContext.Set<T>().Remove(entity);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task Delete(Expression<Func<T, bool>> predicate, bool save = true)
     {
         var entities = await Query.Where(predicate).ToListAsync();
 
-        _dbContext.Set<T>().RemoveRange(entities);
+        dbContext.Set<T>().RemoveRange(entities);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task Delete(T entity, bool save = true)
     {
-        _dbContext.Set<T>().Remove(entity);
+        dbContext.Set<T>().Remove(entity);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task Delete(IEnumerable<T> entities, bool save = true)
     {
-        _dbContext.Set<T>().RemoveRange(entities);
+        dbContext.Set<T>().RemoveRange(entities);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
     }
 
     public async Task<T> Get(string id)
@@ -115,22 +114,22 @@ public abstract class GenericDbRepository<T>(CliannaDbContext dbContext, IMapper
 
     public async Task SaveChanges()
     {
-        await _dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<T> Update(T entity, bool save = true)
     {
-        _dbContext.Set<T>().Update(entity);
+        dbContext.Set<T>().Update(entity);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         return entity;
     }
 
     public async Task<List<T>> Update(IEnumerable<T> entities, bool save = true)
     {
-        _dbContext.Set<T>().UpdateRange(entities);
+        dbContext.Set<T>().UpdateRange(entities);
         if (save)
-            await _dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         return entities.ToList();
     }
 }

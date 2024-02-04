@@ -7,6 +7,7 @@ using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
 using Data.Models.Misc;
+using Data.Models.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -61,9 +62,22 @@ public class UserService(
         };
     }
 
-    public Task<TokenResponse?> Refresh(string oldJwt, string refreshToken)
+    public async Task<TokenResponse?> Refresh(UserSession oldSession, string refreshToken)
     {
-        refreshTokenRepository.Get()
+        var newRefreshToken = await refreshTokenRepository.GetValidByUserIdAndToken(oldSession.Id, refreshToken);
+        if (newRefreshToken == null) return null;
+
+        newRefreshToken.Token = GenerateRefreshToken();
+        await refreshTokenRepository.SaveChanges();
+        var newAccessToken = GenerateJwtToken(newRefreshToken.User);
+
+        return new TokenResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken.Token,
+            Id = newRefreshToken.User.Id,
+            Email = newRefreshToken.User.Email
+        };
     }
 
     public async Task<User> UpdateProfile(string id, UpsertUserRequest user)
@@ -89,20 +103,12 @@ public class UserService(
         {
             Subject = new ClaimsIdentity(new[]
                 { new Claim("id", user.Id), new Claim("email", user.Email) }),
-            Expires = DateTime.UtcNow.AddMinutes(15),
+            Expires = DateTime.UtcNow.AddSeconds(15),
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
-    }
-
-    private string GenerateRefreshToken()
-    {
-        var randomNumber = new byte[32];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(randomNumber);
-        return Convert.ToBase64String(randomNumber);
     }
 
     private string HashPassword(string password, out string salt)
@@ -123,5 +129,13 @@ public class UserService(
         var hashToCompare =
             Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), Iterations, _hashAlgorithm, KeySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
+    }
+
+    private static string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
     }
 }

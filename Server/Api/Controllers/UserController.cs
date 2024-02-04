@@ -1,16 +1,23 @@
 ﻿using System.Net;
 using Api.Attributes;
 using Api.Controllers.Base;
+using Api.Extensions;
 using AutoMapper;
 using Data.Models.Messages;
+using Data.Models.Misc;
 using Data.Models.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Services.Api;
 using Services.Entities;
 
 namespace Api.Controllers;
 
-public class UserController(IUserService userService, IResponseFactory responseFactory, IMapper mapper)
+public class UserController(
+    IUserService userService,
+    IResponseFactory responseFactory,
+    IMapper mapper,
+    IOptions<AppSettings> appSettings)
     : BaseController(responseFactory, mapper)
 {
     [HttpPost("Authenticate")]
@@ -24,15 +31,15 @@ public class UserController(IUserService userService, IResponseFactory responseF
         return Ok(_responseFactory.Create(tokenResponse));
     }
 
-    [Authorize]
-    [HttpPost("Refresh")]
+    [HttpPut("Refresh")]
     public async Task<ActionResult<Response<TokenResponse>>> Refresh(string refreshToken)
     {
-        var oldJwt = HttpContext.Request.Headers.Authorization.FirstOrDefault()?.Split(" ").Last();
-        if (oldJwt == null)
+        HttpContext.AttachUserSession(appSettings.Value.Secret, false);
+        var session = HttpContext.GetUserSession();
+        if (session is not UserSession)
             return Unauthorized(_responseFactory.Create(HttpStatusCode.Unauthorized, "You are not authorized!"));
 
-        var tokenResponse = await userService.Refresh(oldJwt, refreshToken);
+        var tokenResponse = await userService.Refresh(session, refreshToken);
 
         if (tokenResponse == null)
             return BadRequest(_responseFactory.Create(HttpStatusCode.BadRequest));

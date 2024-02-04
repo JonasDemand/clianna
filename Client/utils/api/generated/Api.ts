@@ -912,6 +912,29 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
      * No description
      *
      * @tags User
+     * @name RefreshUpdate
+     * @request PUT:/User/Refresh
+     * @secure
+     */
+    refreshUpdate: (
+      query?: {
+        refreshToken?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<TokenResponseResponse, any>({
+        path: `/User/Refresh`,
+        method: "PUT",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
      * @name ProfileUpdate
      * @request PUT:/User/Profile
      * @secure

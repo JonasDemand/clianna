@@ -1,5 +1,6 @@
 import { getApiClient } from '@utils/api/ApiClient';
 import { environment } from '@utils/config';
+import { jwtDecode } from 'jwt-decode';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { AuthOptions, Session, User } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
@@ -58,26 +59,61 @@ export const authOptions: AuthOptions = {
       };
     },
     jwt: async ({ token, user }): Promise<JWT> => {
-      if (reqRefreshSession) {
-        const { error, data } = await ApiClient.user.profileList({
-          headers: {
-            Authorization: `Bearer ${token.accessToken}`,
-          },
-        });
-        if (error || !data || !data.id || !data.email)
-          throw new Error('Failed to retrieve session');
-        return {
-          ...token,
-          ...user,
-          id: data.id,
-          email: data.email,
-        };
+      if (!token.accessToken) return { ...token, ...user };
+      try {
+        const jwt = jwtDecode(token.accessToken);
+        if (Date.now() >= jwt.exp! * 1000) {
+          console.log('refreshing');
+          const { error, data } = await ApiClient.user.refreshUpdate(
+            {
+              refreshToken: token.refreshToken,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token.accessToken}`,
+              },
+            }
+          );
+          if (
+            error ||
+            !data ||
+            !data.id ||
+            !data.email ||
+            !data.accessToken ||
+            !data.refreshToken
+          )
+            throw new Error('Failed to get new access token');
+          return {
+            ...token,
+            ...user,
+            id: data.id,
+            email: data.email,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+          };
+        }
+      } catch (e) {
+        console.error(e);
+        return { ...token, ...user };
       }
-      return { ...token, ...user };
+      if (!reqRefreshSession) return { ...token, ...user };
+      const { error, data } = await ApiClient.user.profileList({
+        headers: {
+          Authorization: `Bearer ${token.accessToken}`,
+        },
+      });
+      if (error || !data || !data.id || !data.email)
+        throw new Error('Failed to retrieve session');
+      return {
+        ...token,
+        ...user,
+        id: data.id,
+        email: data.email,
+      };
     },
   },
   pages: { signIn: '/login' },
-  session: { strategy: 'jwt', maxAge: 15 * 60 },
+  session: { strategy: 'jwt', maxAge: 24 * 60 * 60 },
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

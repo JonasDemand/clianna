@@ -13,7 +13,6 @@ import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
 import useEffectOnce from 'hooks/useEffectOnce';
-import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, {
   createContext,
@@ -25,6 +24,7 @@ import React, {
   useState,
 } from 'react';
 
+import { useCustomSessionContext } from './CustomSessionContext';
 import { usePaginationContext } from './PaginationContext';
 
 export const useDocumentContext = () => {
@@ -47,7 +47,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   initialDocuments,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { data: session } = useSession();
+  const { session } = useCustomSessionContext();
   const ApiClient = useApiClient();
   const {
     currentPage,

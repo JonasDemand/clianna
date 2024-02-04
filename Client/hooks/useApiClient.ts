@@ -1,15 +1,19 @@
+import { useCustomSessionContext } from '@context/CustomSessionContext';
 import { SecurityDataType } from '@customTypes/api';
 import { getApiClient } from '@utils/api/ApiClient';
 import { ApiConfig } from '@utils/api/generated/Api';
-import { useSession } from 'next-auth/react';
+import { reloadSession } from '@utils/auth';
 import { useEffect, useMemo } from 'react';
 
 const useApiClient = (
   config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
 ) => {
-  const { data: session } = useSession();
+  const { session } = useCustomSessionContext();
 
-  const client = useMemo(() => getApiClient(config), [config]);
+  const client = useMemo(
+    () => getApiClient(config, () => reloadSession(false)),
+    [config]
+  );
 
   useEffect(() => {
     client.setSecurityData({ accessToken: session?.user.accessToken });

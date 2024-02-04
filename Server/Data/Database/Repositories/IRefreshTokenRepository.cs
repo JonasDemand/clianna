@@ -4,5 +4,7 @@ namespace Data.Database.Repositories;
 
 public interface IRefreshTokenRepository : IGenericRepository<RefreshToken>
 {
-    public Task<RefreshToken> Get(string userId, string token);
+    public Task<RefreshToken> GetValidByUserIdAndToken(string userId, string token);
+
+    public Task DeleteInvalid();
 }

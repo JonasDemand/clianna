@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Api.Config;
 using Api.Middlewares;
+using Api.Services;
 using Data.Database;
 using Data.Database.Repositories;
 using Data.Models.Entities;
@@ -8,7 +9,6 @@ using Data.Models.Messages;
 using Data.Models.Messages.Filtering;
 using Data.Models.Misc;
 using Data.Models.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Services.Api;
 using Services.Entities;
@@ -56,6 +56,9 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+builder.Services.AddHostedService<RunEfMigrationsTask>();
+builder.Services.AddHostedService<RemoveInvalidRefreshTokensTask>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -107,13 +110,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors();
 
 var app = builder.Build();
-
-//Migrate DB
-using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
-{
-    var context = serviceScope.ServiceProvider.GetService<CliannaDbContext>();
-    context?.Database.Migrate();
-}
 
 app.UseSwagger();
 app.UseSwaggerUI();

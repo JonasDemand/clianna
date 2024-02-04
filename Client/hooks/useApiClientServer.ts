@@ -2,15 +2,17 @@ import { SecurityDataType } from '@customTypes/api';
 import { getApiClient } from '@utils/api/ApiClient';
 import { ApiConfig } from '@utils/api/generated/Api';
 import { authOptions } from 'app/api/auth/[...nextauth]/route';
-import { getServerSession } from 'next-auth';
+import { getServerSession, Session } from 'next-auth';
 
 const useApiClientServer = async (
-  config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
+  config?: Partial<ApiConfig<SecurityDataType>> | null | undefined,
+  session?: Session
 ) => {
-  const session = await getServerSession(authOptions);
+  const _session = session ?? (await getServerSession(authOptions));
+  console.log(_session);
 
-  const client = getApiClient(config);
-  client.setSecurityData({ accessToken: session?.user.accessToken });
+  const client = getApiClient(config, () => getServerSession(authOptions));
+  client.setSecurityData({ accessToken: _session?.user.accessToken });
 
   return client;
 };

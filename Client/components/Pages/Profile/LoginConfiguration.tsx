@@ -4,12 +4,12 @@ import PasswordForm from '@components/Authentication/PasswordForm';
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
+import { useCustomSessionContext } from '@context/CustomSessionContext';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { HttpStatusCode } from '@utils/api/generated/Api';
-import { refreshSession } from '@utils/auth';
+import { reloadSession } from '@utils/auth';
 import useApiClient from 'hooks/useApiClient';
-import { useSession } from 'next-auth/react';
 import { useSnackbar } from 'notistack';
 import React, {
   ChangeEvent,
@@ -21,7 +21,7 @@ import React, {
 
 const LoginConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { data: session } = useSession();
+  const { session } = useCustomSessionContext();
 
   const ApiClient = useApiClient();
 
@@ -80,7 +80,7 @@ const LoginConfiguration: FC = () => {
         });
         return;
       }
-      await refreshSession();
+      await reloadSession(true);
       setLoading(false);
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',
