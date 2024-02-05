@@ -24,7 +24,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useCustomSessionContext } from './CustomSessionContext';
 import { usePaginationContext } from './PaginationContext';
 
 export const useOrderContext = () => {
@@ -44,7 +43,6 @@ type OrderContextProps = {
 
 const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useCustomSessionContext();
   const ApiClient = useApiClient();
   const {
     currentPage,
@@ -102,13 +100,13 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
       }
       setCustomers(data.list);
     };
-    if (session?.user.accessToken) {
+    /*TODOif (session?.accessToken) {
       fetchTemplates();
       fetchCustomers();
       return true;
-    }
+    }*/
     return false;
-  }, [ApiClient.document, enqueueSnackbar, session?.user.accessToken]);
+  }, [ApiClient.document, enqueueSnackbar]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

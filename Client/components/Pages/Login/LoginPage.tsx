@@ -3,22 +3,25 @@
 import PasswordForm from '@components/Authentication/PasswordForm';
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
+import {
+  SESSION_JWT_COOKIE_NAME,
+  SESSION_JWT_VALID_COOKIE_NAME,
+  SESSION_REFRESHTOKEN_COOKIE_NAME,
+} from '@consts/auth';
 import { Lock } from '@mui/icons-material';
 import { Alert, Box } from '@mui/material';
-import { useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import useApiClient from 'hooks/useApiClient';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { ChangeEvent, FC, useCallback, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 import AuthLayout from './AuthLayout';
 
 const LoginPage: FC = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const [, setCookie] = useCookies();
+  const client = useApiClient();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,29 +29,46 @@ const LoginPage: FC = () => {
   const [repeatError, setRepeatError] = useState(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
-
-  useEffect(() => {
-    if (searchParams.get('error'))
-      setError(
-        'Login fehlgeschlagen. Kontaktiere einen Administrator um den Account zu aktivieren.'
-      );
-  }, [searchParams]);
+  const [error, setError] = useState(false);
 
   const onSubmitForm = useCallback(
-    (e: ChangeEvent<HTMLFormElement>) => {
+    async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
       setShowPasswordValidation(true);
       setLoading(true);
 
-      signIn('credentials', {
+      const { data, error } = await client.user.authenticateCreate({
         email,
         password,
-        callbackUrl: searchParams.get('callbackUrl')?.toString() ?? '/',
       });
+      setLoading(true);
+
+      if (
+        error ||
+        !data ||
+        !data.accessToken ||
+        !data.refreshToken ||
+        !data.accessTokenExpireDate ||
+        !data.refreshTokenExpireDate
+      ) {
+        setError(true);
+        return;
+      }
+
+      const refreshTokenExpireDate = new Date(data.refreshTokenExpireDate); //Somehow JS Date needs to be re-created
+      setCookie(SESSION_JWT_COOKIE_NAME, data.accessToken, {
+        expires: refreshTokenExpireDate, // jwt needs to be held for longer to "authenticate" to refresh api
+      });
+      setCookie(SESSION_JWT_VALID_COOKIE_NAME, true, {
+        expires: new Date(data.accessTokenExpireDate),
+      });
+      setCookie(SESSION_REFRESHTOKEN_COOKIE_NAME, data.refreshToken, {
+        expires: refreshTokenExpireDate,
+      });
+      router.push(searchParams.get('redirectUrl') ?? '/');
     },
-    [email, password, searchParams]
+    [client.user, email, password, router, searchParams, setCookie]
   );
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
@@ -97,7 +117,8 @@ const LoginPage: FC = () => {
       </Box>
       {error && (
         <Alert variant="filled" severity="error">
-          {error}
+          Login fehlgeschlagen. Kontaktiere einen Administrator um den Account
+          zu aktivieren.
         </Alert>
       )}
     </AuthLayout>

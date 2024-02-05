@@ -19,7 +19,7 @@ public class RefreshTokenTypeConfiguration : IEntityTypeConfiguration<RefreshTok
             .HasColumnType("varchar(1000)")
             .IsRequired();
         builder
-            .Property(e => e.CreationDate)
+            .Property(e => e.ExpireDate)
             .HasColumnType("datetime")
             .IsRequired();
 

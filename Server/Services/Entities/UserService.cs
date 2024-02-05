@@ -47,7 +47,7 @@ public class UserService(
 
         if (!VerifyPassword(password, user.Password, user.Salt)) return null;
 
-        var accessToken = GenerateJwtToken(user);
+        var accessToken = GenerateJwtToken(user, out var expireDate);
         var refreshToken = await refreshTokenRepository.Add(new RefreshToken
         {
             Token = GenerateRefreshToken(), User = user
@@ -56,9 +56,9 @@ public class UserService(
         return new TokenResponse
         {
             AccessToken = accessToken,
+            AccessTokenExpireDate = expireDate,
             RefreshToken = refreshToken.Token,
-            Id = user.Id,
-            Email = user.Email
+            RefreshTokenExpireDate = refreshToken.ExpireDate
         };
     }
 
@@ -68,15 +68,16 @@ public class UserService(
         if (newRefreshToken == null) return null;
 
         newRefreshToken.Token = GenerateRefreshToken();
+        newRefreshToken.ExpireDate = DateTime.Now.AddDays(1);
         await refreshTokenRepository.SaveChanges();
-        var newAccessToken = GenerateJwtToken(newRefreshToken.User);
+        var newAccessToken = GenerateJwtToken(newRefreshToken.User, out var expireDate);
 
         return new TokenResponse
         {
             AccessToken = newAccessToken,
+            AccessTokenExpireDate = expireDate,
             RefreshToken = newRefreshToken.Token,
-            Id = newRefreshToken.User.Id,
-            Email = newRefreshToken.User.Email
+            RefreshTokenExpireDate = newRefreshToken.ExpireDate
         };
     }
 
@@ -95,15 +96,16 @@ public class UserService(
 
     // helper methods
 
-    private string GenerateJwtToken(User user)
+    private string GenerateJwtToken(User user, out DateTime expireDate)
     {
+        expireDate = DateTime.UtcNow.AddSeconds(15);
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
                 { new Claim("id", user.Id), new Claim("email", user.Email) }),
-            Expires = DateTime.UtcNow.AddSeconds(15),
+            Expires = expireDate,
             SigningCredentials =
                 new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
         };

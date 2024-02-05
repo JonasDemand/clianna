@@ -4,24 +4,16 @@ import PasswordForm from '@components/Authentication/PasswordForm';
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import FormSection from '@components/Form/FormSection';
-import { useCustomSessionContext } from '@context/CustomSessionContext';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { HttpStatusCode } from '@utils/api/generated/Api';
 import { reloadSession } from '@utils/auth';
 import useApiClient from 'hooks/useApiClient';
 import { useSnackbar } from 'notistack';
-import React, {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { ChangeEvent, FC, useCallback, useState } from 'react';
 
 const LoginConfiguration: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useCustomSessionContext();
 
   const ApiClient = useApiClient();
 
@@ -34,10 +26,6 @@ const LoginConfiguration: FC = () => {
   const [oldPasswordError, setOldPasswordError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    session?.user?.email && setEmail(session.user.email);
-  }, [session?.user?.email]);
-
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
     []
@@ -47,7 +35,7 @@ const LoginConfiguration: FC = () => {
     async (e: ChangeEvent<HTMLFormElement>) => {
       e.preventDefault();
 
-      if (email === session?.user.email && !oldPassword) {
+      if (email === 'TODO' && !oldPassword) {
         enqueueSnackbar('Keine Daten zum Speichern vorhanden', {
           variant: 'info',
         });
@@ -93,7 +81,6 @@ const LoginConfiguration: FC = () => {
       newPassword,
       oldPassword,
       repeatPassword,
-      session?.user.email,
     ]
   );
 

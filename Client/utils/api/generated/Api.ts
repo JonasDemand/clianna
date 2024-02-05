@@ -249,10 +249,12 @@ export interface Response {
 }
 
 export interface TokenResponse {
-  id?: string | null;
-  email?: string | null;
   accessToken?: string | null;
   refreshToken?: string | null;
+  /** @format date-time */
+  accessTokenExpireDate?: Date;
+  /** @format date-time */
+  refreshTokenExpireDate?: Date;
 }
 
 export interface TokenResponseResponse {

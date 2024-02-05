@@ -19,7 +19,6 @@ import React, {
 } from 'react';
 
 import { CustomerContextType, EShowCustomer } from '../types/customer';
-import { useCustomSessionContext } from './CustomSessionContext';
 import { usePaginationContext } from './PaginationContext';
 
 export const useCustomerContext = () => {
@@ -42,7 +41,6 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   initialCustomers,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { session } = useCustomSessionContext();
   const ApiClient = useApiClient();
   const {
     currentPage,
@@ -82,12 +80,12 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       }
       setTemplates(data.list);
     };
-    if (session?.user.accessToken) {
+    /* TODOif (session?.accessToken) {
       fetchTemplates();
       return true;
-    }
+    }*/
     return false;
-  }, [ApiClient.document, enqueueSnackbar, session?.user.accessToken]);
+  }, [ApiClient.document, enqueueSnackbar]);
 
   const fetchCustomers = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
