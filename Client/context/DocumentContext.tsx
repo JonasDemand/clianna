@@ -12,7 +12,6 @@ import {
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
-import useEffectOnce from 'hooks/useEffectOnce';
 import { useSnackbar } from 'notistack';
 import React, {
   createContext,
@@ -20,6 +19,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -72,7 +72,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     [activeVariableColumns]
   );
 
-  useEffectOnce(() => {
+  useEffect(() => {
     const fetchCustomers = async () => {
       const { data, error } = await ApiClient.customer.customerList({
         ColumnFilters: withColumnFilters([
@@ -104,13 +104,14 @@ const DocumentProvider: FC<DocumentContextProps> = ({
       }
       setOrders(data.list);
     };
-    /* TODOif (session?.accessToken) {
-      fetchCustomers();
-      fetchOrders();
-      return true;
-    }*/
-    return false;
-  }, [ApiClient.document, enqueueSnackbar]);
+    fetchCustomers();
+    fetchOrders();
+  }, [
+    ApiClient.customer,
+    ApiClient.document,
+    ApiClient.order,
+    enqueueSnackbar,
+  ]);
 
   const fetchDocuments = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

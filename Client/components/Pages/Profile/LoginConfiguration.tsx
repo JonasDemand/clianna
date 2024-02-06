@@ -7,7 +7,6 @@ import FormSection from '@components/Form/FormSection';
 import { Save } from '@mui/icons-material';
 import { Box, Grid } from '@mui/material';
 import { HttpStatusCode } from '@utils/api/generated/Api';
-import { reloadSession } from '@utils/auth';
 import useApiClient from 'hooks/useApiClient';
 import { useSnackbar } from 'notistack';
 import React, { ChangeEvent, FC, useCallback, useState } from 'react';
@@ -68,7 +67,7 @@ const LoginConfiguration: FC = () => {
         });
         return;
       }
-      await reloadSession(true);
+      //TODO await reloadSession(true);
       setLoading(false);
       enqueueSnackbar('Erfolgreich Profil aktualisiert', {
         variant: 'success',

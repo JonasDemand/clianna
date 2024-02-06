@@ -1,3 +1,3 @@
-export type SecurityDataType = {
-  accessToken?: string | null;
-};
+import { SessionCookies } from './auth';
+
+export type SecurityDataType = Partial<SessionCookies>;

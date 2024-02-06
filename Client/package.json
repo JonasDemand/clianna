@@ -23,7 +23,6 @@
     "@mui/x-data-grid": "^5.17.0",
     "babel-plugin-superjson-next": "^0.4.4",
     "dayjs": "^1.11.5",
-    "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "next": "^14.0.4",
     "notistack": "^2.0.5",

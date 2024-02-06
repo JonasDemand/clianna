@@ -1,16 +1,37 @@
-import { SESSION_JWT_COOKIE_NAME } from '@consts/auth';
+'use server';
+
 import { SecurityDataType } from '@customTypes/api';
+import { ESessionCookieName } from '@customTypes/auth';
 import { getApiClient } from '@utils/api/ApiClient';
 import { ApiConfig } from '@utils/api/generated/Api';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const useApiClientServer = async (
   config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
 ) => {
-  console.log(cookies().get(SESSION_JWT_COOKIE_NAME)?.value);
-  const client = getApiClient(config);
+  const client = getApiClient(
+    config,
+    (newCookies) =>
+      newCookies.forEach(({ name, value, ...options }) =>
+        cookies().set(name, value, options)
+      ),
+    () => {
+      cookies().delete(ESessionCookieName.JwtToken);
+      cookies().delete(ESessionCookieName.RefreshToken);
+      cookies().delete(ESessionCookieName.ValidJwt);
+      redirect('/login'); //TODO add redirect url (no important, because server logout shouldn't happen anyway)
+    }
+  );
   client.setSecurityData({
-    accessToken: cookies().get(SESSION_JWT_COOKIE_NAME)?.value,
+    [ESessionCookieName.JwtToken]: cookies().get(ESessionCookieName.JwtToken)
+      ?.value,
+    [ESessionCookieName.ValidJwt]: Boolean(
+      cookies().get(ESessionCookieName.ValidJwt)?.value
+    ),
+    [ESessionCookieName.RefreshToken]: cookies().get(
+      ESessionCookieName.RefreshToken
+    )?.value,
   });
 
   return client;

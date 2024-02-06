@@ -1,20 +1,25 @@
-import { SESSION_JWT_COOKIE_NAME } from '@consts/auth';
+'use client';
+
 import { SecurityDataType } from '@customTypes/api';
 import { getApiClient } from '@utils/api/ApiClient';
 import { ApiConfig } from '@utils/api/generated/Api';
 import { useEffect, useMemo } from 'react';
-import { useCookies } from 'react-cookie';
+
+import useSession from './useSession';
 
 const useApiClient = (
   config?: Partial<ApiConfig<SecurityDataType>> | null | undefined
 ) => {
-  const client = useMemo(() => getApiClient(config), [config]);
+  const { sessionCookies, logout, updateSession } = useSession();
 
-  const [cookies] = useCookies([SESSION_JWT_COOKIE_NAME]);
+  const client = useMemo(
+    () => getApiClient(config, updateSession, logout),
+    [config, logout, updateSession]
+  );
 
   useEffect(() => {
-    client.setSecurityData({ accessToken: cookies.sessionJwt });
-  }, [client, cookies.sessionJwt]);
+    client.setSecurityData(sessionCookies);
+  }, [client, sessionCookies]);
 
   return client;
 };

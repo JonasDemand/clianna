@@ -348,6 +348,8 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   baseUrl?: string;
   /** request cancellation token */
   cancelToken?: CancelToken;
+  /** flag if valid jwt needs to be checked */
+  dontCheckJwt?: boolean;
 }
 
 export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
@@ -355,7 +357,10 @@ export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
   baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
-  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
+  securityWorker?: (
+    securityData: SecurityDataType | null,
+    dontCheckJwt: boolean,
+  ) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
 
@@ -487,12 +492,13 @@ export class HttpClient<SecurityDataType = unknown> {
     format,
     baseUrl,
     cancelToken,
+    dontCheckJwt,
     ...params
   }: FullRequestParams): Promise<T> => {
     const secureParams =
       ((typeof secure === "boolean" ? secure : this.baseApiParams.secure) &&
         this.securityWorker &&
-        (await this.securityWorker(this.securityData))) ||
+        (await this.securityWorker(this.securityData, dontCheckJwt))) ||
       {};
     const requestParams = this.mergeRequestParams(params, secureParams);
     const queryString = query && this.toQueryString(query);

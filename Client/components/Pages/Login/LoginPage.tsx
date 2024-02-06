@@ -3,24 +3,20 @@
 import PasswordForm from '@components/Authentication/PasswordForm';
 import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
-import {
-  SESSION_JWT_COOKIE_NAME,
-  SESSION_JWT_VALID_COOKIE_NAME,
-  SESSION_REFRESHTOKEN_COOKIE_NAME,
-} from '@consts/auth';
 import { Lock } from '@mui/icons-material';
 import { Alert, Box } from '@mui/material';
+import { generateCookiesFromTokens } from '@utils/auth';
 import useApiClient from 'hooks/useApiClient';
+import useSession from 'hooks/useSession';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { ChangeEvent, FC, useCallback, useState } from 'react';
-import { useCookies } from 'react-cookie';
 
 import AuthLayout from './AuthLayout';
 
 const LoginPage: FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [, setCookie] = useCookies();
+  const { updateSession } = useSession();
   const client = useApiClient();
 
   const [email, setEmail] = useState('');
@@ -38,37 +34,29 @@ const LoginPage: FC = () => {
       setShowPasswordValidation(true);
       setLoading(true);
 
-      const { data, error } = await client.user.authenticateCreate({
-        email,
-        password,
-      });
+      const { data, error } = await client.user.authenticateCreate(
+        {
+          email,
+          password,
+        },
+        { dontCheckJwt: true }
+      );
       setLoading(true);
 
-      if (
-        error ||
-        !data ||
-        !data.accessToken ||
-        !data.refreshToken ||
-        !data.accessTokenExpireDate ||
-        !data.refreshTokenExpireDate
-      ) {
+      if (error || !data) {
+        setError(true);
+        return;
+      }
+      const cookies = generateCookiesFromTokens(data);
+      if (!cookies) {
         setError(true);
         return;
       }
 
-      const refreshTokenExpireDate = new Date(data.refreshTokenExpireDate); //Somehow JS Date needs to be re-created
-      setCookie(SESSION_JWT_COOKIE_NAME, data.accessToken, {
-        expires: refreshTokenExpireDate, // jwt needs to be held for longer to "authenticate" to refresh api
-      });
-      setCookie(SESSION_JWT_VALID_COOKIE_NAME, true, {
-        expires: new Date(data.accessTokenExpireDate),
-      });
-      setCookie(SESSION_REFRESHTOKEN_COOKIE_NAME, data.refreshToken, {
-        expires: refreshTokenExpireDate,
-      });
+      updateSession(cookies);
       router.push(searchParams.get('redirectUrl') ?? '/');
     },
-    [client.user, email, password, router, searchParams, setCookie]
+    [client.user, email, password, router, searchParams, updateSession]
   );
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),

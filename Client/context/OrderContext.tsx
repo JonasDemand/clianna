@@ -12,7 +12,6 @@ import {
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
-import useEffectOnce from 'hooks/useEffectOnce';
 import { useSnackbar } from 'notistack';
 import React, {
   createContext,
@@ -20,6 +19,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -67,7 +67,7 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
     [activeVariableColumns]
   );
 
-  useEffectOnce(() => {
+  useEffect(() => {
     const fetchTemplates = async () => {
       const { data, error } = await ApiClient.document.documentList({
         ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
@@ -100,13 +100,9 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
       }
       setCustomers(data.list);
     };
-    /*TODOif (session?.accessToken) {
-      fetchTemplates();
-      fetchCustomers();
-      return true;
-    }*/
-    return false;
-  }, [ApiClient.document, enqueueSnackbar]);
+    fetchTemplates();
+    fetchCustomers();
+  }, [ApiClient.customer, ApiClient.document, enqueueSnackbar]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

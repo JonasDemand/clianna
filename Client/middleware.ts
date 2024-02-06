@@ -1,9 +1,6 @@
-import {
-  SESSION_JWT_COOKIE_NAME,
-  SESSION_JWT_VALID_COOKIE_NAME,
-  SESSION_REFRESHTOKEN_COOKIE_NAME,
-} from '@consts/auth';
+import { ESessionCookieName } from '@customTypes/auth';
 import { getApiClient } from '@utils/api/ApiClient';
+import { generateCookiesFromTokens } from '@utils/auth';
 import {
   RequestCookies,
   ResponseCookies,
@@ -32,45 +29,36 @@ const applySetCookie = (req: NextRequest, res: NextResponse) => {
 };
 
 const loginRedirect = (url: string) =>
-  NextResponse.redirect(new URL(`/login?redirectUrl=${url}`, url));
+  NextResponse.redirect(new URL(`/login?redirectUrl=${encodeURI(url)}`, url));
 
 export const middleware = async (req: NextRequest) => {
   const response = NextResponse.next();
-  if (req.cookies.has(SESSION_JWT_VALID_COOKIE_NAME)) return response;
+  if (req.cookies.has(ESessionCookieName.ValidJwt)) return response;
   if (
-    !req.cookies.has(SESSION_JWT_COOKIE_NAME) ||
-    !req.cookies.has(SESSION_REFRESHTOKEN_COOKIE_NAME)
+    !req.cookies.has(ESessionCookieName.JwtToken) ||
+    !req.cookies.has(ESessionCookieName.RefreshToken)
   )
     return loginRedirect(req.url);
   const client = getApiClient();
   client.setSecurityData({
-    accessToken: req.cookies.get(SESSION_JWT_COOKIE_NAME)?.value,
+    [ESessionCookieName.JwtToken]: req.cookies.get(ESessionCookieName.JwtToken)
+      ?.value,
   });
-  const { data, error } = await client.user.refreshUpdate({
-    refreshToken: req.cookies.get(SESSION_REFRESHTOKEN_COOKIE_NAME)?.value,
-  });
-  console.log(data, error);
+  const { data, error } = await client.user.refreshUpdate(
+    {
+      refreshToken: req.cookies.get(ESessionCookieName.RefreshToken)?.value,
+    },
+    { dontCheckJwt: true }
+  );
 
-  if (
-    error ||
-    !data ||
-    !data.accessToken ||
-    !data.refreshToken ||
-    !data.accessTokenExpireDate ||
-    !data.refreshTokenExpireDate
-  )
-    return loginRedirect(req.url); //Go to login if refreshing fails
+  if (error || !data) return loginRedirect(req.url); //Go to login if refreshing fails
 
-  const refreshTokenExpireDate = new Date(data.refreshTokenExpireDate); //Somehow JS Date needs to be re-created
-  response.cookies.set(SESSION_JWT_COOKIE_NAME, data.accessToken, {
-    expires: refreshTokenExpireDate, // jwt needs to be held for longer to "authenticate" to refresh api
-  });
-  response.cookies.set(SESSION_JWT_VALID_COOKIE_NAME, 'true', {
-    expires: refreshTokenExpireDate,
-  });
-  response.cookies.set(SESSION_REFRESHTOKEN_COOKIE_NAME, data.refreshToken, {
-    expires: new Date(data.refreshTokenExpireDate),
-  });
+  const cookies = generateCookiesFromTokens(data);
+  if (!cookies) return loginRedirect(req.url);
+
+  cookies.forEach(({ name, value, ...options }) =>
+    response.cookies.set(name, value, { ...options })
+  );
   applySetCookie(req, response);
   return response;
 };

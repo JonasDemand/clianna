@@ -10,12 +10,14 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
+import useSession from 'hooks/useSession';
 import { useRouter } from 'next/navigation';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 
 const Userprofile: FC = () => {
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const { logout } = useSession();
 
   const actions = useMemo(
     () => [
@@ -29,12 +31,10 @@ const Userprofile: FC = () => {
       {
         label: 'Logout',
         icon: <Logout />,
-        onClick: () => {
-          //TODO signOut();
-        },
+        onClick: logout,
       },
     ],
-    [router]
+    [router, logout]
   );
 
   const onClickUserMenu = useCallback(

@@ -15,7 +15,7 @@ const routeNamespace = pascalCase(route.routeName.usage);
 
 */
 export namespace <%~ routeNamespace %> {
-  export type RequestParams = <%~ (pathParams && pathParams.type) || '{}' %>;
+  export type RequestParams = <%~ (pathParams && pathParams.type) || '' %>;
   export type RequestQuery = <%~ (query && query.type) || '{}' %>;
   export type RequestBody = <%~ (payload && payload.type) || 'never' %>;
   export type RequestHeaders = <%~ (headers && headers.type) || '{}' %>;
