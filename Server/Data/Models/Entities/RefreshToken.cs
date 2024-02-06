@@ -8,7 +8,7 @@ namespace Data.Models.Entities;
 public class RefreshToken : IEntity
 {
     public string Token { get; set; }
-    public DateTime ExpireDate { get; set; } = DateTime.Now.AddDays(1);
+    public DateTime ExpireDate { get; set; } = DateTime.UtcNow.AddDays(1);
 
     //FK
     [JsonIgnore] public string UserId { get; set; }

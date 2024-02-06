@@ -8,7 +8,7 @@ namespace Data.Models.Entities;
 [EntityTypeConfiguration(typeof(OrderEntityTypeConfiguration))]
 public class Order : IEntity
 {
-    public DateTime CreationDate { get; set; } = DateTime.Now;
+    public DateTime CreationDate { get; set; } = DateTime.UtcNow;
     public bool Pending { get; set; }
     public EOrderShippingType? ShippingType { get; set; }
     public string? Comment { get; set; }

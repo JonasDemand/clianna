@@ -26,7 +26,6 @@ public class UserService(
     private readonly AppSettings _appSettings = appSettings.Value;
     private readonly HashAlgorithmName _hashAlgorithm = HashAlgorithmName.SHA512;
 
-
     public async Task<TokenResponse?> Authenticate(string email, string password)
     {
         var user = await userRepository.GetFirstOrDefault(x => x.Email == email);
@@ -68,7 +67,7 @@ public class UserService(
         if (newRefreshToken == null) return null;
 
         newRefreshToken.Token = GenerateRefreshToken();
-        newRefreshToken.ExpireDate = DateTime.Now.AddDays(1);
+        newRefreshToken.ExpireDate = DateTime.UtcNow.AddDays(1);
         await refreshTokenRepository.SaveChanges();
         var newAccessToken = GenerateJwtToken(newRefreshToken.User, out var expireDate);
 

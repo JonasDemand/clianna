@@ -17,7 +17,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired();
         builder
             .Property(e => e.CreationDate)
-            .HasColumnType("datetime")
+            .HasColumnType("timestamp")
             .IsRequired();
         builder
             .Property(e => e.Pending)
@@ -37,7 +37,7 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("int");
         builder
             .Property(e => e.DueDate)
-            .HasColumnType("datetime");
+            .HasColumnType("timestamp");
         builder
             .Property(e => e.Type)
             .HasColumnType("int");

@@ -6,6 +6,7 @@ import SideOverlay from '@components/Modals/SideOverlay';
 import { useBackdropContext } from '@context/BackdropContext';
 import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
+import { Email, Phone } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import { Document, Order } from '@utils/api/generated/Api';
 import { getOrderLabel, toOrderUpsertRequest } from '@utils/order';
@@ -157,6 +158,24 @@ const OrdersPage: FC = () => {
         onRowClick={onRowClick}
         onCopy={onCopyRow}
         onDelete={setOrderToDelete}
+        customActions={[
+          {
+            tooltip: 'E-Mail', //TODO: disable when no customer is set
+            icon: <Email />,
+            onClick: (row) =>
+              row.customer &&
+              (window.location.href = `mailto: ${row.customer.email}`),
+          },
+          {
+            tooltip: 'Telefon', //TODO: disable when no customer is set
+            icon: <Phone />,
+            onClick: (row) =>
+              row.customer &&
+              (window.location.href = `tel: ${
+                row.customer.mobile ?? row.customer.phone
+              }`),
+          },
+        ]}
       />
       <SideOverlay
         heading="Auftrag bearbeiten"

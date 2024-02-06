@@ -5,7 +5,7 @@ import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
 import { EId } from '@customTypes/id';
-import { LocalShipping } from '@mui/icons-material';
+import { Email, LocalShipping, Phone } from '@mui/icons-material';
 import { Box, Grid, Typography } from '@mui/material';
 import { Customer } from '@utils/api/generated/Api';
 import {
@@ -190,6 +190,17 @@ const CustomersPage: FC = () => {
             tooltip: 'DHL-Pollingclient Download',
             icon: <LocalShipping />,
             onClick: onDHLClick,
+          },
+          {
+            tooltip: 'E-Mail', //TODO: disable when no email is set
+            icon: <Email />,
+            onClick: (row) => (window.location.href = `mailto: ${row.email}`),
+          },
+          {
+            tooltip: 'Telefon', //TODO: disable when no phone is set
+            icon: <Phone />,
+            onClick: (row) =>
+              (window.location.href = `tel: ${row.mobile ?? row.phone}`),
           },
         ]}
       />

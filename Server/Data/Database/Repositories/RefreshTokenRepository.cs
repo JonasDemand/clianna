@@ -12,7 +12,7 @@ public class RefreshTokenRepository(CliannaDbContext dbContext, IMapper mapper)
     public async Task<RefreshToken> GetValidByUserIdAndToken(string userId, string token)
     {
         return await Query.FirstOrDefaultAsync(x =>
-            x.User.Id.Equals(userId) && x.Token.Equals(token) && x.ExpireDate >= DateTime.UtcNow.AddDays(-1));
+            x.User.Id.Equals(userId) && x.Token.Equals(token) && x.ExpireDate >= DateTime.UtcNow);
     }
 
     public async Task DeleteInvalid()

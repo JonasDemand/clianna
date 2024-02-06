@@ -20,7 +20,7 @@ public class RefreshTokenTypeConfiguration : IEntityTypeConfiguration<RefreshTok
             .IsRequired();
         builder
             .Property(e => e.ExpireDate)
-            .HasColumnType("datetime")
+            .HasColumnType("timestamp")
             .IsRequired();
 
         //FK

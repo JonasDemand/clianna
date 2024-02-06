@@ -41,7 +41,7 @@ const LoginPage: FC = () => {
         },
         { dontCheckJwt: true }
       );
-      setLoading(true);
+      setLoading(false);
 
       if (error || !data) {
         setError(true);

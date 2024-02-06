@@ -18,7 +18,7 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
             .IsRequired();
         builder
             .Property(e => e.CreationDate)
-            .HasColumnType("datetime")
+            .HasColumnType("timestamp")
             .IsRequired();
         builder
             .Property(e => e.GoogleId)
