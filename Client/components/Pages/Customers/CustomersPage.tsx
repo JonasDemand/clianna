@@ -194,13 +194,13 @@ const CustomersPage: FC = () => {
           {
             tooltip: 'E-Mail', //TODO: disable when no email is set
             icon: <Email />,
-            onClick: (row) => (window.location.href = `mailto: ${row.email}`),
+            onClick: (row) => (window.location.href = `mailto:${row.email}`),
           },
           {
             tooltip: 'Telefon', //TODO: disable when no phone is set
             icon: <Phone />,
             onClick: (row) =>
-              (window.location.href = `tel: ${row.mobile ?? row.phone}`),
+              (window.location.href = `tel:${row.mobile ?? row.phone}`),
           },
         ]}
       />

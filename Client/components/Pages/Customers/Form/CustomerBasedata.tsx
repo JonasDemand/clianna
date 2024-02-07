@@ -121,7 +121,7 @@ const CustomerBasedata: FC = () => {
                     disabled={!selected.phone || phoneFocused}
                     onClick={() => {
                       selected.phone &&
-                        (window.location.href = `tel: ${selected.phone}`);
+                        (window.location.href = `tel:${selected.phone}`);
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -145,7 +145,7 @@ const CustomerBasedata: FC = () => {
                     disabled={!selected.mobile || mobileFocused}
                     onClick={() => {
                       selected.mobile &&
-                        (window.location.href = `tel: ${selected.mobile}`);
+                        (window.location.href = `tel:${selected.mobile}`);
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -169,7 +169,7 @@ const CustomerBasedata: FC = () => {
                     disabled={!selected.email || emailFocused}
                     onClick={() => {
                       selected.email &&
-                        (window.location.href = `mailto: ${selected.email}`);
+                        (window.location.href = `mailto:${selected.email}`);
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
