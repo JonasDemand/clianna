@@ -1,5 +1,0 @@
-## .env example
-
-NEXT_PUBLIC_CLIANNA_API_URL=http://localhost:4001
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=1234

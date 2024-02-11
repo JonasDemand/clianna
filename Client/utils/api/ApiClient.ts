@@ -1,7 +1,6 @@
 import { SecurityDataType } from '@customTypes/api';
 import { ESessionCookieName } from '@customTypes/auth';
 import { Cookie, generateCookiesFromTokens } from '@utils/auth';
-import { environment } from '@utils/config';
 
 import { ApiConfig, Client } from './generated/Api';
 
@@ -11,7 +10,7 @@ export const getApiClient = (
   logout?: () => void
 ) => {
   const client = new Client<SecurityDataType>({
-    baseUrl: environment.NEXT_PUBLIC_CLIANNA_API_URL,
+    baseUrl: process.env.NEXT_PUBLIC_CLIANNA_API_URL ?? 'http://localhost:4001',
     baseApiParams: { cache: 'no-cache' },
     securityWorker: async (securityData, dontCheckJwt) => {
       if (!securityData) return;
