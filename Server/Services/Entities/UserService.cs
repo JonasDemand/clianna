@@ -97,7 +97,7 @@ public class UserService(
 
     private string GenerateJwtToken(User user, out DateTime expireDate)
     {
-        expireDate = DateTime.UtcNow.AddSeconds(15);
+        expireDate = DateTime.UtcNow.AddMinutes(15);
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
