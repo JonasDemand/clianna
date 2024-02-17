@@ -164,14 +164,14 @@ const OrdersPage: FC = () => {
             icon: <Email />,
             onClick: (row) =>
               row.customer &&
-              (window.location.href = `mailto: ${row.customer.email}`),
+              (window.location.href = `mailto:${row.customer.email}`),
           },
           {
             tooltip: 'Telefon', //TODO: disable when no customer is set
             icon: <Phone />,
             onClick: (row) =>
               row.customer &&
-              (window.location.href = `tel: ${
+              (window.location.href = `tel:${
                 row.customer.mobile ?? row.customer.phone
               }`),
           },
