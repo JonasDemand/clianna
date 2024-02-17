@@ -20,7 +20,7 @@ const useApiClientServer = async (
       cookies().delete(ESessionCookieName.JwtToken);
       cookies().delete(ESessionCookieName.RefreshToken);
       cookies().delete(ESessionCookieName.ValidJwt);
-      redirect('/login'); //TODO add redirect url (no important, because server logout shouldn't happen anyway)
+      redirect('/login'); //TODO add redirect url (not important, because server logout shouldn't happen anyway)
     }
   );
   client.setSecurityData({

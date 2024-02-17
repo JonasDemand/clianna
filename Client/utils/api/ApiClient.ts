@@ -46,7 +46,35 @@ export const getApiClient = (
     },
     customFetch: async (url, request) => {
       const res = await fetch(url, request);
-      if (res.status === 401) logout && logout();
+      if (res.status === 401) {
+        const securityData = client.getSecurityData();
+        if (!securityData) {
+          logout && logout();
+          return res;
+        }
+        const { data, error } = await client.user.refreshUpdate(
+          { refreshToken: securityData[ESessionCookieName.RefreshToken] },
+          { dontCheckJwt: true }
+        );
+        if (error || !data) {
+          logout && logout();
+          return res;
+        }
+
+        const cookies = generateCookiesFromTokens(data);
+        if (!cookies) {
+          logout && logout();
+          return res;
+        }
+        updateCookies && updateCookies(cookies);
+        return await fetch(url, {
+          ...request,
+          headers: {
+            ...request?.headers,
+            Authorization: `Bearer ${cookies[0].value}`,
+          },
+        });
+      }
       return res;
     },
     ...config,

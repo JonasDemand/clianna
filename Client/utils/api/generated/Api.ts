@@ -400,6 +400,8 @@ export class HttpClient<SecurityDataType = unknown> {
     this.securityData = data;
   };
 
+  public getSecurityData = () => this.securityData;
+
   protected encodeQueryParam(key: string, value: any) {
     const encodedKey = encodeURIComponent(key);
     return `${encodedKey}=${encodeURIComponent(typeof value === "number" ? value : `${value}`)}`;
