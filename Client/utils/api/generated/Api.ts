@@ -37,8 +37,7 @@ export interface ColumnSorting {
 
 export interface CopyDocumentRequest {
   name?: string | null;
-  order?: string | null;
-  customer?: string | null;
+  reference?: string | null;
 }
 
 export interface Customer {
@@ -840,8 +839,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
     applyTemplateDetail: (
       id: string,
       query?: {
-        customer?: string;
-        order?: string;
+        reference?: string;
       },
       params: RequestParams = {},
     ) =>

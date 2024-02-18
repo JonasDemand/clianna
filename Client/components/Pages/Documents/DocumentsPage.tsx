@@ -46,10 +46,9 @@ const DocumentsPage: FC = () => {
     }
 
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.document.copyCreate(
-          getCopyId(selected.id),
-          toDocumentUpsertRequest(selected)
-        )
+      ? await ApiClient.document.copyCreate(getCopyId(selected.id), {
+          name: selected.name, //TODO: Divide copy and apply template methods
+        })
       : selected.id === EId.Create
       ? await ApiClient.document.documentCreate(
           toDocumentUpsertRequest(selected)

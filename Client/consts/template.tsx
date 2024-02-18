@@ -11,5 +11,5 @@ export const ShowTemplateLabels = new Map<EShowTemplate, string>([
 export const TemplateTypeLabels = new Map<ETemplateType, string>([
   [ETemplateType.Customer, 'Kunden-Template'],
   [ETemplateType.Order, 'Auftrags-Template'],
-  [ETemplateType.None, 'Keine Template'],
+  [ETemplateType.None, 'Kein Template'],
 ]);

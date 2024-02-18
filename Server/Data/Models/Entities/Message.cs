@@ -10,7 +10,7 @@ public class Message : IEntity
 {
     public string? Name { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-    public ETemplateType Template { get; set; }
+    public ETemplateType Template { get; set; } = ETemplateType.None;
     public string Subject { get; set; }
     public string Body { get; set; }
 

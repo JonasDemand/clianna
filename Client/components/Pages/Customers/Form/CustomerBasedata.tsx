@@ -170,6 +170,7 @@ const CustomerBasedata: FC = () => {
                   <IconButton
                     disabled={!selected.email || emailFocused}
                     onClick={() => {
+                      //TODO: add message templates
                       window.location.href = `mailto:${encodeURIComponent(
                         selected.email!
                       )}`;

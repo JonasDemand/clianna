@@ -49,13 +49,10 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
   const [searchText, setSearchText] = useState('');
 
   const filteredDocuments = useMemo(
-    () =>
-      searchArray(
-        documents.filter((document) => !document.template),
-        searchText
-      ),
+    () => searchArray(documents, searchText),
     [documents, searchText]
   );
+
   const withReference = useCallback(
     (document: Document): UpsertDocumentReqeust => ({
       ...document,
@@ -115,10 +112,10 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     }
 
     const res = selected.id.includes(EId.Copy)
-      ? await ApiClient.document.copyCreate(
-          getCopyId(selected.id),
-          withReference(selected)
-        )
+      ? await ApiClient.document.copyCreate(getCopyId(selected.id), {
+          name: selected.name,
+          reference: reference.customer ?? reference.order,
+        })
       : selected.id === EId.Create
       ? await ApiClient.document.documentCreate(withReference(selected))
       : await ApiClient.document.documentUpdate(
@@ -148,6 +145,8 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     documents,
     enqueueSnackbar,
     onUpdate,
+    reference.customer,
+    reference.order,
     selected,
     withReference,
   ]);

@@ -43,8 +43,7 @@ const MessageDialog: FC<MessageDialogProps> = ({
       const { data, error } = await client.message.applyTemplateDetail(
         template.id!,
         {
-          customer: customer ? reference!.id! : undefined,
-          order: !customer ? reference!.id! : undefined,
+          reference: reference!.id!,
         }
       );
       if (error || !data || !data.subject || !data.body) {

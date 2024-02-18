@@ -53,12 +53,27 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
 
         var newDocument = _mapper.Map<Document>(document);
         newDocument.IncrementalId = documentToCopy.IncrementalId;
-        if (!string.IsNullOrEmpty(document.Order))
-            newDocument.Order = await _orderRepository.Get(document.Order);
-        else if (!string.IsNullOrEmpty(document.Customer))
-            newDocument.Customer = await _customerRepository.Get(document.Customer);
-        else
-            newDocument.Template = documentToCopy.Template;
+        switch (documentToCopy.Template)
+        {
+            case ETemplateType.Customer:
+                var customer = await _customerRepository.Get(document.Reference);
+                if (customer == null)
+                    throw new Exception("Reference customer not found");
+                newDocument.Customer = customer;
+                newDocument.CustomerId = customer.Id;
+                break;
+            case ETemplateType.Order:
+                var order = await _orderRepository.Get(document.Reference);
+                if (order == null)
+                    throw new Exception("Reference order not found");
+                newDocument.Order = order;
+                newDocument.OrderId = order.Id;
+                break;
+            default:
+            case ETemplateType.None:
+                newDocument.Template = documentToCopy.Template;
+                break;
+        }
 
         var driveResponse = await _googleService.Drive.Files.Copy(new File
         {

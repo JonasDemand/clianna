@@ -1,3 +1,4 @@
+using System.Net;
 using Api.Attributes;
 using Api.Controllers.Base;
 using AutoMapper;
@@ -19,9 +20,14 @@ public class MessageController(
     : EntityBaseController<Message, UpsertMessageRequest>(responseFactory, mapper, messageService, jsonOptions)
 {
     [HttpGet("{id}/ApplyTemplate")]
-    public async Task<ActionResult<Response<ApplyMessageTemplateResponse>>> Put(string id, string? customer,
-        string? order)
+    public async Task<ActionResult<Response<ApplyMessageTemplateResponse>>> Put(string id, string reference)
     {
-        return Ok(_responseFactory.Create(await messageService.ApplyTemplate(id, customer, order)));
+        if (string.IsNullOrEmpty(reference))
+            return BadRequest(_responseFactory.Create(new Error
+            {
+                Statuscode = HttpStatusCode.BadRequest,
+                Message = "Reference can't be empty!"
+            }));
+        return Ok(_responseFactory.Create(await messageService.ApplyTemplate(id, reference)));
     }
 }

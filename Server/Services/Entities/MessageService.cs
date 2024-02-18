@@ -24,22 +24,35 @@ public class MessageService : BaseEntityService<Message, UpsertMessageRequest>, 
         BeforeInsertActions.Add(AssignDependencies);
     }
 
-    public async Task<ApplyMessageTemplateResponse> ApplyTemplate(string id, string? customer, string? order)
+    public async Task<ApplyMessageTemplateResponse> ApplyTemplate(string id, string reference)
     {
-        if (string.IsNullOrEmpty(customer) && string.IsNullOrEmpty(order))
-            throw new Exception("No reference");
-
         var message = await GetById(id);
-        if (message is { Template: ETemplateType.None })
-            throw new Exception("Message has to be a template");
+        if (message == null)
+            throw new Exception("Message not found");
 
         //Change message, but don't save it afterwards
-        message.OrderId = order;
-        message.Order = !string.IsNullOrEmpty(order) ? await _orderRepository.Get(order) : null;
-        message.CustomerId = customer;
-        message.Customer = !string.IsNullOrEmpty(customer) ? await _customerRepository.Get(customer) : null;
-        var replacements = _templatingService.ReplaceTextFromObject(message);
+        switch (message.Template)
+        {
+            case ETemplateType.Customer:
+                var customer = await _customerRepository.Get(reference);
+                if (customer == null)
+                    throw new Exception("Reference customer not found");
+                message.CustomerId = customer.Id;
+                message.Customer = customer;
+                break;
+            case ETemplateType.Order:
+                var order = await _orderRepository.Get(reference);
+                if (order == null)
+                    throw new Exception("Reference order not found");
+                message.OrderId = order.Id;
+                message.Order = order;
+                break;
+            case ETemplateType.None:
+            default:
+                throw new Exception("Message has to be a template!");
+        }
 
+        var replacements = _templatingService.ReplaceTextFromObject(message);
         return new ApplyMessageTemplateResponse
         {
             Subject = replacements.Aggregate(message.Subject, (current, replacement) =>
