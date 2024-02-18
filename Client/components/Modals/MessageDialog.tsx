@@ -28,7 +28,7 @@ const MessageDialog: FC<MessageDialogProps> = ({
   onClose,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const client = useApiClient();
+  const ApiClient = useApiClient();
   const [template, setTemplate] = useState<Message | null>(null);
 
   const onConfirmDialog = useCallback(async () => {
@@ -40,7 +40,7 @@ const MessageDialog: FC<MessageDialogProps> = ({
     );
 
     if (template) {
-      const { data, error } = await client.message.applyTemplateDetail(
+      const { data, error } = await ApiClient.message.applyTemplateDetail(
         template.id!,
         {
           reference: reference!.id!,
@@ -59,7 +59,7 @@ const MessageDialog: FC<MessageDialogProps> = ({
     } else window.location.href = `mailto:${encodedEmail}`;
     onClose();
     setTemplate(null);
-  }, [client.message, enqueueSnackbar, onClose, reference, template]);
+  }, [ApiClient, enqueueSnackbar, onClose, reference, template]);
 
   const onChangeTemplate = useCallback(
     (_: unknown, value: Message | null) => setTemplate(value),

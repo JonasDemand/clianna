@@ -90,13 +90,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
     enqueueSnackbar('Erfolgreich Dokument gelöscht', {
       variant: 'success',
     });
-  }, [
-    ApiClient.document,
-    documentToDelete,
-    documents,
-    enqueueSnackbar,
-    onUpdate,
-  ]);
+  }, [ApiClient, documentToDelete, documents, enqueueSnackbar, onUpdate]);
   const onConfirmSelectedDialog = useCallback(async () => {
     if (!selected || !selected.id) return;
     if (
@@ -141,7 +135,7 @@ const DocumentFormSection: FC<DocumentFormProps> = ({
       variant: 'success',
     });
   }, [
-    ApiClient.document,
+    ApiClient,
     documents,
     enqueueSnackbar,
     onUpdate,

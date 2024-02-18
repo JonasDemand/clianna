@@ -108,12 +108,7 @@ const MessageProvider: FC<MessageContextProps> = ({
     };
     fetchCustomers();
     fetchOrders();
-  }, [
-    ApiClient.customer,
-    ApiClient.document,
-    ApiClient.order,
-    enqueueSnackbar,
-  ]);
+  }, [ApiClient, enqueueSnackbar]);
 
   const fetchMessages = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

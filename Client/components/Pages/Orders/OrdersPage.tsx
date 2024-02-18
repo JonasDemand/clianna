@@ -97,14 +97,7 @@ const OrdersPage: FC = () => {
     setOrders(newOrders);
     setSelected(null);
     enqueueSnackbar('Erfolgreich Auftrag aktualisiert', { variant: 'success' });
-  }, [
-    ApiClient.order,
-    enqueueSnackbar,
-    orders,
-    selected,
-    setOrders,
-    setSelected,
-  ]);
+  }, [ApiClient, enqueueSnackbar, orders, selected, setOrders, setSelected]);
 
   const onCopyRow = useCallback(
     async (order: Order) => {
@@ -136,7 +129,7 @@ const OrdersPage: FC = () => {
         documents,
       });
     },
-    [ApiClient.document, enqueueSnackbar, setSelected, setShowBackdrop]
+    [ApiClient, enqueueSnackbar, setSelected, setShowBackdrop]
   );
 
   const onConfirmDialog = useCallback(async () => {
@@ -151,7 +144,7 @@ const OrdersPage: FC = () => {
     enqueueSnackbar('Erfolgreich Auftrag gelöscht', { variant: 'success' });
     setOrderToDelete(null);
     setOrders(orders.filter((order) => order.id !== orderToDelete.id));
-  }, [ApiClient.order, enqueueSnackbar, orderToDelete?.id, orders, setOrders]);
+  }, [ApiClient, enqueueSnackbar, orderToDelete?.id, orders, setOrders]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Order }) => setSelected(row),

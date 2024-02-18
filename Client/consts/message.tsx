@@ -9,7 +9,7 @@ import React from 'react';
 import { mapColumns } from './table';
 
 export const variableColumns: GridColDef<Message>[] = mapColumns([
-  { field: 'id', headerName: 'Dokumente-ID', flex: 1 },
+  { field: 'id', headerName: 'Nachrichten-ID', flex: 1 },
   { field: 'name', headerName: 'Name', flex: 1 },
   {
     field: 'creationDate',

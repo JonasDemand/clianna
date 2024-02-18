@@ -110,7 +110,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
 
     fetchTemplates();
     fetchMessageTemplates();
-  }, [ApiClient.document, ApiClient.message, enqueueSnackbar]);
+  }, [ApiClient, enqueueSnackbar]);
 
   const fetchCustomers = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

@@ -54,7 +54,7 @@ const MessagesPage: FC = () => {
 
     const { error, data } = res;
     if (error || !data) {
-      enqueueSnackbar('Erstellen von Dokument fehlgeschlagen', {
+      enqueueSnackbar('Erstellen von Nachricht fehlgeschlagen', {
         variant: 'error',
       });
       return;
@@ -66,11 +66,11 @@ const MessagesPage: FC = () => {
     setMessages(newMessages);
     setSelected(null);
 
-    enqueueSnackbar('Erfolgreich Dokument aktualisiert', {
+    enqueueSnackbar('Erfolgreich Nachricht aktualisiert', {
       variant: 'success',
     });
   }, [
-    ApiClient.message,
+    ApiClient,
     enqueueSnackbar,
     messages,
     selected,
@@ -92,23 +92,17 @@ const MessagesPage: FC = () => {
     if (!messageToDelete || !messageToDelete.id) return;
     const { error } = await ApiClient.message.messageDelete(messageToDelete.id);
     if (error) {
-      enqueueSnackbar('Löschen von Dokument fehlgeschlagen', {
+      enqueueSnackbar('Löschen von Nachricht fehlgeschlagen', {
         variant: 'error',
       });
       return;
     }
-    enqueueSnackbar('Erfolgreich Dokument gelöscht', { variant: 'success' });
+    enqueueSnackbar('Erfolgreich Nachricht gelöscht', { variant: 'success' });
     setMessageToDelete(null);
     setMessages(
       messages.filter((message) => message.id !== messageToDelete.id)
     );
-  }, [
-    ApiClient.message,
-    enqueueSnackbar,
-    messageToDelete,
-    messages,
-    setMessages,
-  ]);
+  }, [ApiClient, enqueueSnackbar, messageToDelete, messages, setMessages]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Message }) => setSelected(row),

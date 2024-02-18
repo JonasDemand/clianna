@@ -108,12 +108,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     };
     fetchCustomers();
     fetchOrders();
-  }, [
-    ApiClient.customer,
-    ApiClient.document,
-    ApiClient.order,
-    enqueueSnackbar,
-  ]);
+  }, [ApiClient, enqueueSnackbar]);
 
   const fetchDocuments = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();

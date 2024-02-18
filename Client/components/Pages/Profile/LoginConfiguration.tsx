@@ -74,7 +74,7 @@ const LoginConfiguration: FC = () => {
       });
     },
     [
-      ApiClient.user,
+      ApiClient,
       email,
       enqueueSnackbar,
       newPassword,

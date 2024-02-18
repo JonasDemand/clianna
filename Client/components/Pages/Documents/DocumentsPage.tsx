@@ -76,7 +76,7 @@ const DocumentsPage: FC = () => {
       variant: 'success',
     });
   }, [
-    ApiClient.document,
+    ApiClient,
     documents,
     enqueueSnackbar,
     selected,
@@ -110,13 +110,7 @@ const DocumentsPage: FC = () => {
     setDocuments(
       documents.filter((document) => document.id !== documentToDelete.id)
     );
-  }, [
-    ApiClient.document,
-    documentToDelete,
-    documents,
-    enqueueSnackbar,
-    setDocuments,
-  ]);
+  }, [ApiClient, documentToDelete, documents, enqueueSnackbar, setDocuments]);
 
   const onRowClick = useCallback(
     ({ row }: { row: Document }) => setSelected(row),

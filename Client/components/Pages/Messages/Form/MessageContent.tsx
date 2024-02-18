@@ -5,7 +5,7 @@ import { Grid } from '@mui/material';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const MessageContent: FC = () => {
-  const { selected, updateSelected, customers, orders } = useMessageContext();
+  const { selected, updateSelected } = useMessageContext();
 
   const onChangeSubject = useCallback(
     (e: ChangeEvent<HTMLInputElement>) =>
@@ -34,6 +34,7 @@ const MessageContent: FC = () => {
           <Grid item xs={12}>
             <FormTextField
               multiline
+              required
               variant="filled"
               label="Nachrichtentext"
               value={selected.body ?? ''}

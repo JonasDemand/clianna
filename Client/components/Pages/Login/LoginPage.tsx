@@ -17,7 +17,7 @@ const LoginPage: FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { updateSession } = useSession();
-  const client = useApiClient();
+  const ApiClient = useApiClient();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,7 +34,7 @@ const LoginPage: FC = () => {
       setShowPasswordValidation(true);
       setLoading(true);
 
-      const { data, error } = await client.user.authenticateCreate(
+      const { data, error } = await ApiClient.user.authenticateCreate(
         {
           email,
           password,
@@ -56,7 +56,7 @@ const LoginPage: FC = () => {
       updateSession(cookies);
       router.push(searchParams.get('redirectUrl') ?? '/');
     },
-    [client.user, email, password, router, searchParams, updateSession]
+    [ApiClient, email, password, router, searchParams, updateSession]
   );
   const onChangeEmail = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),

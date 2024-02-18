@@ -49,6 +49,7 @@ const MessageGeneral: FC = () => {
               label="Typ"
               aditionalTextFieldProps={{
                 variant: 'filled',
+                required: true,
               }}
               value={selected.template}
               enumToUse={ETemplateType}

@@ -71,7 +71,7 @@ export const CustomersPage: FC = () => {
       customers.filter((customer) => customer.id !== customerToDelete.id)
     );
   }, [
-    ApiClient.customer,
+    ApiClient,
     customerToDelete?.id,
     customers,
     enqueueSnackbar,
@@ -124,7 +124,7 @@ export const CustomersPage: FC = () => {
     setSelected(null);
     enqueueSnackbar('Erfolgreich Kunde erstellt', { variant: 'success' });
   }, [
-    ApiClient.customer,
+    ApiClient,
     customers,
     enqueueSnackbar,
     selected,

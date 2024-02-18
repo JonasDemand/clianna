@@ -126,12 +126,7 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
     fetchTemplates();
     fetchCustomers();
     fetchMessageTemplates();
-  }, [
-    ApiClient.customer,
-    ApiClient.document,
-    ApiClient.message,
-    enqueueSnackbar,
-  ]);
+  }, [ApiClient, enqueueSnackbar]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
