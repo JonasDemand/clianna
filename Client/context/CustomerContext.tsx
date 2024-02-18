@@ -2,7 +2,12 @@
 
 import { columns, defaultVariableColumns } from '@consts/customer';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
-import { ColumnFilter, Customer, Document } from '@utils/api/generated/Api';
+import {
+  ColumnFilter,
+  Customer,
+  Document,
+  Message,
+} from '@utils/api/generated/Api';
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
@@ -52,6 +57,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
 
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [templates, setTemplates] = useState<Document[]>([]);
+  const [messageTemplates, setMessageTemplates] = useState<Message[]>([]);
   const [showCustomers, setShowCustomers] = useState(EShowCustomer.Active);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
@@ -80,9 +86,26 @@ const CustomerProvider: FC<CustomerContextProps> = ({
       }
       setTemplates(data.list);
     };
-    console.log();
+    const fetchMessageTemplates = async () => {
+      const { data, error } = await ApiClient.message.messageList({
+        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnSorting: withColumnSorting([
+          { name: 'CreationDate', desc: true },
+        ]),
+        PageSize: 1000, //TODO: add pagination
+      });
+      if (error || !data?.list || !data.metaData) {
+        enqueueSnackbar('Unbekannter Fehler', {
+          variant: 'error',
+        });
+        return;
+      }
+      setMessageTemplates(data.list);
+    };
+
     fetchTemplates();
-  }, [ApiClient.document, enqueueSnackbar]);
+    fetchMessageTemplates();
+  }, [ApiClient.document, ApiClient.message, enqueueSnackbar]);
 
   const fetchCustomers = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
@@ -137,6 +160,7 @@ const CustomerProvider: FC<CustomerContextProps> = ({
         customers,
         setCustomers,
         templates,
+        messageTemplates,
         selected,
         setSelected,
         updateSelected,

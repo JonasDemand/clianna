@@ -19,7 +19,8 @@ public class MessageController(
     : EntityBaseController<Message, UpsertMessageRequest>(responseFactory, mapper, messageService, jsonOptions)
 {
     [HttpGet("{id}/ApplyTemplate")]
-    public async Task<ActionResult<Response<Document>>> Put(string id, string? customer, string? order)
+    public async Task<ActionResult<Response<ApplyMessageTemplateResponse>>> Put(string id, string? customer,
+        string? order)
     {
         return Ok(_responseFactory.Create(await messageService.ApplyTemplate(id, customer, order)));
     }

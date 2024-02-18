@@ -1,40 +1,40 @@
 'use client';
-
 import MuiTable from '@components/External/MuiTable';
-import MuiTextField from '@components/External/MuiTextField';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
+import DhlDialog from '@components/Modals/DhlDialog';
+import MessageDialog from '@components/Modals/MessageDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
 import { EId } from '@customTypes/id';
 import { Email, LocalShipping, Phone } from '@mui/icons-material';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Customer } from '@utils/api/generated/Api';
-import {
-  generateDHLPollingClientCSV,
-  getCustomerLabel,
-  toCustomerUpsertRequest,
-} from '@utils/customer';
-import { formatDate } from '@utils/date';
+import { getCustomerLabel, toCustomerUpsertRequest } from '@utils/customer';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
 import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
-import { TextEncoder } from 'text-encoding';
 
 import { useCustomerContext } from '../../../context/CustomerContext';
 import CustomersTableHeader from './CustomersTableHeader';
 import CustomerForm from './Form';
 
-const CustomersPage: FC = () => {
+export const CustomersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { customers, setCustomers, selected, setSelected, activeColumns } =
-    useCustomerContext();
+  const {
+    customers,
+    setCustomers,
+    selected,
+    setSelected,
+    activeColumns,
+    messageTemplates,
+  } = useCustomerContext();
   const ApiClient = useApiClient();
 
   const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(
     null
   );
   const [dhlCustomer, setDhlCustomer] = useState<Customer | null>(null);
-  const [dhlWeight, setDhlWeight] = useState<number>(1);
+  const [messageCustomer, setMessageCustomer] = useState<Customer | null>(null);
 
   const onCloseOverlay = useCallback(() => {
     if (!selected) return;
@@ -52,6 +52,7 @@ const CustomersPage: FC = () => {
   }, [customers, selected, setCustomers, setSelected]);
   const onCloseDeleteDialog = useCallback(() => setCustomerToDelete(null), []);
   const onCloseDHLDialog = useCallback(() => setDhlCustomer(null), []);
+  const onCloseMessageDialog = useCallback(() => setMessageCustomer(null), []);
 
   const onConfirmDeleteDialog = useCallback(async () => {
     if (!customerToDelete?.id) return;
@@ -76,40 +77,6 @@ const CustomersPage: FC = () => {
     enqueueSnackbar,
     setCustomers,
   ]);
-  const onConfirmDHLDialog = useCallback(() => {
-    const dhlFile = generateDHLPollingClientCSV(dhlCustomer!, dhlWeight);
-    // Convert the content to Uint8Array with ANSI encoding
-    const encoder = new TextEncoder('windows-1252', {
-      NONSTANDARD_allowLegacyEncoding: true,
-    });
-
-    const encodedData = encoder.encode(dhlFile);
-
-    // Create a Blob with the encoded data
-    const blob = new Blob([encodedData], {
-      type: 'text/csv;charset=windows-1252',
-    });
-
-    // Create download link
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute(
-      'download',
-      `${dhlCustomer!.id}-${formatDate(new Date())}.clianna.dhl`
-    );
-
-    // Trigger download
-    document.body.appendChild(link);
-    link.click();
-
-    // Clean up
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-
-    setDhlCustomer(null);
-    setDhlWeight(1);
-  }, [dhlCustomer, dhlWeight]);
 
   const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
@@ -172,7 +139,6 @@ const CustomersPage: FC = () => {
   const onDHLClick = useCallback((customer: Customer) => {
     setDhlCustomer(customer);
   }, []);
-
   return (
     <Box
       sx={{
@@ -194,7 +160,7 @@ const CustomersPage: FC = () => {
           {
             tooltip: 'E-Mail', //TODO: disable when no email is set
             icon: <Email />,
-            onClick: (row) => (window.location.href = `mailto:${row.email}`),
+            onClick: (row) => setMessageCustomer(row),
           },
           {
             tooltip: 'Telefon', //TODO: disable when no phone is set
@@ -225,33 +191,12 @@ const CustomersPage: FC = () => {
           {getCustomerLabel(customerToDelete)}
         </Typography>
       </ConfirmDialog>
-      <ConfirmDialog
-        open={!!dhlCustomer}
-        title="DHL-Pollingclient Download"
-        onClose={onCloseDHLDialog}
-        onConfirm={onConfirmDHLDialog}
-        abortLabel="Abbrechen"
-        confirmLabel="Download"
-      >
-        <Typography>Paket für Kunde</Typography>
-        <Typography fontWeight="bold" mb={2}>
-          {getCustomerLabel(dhlCustomer)}
-        </Typography>
-        <Grid container justifyContent="center">
-          <Grid item xs={6}>
-            <MuiTextField
-              required
-              label="Gewicht"
-              type="number"
-              inputProps={{
-                step: '.5',
-              }}
-              defaultValue="1.0"
-              onChange={(e) => setDhlWeight(parseFloat(e.target.value))}
-            />
-          </Grid>
-        </Grid>
-      </ConfirmDialog>
+      <DhlDialog customer={dhlCustomer} onClose={onCloseDHLDialog} />
+      <MessageDialog
+        templates={messageTemplates}
+        onClose={onCloseMessageDialog}
+        reference={messageCustomer}
+      />
     </Box>
   );
 };

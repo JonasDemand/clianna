@@ -10,6 +10,16 @@
  * ---------------------------------------------------------------
  */
 
+export interface ApplyMessageTemplateResponse {
+  subject?: string | null;
+  body?: string | null;
+}
+
+export interface ApplyMessageTemplateResponseResponse {
+  data?: ApplyMessageTemplateResponse;
+  error?: Error;
+}
+
 export interface AuthenticateRequest {
   email?: string | null;
   password?: string | null;
@@ -853,7 +863,7 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
       },
       params: RequestParams = {},
     ) =>
-      this.request<DocumentResponse, any>({
+      this.request<ApplyMessageTemplateResponseResponse, any>({
         path: `/Message/${id}/ApplyTemplate`,
         method: "GET",
         query: query,

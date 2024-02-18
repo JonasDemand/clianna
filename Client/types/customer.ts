@@ -1,10 +1,11 @@
 import { GridColDef } from '@mui/x-data-grid';
-import { Customer, Document } from '@utils/api/generated/Api';
+import { Customer, Document, Message } from '@utils/api/generated/Api';
 
 export type CustomerContextType = {
   customers: Customer[];
   setCustomers: (customers: Customer[]) => void;
   templates: Document[];
+  messageTemplates: Message[];
   selected: Customer | null;
   setSelected: (customer: Customer | null) => void;
   updateSelected: <T extends keyof Customer>(

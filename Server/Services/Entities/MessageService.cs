@@ -36,7 +36,7 @@ public class MessageService : BaseEntityService<Message, UpsertMessageRequest>, 
         message.OrderId = order;
         message.Order = !string.IsNullOrEmpty(order) ? await _orderRepository.Get(order) : null;
         message.CustomerId = customer;
-        message.Customer = !string.IsNullOrEmpty(order) ? await _customerRepository.Get(customer) : null;
+        message.Customer = !string.IsNullOrEmpty(customer) ? await _customerRepository.Get(customer) : null;
         var replacements = _templatingService.ReplaceTextFromObject(message);
 
         return new ApplyMessageTemplateResponse
