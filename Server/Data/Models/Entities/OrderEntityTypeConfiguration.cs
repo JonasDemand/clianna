@@ -62,7 +62,8 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("varchar(255)");
         builder.HasOne(e => e.Customer)
             .WithMany(e => e.Orders)
-            .HasForeignKey(e => e.CustomerId);
+            .HasForeignKey(e => e.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(e => e.Documents)
             .WithOne(e => e.Order);
 

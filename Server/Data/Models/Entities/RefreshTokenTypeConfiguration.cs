@@ -30,7 +30,8 @@ public class RefreshTokenTypeConfiguration : IEntityTypeConfiguration<RefreshTok
             .IsRequired();
         builder.HasOne(e => e.User)
             .WithMany(e => e.RefreshTokens)
-            .HasForeignKey(e => e.UserId);
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         //Navigation
         builder.Navigation(e => e.User);

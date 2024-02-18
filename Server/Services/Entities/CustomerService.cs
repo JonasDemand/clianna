@@ -1,39 +1,46 @@
 ﻿using AutoMapper;
+using Coravel.Queuing.Interfaces;
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Services.Tasks;
 
 namespace Services.Entities;
 
-public class CustomerService(
-    ICustomerRepository customerRepository,
-    IOrderRepository orderRepository,
-    IDocumentRepository documentRepository,
-    IMapper mapper)
-    : BaseEntityService<Customer, UpsertCustomerRequest>(customerRepository, mapper), ICustomerService
+public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest>, ICustomerService
 {
-    public new async Task<Customer> Create(UpsertCustomerRequest customer)
+    private readonly IDocumentRepository _documentRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IQueue _queue;
+
+    public CustomerService(ICustomerRepository customerRepository,
+        IOrderRepository orderRepository,
+        IDocumentRepository documentRepository,
+        IMapper mapper, IQueue queue) : base(customerRepository, mapper)
     {
-        var entry = _mapper.Map<Customer>(customer);
-        await AssignDependencies(entry, customer);
-        return await customerRepository.Add(entry);
+        _orderRepository = orderRepository;
+        _documentRepository = documentRepository;
+        _queue = queue;
+
+        BeforeInsertActions.Add(AssignDependencies);
+        BeforeDeleteActions.Add(ScheduleDeleteDocuments);
     }
 
-    public new async Task<Customer> Update(string id, UpsertCustomerRequest customer)
+    private async Task ScheduleDeleteDocuments(Customer customer)
     {
-        var entry = await customerRepository.Get(id);
-        _mapper.Map(customer, entry);
-        await AssignDependencies(entry, customer);
-        return await customerRepository.Update(entry);
+        customer.Documents.ToList().ForEach(document =>
+            _queue.QueueInvocableWithPayload<DeleteGoogleFileTask, string>(document.GoogleId));
+        customer.Orders.SelectMany(x => x.Documents).ToList().ForEach(document =>
+            _queue.QueueInvocableWithPayload<DeleteGoogleFileTask, string>(document.GoogleId));
     }
 
-    private async Task AssignDependencies(Customer entry, UpsertCustomerRequest customer)
+    private async Task AssignDependencies(Customer entry, UpsertCustomerRequest customer, bool isUpdate)
     {
         entry.Documents = customer.Documents == null || !customer.Documents.Any()
-            ? new List<Document>()
-            : await documentRepository.Get(customer.Documents);
+            ? []
+            : await _documentRepository.Get(customer.Documents);
         entry.Orders = customer.Orders == null || !customer.Orders.Any()
-            ? new List<Order>()
-            : await orderRepository.Get(customer.Orders);
+            ? []
+            : await _orderRepository.Get(customer.Orders);
     }
 }

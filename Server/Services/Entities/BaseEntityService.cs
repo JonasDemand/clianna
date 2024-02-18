@@ -6,12 +6,15 @@ using Shared.Extensions;
 
 namespace Services.Entities;
 
-public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, TUpsert>
+public abstract class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, TUpsert>
     where TEntity : class, IEntity
     where TUpsert : class
 {
     protected readonly IMapper _mapper;
     private readonly IGenericRepository<TEntity> _repository;
+    protected readonly List<Func<TEntity, Task>> BeforeDeleteActions = [];
+
+    protected readonly List<Func<TEntity, TUpsert, bool, Task>> BeforeInsertActions = [];
 
     protected BaseEntityService(IGenericRepository<TEntity> repository, IMapper mapper)
     {
@@ -19,27 +22,41 @@ public class BaseEntityService<TEntity, TUpsert> : IBaseEntityService<TEntity, T
         _mapper = mapper;
     }
 
-
     public async Task<TEntity> Create(TUpsert entity)
     {
-        return await _repository.Add(_mapper.Map<TEntity>(entity));
+        var transaction = await _repository.BeginTransaction();
+        var entry = _mapper.Map<TEntity>(entity);
+        await Task.WhenAll(BeforeInsertActions.Select(action => action(entry, entity, false)));
+        await _repository.Add(entry);
+        await transaction.CommitAsync();
+        return entry;
     }
 
     public async Task Delete(string id)
     {
-        await _repository.Delete(id);
+        var transaction = await _repository.BeginTransaction();
+        var entry = await _repository.Get(id);
+        await Task.WhenAll(BeforeDeleteActions.Select(action =>
+            action(entry)
+        ));
+        await _repository.Delete(entry);
+        await transaction.CommitAsync();
+    }
+
+    public async Task<TEntity> Update(string id, TUpsert entity)
+    {
+        var transaction = await _repository.BeginTransaction();
+        var entry = await _repository.Get(id);
+        _mapper.Map(entity, entry);
+        await Task.WhenAll(BeforeInsertActions.Select(action => action(entry, entity, true)));
+        await _repository.Update(entry);
+        await transaction.CommitAsync();
+        return entry;
     }
 
     public async Task<TEntity> GetById(string id)
     {
         return await _repository.Get(id);
-    }
-
-    public async Task<TEntity> Update(string id, TUpsert entity)
-    {
-        var entry = await _repository.Get(id);
-        _mapper.Map(entity, entry);
-        return await _repository.Update(entry);
     }
 
     public PagedListResponse<TEntity> GetAll(string searchTerm, IEnumerable<ColumnFilter> columnFilters,

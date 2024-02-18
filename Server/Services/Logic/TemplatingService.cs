@@ -2,6 +2,7 @@ using System.Globalization;
 using Data.Models.Entities;
 using Data.Models.Enums;
 using Shared.Extensions;
+using CollectionExtensions = Shared.Extensions.CollectionExtensions;
 
 namespace Services.Logic;
 
@@ -24,7 +25,7 @@ public class TemplatingService : ITemplatingService
         { "IncrementalId", value => value?.ToString().PadLeft(4, '0') ?? string.Empty }
     };
 
-    private static readonly Dictionary<string, Func<string, dynamic, List<ITemplatingService.Replacement>>>
+    private static readonly Dictionary<string, Func<string, dynamic, IDictionary<string, string>>>
         CustomKeyActions = new()
         {
             {
@@ -36,32 +37,29 @@ public class TemplatingService : ITemplatingService
                     var taxRate = taxes == EOrderTax.Seven ? 0.07 : 0.19;
                     var taxShare = price / (1 + taxRate) * taxRate;
                     var netPrice = price - taxShare;
-                    return new List<ITemplatingService.Replacement>
+                    return new Dictionary<string, string>
                     {
-                        new()
                         {
-                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "Taxes")}}}}}",
-                            ReplaceValue = GetLabel("Taxes", taxes)
+                            $"{GetReplaceTemplate(prefix, "Taxes")}}}}}",
+                            GetLabel("Taxes", taxes)
                         },
-                        new()
                         {
-                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "TaxShare")}}}}}",
-                            ReplaceValue = GetLabel("TaxShare", taxShare)
+                            $"{GetReplaceTemplate(prefix, "TaxShare")}}}}}",
+                            GetLabel("TaxShare", taxShare)
                         },
-                        new()
                         {
-                            ReplaceTemplate = $"{GetReplaceTemplate(prefix, "NetPrice")}}}}}",
-                            ReplaceValue = GetLabel("NetPrice", netPrice)
+                            $"{GetReplaceTemplate(prefix, "NetPrice")}}}}}",
+                            GetLabel("NetPrice", netPrice)
                         }
                     };
                 }
             }
         };
 
-    public IEnumerable<ITemplatingService.Replacement> ReplaceTextFromObject(dynamic obj, string prefix = "",
+    public IDictionary<string, string> ReplaceTextFromObject(dynamic obj, string prefix = "",
         int depth = 0)
     {
-        var results = new List<ITemplatingService.Replacement>();
+        var results = new Dictionary<string, string>();
 
         if (depth > 2) return results;
 
@@ -75,26 +73,25 @@ public class TemplatingService : ITemplatingService
             if (value is IEnumerable<dynamic> listValue)
             {
                 for (var i = 0; i < listValue.Count(); i++)
-                    results.AddRange(
+                    CollectionExtensions.AddRange(results,
                         ReplaceTextFromObject(listValue.ElementAt(i), $"{replaceTemplate}[{i}]", depth + 1));
                 continue;
             }
 
             if (value != null && value is IEntity)
             {
-                results.AddRange(ReplaceTextFromObject(value, replaceTemplate, depth + 1));
+                CollectionExtensions.AddRange(results, ReplaceTextFromObject(value, replaceTemplate, depth + 1));
                 continue;
             }
 
             if (CustomKeyActions.TryGetValue(key,
-                    out Func<string, dynamic, List<ITemplatingService.Replacement>>? action))
-                results.AddRange(action(prefix, obj));
+                    out Func<string, dynamic, IDictionary<string, string>>? action))
+                CollectionExtensions.AddRange(results, action(prefix, obj));
             else
-                results.Add(new ITemplatingService.Replacement
-                {
-                    ReplaceTemplate = $"{replaceTemplate}}}}}",
-                    ReplaceValue = GetLabel(key, value)
-                });
+                results.Add(
+                    $"{replaceTemplate}}}}}",
+                    GetLabel(key, value)
+                );
         }
 
         return results;

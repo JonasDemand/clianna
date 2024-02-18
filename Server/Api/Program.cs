@@ -43,6 +43,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddScheduler();
+builder.Services.AddQueue();
 
 //Singletons
 builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
@@ -66,6 +67,7 @@ builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 //Tasks
 builder.Services.AddScoped<MigrateDbTask>();
 builder.Services.AddScoped<RemoveInvalidRefreshTokensTask>();
+builder.Services.AddScoped<DeleteGoogleFileTask>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

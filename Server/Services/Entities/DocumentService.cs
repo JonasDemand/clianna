@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Coravel.Queuing.Interfaces;
 using Data.Database.Repositories;
 using Data.Models.Messages;
 using Data.Models.Misc;
@@ -6,75 +7,59 @@ using Google.Apis.Docs.v1.Data;
 using Microsoft.Extensions.Options;
 using Services.ExternalApis;
 using Services.Logic;
+using Services.Tasks;
 using Document = Data.Models.Entities.Document;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Services.Entities;
 
-public class DocumentService(
-    IDocumentRepository documentRepository,
-    ICustomerRepository customerRepository,
-    IOrderRepository orderRepository,
-    IMapper mapper,
-    IGoogleService googleService,
-    ITemplatingService templatingService,
-    IOptions<AppSettings> appSettings)
-    : BaseEntityService<Document, UpsertDocumentReqeust>(documentRepository, mapper), IDocumentService
+public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust>, IDocumentService
 {
-    private readonly AppSettings _appSettings = appSettings.Value;
+    private readonly AppSettings _appSettings;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IDocumentRepository _documentRepository;
+    private readonly IGoogleService _googleService;
+    private readonly IOrderRepository _orderRepository;
+    private readonly IQueue _queue;
+    private readonly ITemplatingService _templatingService;
 
-    public new async Task<Document> Create(UpsertDocumentReqeust document)
+    public DocumentService(IDocumentRepository documentRepository,
+        ICustomerRepository customerRepository,
+        IOrderRepository orderRepository,
+        IMapper mapper,
+        IGoogleService googleService,
+        ITemplatingService templatingService,
+        IQueue queue,
+        IOptions<AppSettings> appSettings) : base(documentRepository, mapper)
     {
-        var transaction = documentRepository.BeginTransaction();
-        var entry = _mapper.Map<Document>(document);
-        await AssignDependencies(entry, document);
+        _documentRepository = documentRepository;
+        _customerRepository = customerRepository;
+        _orderRepository = orderRepository;
+        _googleService = googleService;
+        _templatingService = templatingService;
+        _queue = queue;
+        _appSettings = appSettings.Value;
 
-        var googleResponse = await googleService.Drive.Files.Create(new File
-        {
-            Name = entry.Id,
-            MimeType = "application/vnd.google-apps.document",
-            Parents = new[] { _appSettings.GoogleOptions.RootFolderId }
-        }).ExecuteAsync();
-        entry.GoogleId = googleResponse.Id;
-
-        await documentRepository.Add(entry);
-        await transaction.CommitAsync();
-        return entry;
-    }
-
-    public new async Task<Document> Update(string id, UpsertDocumentReqeust document)
-    {
-        var entry = await documentRepository.Get(id);
-        _mapper.Map(document, entry);
-        await AssignDependencies(entry, document);
-        return await documentRepository.Update(entry);
-    }
-
-    public new async Task Delete(string id)
-    {
-        var transaction = documentRepository.BeginTransaction();
-        var document = await documentRepository.Get(id);
-        await googleService.Drive.Files.Delete(document.GoogleId).ExecuteAsync();
-        await documentRepository.Delete(document);
-        await transaction.CommitAsync();
+        BeforeInsertActions.Add(BeforeInsertAction);
+        BeforeDeleteActions.Add(ScheduleDeleteDocument);
     }
 
     public async Task<Document> Copy(string id, CopyDocumentRequest document)
     {
-        var transaction = documentRepository.BeginTransaction();
-        var documentToCopy = await documentRepository.Get(id);
+        var transaction = await _documentRepository.BeginTransaction();
+        var documentToCopy = await _documentRepository.Get(id);
         if (documentToCopy == null) throw new Exception("Document not found");
 
         var newDocument = _mapper.Map<Document>(document);
         newDocument.IncrementalId = documentToCopy.IncrementalId;
         if (!string.IsNullOrEmpty(document.Order))
-            newDocument.Order = await orderRepository.Get(document.Order);
+            newDocument.Order = await _orderRepository.Get(document.Order);
         else if (!string.IsNullOrEmpty(document.Customer))
-            newDocument.Customer = await customerRepository.Get(document.Customer);
+            newDocument.Customer = await _customerRepository.Get(document.Customer);
         else
             newDocument.Template = documentToCopy.Template;
 
-        var driveResponse = await googleService.Drive.Files.Copy(new File
+        var driveResponse = await _googleService.Drive.Files.Copy(new File
         {
             Name = newDocument.Id,
             MimeType = "application/vnd.google-apps.document",
@@ -84,19 +69,19 @@ public class DocumentService(
 
         if (documentToCopy.Template && (newDocument.Order != null || newDocument.Customer != null))
         {
-            await googleService.Docs.Documents
+            await _googleService.Docs.Documents
                 .BatchUpdate(new BatchUpdateDocumentRequest
                 {
-                    Requests = templatingService.ReplaceTextFromObject(newDocument).Select(replacement => new Request
+                    Requests = _templatingService.ReplaceTextFromObject(newDocument).Select(replacement => new Request
                         {
                             ReplaceAllText = new ReplaceAllTextRequest
                             {
                                 ContainsText = new SubstringMatchCriteria
                                 {
-                                    Text = replacement.ReplaceTemplate,
+                                    Text = replacement.Key,
                                     MatchCase = false
                                 },
-                                ReplaceText = replacement.ReplaceValue
+                                ReplaceText = replacement.Value
                             }
                         })
                         .ToList()
@@ -104,13 +89,18 @@ public class DocumentService(
             if (documentToCopy.IncrementalId != null) documentToCopy.IncrementalId++;
         }
 
-        await documentRepository.Add(newDocument);
+        await _documentRepository.Add(newDocument);
 
         await transaction.CommitAsync();
         return newDocument;
     }
 
-    private async Task AssignDependencies(Document entry, UpsertDocumentReqeust document)
+    private async Task ScheduleDeleteDocument(Document document)
+    {
+        _queue.QueueInvocableWithPayload<DeleteGoogleFileTask, string>(document.GoogleId);
+    }
+
+    private async Task BeforeInsertAction(Document entry, UpsertDocumentReqeust document, bool isUpdate)
     {
         if (string.IsNullOrEmpty(document.Customer))
         {
@@ -119,7 +109,7 @@ public class DocumentService(
         }
         else
         {
-            entry.Customer = await customerRepository.Get(document.Customer);
+            entry.Customer = await _customerRepository.Get(document.Customer);
             entry.CustomerId = entry.Customer.Id;
         }
 
@@ -130,8 +120,18 @@ public class DocumentService(
         }
         else
         {
-            entry.Order = await orderRepository.Get(document.Order);
+            entry.Order = await _orderRepository.Get(document.Order);
             entry.OrderId = entry.Order.Id;
         }
+
+        if (isUpdate) return;
+
+        var googleResponse = await _googleService.Drive.Files.Create(new File
+        {
+            Name = entry.Id,
+            MimeType = "application/vnd.google-apps.document",
+            Parents = new[] { _appSettings.GoogleOptions.RootFolderId }
+        }).ExecuteAsync();
+        entry.GoogleId = googleResponse.Id;
     }
 }

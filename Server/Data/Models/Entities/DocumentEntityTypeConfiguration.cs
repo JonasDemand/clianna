@@ -42,10 +42,12 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
             .HasColumnType("varchar(255)");
         builder.HasOne(e => e.Customer)
             .WithMany(e => e.Documents)
-            .HasForeignKey(e => e.CustomerId);
+            .HasForeignKey(e => e.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(e => e.Order)
             .WithMany(e => e.Documents)
-            .HasForeignKey(e => e.OrderId);
+            .HasForeignKey(e => e.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         //Navigation
         builder.Navigation(e => e.Customer);
