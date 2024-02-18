@@ -83,7 +83,7 @@ export interface Document {
   name?: string | null;
   /** @format date-time */
   creationDate?: Date;
-  template?: boolean;
+  template?: ETemplateType;
   /** @format int32 */
   incrementalId?: number | null;
   order?: Order;
@@ -133,6 +133,12 @@ export enum EOrderType {
   Massschuhe = "Massschuhe",
   Schuhbestellung = "Schuhbestellung",
   Miscellaneous = "Miscellaneous",
+}
+
+export enum ETemplateType {
+  None = "None",
+  Order = "Order",
+  Customer = "Customer",
 }
 
 export interface Error {
@@ -208,7 +214,7 @@ export interface Message {
   name?: string | null;
   /** @format date-time */
   creationDate?: Date;
-  template?: boolean;
+  template?: ETemplateType;
   subject?: string | null;
   body?: string | null;
   order?: Order;
@@ -330,7 +336,7 @@ export interface UpsertCustomerRequest {
 
 export interface UpsertDocumentReqeust {
   name?: string | null;
-  template?: boolean;
+  template?: ETemplateType;
   /** @format int32 */
   incrementalId?: number | null;
   order?: string | null;
@@ -339,7 +345,7 @@ export interface UpsertDocumentReqeust {
 
 export interface UpsertMessageRequest {
   name?: string | null;
-  template?: boolean;
+  template?: ETemplateType;
   subject?: string | null;
   body?: string | null;
   order?: string | null;
@@ -599,30 +605,6 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version v1
  */
 export class Client<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-  admin = {
-    /**
-     * No description
-     *
-     * @tags Admin
-     * @name MigrateDbCreate
-     * @request POST:/Admin/MigrateDb
-     * @secure
-     */
-    migrateDbCreate: (
-      query?: {
-        dbName?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<Response, any>({
-        path: `/Admin/MigrateDb`,
-        method: "POST",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
   customer = {
     /**
      * No description

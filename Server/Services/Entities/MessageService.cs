@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 using AutoMapper;
 using Data.Database.Repositories;
 using Data.Models.Entities;
+using Data.Models.Enums;
 using Data.Models.Messages;
 using Services.Logic;
 
@@ -29,7 +30,7 @@ public class MessageService : BaseEntityService<Message, UpsertMessageRequest>, 
             throw new Exception("No reference");
 
         var message = await GetById(id);
-        if (message is not { Template: true })
+        if (message is { Template: ETemplateType.None })
             throw new Exception("Message has to be a template");
 
         //Change message, but don't save it afterwards

@@ -6,6 +6,7 @@ import {
   ColumnFilter,
   Customer,
   Document,
+  ETemplateType,
   Message,
 } from '@utils/api/generated/Api';
 import useApiClient from 'hooks/useApiClient';
@@ -72,7 +73,9 @@ const CustomerProvider: FC<CustomerContextProps> = ({
   useEffect(() => {
     const fetchTemplates = async () => {
       const { data, error } = await ApiClient.document.documentList({
-        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnFilters: withColumnFilters([
+          { name: 'Template', value: ETemplateType.Customer },
+        ]),
         ColumnSorting: withColumnSorting([
           { name: 'CreationDate', desc: true },
         ]),
@@ -88,7 +91,9 @@ const CustomerProvider: FC<CustomerContextProps> = ({
     };
     const fetchMessageTemplates = async () => {
       const { data, error } = await ApiClient.message.messageList({
-        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnFilters: withColumnFilters([
+          { name: 'Template', value: ETemplateType.Customer },
+        ]),
         ColumnSorting: withColumnSorting([
           { name: 'CreationDate', desc: true },
         ]),

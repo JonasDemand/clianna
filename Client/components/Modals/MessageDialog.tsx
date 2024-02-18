@@ -11,6 +11,7 @@ import { Customer, Message, Order } from '@utils/api/generated/Api';
 import { getCustomerLabel, isCustomer } from '@utils/customer';
 import { getOrderLabel } from '@utils/order';
 import useApiClient from 'hooks/useApiClient';
+import { useSnackbar } from 'notistack';
 import React, { FC, useCallback, useState } from 'react';
 
 import ConfirmDialog from './ConfirmDialog';
@@ -26,20 +27,27 @@ const MessageDialog: FC<MessageDialogProps> = ({
   templates,
   onClose,
 }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const client = useApiClient();
   const [template, setTemplate] = useState<Message | null>(null);
 
   const onConfirmDialog = useCallback(async () => {
     const customer = isCustomer(reference);
+
     if (template) {
       const { data, error } = await client.message.applyTemplateDetail(
         template.id!,
         {
           customer: customer ? reference!.id! : undefined,
-          order: !isCustomer ? reference!.id! : undefined,
+          order: !customer ? reference!.id! : undefined,
         }
       );
-      if (error || !data) return;
+      if (error || !data) {
+        enqueueSnackbar('Anwenden von Template fehlgeschlagen!', {
+          variant: 'error',
+        });
+        return;
+      }
 
       window.location.href = `mailto:${
         customer
@@ -54,7 +62,7 @@ const MessageDialog: FC<MessageDialogProps> = ({
       }`;
     onClose();
     setTemplate(null);
-  }, [client.message, onClose, reference, template]);
+  }, [client.message, enqueueSnackbar, onClose, reference, template]);
 
   const onChangeTemplate = useCallback(
     (_: unknown, value: Message | null) => setTemplate(value),

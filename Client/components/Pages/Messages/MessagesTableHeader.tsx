@@ -2,11 +2,12 @@ import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import ReferenceInput from '@components/Form/ReferenceInput';
-import { ShowMessageLabels, variableColumns } from '@consts/message';
+import { variableColumns } from '@consts/message';
+import { ShowTemplateLabels } from '@consts/template';
 import { useMessageContext } from '@context/MessageContext';
 import { usePaginationContext } from '@context/PaginationContext';
 import { EId } from '@customTypes/id';
-import { EShowOrder } from '@customTypes/order';
+import { EShowTemplate } from '@customTypes/template';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -16,7 +17,7 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Customer, Order } from '@utils/api/generated/Api';
+import { Customer, ETemplateType, Order } from '@utils/api/generated/Api';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const MessagesTableHeader: FC = () => {
@@ -43,7 +44,7 @@ const MessagesTableHeader: FC = () => {
   );
 
   const onClickAdd = useCallback(
-    () => setSelected({ id: EId.Create }),
+    () => setSelected({ id: EId.Create, template: ETemplateType.None }),
     [setSelected]
   );
 
@@ -113,8 +114,8 @@ const MessagesTableHeader: FC = () => {
               <EnumSelect
                 label="Typ"
                 value={showMessages}
-                enumToUse={EShowOrder}
-                enumLabel={ShowMessageLabels}
+                enumToUse={EShowTemplate}
+                enumLabel={ShowTemplateLabels}
                 onChange={setShowMessages}
               />
             </Grid>

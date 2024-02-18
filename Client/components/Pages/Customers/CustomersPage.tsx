@@ -136,9 +136,6 @@ export const CustomersPage: FC = () => {
     ({ row }: { row: Customer }) => setSelected(row),
     [setSelected]
   );
-  const onDHLClick = useCallback((customer: Customer) => {
-    setDhlCustomer(customer);
-  }, []);
   return (
     <Box
       sx={{
@@ -155,16 +152,24 @@ export const CustomersPage: FC = () => {
           {
             tooltip: 'DHL-Pollingclient Download',
             icon: <LocalShipping />,
-            onClick: onDHLClick,
+            disabled: (row) =>
+              !row.city ||
+              !row.firstName ||
+              !row.lastName ||
+              !row.street ||
+              !row.streetNumber,
+            onClick: (row) => setDhlCustomer(row),
           },
           {
-            tooltip: 'E-Mail', //TODO: disable when no email is set
+            tooltip: 'E-Mail',
             icon: <Email />,
+            disabled: (row) => !row.email,
             onClick: (row) => setMessageCustomer(row),
           },
           {
-            tooltip: 'Telefon', //TODO: disable when no phone is set
+            tooltip: 'Telefon',
             icon: <Phone />,
+            disabled: (row) => !row.mobile && !row.phone,
             onClick: (row) =>
               (window.location.href = `tel:${row.mobile ?? row.phone}`),
           },

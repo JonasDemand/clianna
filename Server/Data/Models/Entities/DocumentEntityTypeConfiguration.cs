@@ -28,7 +28,7 @@ public class DocumentEntityTypeConfiguration : IEntityTypeConfiguration<Document
             .HasColumnType("varchar(255)");
         builder
             .Property(e => e.Template)
-            .HasColumnType("tinyint(1)")
+            .HasColumnType("int")
             .IsRequired();
         builder
             .Property(e => e.IncrementalId)

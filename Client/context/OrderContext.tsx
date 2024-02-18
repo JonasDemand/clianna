@@ -7,6 +7,7 @@ import {
   ColumnFilter,
   Customer,
   Document,
+  ETemplateType,
   Order,
 } from '@utils/api/generated/Api';
 import useApiClient from 'hooks/useApiClient';
@@ -55,6 +56,7 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [templates, setTemplates] = useState<Document[]>([]);
+  const [messageTemplates, setMessageTemplates] = useState<Document[]>([]);
   const [showOrders, setShowOrders] = useState(EShowOrder.Pending);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
@@ -70,7 +72,9 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
   useEffect(() => {
     const fetchTemplates = async () => {
       const { data, error } = await ApiClient.document.documentList({
-        ColumnFilters: withColumnFilters([{ name: 'Template', value: 'true' }]),
+        ColumnFilters: withColumnFilters([
+          { name: 'Template', value: ETemplateType.Order },
+        ]),
         ColumnSorting: withColumnSorting([
           { name: 'CreationDate', desc: true },
         ]),
@@ -100,9 +104,34 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
       }
       setCustomers(data.list);
     };
+    const fetchMessageTemplates = async () => {
+      const { data, error } = await ApiClient.message.messageList({
+        ColumnFilters: withColumnFilters([
+          { name: 'Template', value: ETemplateType.Order },
+        ]),
+        ColumnSorting: withColumnSorting([
+          { name: 'CreationDate', desc: true },
+        ]),
+        PageSize: 1000, //TODO: add pagination
+      });
+      if (error || !data?.list || !data.metaData) {
+        enqueueSnackbar('Unbekannter Fehler', {
+          variant: 'error',
+        });
+        return;
+      }
+      setMessageTemplates(data.list);
+    };
+
     fetchTemplates();
     fetchCustomers();
-  }, [ApiClient.customer, ApiClient.document, enqueueSnackbar]);
+    fetchMessageTemplates();
+  }, [
+    ApiClient.customer,
+    ApiClient.document,
+    ApiClient.message,
+    enqueueSnackbar,
+  ]);
 
   const fetchOrders = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
@@ -161,6 +190,7 @@ const OrderProvider: FC<OrderContextProps> = ({ children, initialOrders }) => {
       value={{
         customers,
         templates,
+        messageTemplates,
         orders,
         setOrders,
         selected,

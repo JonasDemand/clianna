@@ -1,7 +1,6 @@
-import { EShowDocument } from '@customTypes/document';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Document } from '@utils/api/generated/Api';
+import { Document, ETemplateType } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';
@@ -49,14 +48,9 @@ export const columns: GridColDef<Document>[] = mapColumns([
     field: 'template',
     headerName: 'Template',
     width: 80,
-    renderCell: ({ row }) => (row.template ? <Check /> : <Close />),
+    renderCell: ({ row }) =>
+      row.template === ETemplateType.None ? <Close /> : <Check />,
   },
 ]);
 
 export const defaultVariableColumns = variableColumns.slice(1, 4);
-
-export const ShowDocumentLabels = new Map<EShowDocument, string>([
-  [EShowDocument.All, 'Alle'],
-  [EShowDocument.Template, 'Template'],
-  [EShowDocument.File, 'Datei'],
-]);

@@ -1,9 +1,11 @@
+import EnumSelect from '@components/Form/EnumSelect';
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import ReferenceInput from '@components/Form/ReferenceInput';
+import { TemplateTypeLabels } from '@consts/template';
 import { useDocumentContext } from '@context/DocumentContext';
-import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
-import { Customer, Order } from '@utils/api/generated/Api';
+import { Grid } from '@mui/material';
+import { Customer, ETemplateType, Order } from '@utils/api/generated/Api';
 import { isCustomer } from '@utils/customer';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
@@ -11,7 +13,7 @@ const DocumentGeneral: FC = () => {
   const { selected, updateSelected, customers, orders } = useDocumentContext();
 
   const onChangeTemplate = useCallback(
-    (_: unknown, checked: boolean) => updateSelected({ template: checked }),
+    (value: ETemplateType) => updateSelected({ template: value }),
     [updateSelected]
   );
   const onChangeName = useCallback(
@@ -43,13 +45,6 @@ const DocumentGeneral: FC = () => {
     <FormSection label="Allgemein">
       {selected && (
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={<Checkbox checked={selected.template ?? false} />}
-              label="Template"
-              onChange={onChangeTemplate}
-            />
-          </Grid>
           <Grid item xs={6}>
             <FormTextField
               label="Name"
@@ -58,12 +53,23 @@ const DocumentGeneral: FC = () => {
               onChange={onChangeName}
             />
           </Grid>
-          <Box width="100%" />
+          <Grid item xs={6}>
+            <EnumSelect
+              label="Typ"
+              aditionalTextFieldProps={{
+                variant: 'filled',
+              }}
+              value={selected.template}
+              enumToUse={ETemplateType}
+              enumLabel={TemplateTypeLabels}
+              onChange={onChangeTemplate}
+            />
+          </Grid>
           <Grid item xs={6}>
             <FormTextField
               label="Inkrementelle ID"
               type="number"
-              disabled={!selected.template}
+              disabled={selected.template === ETemplateType.None}
               value={selected.incrementalId}
               onChange={onChangeIncrementalId}
               inputProps={{ step: 1 }}
@@ -74,7 +80,7 @@ const DocumentGeneral: FC = () => {
               variant="filled"
               customers={customers}
               orders={orders}
-              disabled={selected.template}
+              disabled={selected.template === ETemplateType.None}
               value={selected.customer ?? selected.order}
               onChange={onChangeReference as any /*TODO: improve typing*/}
             />

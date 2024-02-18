@@ -1,7 +1,6 @@
-import { EShowMessage } from '@customTypes/message';
 import { Check, Close } from '@mui/icons-material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Message } from '@utils/api/generated/Api';
+import { ETemplateType, Message } from '@utils/api/generated/Api';
 import { getCustomerLabel } from '@utils/customer';
 import { formatDate } from '@utils/date';
 import { getOrderLabel } from '@utils/order';
@@ -47,14 +46,9 @@ export const columns: GridColDef<Message>[] = mapColumns([
     field: 'template',
     headerName: 'Template',
     width: 80,
-    renderCell: ({ row }) => (row.template ? <Check /> : <Close />),
+    renderCell: ({ row }) =>
+      row.template === ETemplateType.None ? <Close /> : <Check />,
   },
 ]);
 
 export const defaultVariableColumns = variableColumns.slice(1, 3);
-
-export const ShowMessageLabels = new Map<EShowMessage, string>([
-  [EShowMessage.All, 'Alle'],
-  [EShowMessage.Template, 'Template'],
-  [EShowMessage.File, 'Datei'],
-]);

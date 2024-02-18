@@ -2,13 +2,15 @@
 
 import MuiTable from '@components/External/MuiTable';
 import ConfirmDialog from '@components/Modals/ConfirmDialog';
+import DhlDialog from '@components/Modals/DhlDialog';
+import MessageDialog from '@components/Modals/MessageDialog';
 import SideOverlay from '@components/Modals/SideOverlay';
 import { useBackdropContext } from '@context/BackdropContext';
 import { useOrderContext } from '@context/OrderContext';
 import { EId } from '@customTypes/id';
-import { Email, Phone } from '@mui/icons-material';
+import { Email, LocalShipping, Phone } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
-import { Document, Order } from '@utils/api/generated/Api';
+import { Customer, Document, Order } from '@utils/api/generated/Api';
 import { getOrderLabel, toOrderUpsertRequest } from '@utils/order';
 import useApiClient from 'hooks/useApiClient';
 import { isEqual } from 'lodash';
@@ -22,11 +24,19 @@ const OrdersPage: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const { setShowBackdrop } = useBackdropContext();
-  const { activeColumns, selected, setSelected, orders, setOrders } =
-    useOrderContext();
+  const {
+    activeColumns,
+    selected,
+    setSelected,
+    orders,
+    setOrders,
+    messageTemplates,
+  } = useOrderContext();
   const ApiClient = useApiClient();
 
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
+  const [dhlCustomer, setDhlCustomer] = useState<Customer | null>(null);
+  const [messageOrder, setMessageOrder] = useState<Customer | null>(null);
 
   const onCloseOverlay = useCallback(() => {
     if (!selected) return;
@@ -39,7 +49,10 @@ const OrdersPage: FC = () => {
     setOrders(newOrders);
     setSelected(null);
   }, [orders, selected, setOrders, setSelected]);
-  const onCloseDialog = useCallback(() => setOrderToDelete(null), []);
+
+  const onCloseDeleteDialog = useCallback(() => setOrderToDelete(null), []);
+  const onCloseDHLDialog = useCallback(() => setDhlCustomer(null), []);
+  const onCloseMessageDialog = useCallback(() => setMessageOrder(null), []);
 
   const onSaveOverlay = useCallback(async () => {
     if (!selected) return;
@@ -160,19 +173,31 @@ const OrdersPage: FC = () => {
         onDelete={setOrderToDelete}
         customActions={[
           {
-            tooltip: 'E-Mail', //TODO: disable when no customer is set
-            icon: <Email />,
-            onClick: (row) =>
-              row.customer &&
-              (window.location.href = `mailto:${row.customer.email}`),
+            tooltip: 'DHL-Pollingclient Download',
+            icon: <LocalShipping />,
+            disabled: (row) =>
+              !row.customer ||
+              !row.customer.city ||
+              !row.customer.firstName ||
+              !row.customer.lastName ||
+              !row.customer.street ||
+              !row.customer.streetNumber,
+            onClick: (row) => setDhlCustomer(row.customer!),
           },
           {
-            tooltip: 'Telefon', //TODO: disable when no customer is set
+            tooltip: 'E-Mail',
+            icon: <Email />,
+            disabled: (row) => !row.customer || !row.customer.email,
+            onClick: (row) => setMessageOrder(row),
+          },
+          {
+            tooltip: 'Telefon',
             icon: <Phone />,
+            disabled: (row) =>
+              !row.customer || (!row.customer.mobile && !row.customer.phone),
             onClick: (row) =>
-              row.customer &&
               (window.location.href = `tel:${
-                row.customer.mobile ?? row.customer.phone
+                row.customer?.mobile ?? row.customer?.phone
               }`),
           },
         ]}
@@ -188,7 +213,7 @@ const OrdersPage: FC = () => {
       <ConfirmDialog
         open={!!orderToDelete}
         title="Auftrag löschen"
-        onClose={onCloseDialog}
+        onClose={onCloseDeleteDialog}
         onConfirm={onConfirmDialog}
       >
         <Typography mb={2}>
@@ -198,6 +223,12 @@ const OrdersPage: FC = () => {
           {getOrderLabel(orderToDelete)}
         </Typography>
       </ConfirmDialog>
+      <DhlDialog customer={dhlCustomer} onClose={onCloseDHLDialog} />
+      <MessageDialog
+        templates={messageTemplates}
+        onClose={onCloseMessageDialog}
+        reference={messageOrder}
+      />
     </Box>
   );
 };

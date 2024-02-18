@@ -2,12 +2,12 @@ import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import ReferenceInput from '@components/Form/ReferenceInput';
-import { ShowDocumentLabels } from '@consts/document';
 import { variableColumns } from '@consts/document';
+import { ShowTemplateLabels } from '@consts/template';
 import { useDocumentContext } from '@context/DocumentContext';
 import { usePaginationContext } from '@context/PaginationContext';
 import { EId } from '@customTypes/id';
-import { EShowOrder } from '@customTypes/order';
+import { EShowTemplate } from '@customTypes/template';
 import { Add, Search } from '@mui/icons-material';
 import {
   Autocomplete,
@@ -17,7 +17,7 @@ import {
   Grid,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { Customer, Order } from '@utils/api/generated/Api';
+import { Customer, ETemplateType, Order } from '@utils/api/generated/Api';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
 const DocumentsTableHeader: FC = () => {
@@ -44,7 +44,7 @@ const DocumentsTableHeader: FC = () => {
   );
 
   const onClickAdd = useCallback(
-    () => setSelected({ id: EId.Create }),
+    () => setSelected({ id: EId.Create, template: ETemplateType.None }),
     [setSelected]
   );
 
@@ -114,8 +114,8 @@ const DocumentsTableHeader: FC = () => {
               <EnumSelect
                 label="Typ"
                 value={showDocuments}
-                enumToUse={EShowOrder}
-                enumLabel={ShowDocumentLabels}
+                enumToUse={EShowTemplate}
+                enumLabel={ShowTemplateLabels}
                 onChange={setShowDocuments}
               />
             </Grid>

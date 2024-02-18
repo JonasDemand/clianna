@@ -1,6 +1,7 @@
 using AutoMapper;
 using Coravel.Queuing.Interfaces;
 using Data.Database.Repositories;
+using Data.Models.Enums;
 using Data.Models.Messages;
 using Data.Models.Misc;
 using Google.Apis.Docs.v1.Data;
@@ -67,7 +68,8 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         }, documentToCopy.GoogleId).ExecuteAsync();
         newDocument.GoogleId = driveResponse.Id;
 
-        if (documentToCopy.Template && (newDocument.Order != null || newDocument.Customer != null))
+        if (documentToCopy.Template != ETemplateType.None &&
+            (newDocument.Order != null || newDocument.Customer != null))
         {
             await _googleService.Docs.Documents
                 .BatchUpdate(new BatchUpdateDocumentRequest

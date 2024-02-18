@@ -25,7 +25,7 @@ public class MessageEntityTypeConfiguration : IEntityTypeConfiguration<Message>
             .HasColumnType("varchar(255)");
         builder
             .Property(e => e.Template)
-            .HasColumnType("tinyint(1)")
+            .HasColumnType("int")
             .IsRequired();
         builder
             .Property(e => e.Subject)

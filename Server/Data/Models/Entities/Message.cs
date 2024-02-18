@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
@@ -9,7 +10,7 @@ public class Message : IEntity
 {
     public string? Name { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-    public bool Template { get; set; }
+    public ETemplateType Template { get; set; }
     public string Subject { get; set; }
     public string Body { get; set; }
 

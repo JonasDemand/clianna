@@ -1,7 +1,8 @@
 'use client';
 
 import { columns, defaultVariableColumns } from '@consts/message';
-import { EShowMessage, MessageContextType } from '@customTypes/message';
+import { MessageContextType } from '@customTypes/message';
+import { EShowTemplate } from '@customTypes/template';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import {
   ColumnFilter,
@@ -59,7 +60,7 @@ const MessageProvider: FC<MessageContextProps> = ({
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [showMessages, setShowMessages] = useState(EShowMessage.All);
+  const [showMessages, setShowMessages] = useState(EShowTemplate.All);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
@@ -116,10 +117,10 @@ const MessageProvider: FC<MessageContextProps> = ({
 
   const fetchMessages = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
-    if (showMessages !== EShowMessage.All)
+    if (showMessages !== EShowTemplate.All)
       columnFilters.push({
         name: 'Template',
-        value: (showMessages === EShowMessage.Template).toString(),
+        value: showMessages.toString(),
       });
     if (filterReference)
       columnFilters.push({

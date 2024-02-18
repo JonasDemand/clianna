@@ -15,7 +15,6 @@ using Services.Api;
 using Services.Entities;
 using Services.ExternalApis;
 using Services.Logic;
-using Services.Maintenance;
 using Services.Tasks;
 
 // Needed for google apis to work with .net8
@@ -58,7 +57,6 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
-builder.Services.AddScoped<IMigrationService, MigrationService>();
 
 //Entity Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
