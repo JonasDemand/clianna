@@ -2,9 +2,8 @@ import MuiButton from '@components/External/MuiButton';
 import MuiTextField from '@components/External/MuiTextField';
 import EnumSelect from '@components/Form/EnumSelect';
 import ReferenceInput from '@components/Form/ReferenceInput';
-import { ShowDocumentLabels } from '@consts/document';
-import { variableColumns } from '@consts/document';
-import { useDocumentContext } from '@context/DocumentContext';
+import { ShowMessageLabels, variableColumns } from '@consts/message';
+import { useMessageContext } from '@context/MessageContext';
 import { usePaginationContext } from '@context/PaginationContext';
 import { EId } from '@customTypes/id';
 import { EShowOrder } from '@customTypes/order';
@@ -20,10 +19,10 @@ import { GridColDef } from '@mui/x-data-grid';
 import { Customer, Order } from '@utils/api/generated/Api';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
-const DocumentsTableHeader: FC = () => {
+const MessagesTableHeader: FC = () => {
   const {
-    showDocuments,
-    setShowDocuments,
+    showMessages,
+    setShowMessages,
     activeVariableColumns,
     setSelected,
     setActiveVariableColumns,
@@ -31,7 +30,7 @@ const DocumentsTableHeader: FC = () => {
     setFilterReference,
     customers,
     orders,
-  } = useDocumentContext();
+  } = useMessageContext();
   const { setSearchText } = usePaginationContext();
 
   const onChangeSearch = useCallback(
@@ -113,10 +112,10 @@ const DocumentsTableHeader: FC = () => {
             <Grid item xs={6}>
               <EnumSelect
                 label="Typ"
-                value={showDocuments}
+                value={showMessages}
                 enumToUse={EShowOrder}
-                enumLabel={ShowDocumentLabels}
-                onChange={setShowDocuments}
+                enumLabel={ShowMessageLabels}
+                onChange={setShowMessages}
               />
             </Grid>
             <Grid item xs={6}>
@@ -149,4 +148,4 @@ const DocumentsTableHeader: FC = () => {
   );
 };
 
-export default DocumentsTableHeader;
+export default MessagesTableHeader;

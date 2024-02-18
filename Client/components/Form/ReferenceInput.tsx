@@ -1,5 +1,4 @@
 import MuiTextField from '@components/External/MuiTextField';
-import { useDocumentContext } from '@context/DocumentContext';
 import {
   Autocomplete,
   AutocompleteProps,
@@ -8,7 +7,7 @@ import {
   TextFieldProps,
 } from '@mui/material';
 import { Customer, Order } from '@utils/api/generated/Api';
-import { getCustomerLabel } from '@utils/customer';
+import { getCustomerLabel, isCustomer } from '@utils/customer';
 import { getOrderLabel } from '@utils/order';
 import React, { useCallback, useMemo } from 'react';
 
@@ -26,14 +25,13 @@ const ReferenceInput = <
       FreeSolo,
       ChipComponent
     >
-  > & { variant?: TextFieldProps['variant'] } = { variant: 'filled' }
+  > & {
+    variant?: TextFieldProps['variant'];
+    customers: Customer[];
+    orders: Order[];
+  } = { variant: 'filled', customers: [], orders: [] }
 ) => {
-  const { customers, orders } = useDocumentContext();
-
-  const isCustomer = useCallback(
-    (obj?: any | null) => obj.firstName !== undefined,
-    []
-  );
+  const { customers, orders } = props;
 
   const renderInputReference = useCallback(
     (params: AutocompleteRenderInputParams) => (

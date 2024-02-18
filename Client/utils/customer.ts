@@ -13,6 +13,7 @@ export const toCustomerUpsertRequest = (
   ...customer,
   orders: customer.orders?.map((x) => x.id!),
   documents: customer.documents?.map((x) => x.id!),
+  messages: customer.messages?.map((x) => x.id!),
 });
 
 export const generateDHLPollingClientCSV = (
@@ -26,3 +27,5 @@ export const generateDHLPollingClientCSV = (
   };${'' /*E-Mail*/};;;;${weight.toLocaleString('de-DE')};;;;${
     customer.street
   };${customer.streetNumber};D;DEUTSCHLAND`;
+
+export const isCustomer = (obj?: any | null) => obj?.firstName !== undefined;

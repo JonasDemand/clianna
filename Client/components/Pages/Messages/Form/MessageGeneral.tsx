@@ -1,14 +1,14 @@
 import FormTextField from '@components/Form/FormInput';
 import FormSection from '@components/Form/FormSection';
 import ReferenceInput from '@components/Form/ReferenceInput';
-import { useDocumentContext } from '@context/DocumentContext';
-import { Box, Checkbox, FormControlLabel, Grid } from '@mui/material';
+import { useMessageContext } from '@context/MessageContext';
+import { Checkbox, FormControlLabel, Grid } from '@mui/material';
 import { Customer, Order } from '@utils/api/generated/Api';
 import { isCustomer } from '@utils/customer';
 import React, { ChangeEvent, FC, useCallback } from 'react';
 
-const DocumentGeneral: FC = () => {
-  const { selected, updateSelected, customers, orders } = useDocumentContext();
+const MessageGeneral: FC = () => {
+  const { selected, updateSelected, customers, orders } = useMessageContext();
 
   const onChangeTemplate = useCallback(
     (_: unknown, checked: boolean) => updateSelected({ template: checked }),
@@ -26,15 +26,6 @@ const DocumentGeneral: FC = () => {
         return;
       }
       updateSelected({ order: value ?? undefined, customer: undefined });
-    },
-    [updateSelected]
-  );
-  const onChangeIncrementalId = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const regex = /^[0-9\b]+$/;
-      if (e.target.value === '' || regex.test(e.target.value)) {
-        updateSelected({ incrementalId: parseInt(e.target.value) });
-      }
     },
     [updateSelected]
   );
@@ -58,17 +49,6 @@ const DocumentGeneral: FC = () => {
               onChange={onChangeName}
             />
           </Grid>
-          <Box width="100%" />
-          <Grid item xs={6}>
-            <FormTextField
-              label="Inkrementelle ID"
-              type="number"
-              disabled={!selected.template}
-              value={selected.incrementalId}
-              onChange={onChangeIncrementalId}
-              inputProps={{ step: 1 }}
-            />
-          </Grid>
           <Grid item xs={6}>
             <ReferenceInput
               variant="filled"
@@ -85,4 +65,4 @@ const DocumentGeneral: FC = () => {
   );
 };
 
-export default DocumentGeneral;
+export default MessageGeneral;

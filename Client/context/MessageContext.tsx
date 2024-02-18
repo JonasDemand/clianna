@@ -1,12 +1,12 @@
 'use client';
 
-import { columns, defaultVariableColumns } from '@consts/document';
-import { DocumentContextType, EShowDocument } from '@customTypes/document';
+import { columns, defaultVariableColumns } from '@consts/message';
+import { EShowMessage, MessageContextType } from '@customTypes/message';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import {
   ColumnFilter,
   Customer,
-  Document,
+  Message,
   Order,
 } from '@utils/api/generated/Api';
 import { isCustomer } from '@utils/customer';
@@ -27,24 +27,24 @@ import React, {
 
 import { usePaginationContext } from './PaginationContext';
 
-export const useDocumentContext = () => {
-  const context = useContext(DocumentContext);
+export const useMessageContext = () => {
+  const context = useContext(MessageContext);
   if (!context) {
     throw new Error('Context is null');
   }
   return context;
 };
 
-const DocumentContext = createContext<DocumentContextType | null>(null);
+const MessageContext = createContext<MessageContextType | null>(null);
 
-type DocumentContextProps = {
+type MessageContextProps = {
   children: ReactNode;
-  initialDocuments: Document[];
+  initialMessages: Message[];
 };
 
-const DocumentProvider: FC<DocumentContextProps> = ({
+const MessageProvider: FC<MessageContextProps> = ({
   children,
-  initialDocuments,
+  initialMessages,
 }) => {
   const { enqueueSnackbar } = useSnackbar();
   const ApiClient = useApiClient();
@@ -56,14 +56,14 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     setRowCount,
   } = usePaginationContext();
 
-  const [documents, setDocuments] = useState<Document[]>(initialDocuments);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [showDocuments, setShowDocuments] = useState(EShowDocument.All);
+  const [showMessages, setShowMessages] = useState(EShowMessage.All);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
-  const [selected, setSelected] = useState<Document | null>(null);
+  const [selected, setSelected] = useState<Message | null>(null);
   const [filterReference, setFilterReference] = useState<
     Customer | Order | null
   >(null);
@@ -114,19 +114,19 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     enqueueSnackbar,
   ]);
 
-  const fetchDocuments = useDebounce(async () => {
+  const fetchMessages = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
-    if (showDocuments !== EShowDocument.All)
+    if (showMessages !== EShowMessage.All)
       columnFilters.push({
         name: 'Template',
-        value: (showDocuments === EShowDocument.Template).toString(),
+        value: (showMessages === EShowMessage.Template).toString(),
       });
     if (filterReference)
       columnFilters.push({
         name: isCustomer(filterReference) ? 'CustomerId' : 'OrderId',
         value: filterReference.id,
       });
-    const { data, error } = await ApiClient.document.documentList({
+    const { data, error } = await ApiClient.message.messageList({
       ColumnFilters: withColumnFilters(columnFilters),
       ColumnSorting: withColumnSorting(
         gridSortModel.map((x) => ({
@@ -146,18 +146,18 @@ const DocumentProvider: FC<DocumentContextProps> = ({
     }
     setCurrentPage(data.metaData.currentPage! - 1);
     setRowCount(data.metaData.totalCount!);
-    setDocuments(data.list);
+    setMessages(data.list);
   }, 750);
   useDidMountEffect(
     () => {
-      fetchDocuments();
+      fetchMessages();
     },
     1,
-    [searchText, showDocuments, gridSortModel, currentPage, filterReference]
+    [searchText, showMessages, gridSortModel, currentPage, filterReference]
   );
 
   const updateSelected = useCallback(
-    (updates: Document) => {
+    (updates: Message) => {
       if (!selected) return;
       let newSelected = { ...selected };
       Object.entries(updates).forEach(
@@ -171,14 +171,14 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   );
 
   return (
-    <DocumentContext.Provider
+    <MessageContext.Provider
       value={{
         customers,
         orders,
-        documents,
-        setDocuments,
-        setShowDocuments,
-        showDocuments,
+        messages,
+        setMessages,
+        setShowMessages,
+        showMessages,
         selected,
         setSelected,
         updateSelected,
@@ -190,8 +190,8 @@ const DocumentProvider: FC<DocumentContextProps> = ({
       }}
     >
       {children}
-    </DocumentContext.Provider>
+    </MessageContext.Provider>
   );
 };
 
-export default DocumentProvider;
+export default MessageProvider;
