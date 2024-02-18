@@ -15,7 +15,6 @@ using Services.Api;
 using Services.Entities;
 using Services.ExternalApis;
 using Services.Logic;
-using Services.Maintenance;
 using Services.Tasks;
 
 // Needed for google apis to work with .net8
@@ -39,33 +38,38 @@ builder.Services.AddAutoMapper(cfg =>
         .ForMember(x => x.Customer, opts => opts.Ignore());
     cfg.CreateMap<CopyDocumentRequest, Document>().ForMember(x => x.Order, opts => opts.Ignore())
         .ForMember(x => x.Customer, opts => opts.Ignore());
+    cfg.CreateMap<UpsertMessageRequest, Message>().ForMember(x => x.Order, opts => opts.Ignore())
+        .ForMember(x => x.Customer, opts => opts.Ignore());
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddScheduler();
+builder.Services.AddQueue();
 
 //Singletons
 builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
 builder.Services.AddSingleton<IGoogleService, GoogleService>();
 builder.Services.AddSingleton<ITemplatingService, TemplatingService>();
 
-//Services
+//Entity Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
-builder.Services.AddScoped<IMigrationService, MigrationService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
-//Repositories
+//Entity Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 //Tasks
 builder.Services.AddScoped<MigrateDbTask>();
 builder.Services.AddScoped<RemoveInvalidRefreshTokensTask>();
+builder.Services.AddScoped<DeleteGoogleFileTask>();
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

@@ -94,8 +94,8 @@ namespace Api.Migrations
                     b.Property<string>("OrderId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<bool>("Template")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("Template")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -104,6 +104,43 @@ namespace Api.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Documents", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Models.Entities.Message", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("varchar(10000)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("Template")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Data.Models.Entities.Order", b =>
@@ -218,11 +255,30 @@ namespace Api.Migrations
                 {
                     b.HasOne("Data.Models.Entities.Customer", "Customer")
                         .WithMany("Documents")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Data.Models.Entities.Order", "Order")
                         .WithMany("Documents")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Data.Models.Entities.Message", b =>
+                {
+                    b.HasOne("Data.Models.Entities.Customer", "Customer")
+                        .WithMany("Messages")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Data.Models.Entities.Order", "Order")
+                        .WithMany("Messages")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Customer");
 
@@ -233,7 +289,8 @@ namespace Api.Migrations
                 {
                     b.HasOne("Data.Models.Entities.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Customer");
                 });
@@ -253,12 +310,16 @@ namespace Api.Migrations
                 {
                     b.Navigation("Documents");
 
+                    b.Navigation("Messages");
+
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Data.Models.Entities.Order", b =>
                 {
                     b.Navigation("Documents");
+
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Data.Models.Entities.User", b =>

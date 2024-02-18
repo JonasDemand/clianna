@@ -19,6 +19,7 @@ public class CliannaDbContext : DbContext
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<Document> Documents { get; set; }
+    public DbSet<Message> Messages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

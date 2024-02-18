@@ -26,6 +26,7 @@ public class Customer : IEntity
     //Navigation
     public IEnumerable<Order> Orders { get; set; }
     public IEnumerable<Document> Documents { get; set; }
+    public IEnumerable<Message> Messages { get; set; }
 
     public string Id { get; set; } = new Cuid2().ToString();
 }

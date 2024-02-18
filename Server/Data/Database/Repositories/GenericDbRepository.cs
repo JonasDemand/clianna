@@ -45,9 +45,9 @@ public abstract class GenericDbRepository<T>(CliannaDbContext dbContext, IMapper
         return entities.ToList();
     }
 
-    public IDbContextTransaction BeginTransaction()
+    public async Task<IDbContextTransaction> BeginTransaction()
     {
-        return dbContext.Database.BeginTransaction();
+        return await dbContext.Database.BeginTransactionAsync();
     }
 
     public EntityEntry<T> GetEntry(T entity)

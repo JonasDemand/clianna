@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Visus.Cuid;
 
@@ -10,7 +11,7 @@ public class Document : IEntity
     public string? GoogleId { get; set; }
     public string? Name { get; set; }
     public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-    public bool Template { get; set; }
+    public ETemplateType Template { get; set; } = ETemplateType.None;
     public int? IncrementalId { get; set; }
 
     //FK

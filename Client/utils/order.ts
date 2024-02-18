@@ -16,4 +16,5 @@ export const toOrderUpsertRequest = (order: Order): UpsertOrderRequest => ({
   ...order,
   customer: order.customer?.id ?? null,
   documents: order.documents?.map((x) => x.id!),
+  messages: order.messages?.map((x) => x.id!),
 });

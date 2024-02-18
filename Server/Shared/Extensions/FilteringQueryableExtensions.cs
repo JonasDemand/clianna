@@ -135,8 +135,10 @@ public static class FilteringQueryableExtensions
             if (type.IsEnum)
                 foreach (var value in Enum.GetValues(type))
                 {
-                    if (!(value as Enum ?? throw new InvalidOperationException()).GetDescription()
-                        .Contains(searchValue, StringComparison.OrdinalIgnoreCase))
+                    var enumValue = value as Enum ?? throw new InvalidOperationException();
+                    if (!enumValue.ToString().Equals(searchValue) && !enumValue
+                            .GetDescription()
+                            .Contains(searchValue, StringComparison.OrdinalIgnoreCase))
                         continue;
                     var constant = Expression.Constant(value, property.Type);
                     return Expression.Equal(property, constant);

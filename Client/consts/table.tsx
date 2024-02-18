@@ -6,7 +6,7 @@ import React from 'react';
 export type ColumnAction<T extends GridValidRowModel> = {
   tooltip: string;
   key?: string;
-  disabled?: boolean;
+  disabled?: (row: T) => boolean;
   onClick?: (row: T) => void;
   icon: React.ReactNode | React.ReactNode[];
 };
@@ -25,6 +25,7 @@ export const getActionColumn = <T extends GridValidRowModel>(
         {actions.map((action) => (
           <MuiTooltip title={action.tooltip} key={action.key ?? action.tooltip}>
             <IconButton
+              disabled={action.disabled ? action.disabled(row) : false}
               onClick={(e) => {
                 e.stopPropagation();
                 action.onClick!(row);

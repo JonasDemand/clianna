@@ -1,33 +1,42 @@
 ﻿using AutoMapper;
+using Coravel.Queuing.Interfaces;
 using Data.Database.Repositories;
 using Data.Models.Entities;
 using Data.Models.Messages;
+using Services.Tasks;
 
 namespace Services.Entities;
 
-public class OrderService(
-    ICustomerRepository customerRepository,
-    IOrderRepository orderRepository,
-    IDocumentRepository documentRepository,
-    IMapper mapper)
-    : BaseEntityService<Order, UpsertOrderRequest>(orderRepository, mapper), IOrderService
+public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrderService
 {
-    public new async Task<Order> Create(UpsertOrderRequest order)
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IDocumentRepository _documentRepository;
+    private readonly IMessageRepository _messageRepository;
+    private readonly IQueue _queue;
+
+    public OrderService(ICustomerRepository customerRepository,
+        IOrderRepository orderRepository,
+        IDocumentRepository documentRepository,
+        IMessageRepository messageRepository,
+        IMapper mapper,
+        IQueue queue) : base(orderRepository, mapper)
     {
-        var entry = _mapper.Map<Order>(order);
-        await AssignDependencies(entry, order);
-        return await orderRepository.Add(entry);
+        _customerRepository = customerRepository;
+        _documentRepository = documentRepository;
+        _messageRepository = messageRepository;
+        _queue = queue;
+
+        BeforeInsertActions.Add(AssignDependencies);
+        BeforeDeleteActions.Add(ScheduleDeleteDocuments);
     }
 
-    public new async Task<Order> Update(string id, UpsertOrderRequest order)
+    private async Task ScheduleDeleteDocuments(Order order)
     {
-        var entry = await orderRepository.Get(id);
-        _mapper.Map(order, entry);
-        await AssignDependencies(entry, order);
-        return await orderRepository.Update(entry);
+        order.Documents.ToList().ForEach(document =>
+            _queue.QueueInvocableWithPayload<DeleteGoogleFileTask, string>(document.GoogleId));
     }
 
-    private async Task AssignDependencies(Order entry, UpsertOrderRequest order)
+    private async Task AssignDependencies(Order entry, UpsertOrderRequest order, bool isUpdate)
     {
         if (string.IsNullOrEmpty(order.Customer))
         {
@@ -36,12 +45,15 @@ public class OrderService(
         }
         else
         {
-            entry.Customer = await customerRepository.Get(order.Customer);
+            entry.Customer = await _customerRepository.Get(order.Customer);
             entry.CustomerId = entry.Customer.Id;
         }
 
         entry.Documents = order.Documents == null || !order.Documents.Any()
             ? []
-            : await documentRepository.Get(order.Documents);
+            : await _documentRepository.Get(order.Documents);
+        entry.Messages = order.Messages == null || !order.Messages.Any()
+            ? []
+            : await _messageRepository.Get(order.Messages);
     }
 }

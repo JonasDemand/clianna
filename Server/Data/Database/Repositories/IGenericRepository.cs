@@ -22,6 +22,6 @@ public interface IGenericRepository<T> where T : class, IEntity
     Task Delete(T entity, bool save = true);
     Task Delete(IEnumerable<T> entities, bool save = true);
     Task SaveChanges();
-    IDbContextTransaction BeginTransaction();
+    Task<IDbContextTransaction> BeginTransaction();
     EntityEntry<T> GetEntry(T entity);
 }

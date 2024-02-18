@@ -3,6 +3,7 @@
 import {
   Assignment,
   Description,
+  Email,
   Extension,
   Menu as MenuIcon,
   People,
@@ -23,6 +24,7 @@ const pages = [
   { label: 'Kunden', route: '/manage/customers', icon: <People /> },
   { label: 'Aufträge', route: '/manage/orders', icon: <Assignment /> },
   { label: 'Dokumente', route: '/manage/documents', icon: <Description /> },
+  { label: 'Nachrichten', route: '/manage/messages', icon: <Email /> },
 ];
 
 const Navbar: FC = () => {

@@ -10,6 +10,16 @@
  * ---------------------------------------------------------------
  */
 
+export interface ApplyMessageTemplateResponse {
+  subject?: string | null;
+  body?: string | null;
+}
+
+export interface ApplyMessageTemplateResponseResponse {
+  data?: ApplyMessageTemplateResponse;
+  error?: Error;
+}
+
 export interface AuthenticateRequest {
   email?: string | null;
   password?: string | null;
@@ -27,8 +37,7 @@ export interface ColumnSorting {
 
 export interface CopyDocumentRequest {
   name?: string | null;
-  order?: string | null;
-  customer?: string | null;
+  reference?: string | null;
 }
 
 export interface Customer {
@@ -49,6 +58,7 @@ export interface Customer {
   salutation?: ECustomerSalutation;
   orders?: Order[] | null;
   documents?: Document[] | null;
+  messages?: Message[] | null;
   id?: string | null;
 }
 
@@ -72,7 +82,7 @@ export interface Document {
   name?: string | null;
   /** @format date-time */
   creationDate?: Date;
-  template?: boolean;
+  template?: ETemplateType;
   /** @format int32 */
   incrementalId?: number | null;
   order?: Order;
@@ -122,6 +132,12 @@ export enum EOrderType {
   Massschuhe = "Massschuhe",
   Schuhbestellung = "Schuhbestellung",
   Miscellaneous = "Miscellaneous",
+}
+
+export enum ETemplateType {
+  None = "None",
+  Order = "Order",
+  Customer = "Customer",
 }
 
 export interface Error {
@@ -193,6 +209,33 @@ export enum HttpStatusCode {
   NetworkAuthenticationRequired = "NetworkAuthenticationRequired",
 }
 
+export interface Message {
+  name?: string | null;
+  /** @format date-time */
+  creationDate?: Date;
+  template?: ETemplateType;
+  subject?: string | null;
+  body?: string | null;
+  order?: Order;
+  customer?: Customer;
+  id?: string | null;
+}
+
+export interface MessagePagedListResponse {
+  metaData?: PaginationMetaData;
+  list?: Message[] | null;
+}
+
+export interface MessagePagedListResponseResponse {
+  data?: MessagePagedListResponse;
+  error?: Error;
+}
+
+export interface MessageResponse {
+  data?: Message;
+  error?: Error;
+}
+
 export interface Order {
   /** @format date-time */
   creationDate?: Date;
@@ -213,6 +256,7 @@ export interface Order {
   size?: number | null;
   name?: string | null;
   documents?: Document[] | null;
+  messages?: Message[] | null;
   customer?: Customer;
   id?: string | null;
 }
@@ -286,13 +330,23 @@ export interface UpsertCustomerRequest {
   salutation?: ECustomerSalutation;
   orders?: string[] | null;
   documents?: string[] | null;
+  messages?: string[] | null;
 }
 
 export interface UpsertDocumentReqeust {
   name?: string | null;
-  template?: boolean;
+  template?: ETemplateType;
   /** @format int32 */
   incrementalId?: number | null;
+  order?: string | null;
+  customer?: string | null;
+}
+
+export interface UpsertMessageRequest {
+  name?: string | null;
+  template?: ETemplateType;
+  subject?: string | null;
+  body?: string | null;
   order?: string | null;
   customer?: string | null;
 }
@@ -316,6 +370,7 @@ export interface UpsertOrderRequest {
   name?: string | null;
   customer?: string | null;
   documents?: string[] | null;
+  messages?: string[] | null;
 }
 
 export interface UserSession {
@@ -549,30 +604,6 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version v1
  */
 export class Client<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
-  admin = {
-    /**
-     * No description
-     *
-     * @tags Admin
-     * @name MigrateDbCreate
-     * @request POST:/Admin/MigrateDb
-     * @secure
-     */
-    migrateDbCreate: (
-      query?: {
-        dbName?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<Response, any>({
-        path: `/Admin/MigrateDb`,
-        method: "POST",
-        query: query,
-        secure: true,
-        format: "json",
-        ...params,
-      }),
-  };
   customer = {
     /**
      * No description
@@ -790,6 +821,132 @@ export class Client<SecurityDataType extends unknown> extends HttpClient<Securit
     documentDelete: (id: string, params: RequestParams = {}) =>
       this.request<Response, any>({
         path: `/Document/${id}`,
+        method: "DELETE",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+  };
+  message = {
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name ApplyTemplateDetail
+     * @request GET:/Message/{id}/ApplyTemplate
+     * @secure
+     */
+    applyTemplateDetail: (
+      id: string,
+      query?: {
+        reference?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ApplyMessageTemplateResponseResponse, any>({
+        path: `/Message/${id}/ApplyTemplate`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name MessageList
+     * @request GET:/Message
+     * @secure
+     */
+    messageList: (
+      query?: {
+        ColumnSorting?: string;
+        SearchTerm?: string;
+        ColumnFilters?: string;
+        /** @format int32 */
+        PageNumber?: number;
+        /** @format int32 */
+        PageSize?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<MessagePagedListResponseResponse, any>({
+        path: `/Message`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name MessageCreate
+     * @request POST:/Message
+     * @secure
+     */
+    messageCreate: (data: UpsertMessageRequest, params: RequestParams = {}) =>
+      this.request<MessageResponse, any>({
+        path: `/Message`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name MessageDetail
+     * @request GET:/Message/{id}
+     * @secure
+     */
+    messageDetail: (id: string, params: RequestParams = {}) =>
+      this.request<MessageResponse, any>({
+        path: `/Message/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name MessageUpdate
+     * @request PUT:/Message/{id}
+     * @secure
+     */
+    messageUpdate: (id: string, data: UpsertMessageRequest, params: RequestParams = {}) =>
+      this.request<MessageResponse, any>({
+        path: `/Message/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Message
+     * @name MessageDelete
+     * @request DELETE:/Message/{id}
+     * @secure
+     */
+    messageDelete: (id: string, params: RequestParams = {}) =>
+      this.request<Response, any>({
+        path: `/Message/${id}`,
         method: "DELETE",
         secure: true,
         format: "json",

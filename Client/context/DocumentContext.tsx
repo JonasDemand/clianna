@@ -1,7 +1,8 @@
 'use client';
 
 import { columns, defaultVariableColumns } from '@consts/document';
-import { DocumentContextType, EShowDocument } from '@customTypes/document';
+import { DocumentContextType } from '@customTypes/document';
+import { EShowTemplate } from '@customTypes/template';
 import { withColumnFilters, withColumnSorting } from '@utils/api/filterParams';
 import {
   ColumnFilter,
@@ -9,6 +10,7 @@ import {
   Document,
   Order,
 } from '@utils/api/generated/Api';
+import { isCustomer } from '@utils/customer';
 import useApiClient from 'hooks/useApiClient';
 import useDebounce from 'hooks/useDebounce';
 import useDidMountEffect from 'hooks/useDidMountEffect';
@@ -58,7 +60,7 @@ const DocumentProvider: FC<DocumentContextProps> = ({
   const [documents, setDocuments] = useState<Document[]>(initialDocuments);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [showDocuments, setShowDocuments] = useState(EShowDocument.All);
+  const [showDocuments, setShowDocuments] = useState(EShowTemplate.All);
   const [activeVariableColumns, setActiveVariableColumns] = useState(
     defaultVariableColumns
   );
@@ -115,10 +117,10 @@ const DocumentProvider: FC<DocumentContextProps> = ({
 
   const fetchDocuments = useDebounce(async () => {
     const columnFilters = new Array<ColumnFilter>();
-    if (showDocuments !== EShowDocument.All)
+    if (showDocuments !== EShowTemplate.All)
       columnFilters.push({
         name: 'Template',
-        value: (showDocuments === EShowDocument.Template).toString(),
+        value: showDocuments.toString(),
       });
     if (filterReference)
       columnFilters.push({
@@ -167,11 +169,6 @@ const DocumentProvider: FC<DocumentContextProps> = ({
       setSelected(newSelected);
     },
     [selected]
-  );
-
-  const isCustomer = useCallback(
-    (obj?: any | null) => obj.firstName !== undefined,
-    []
   );
 
   return (

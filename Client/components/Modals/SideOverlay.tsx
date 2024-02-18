@@ -64,7 +64,7 @@ const SideOverlay: FC<SideOverlayProps> = ({
           sx={{
             flex: '1 1 auto',
             overflow: 'auto',
-            py: 2,
+            p: 1,
           }}
         >
           {children}

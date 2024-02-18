@@ -120,8 +120,9 @@ const CustomerBasedata: FC = () => {
                   <IconButton
                     disabled={!selected.phone || phoneFocused}
                     onClick={() => {
-                      selected.phone &&
-                        (window.location.href = `tel:${selected.phone}`);
+                      window.location.href = `tel:${encodeURIComponent(
+                        selected.phone!
+                      )}`;
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -144,8 +145,9 @@ const CustomerBasedata: FC = () => {
                   <IconButton
                     disabled={!selected.mobile || mobileFocused}
                     onClick={() => {
-                      selected.mobile &&
-                        (window.location.href = `tel:${selected.mobile}`);
+                      window.location.href = `tel:${encodeURIComponent(
+                        selected.mobile!
+                      )}`;
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -168,8 +170,10 @@ const CustomerBasedata: FC = () => {
                   <IconButton
                     disabled={!selected.email || emailFocused}
                     onClick={() => {
-                      selected.email &&
-                        (window.location.href = `mailto:${selected.email}`);
+                      //TODO: add message templates
+                      window.location.href = `mailto:${encodeURIComponent(
+                        selected.email!
+                      )}`;
                     }}
                     sx={{ cursor: 'pointer' }}
                   >
