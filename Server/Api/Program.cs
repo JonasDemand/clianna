@@ -39,6 +39,8 @@ builder.Services.AddAutoMapper(cfg =>
         .ForMember(x => x.Customer, opts => opts.Ignore());
     cfg.CreateMap<CopyDocumentRequest, Document>().ForMember(x => x.Order, opts => opts.Ignore())
         .ForMember(x => x.Customer, opts => opts.Ignore());
+    cfg.CreateMap<UpsertMessageRequest, Message>().ForMember(x => x.Order, opts => opts.Ignore())
+        .ForMember(x => x.Customer, opts => opts.Ignore());
 });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
@@ -50,18 +52,20 @@ builder.Services.AddSingleton<IResponseFactory, ResponseFactory>();
 builder.Services.AddSingleton<IGoogleService, GoogleService>();
 builder.Services.AddSingleton<ITemplatingService, TemplatingService>();
 
-//Services
+//Entity Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IMigrationService, MigrationService>();
 
-//Repositories
+//Entity Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 //Tasks

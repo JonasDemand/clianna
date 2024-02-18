@@ -21,4 +21,5 @@ public class UpsertCustomerRequest
 
     public IEnumerable<string>? Orders { get; set; }
     public IEnumerable<string>? Documents { get; set; }
+    public IEnumerable<string>? Messages { get; set; }
 }

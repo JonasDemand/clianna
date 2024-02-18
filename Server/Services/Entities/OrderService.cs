@@ -11,16 +11,19 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IDocumentRepository _documentRepository;
+    private readonly IMessageRepository _messageRepository;
     private readonly IQueue _queue;
 
     public OrderService(ICustomerRepository customerRepository,
         IOrderRepository orderRepository,
         IDocumentRepository documentRepository,
+        IMessageRepository messageRepository,
         IMapper mapper,
         IQueue queue) : base(orderRepository, mapper)
     {
         _customerRepository = customerRepository;
         _documentRepository = documentRepository;
+        _messageRepository = messageRepository;
         _queue = queue;
 
         BeforeInsertActions.Add(AssignDependencies);
@@ -49,5 +52,8 @@ public class OrderService : BaseEntityService<Order, UpsertOrderRequest>, IOrder
         entry.Documents = order.Documents == null || !order.Documents.Any()
             ? []
             : await _documentRepository.Get(order.Documents);
+        entry.Messages = order.Messages == null || !order.Messages.Any()
+            ? []
+            : await _messageRepository.Get(order.Messages);
     }
 }

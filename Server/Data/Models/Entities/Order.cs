@@ -28,6 +28,7 @@ public class Order : IEntity
 
     //Navigation
     public IEnumerable<Document> Documents { get; set; }
+    public IEnumerable<Message> Messages { get; set; }
     public Customer? Customer { get; set; }
 
     public string Id { get; set; } = new Cuid2().ToString();

@@ -63,9 +63,12 @@ public class CustomerEntityTypeConfiguration : IEntityTypeConfiguration<Customer
             .WithOne(e => e.Customer);
         builder.HasMany(e => e.Documents)
             .WithOne(e => e.Customer);
+        builder.HasMany(e => e.Messages)
+            .WithOne(e => e.Customer);
 
         //Navigation
         builder.Navigation(e => e.Orders);
         builder.Navigation(e => e.Documents);
+        builder.Navigation(e => e.Messages);
     }
 }

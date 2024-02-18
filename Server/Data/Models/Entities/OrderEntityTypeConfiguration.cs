@@ -66,9 +66,12 @@ public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
             .OnDelete(DeleteBehavior.Cascade);
         builder.HasMany(e => e.Documents)
             .WithOne(e => e.Order);
+        builder.HasMany(e => e.Messages)
+            .WithOne(e => e.Order);
 
         //Navigation
         builder.Navigation(e => e.Customer);
         builder.Navigation(e => e.Documents);
+        builder.Navigation(e => e.Messages);
     }
 }

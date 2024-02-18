@@ -10,16 +10,19 @@ namespace Services.Entities;
 public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest>, ICustomerService
 {
     private readonly IDocumentRepository _documentRepository;
+    private readonly IMessageRepository _messageRepository;
     private readonly IOrderRepository _orderRepository;
     private readonly IQueue _queue;
 
     public CustomerService(ICustomerRepository customerRepository,
         IOrderRepository orderRepository,
         IDocumentRepository documentRepository,
+        IMessageRepository messageRepository,
         IMapper mapper, IQueue queue) : base(customerRepository, mapper)
     {
         _orderRepository = orderRepository;
         _documentRepository = documentRepository;
+        _messageRepository = messageRepository;
         _queue = queue;
 
         BeforeInsertActions.Add(AssignDependencies);
@@ -42,5 +45,8 @@ public class CustomerService : BaseEntityService<Customer, UpsertCustomerRequest
         entry.Orders = customer.Orders == null || !customer.Orders.Any()
             ? []
             : await _orderRepository.Get(customer.Orders);
+        entry.Messages = customer.Messages == null || !customer.Messages.Any()
+            ? []
+            : await _messageRepository.Get(customer.Messages);
     }
 }

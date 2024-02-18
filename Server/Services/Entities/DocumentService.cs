@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Coravel.Queuing.Interfaces;
 using Data.Database.Repositories;
 using Data.Models.Messages;
@@ -116,7 +116,7 @@ public class DocumentService : BaseEntityService<Document, UpsertDocumentReqeust
         if (string.IsNullOrEmpty(document.Order))
         {
             entry.Order = null;
-            entry.Order = null;
+            entry.OrderId = null;
         }
         else
         {
