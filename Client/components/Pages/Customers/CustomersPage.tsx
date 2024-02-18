@@ -171,7 +171,9 @@ export const CustomersPage: FC = () => {
             icon: <Phone />,
             disabled: (row) => !row.mobile && !row.phone,
             onClick: (row) =>
-              (window.location.href = `tel:${row.mobile ?? row.phone}`),
+              (window.location.href = `tel:${encodeURIComponent(
+                row.mobile ?? row.phone!
+              )}`),
           },
         ]}
       />

@@ -196,9 +196,9 @@ const OrdersPage: FC = () => {
             disabled: (row) =>
               !row.customer || (!row.customer.mobile && !row.customer.phone),
             onClick: (row) =>
-              (window.location.href = `tel:${
-                row.customer?.mobile ?? row.customer?.phone
-              }`),
+              (window.location.href = `tel:${encodeURIComponent(
+                row.customer!.mobile ?? row.customer!.phone!
+              )}`),
           },
         ]}
       />

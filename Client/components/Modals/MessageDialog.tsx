@@ -33,6 +33,11 @@ const MessageDialog: FC<MessageDialogProps> = ({
 
   const onConfirmDialog = useCallback(async () => {
     const customer = isCustomer(reference);
+    const encodedEmail = encodeURIComponent(
+      customer
+        ? (reference as Customer).email!
+        : (reference as Order).customer!.email!
+    );
 
     if (template) {
       const { data, error } = await client.message.applyTemplateDetail(
@@ -42,24 +47,17 @@ const MessageDialog: FC<MessageDialogProps> = ({
           order: !customer ? reference!.id! : undefined,
         }
       );
-      if (error || !data) {
+      if (error || !data || !data.subject || !data.body) {
         enqueueSnackbar('Anwenden von Template fehlgeschlagen!', {
           variant: 'error',
         });
         return;
       }
 
-      window.location.href = `mailto:${
-        customer
-          ? (reference as Customer).email
-          : (reference as Order).customer?.email
-      }?subject=${data.subject}&body=${data.body}`;
-    } else
-      window.location.href = `mailto:${
-        customer
-          ? (reference as Customer).email
-          : (reference as Order).customer?.email
-      }`;
+      window.location.href = `mailto:${encodedEmail}?subject=${encodeURIComponent(
+        data.subject
+      )}&body=${encodeURIComponent(data.body)}`;
+    } else window.location.href = `mailto:${encodedEmail}`;
     onClose();
     setTemplate(null);
   }, [client.message, enqueueSnackbar, onClose, reference, template]);
