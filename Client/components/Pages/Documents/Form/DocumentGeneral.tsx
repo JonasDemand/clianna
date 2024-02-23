@@ -69,7 +69,7 @@ const DocumentGeneral: FC = () => {
             <FormTextField
               label="Inkrementelle ID"
               type="number"
-              disabled={selected.template !== ETemplateType.None}
+              disabled={selected.template === ETemplateType.None}
               value={selected.incrementalId}
               onChange={onChangeIncrementalId}
               inputProps={{ step: 1 }}
