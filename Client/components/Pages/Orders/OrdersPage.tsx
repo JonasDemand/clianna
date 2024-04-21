@@ -190,7 +190,7 @@ const OrdersPage: FC = () => {
               !row.customer || (!row.customer.mobile && !row.customer.phone),
             onClick: (row) =>
               (window.location.href = `tel:${encodeURIComponent(
-                row.customer!.mobile ?? row.customer!.phone!
+                row.customer!.mobile || row.customer!.phone!
               )}`),
           },
         ]}
