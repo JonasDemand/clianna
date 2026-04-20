@@ -38,7 +38,7 @@ const DhlDialog: FC<DhlDialogProps> = ({ customer, onClose }) => {
     link.href = url;
     link.setAttribute(
       'download',
-      `${customer!.id}-${formatDate(new Date())}.clianna.dhl`
+      `${customer!.id}-${formatDate(new Date())}.clianna.csv`
     );
 
     // Trigger download
